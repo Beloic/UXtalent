@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --card-bg: rgba(15, 23, 42, 0.7);
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+
+/* Beautiful scrollbars */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: rgba(203,213,225,.35); border-radius: 999px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* Prose-like job description on detail page */
+.prose-job p { @apply mb-4 text-slate-300 leading-relaxed; }
+.prose-job h2 { @apply text-xl font-semibold text-white mt-8 mb-3; }
+.prose-job ul { @apply list-disc pl-5 space-y-2; }
+.prose-job li { @apply text-slate-300; }
+
+/* React Kanban Kit Styles */
+.rkk-board {
+  @apply flex gap-4 overflow-x-auto pb-4;
+}
+
+.rkk-column-outer {
+  @apply flex-shrink-0 w-80;
+}
+
+.rkk-column {
+  @apply bg-white rounded-lg shadow-sm;
+}
+
+.rkk-column-header {
+  @apply p-4 border-b border-gray-200;
+}
+
+.rkk-column-content {
+  @apply p-4 min-h-[200px];
+}
+
+.rkk-card-wrapper {
+  @apply mb-2;
+}
+
+.rkk-card-outer {
+  @apply bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200;
+}
+
+.rkk-card-inner {
+  @apply relative;
+}
+
+.rkk-card-shadow {
+  @apply shadow-lg opacity-50;
+}
+
+.rkk-skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}

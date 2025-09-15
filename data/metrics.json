@@ -1,0 +1,166 @@
+{
+  "requests": {
+    "total": 185,
+    "byMethod": {
+      "GET": 166,
+      "POST": 19
+    },
+    "byRoute": {
+      "/api/candidates": 127,
+      "/api/metrics": 4,
+      "/api/forum/posts": 9,
+      "/api/candidates/profile/:email": 8,
+      "/api/forum/stats": 8,
+      "/api/forum/posts/:id": 10,
+      "/api/forum/posts/:id/replies": 18,
+      "/api/forum/posts/:id/like": 1
+    },
+    "byStatus": {
+      "200": 163,
+      "401": 18,
+      "404": 4
+    },
+    "byHour": {
+      "14": 57,
+      "15": 128
+    }
+  },
+  "performance": {
+    "averageResponseTime": 35.745945945945955,
+    "slowestRequests": [
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 432,
+        "timestamp": "2025-09-11T13:39:22.184Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/forum/posts/:id",
+        "duration": 406,
+        "timestamp": "2025-09-11T13:39:22.170Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 344,
+        "timestamp": "2025-09-11T12:58:32.127Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 330,
+        "timestamp": "2025-09-11T12:58:32.128Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 270,
+        "timestamp": "2025-09-11T12:32:15.631Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 230,
+        "timestamp": "2025-09-11T13:03:22.035Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 211,
+        "timestamp": "2025-09-11T12:40:50.971Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 209,
+        "timestamp": "2025-09-11T13:03:22.019Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 191,
+        "timestamp": "2025-09-11T12:48:03.030Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 162,
+        "timestamp": "2025-09-11T12:44:36.140Z"
+      }
+    ],
+    "fastestRequests": [
+      {
+        "method": "GET",
+        "route": "/api/metrics",
+        "duration": 0,
+        "timestamp": "2025-09-11T12:30:17.780Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/metrics",
+        "duration": 0,
+        "timestamp": "2025-09-11T12:30:34.018Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates/profile/:email",
+        "duration": 0,
+        "timestamp": "2025-09-11T12:40:54.134Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/forum/stats",
+        "duration": 0,
+        "timestamp": "2025-09-11T12:40:56.141Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates/profile/:email",
+        "duration": 0,
+        "timestamp": "2025-09-11T13:03:23.425Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates/profile/:email",
+        "duration": 0,
+        "timestamp": "2025-09-11T13:03:23.425Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 0,
+        "timestamp": "2025-09-11T13:28:39.844Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 0,
+        "timestamp": "2025-09-11T13:32:58.214Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates",
+        "duration": 0,
+        "timestamp": "2025-09-11T13:34:38.950Z"
+      },
+      {
+        "method": "GET",
+        "route": "/api/candidates/profile/:email",
+        "duration": 0,
+        "timestamp": "2025-09-11T13:35:14.176Z"
+      }
+    ]
+  },
+  "errors": {
+    "total": 22,
+    "byType": {
+      "client_error": 22
+    },
+    "byRoute": {
+      "/api/candidates/profile/:email": 4,
+      "/api/forum/posts/:id/replies": 18
+    }
+  },
+  "lastUpdated": "2025-09-11T13:39:58.185Z"
+}

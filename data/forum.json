@@ -1,0 +1,552 @@
+{
+  "posts": [
+    {
+      "id": 2,
+      "title": "Comment créer un design system efficace ?",
+      "content": "Je cherche des conseils pour créer un design system robuste et scalable. Quelles sont les meilleures pratiques à suivre ?",
+      "category": "Design",
+      "author": "Marie Dubois",
+      "authorId": "user_123456",
+      "authorAvatar": "MD",
+      "tags": [
+        "design-system",
+        "ui",
+        "ux"
+      ],
+      "likes": 1,
+      "likedBy": [
+        "user_4irs2tx33"
+      ],
+      "views": 30,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-09T12:03:14.995Z",
+      "updatedAt": "2025-09-11T13:39:39.112Z"
+    },
+    {
+      "id": 3,
+      "title": "Outils de prototypage recommandés en 2024",
+      "content": "Quels sont les meilleurs outils de prototypage actuellement ? Je travaille principalement sur des projets web et mobile.",
+      "category": "Outils",
+      "author": "Pierre Martin",
+      "authorId": "user_789012",
+      "authorAvatar": "PM",
+      "tags": [
+        "prototypage",
+        "outils",
+        "figma"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 27,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-08T12:03:14.996Z",
+      "updatedAt": "2025-09-11T12:29:14.139Z"
+    },
+    {
+      "id": 4,
+      "title": "Accessibilité web : les erreurs à éviter",
+      "content": "Partageons nos expériences sur l'accessibilité web. Quelles sont les erreurs les plus courantes que vous avez observées ?",
+      "category": "Design",
+      "author": "Sophie Leroy",
+      "authorId": "user_345678",
+      "authorAvatar": "SL",
+      "tags": [
+        "accessibilité",
+        "a11y",
+        "web"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 20,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-07T12:03:14.996Z",
+      "updatedAt": "2025-09-11T12:05:17.092Z"
+    },
+    {
+      "id": 5,
+      "title": "Tendances UX/UI pour 2024",
+      "content": "Quelles sont selon vous les tendances qui vont marquer 2024 en UX/UI ? Partagez vos prédictions !",
+      "category": "Design",
+      "author": "Alex Chen",
+      "authorId": "user_901234",
+      "authorAvatar": "AC",
+      "tags": [
+        "tendances",
+        "2024",
+        "ui",
+        "ux"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 31,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-06T12:03:14.996Z",
+      "updatedAt": "2025-09-06T12:03:14.996Z"
+    },
+    {
+      "id": 6,
+      "title": "Comment gérer les retours clients difficiles ?",
+      "content": "J'ai du mal à gérer les retours clients qui remettent en question mes choix UX. Comment gérez-vous ces situations ?",
+      "category": "Carrière",
+      "author": "Emma Rousseau",
+      "authorId": "user_567890",
+      "authorAvatar": "ER",
+      "tags": [
+        "client",
+        "gestion",
+        "communication"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 12,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-05T12:03:14.996Z",
+      "updatedAt": "2025-09-05T12:03:14.996Z"
+    },
+    {
+      "id": 7,
+      "title": "Recherche utilisateur : méthodes efficaces",
+      "content": "Quelles méthodes de recherche utilisateur utilisez-vous le plus ? Interviews, tests utilisateur, questionnaires ?",
+      "category": "UX",
+      "author": "Thomas Moreau",
+      "authorId": "user_234567",
+      "authorAvatar": "TM",
+      "tags": [
+        "recherche",
+        "utilisateur",
+        "interviews"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 29,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-04T12:03:14.996Z",
+      "updatedAt": "2025-09-11T12:07:33.725Z"
+    },
+    {
+      "id": 8,
+      "title": "Freelance vs CDI : vos expériences",
+      "content": "Je réfléchis à passer en freelance. Quels sont les avantages et inconvénients selon votre expérience ?",
+      "category": "Carrière",
+      "author": "Léa Petit",
+      "authorId": "user_890123",
+      "authorAvatar": "LP",
+      "tags": [
+        "freelance",
+        "carrière",
+        "travail"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 21,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-03T12:03:14.996Z",
+      "updatedAt": "2025-09-11T12:10:54.360Z"
+    },
+    {
+      "id": 9,
+      "title": "Animation et micro-interactions",
+      "content": "Comment créer des animations fluides et pertinentes ? Quels outils recommandez-vous pour les micro-interactions ?",
+      "category": "Design",
+      "author": "Nicolas Bernard",
+      "authorId": "user_456789",
+      "authorAvatar": "NB",
+      "tags": [
+        "animation",
+        "micro-interactions",
+        "framer"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 16,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-02T12:03:14.996Z",
+      "updatedAt": "2025-09-11T12:04:53.967Z"
+    },
+    {
+      "id": 10,
+      "title": "Design mobile : contraintes et bonnes pratiques",
+      "content": "Quelles sont les contraintes spécifiques au design mobile ? Comment optimiser l'expérience sur petits écrans ?",
+      "category": "Développement",
+      "author": "Camille Durand",
+      "authorId": "user_012345",
+      "authorAvatar": "CD",
+      "tags": [
+        "mobile",
+        "responsive",
+        "app"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 24,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-09-01T12:03:14.996Z",
+      "updatedAt": "2025-09-11T12:03:43.976Z"
+    },
+    {
+      "id": 11,
+      "title": "Collaboration entre designers et développeurs",
+      "content": "Comment améliorer la collaboration entre équipes design et développement ? Quels outils et processus utilisez-vous ?",
+      "category": "Carrière",
+      "author": "Julien Roux",
+      "authorId": "user_678901",
+      "authorAvatar": "JR",
+      "tags": [
+        "collaboration",
+        "dev",
+        "workflow"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 16,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-08-31T12:03:14.996Z",
+      "updatedAt": "2025-08-31T12:03:14.996Z"
+    },
+    {
+      "id": 12,
+      "title": "Formation continue en UX/UI",
+      "content": "Comment rester à jour dans le domaine UX/UI ? Quelles formations ou ressources recommandez-vous ?",
+      "category": "Carrière",
+      "author": "Sarah Kim",
+      "authorId": "user_345012",
+      "authorAvatar": "SK",
+      "tags": [
+        "formation",
+        "apprentissage",
+        "ressources"
+      ],
+      "likes": 0,
+      "likedBy": [],
+      "views": 20,
+      "replies": 2,
+      "isPinned": false,
+      "createdAt": "2025-08-30T12:03:14.996Z",
+      "updatedAt": "2025-08-30T12:03:14.996Z"
+    }
+  ],
+  "replies": [
+    {
+      "id": 1,
+      "postId": 2,
+      "content": "Excellente question ! Je recommande de commencer par définir vos tokens de design (couleurs, typographie, espacements) avant de créer les composants.",
+      "author": "Sarah Chen",
+      "authorId": "user_comment_1",
+      "authorAvatar": "SC",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.815Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 2,
+      "postId": 2,
+      "content": "J'utilise Figma avec le plugin Tokens Studio, c'est vraiment pratique pour maintenir la cohérence !",
+      "author": "Marc Dubois",
+      "authorId": "user_comment_2",
+      "authorAvatar": "MD",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    },
+    {
+      "id": 3,
+      "postId": 3,
+      "content": "Figma reste mon outil de référence, mais j'essaie aussi Framer pour les prototypes plus avancés.",
+      "author": "Emma Rousseau",
+      "authorId": "user_comment_3",
+      "authorAvatar": "ER",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 4,
+      "postId": 3,
+      "content": "Pour les tests utilisateur, j'utilise Maze avec Figma, c'est très efficace !",
+      "author": "Thomas Moreau",
+      "authorId": "user_comment_4",
+      "authorAvatar": "TM",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-08T12:07:05.816Z",
+      "updatedAt": "2025-09-08T12:07:05.816Z"
+    },
+    {
+      "id": 5,
+      "postId": 4,
+      "content": "Les contrastes de couleurs sont souvent négligés. J'utilise WebAIM pour vérifier les ratios.",
+      "author": "Sophie Leroy",
+      "authorId": "user_comment_5",
+      "authorAvatar": "SL",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 6,
+      "postId": 4,
+      "content": "N'oubliez pas les attributs alt sur les images et les labels sur les formulaires !",
+      "author": "Alex Chen",
+      "authorId": "user_comment_6",
+      "authorAvatar": "AC",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    },
+    {
+      "id": 7,
+      "postId": 5,
+      "content": "Je pense que l'IA va révolutionner la recherche utilisateur cette année !",
+      "author": "Léa Petit",
+      "authorId": "user_comment_7",
+      "authorAvatar": "LP",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 8,
+      "postId": 5,
+      "content": "Les micro-interactions et les animations subtiles vont être très tendance !",
+      "author": "Nicolas Bernard",
+      "authorId": "user_comment_8",
+      "authorAvatar": "NB",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    },
+    {
+      "id": 9,
+      "postId": 6,
+      "content": "J'ai vécu la même situation ! J'essaie toujours de revenir aux données utilisateur pour justifier mes choix.",
+      "author": "Camille Durand",
+      "authorId": "user_comment_9",
+      "authorAvatar": "CD",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 10,
+      "postId": 6,
+      "content": "La communication est clé ! J'organise des sessions de co-création avec les clients.",
+      "author": "Julien Roux",
+      "authorId": "user_comment_10",
+      "authorAvatar": "JR",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-08T12:07:05.816Z",
+      "updatedAt": "2025-09-08T12:07:05.816Z"
+    },
+    {
+      "id": 11,
+      "postId": 7,
+      "content": "Les interviews utilisateur restent ma méthode préférée, mais les tests A/B sont très utiles aussi !",
+      "author": "Sarah Kim",
+      "authorId": "user_comment_11",
+      "authorAvatar": "SK",
+      "likes": 1,
+      "likedBy": [
+        "user_4irs2tx33"
+      ],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 12,
+      "postId": 7,
+      "content": "J'utilise UserTesting pour les tests à distance, c'est très pratique !",
+      "author": "Marie Dubois",
+      "authorId": "user_comment_12",
+      "authorAvatar": "MD",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    },
+    {
+      "id": 13,
+      "postId": 8,
+      "content": "J'ai fait le saut il y a 2 ans, c'est génial pour la flexibilité mais il faut être discipliné !",
+      "author": "Pierre Martin",
+      "authorId": "user_comment_13",
+      "authorAvatar": "PM",
+      "likes": 1,
+      "likedBy": [
+        "user_4irs2tx33"
+      ],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 14,
+      "postId": 8,
+      "content": "Le plus dur c'est de trouver les clients au début, mais une fois le réseau établi, ça roule !",
+      "author": "Emma Rousseau",
+      "authorId": "user_comment_14",
+      "authorAvatar": "ER",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    },
+    {
+      "id": 15,
+      "postId": 9,
+      "content": "Framer est excellent pour les animations complexes, mais Figma suffit pour la plupart des cas !",
+      "author": "Thomas Moreau",
+      "authorId": "user_comment_15",
+      "authorAvatar": "TM",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 16,
+      "postId": 9,
+      "content": "J'utilise Lottie pour les animations, c'est parfait pour l'intégration !",
+      "author": "Sophie Leroy",
+      "authorId": "user_comment_16",
+      "authorAvatar": "SL",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    },
+    {
+      "id": 17,
+      "postId": 10,
+      "content": "Le responsive design est crucial ! J'utilise toujours mobile-first.",
+      "author": "Alex Chen",
+      "authorId": "user_comment_17",
+      "authorAvatar": "AC",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 18,
+      "postId": 10,
+      "content": "Les gestes tactiles sont importants sur mobile, n'oubliez pas les zones de touch !",
+      "author": "Léa Petit",
+      "authorId": "user_comment_18",
+      "authorAvatar": "LP",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    },
+    {
+      "id": 19,
+      "postId": 11,
+      "content": "J'utilise Notion pour la documentation partagée, c'est parfait pour la collaboration !",
+      "author": "Nicolas Bernard",
+      "authorId": "user_comment_19",
+      "authorAvatar": "NB",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 20,
+      "postId": 11,
+      "content": "Les handoffs avec Zeplin ou Avocode sont essentiels pour éviter les malentendus !",
+      "author": "Camille Durand",
+      "authorId": "user_comment_20",
+      "authorAvatar": "CD",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    },
+    {
+      "id": 21,
+      "postId": 12,
+      "content": "Je recommande les cours de Coursera et les conférences UX !",
+      "author": "Julien Roux",
+      "authorId": "user_comment_21",
+      "authorAvatar": "JR",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-10T12:07:05.816Z",
+      "updatedAt": "2025-09-10T12:07:05.816Z"
+    },
+    {
+      "id": 22,
+      "postId": 12,
+      "content": "Les podcasts UX sont aussi très formateurs, j'écoute UX Podcast !",
+      "author": "Sarah Kim",
+      "authorId": "user_comment_22",
+      "authorAvatar": "SK",
+      "likes": 0,
+      "likedBy": [],
+      "createdAt": "2025-09-09T12:07:05.816Z",
+      "updatedAt": "2025-09-09T12:07:05.816Z"
+    }
+  ],
+  "categories": [
+    {
+      "name": "UX Design",
+      "count": 0,
+      "color": "bg-blue-100 text-blue-700",
+      "description": "Expérience utilisateur et design thinking"
+    },
+    {
+      "name": "UI Design",
+      "count": 0,
+      "color": "bg-purple-100 text-purple-700",
+      "description": "Interface utilisateur et design visuel"
+    },
+    {
+      "name": "Outils",
+      "count": 0,
+      "color": "bg-green-100 text-green-700",
+      "description": "Outils et logiciels de design"
+    },
+    {
+      "name": "Design System",
+      "count": 0,
+      "color": "bg-orange-100 text-orange-700",
+      "description": "Systèmes de design et composants"
+    },
+    {
+      "name": "User Research",
+      "count": 0,
+      "color": "bg-pink-100 text-pink-700",
+      "description": "Recherche utilisateur et tests"
+    },
+    {
+      "name": "Carrière",
+      "count": 0,
+      "color": "bg-indigo-100 text-indigo-700",
+      "description": "Conseils carrière et opportunités"
+    }
+  ],
+  "stats": {
+    "totalPosts": 11,
+    "totalReplies": 22,
+    "totalUsers": 12,
+    "activeUsers": 0
+  }
+}
