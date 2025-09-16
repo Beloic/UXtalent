@@ -56,37 +56,27 @@ export default function AdminDashboard() {
   const loadCandidates = async () => {
     try {
       setIsLoading(true);
-      const apiUrl = await buildApiUrl(API_ENDPOINTS.CANDIDATES);
-      const response = await fetch(apiUrl, {
-        headers: {
-          'Authorization': 'Bearer admin-token' // Token spécial pour l'administrateur
-        }
+      
+      // TEMPORAIREMENT DÉSACTIVÉ - Pas d'envoi de données au Dashboard Admin
+      console.log('🚫 Dashboard Admin temporairement désactivé - Pas de chargement de données');
+      
+      // Données vides pour éviter les erreurs
+      setCandidates({
+        pending: [],
+        approved: [],
+        rejected: [],
+        all: []
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        const candidatesList = Array.isArray(data) ? data : (data.candidates || []);
-        
-        // Séparer les candidats par statut
-        const pendingCandidates = candidatesList.filter(c => c.status === 'pending' || (c.approved !== true && c.approved !== false && c.visible !== false));
-        const approvedCandidates = candidatesList.filter(c => c.status === 'approved' || (c.approved === true && c.visible === true));
-        const rejectedCandidates = candidatesList.filter(c => c.status === 'rejected' || (c.approved === false || c.visible === false));
-        
-        setCandidates({
-          pending: pendingCandidates,
-          approved: approvedCandidates,
-          rejected: rejectedCandidates,
-          all: candidatesList
-        });
-        
-        // Mettre à jour les statistiques
-        setStats({
-          total: pendingCandidates.length + approvedCandidates.length,
-          pending: pendingCandidates.length,
-          approved: approvedCandidates.length,
-          rejected: rejectedCandidates.length
-        });
-      }
+      
+      // Statistiques vides
+      setStats({
+        total: 0,
+        pending: 0,
+        approved: 0,
+        rejected: 0
+      });
+      
+      setMessage('Dashboard Admin temporairement désactivé');
     } catch (error) {
       console.error('Erreur lors du chargement des candidats:', error);
       setMessage('Erreur lors du chargement des candidats');
@@ -99,25 +89,17 @@ export default function AdminDashboard() {
     try {
       setIsLoadingForum(true);
       
-      // Charger les posts du forum
-      const postsApiUrl = await buildApiUrl(API_ENDPOINTS.FORUM_POSTS);
-      const postsResponse = await fetch(postsApiUrl);
-      if (postsResponse.ok) {
-        const postsData = await postsResponse.json();
-        // L'API retourne un objet avec une propriété 'posts'
-        setForumPosts(Array.isArray(postsData.posts) ? postsData.posts : []);
-      }
+      // TEMPORAIREMENT DÉSACTIVÉ - Pas d'envoi de données au Dashboard Admin
+      console.log('🚫 Dashboard Admin temporairement désactivé - Pas de chargement des données du forum');
       
-      // Charger les statistiques du forum
-      const statsApiUrl = await buildApiUrl(API_ENDPOINTS.FORUM_STATS);
-      const statsResponse = await fetch(statsApiUrl);
-      if (statsResponse.ok) {
-        const statsData = await statsResponse.json();
-        setForumStats(statsData);
-      }
+      // Données vides pour éviter les erreurs
+      setForumPosts([]);
+      setForumStats({ totalPosts: 0, totalReplies: 0, totalUsers: 0 });
+      
+      setMessage('Dashboard Admin temporairement désactivé');
     } catch (error) {
       console.error('Erreur lors du chargement des données du forum:', error);
-      setMessage('Erreur lors du chargement des données du forum');
+      setMessage('Dashboard Admin temporairement désactivé');
     } finally {
       setIsLoadingForum(false);
     }
@@ -127,25 +109,17 @@ export default function AdminDashboard() {
     try {
       setIsLoadingJobs(true);
       
-      // Charger toutes les offres d'emploi (admin uniquement)
-      const apiUrl = await buildApiUrl(API_ENDPOINTS.JOBS);
-      const jobsResponse = await fetch(apiUrl);
-      if (jobsResponse.ok) {
-        const jobsData = await jobsResponse.json();
-        setJobs(Array.isArray(jobsData) ? jobsData : []);
-        
-        // Calculer les statistiques par statut
-        const stats = {
-          total: jobsData.length,
-          active: jobsData.filter(job => job.status === 'active').length,
-          pending: jobsData.filter(job => job.status === 'pending_approval').length,
-          rejected: jobsData.filter(job => job.status === 'rejected').length
-        };
-        setJobsStats(stats);
-      }
+      // TEMPORAIREMENT DÉSACTIVÉ - Pas d'envoi de données au Dashboard Admin
+      console.log('🚫 Dashboard Admin temporairement désactivé - Pas de chargement des offres d\'emploi');
+      
+      // Données vides pour éviter les erreurs
+      setJobs([]);
+      setJobsStats({ total: 0, active: 0, pending: 0, rejected: 0 });
+      
+      setMessage('Dashboard Admin temporairement désactivé');
     } catch (error) {
       console.error('Erreur lors du chargement des offres d\'emploi:', error);
-      setMessage('Erreur lors du chargement des offres d\'emploi');
+      setMessage('Dashboard Admin temporairement désactivé');
     } finally {
       setIsLoadingJobs(false);
     }
@@ -300,92 +274,21 @@ export default function AdminDashboard() {
   };
 
   const approveCandidate = async (candidateId) => {
-    try {
-      console.log('🔄 Approbation du candidat:', candidateId);
-      const apiUrl = await buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${candidateId}`);
-      const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer admin-token'
-        },
-        body: JSON.stringify({ approved: true, visible: true, status: null })
-      });
-
-      console.log('📡 Réponse du serveur:', response.status, response.statusText);
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('✅ Candidat approuvé avec succès:', result);
-        setMessage('Candidat approuvé avec succès !');
-        loadCandidates(); // Recharger la liste
-        setSelectedCandidate(null);
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('❌ Erreur serveur:', response.status, errorData);
-        setMessage(`Erreur lors de l'approbation: ${response.status} - ${errorData.error || 'Erreur inconnue'}`);
-      }
-    } catch (error) {
-      console.error('❌ Erreur réseau:', error);
-      setMessage(`Erreur de connexion: ${error.message}`);
-    }
+    // TEMPORAIREMENT DÉSACTIVÉ - Pas d'envoi de données au Dashboard Admin
+    console.log('🚫 Dashboard Admin temporairement désactivé - Approbation désactivée');
+    setMessage('Dashboard Admin temporairement désactivé - Approbation désactivée');
   };
 
   const rejectCandidate = async (candidateId) => {
-    try {
-      console.log('🔄 Rejet du candidat:', candidateId);
-      const apiUrl = await buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${candidateId}`);
-      const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer admin-token'
-        },
-        body: JSON.stringify({ approved: false, visible: false, status: null })
-      });
-
-      console.log('📡 Réponse du serveur:', response.status, response.statusText);
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('✅ Candidat rejeté avec succès:', result);
-        setMessage('Candidat rejeté avec succès !');
-        loadCandidates(); // Recharger la liste
-        setSelectedCandidate(null);
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('❌ Erreur serveur:', response.status, errorData);
-        setMessage(`Erreur lors du rejet: ${response.status} - ${errorData.error || 'Erreur inconnue'}`);
-      }
-    } catch (error) {
-      console.error('❌ Erreur réseau:', error);
-      setMessage(`Erreur de connexion: ${error.message}`);
-    }
+    // TEMPORAIREMENT DÉSACTIVÉ - Pas d'envoi de données au Dashboard Admin
+    console.log('🚫 Dashboard Admin temporairement désactivé - Rejet désactivé');
+    setMessage('Dashboard Admin temporairement désactivé - Rejet désactivé');
   };
 
   const reapproveCandidate = async (candidateId) => {
-    try {
-      const apiUrl = await buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${candidateId}`);
-      const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer admin-token'
-        },
-        body: JSON.stringify({ approved: true, visible: true, status: null })
-      });
-
-      if (response.ok) {
-        setMessage('Candidat réapprouvé avec succès !');
-        loadCandidates(); // Recharger la liste
-        setSelectedCandidate(null);
-      } else {
-        setMessage('Erreur lors de la réapprobation');
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-      setMessage('Erreur lors de la réapprobation');
-    }
+    // TEMPORAIREMENT DÉSACTIVÉ - Pas d'envoi de données au Dashboard Admin
+    console.log('🚫 Dashboard Admin temporairement désactivé - Réapprobation désactivée');
+    setMessage('Dashboard Admin temporairement désactivé - Réapprobation désactivée');
   };
 
   // Fonctions de filtrage et tri
