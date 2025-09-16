@@ -21,8 +21,10 @@ const supabaseServiceKey = isServer
 // Client Supabase (anonyme pour le frontend)
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Client Supabase avec service role (pour le serveur)
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+// Client Supabase avec service role (pour le serveur uniquement)
+export const supabaseAdmin = isServer && supabaseServiceKey 
+  ? createClient(supabaseUrl, supabaseServiceKey)
+  : createClient(supabaseUrl, supabaseKey); // Fallback sur la clé anonyme côté client
 
 // ===== CANDIDATES =====
 
