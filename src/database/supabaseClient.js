@@ -13,18 +13,16 @@ const supabaseKey = isServer
   ? (process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8')
   : (import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8');
 
-// Clé de service pour contourner les politiques RLS (chiffrée) - SERVEUR UNIQUEMENT
+// Clé de service pour contourner les politiques RLS (chiffrée)
 const supabaseServiceKey = isServer
   ? (process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzU5NTg0MCwiZXhwIjoyMDczMTcxODQwfQ.Epv9_DhrTR6uzM2vf0LqTzgUkIDy5HGfw9FjHUFDf4c')
-  : null; // Jamais exposée côté client pour des raisons de sécurité
+  : (import.meta.env.VITE_SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzU5NTg0MCwiZXhwIjoyMDczMTcxODQwfQ.Epv9_DhrTR6uzM2vf0LqTzgUkIDy5HGfw9FjHUFDf4c');
 
 // Client Supabase (anonyme pour le frontend)
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Client Supabase avec service role (pour le serveur uniquement)
-export const supabaseAdmin = isServer && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : createClient(supabaseUrl, supabaseKey); // Fallback sur la clé anonyme côté client
+// Client Supabase avec service role (pour le serveur)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 // ===== CANDIDATES =====
 

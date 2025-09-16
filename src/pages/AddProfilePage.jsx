@@ -106,7 +106,7 @@ export default function AddProfilePage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/candidates', {
+      const response = await fetch('https://ux-jobs-pro-backend.onrender.com/api/candidates', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

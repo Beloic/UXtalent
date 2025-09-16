@@ -165,7 +165,7 @@ export default function EditJobForm({ job, onJobUpdated, onCancel }) {
       }
 
       // Envoyer la mise à jour de l'offre à l'API
-      const response = await fetch(`http://localhost:3001/api/jobs/${job.id}`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/jobs/${job.id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

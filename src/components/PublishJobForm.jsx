@@ -151,7 +151,7 @@ export default function PublishJobForm({ onJobPublished }) {
       }
 
       // Envoyer l'offre à l'API
-      const response = await fetch('http://localhost:3001/api/jobs', {
+      const response = await fetch('https://ux-jobs-pro-backend.onrender.com/api/jobs', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

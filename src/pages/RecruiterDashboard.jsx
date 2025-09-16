@@ -118,7 +118,7 @@ export default function RecruiterDashboard() {
         return;
       }
 
-      const response = await fetch('http://localhost:3001/api/jobs', {
+      const response = await fetch('https://ux-jobs-pro-backend.onrender.com/api/jobs', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -148,7 +148,7 @@ export default function RecruiterDashboard() {
       
       for (const job of jobs) {
         try {
-          const response = await fetch(`http://localhost:3001/api/candidates?action=get_job_applications&jobId=${job.id}`, {
+          const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates?action=get_job_applications&jobId=${job.id}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -198,7 +198,7 @@ export default function RecruiterDashboard() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch('http://localhost:3001/api/recruiter/favorites', {
+      const response = await fetch('https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -247,7 +247,7 @@ export default function RecruiterDashboard() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch(`http://localhost:3001/api/recruiter/favorites/${candidateId}`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidateId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -289,7 +289,7 @@ export default function RecruiterDashboard() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch(`http://localhost:3001/api/recruiter/favorites/${candidateId}`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidateId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -330,7 +330,7 @@ export default function RecruiterDashboard() {
         return;
       }
       
-      const response = await fetch(`http://localhost:3001/api/recruiter/favorites/export?format=${format}`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/export?format=${format}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -380,7 +380,7 @@ export default function RecruiterDashboard() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch('http://localhost:3001/api/candidates?sortBy=recent', {
+      const response = await fetch('https://ux-jobs-pro-backend.onrender.com/api/candidates?sortBy=recent', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -419,7 +419,7 @@ export default function RecruiterDashboard() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch(`http://localhost:3001/api/recruiter/candidates/${candidateId}/status`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/candidates/${candidateId}/status`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -528,7 +528,7 @@ export default function RecruiterDashboard() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3001/api/jobs/${jobId}/pause`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/jobs/${jobId}/pause`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -569,7 +569,7 @@ export default function RecruiterDashboard() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3001/api/jobs/${jobId}/resume`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/jobs/${jobId}/resume`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

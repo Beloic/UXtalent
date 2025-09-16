@@ -45,7 +45,7 @@ function ProfileViewsStats({ candidateId }) {
         
         // Essayer de récupérer les vraies données depuis l'API publique
         try {
-          const response = await fetch(`http://localhost:3001/api/candidates/${candidateId}/stats`);
+          const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates/${candidateId}/stats`);
           if (response.ok) {
             const data = await response.json();
             const dailyViews = data.dailyViews || [];
@@ -279,7 +279,7 @@ export default function CandidateDetailPage() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch(`http://localhost:3001/api/recruiter/favorites/${candidate.id}/check`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}/check`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -304,7 +304,7 @@ export default function CandidateDetailPage() {
       
       if (isFavorited) {
         // Retirer des favoris
-        const response = await fetch(`http://localhost:3001/api/recruiter/favorites/${candidate.id}`, {
+        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -318,7 +318,7 @@ export default function CandidateDetailPage() {
         }
       } else {
         // Ajouter aux favoris
-        const response = await fetch(`http://localhost:3001/api/recruiter/favorites/${candidate.id}`, {
+        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -346,7 +346,7 @@ export default function CandidateDetailPage() {
       hasTrackedViewRef.current = true; // Marquer immédiatement comme tracké
       
       // Envoyer une requête pour tracker la vue (sans email, juste l'ID)
-      fetch(`http://localhost:3001/api/profile-stats/${id}/track-view`, {
+      fetch(`https://ux-jobs-pro-backend.onrender.com/api/profile-stats/${id}/track-view`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

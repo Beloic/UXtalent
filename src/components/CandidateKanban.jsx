@@ -214,7 +214,7 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
       }
 
       // Appel API pour sauvegarder les notes
-      const response = await fetch(`http://localhost:3001/api/candidates/${candidateId}/notes`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates/${candidateId}/notes`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -37,7 +37,7 @@ export default function AuthDebugger() {
       // Test 4: Test d'appel API
       let apiTestResult = null;
       try {
-        const response = await authenticatedFetch('http://localhost:3001/api/candidates');
+        const response = await authenticatedFetch('https://ux-jobs-pro-backend.onrender.com/api/candidates');
         apiTestResult = {
           success: true,
           status: response.status,
@@ -73,7 +73,7 @@ export default function AuthDebugger() {
   const testCandidatesAPI = async () => {
     setLoading(true);
     try {
-      const response = await authenticatedFetch('http://localhost:3001/api/candidates');
+      const response = await authenticatedFetch('https://ux-jobs-pro-backend.onrender.com/api/candidates');
       const data = await response.json();
       setTestResult({
         success: true,

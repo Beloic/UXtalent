@@ -120,7 +120,7 @@ app.use(helmet({
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://u-xtalent.vercel.app', 'https://www.u-xtalent.vercel.app']
+    ? ['https://your-domain.com', 'https://www.your-domain.com']
     : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

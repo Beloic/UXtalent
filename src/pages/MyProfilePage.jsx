@@ -72,7 +72,7 @@ export default function MyProfilePage() {
       }
       
       // Charger les statistiques avec le token
-      const response = await fetch(`http://localhost:3001/api/profile-stats/${user.id}`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/profile-stats/${user.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -106,7 +106,7 @@ export default function MyProfilePage() {
         return;
       }
       
-      const response = await fetch(`http://localhost:3001/api/profile-stats/${user.id}/chart?period=${chartPeriod}&offset=${chartOffset}`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/profile-stats/${user.id}/chart?period=${chartPeriod}&offset=${chartOffset}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ export default function MyProfilePage() {
       setIsLoadingProfile(true);
       
       // Utiliser la nouvelle route spécifique pour récupérer le profil par email
-      const response = await fetch(`http://localhost:3001/api/candidates/profile/${encodeURIComponent(user.email)}`);
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates/profile/${encodeURIComponent(user.email)}`);
       
       if (response.ok) {
         const existingCandidate = await response.json();
@@ -383,8 +383,8 @@ export default function MyProfilePage() {
       
       // Déterminer l'URL et la méthode selon si le profil existe déjà
       const url = formData.id 
-        ? `http://localhost:3001/api/candidates/${formData.id}` 
-        : 'http://localhost:3001/api/candidates';
+        ? `https://ux-jobs-pro-backend.onrender.com/api/candidates/${formData.id}` 
+        : 'https://ux-jobs-pro-backend.onrender.com/api/candidates';
       const method = formData.id ? 'PUT' : 'POST';
       
       // Obtenir le token une seule fois

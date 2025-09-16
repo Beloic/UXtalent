@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 
-const API_BASE_URL = 'http://localhost:3001/api/forum';
+const API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com/api/forum';
 
 // Obtenir le token d'authentification
 const getAuthToken = async () => {
@@ -236,7 +236,7 @@ export const likePost = async (postId) => {
   try {
     const userId = localStorage.getItem('userId') || 'anonymous';
     
-    const response = await fetch(`http://localhost:3001/api/forum/posts/${postId}/like`, {
+    const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/posts/${postId}/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -260,7 +260,7 @@ export const likeReply = async (replyId) => {
   try {
     const userId = localStorage.getItem('userId') || 'anonymous';
     
-    const response = await fetch(`http://localhost:3001/api/forum/replies/${replyId}/like`, {
+    const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/replies/${replyId}/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

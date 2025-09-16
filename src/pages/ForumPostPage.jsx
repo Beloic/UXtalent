@@ -38,7 +38,7 @@ export default function ForumPostPage() {
 
     try {
       const userId = user.email || 'anonymous';
-      const response = await fetch(`http://localhost:3001/api/forum/posts/${id}/like`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/posts/${id}/like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export default function ForumPostPage() {
 
     try {
       const userId = user.email || 'anonymous';
-      const response = await fetch(`http://localhost:3001/api/forum/replies/${replyId}/like`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/replies/${replyId}/like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ export default function ForumPostPage() {
 
   const incrementViews = async () => {
     try {
-      await fetch(`http://localhost:3001/api/forum/posts/${id}/view`, {
+      await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/posts/${id}/view`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

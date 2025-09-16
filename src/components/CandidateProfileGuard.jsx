@@ -20,7 +20,7 @@ export default function CandidateProfileGuard({ children }) {
         console.log('🔍 [CandidateProfileGuard] Vérification du profil candidat...');
         
         // Utiliser le helper d'authentification pour faire l'appel API
-        const response = await authenticatedFetch('http://localhost:3001/api/candidates');
+        const response = await authenticatedFetch('https://ux-jobs-pro-backend.onrender.com/api/candidates');
 
         console.log('📡 [CandidateProfileGuard] Réponse API:', {
           status: response.status,

@@ -161,7 +161,7 @@ export default function ForumPage() {
 
     try {
       const userId = user.email || 'anonymous';
-      const response = await fetch(`http://localhost:3001/api/forum/posts/${postId}/like`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/posts/${postId}/like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ export default function ForumPage() {
 
     try {
       const userId = user.email || 'anonymous';
-      const response = await fetch(`http://localhost:3001/api/forum/replies/${replyId}/like`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/replies/${replyId}/like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

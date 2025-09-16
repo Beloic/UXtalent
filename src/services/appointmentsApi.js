@@ -1,7 +1,6 @@
 import { supabase } from '../lib/supabase';
-import { getBaseUrl } from '../config/api';
 
-const API_BASE_URL = `${getBaseUrl()}/api`;
+const API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com/api';
 
 // Fonction utilitaire pour obtenir le token d'authentification
 const getAuthToken = async () => {

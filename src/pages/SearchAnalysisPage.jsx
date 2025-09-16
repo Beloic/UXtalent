@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { apiUrl } from '../utils/apiUrl';
 import { 
   ArrowLeft,
   Brain,
@@ -49,7 +48,7 @@ export default function SearchAnalysisPage() {
       const token = session.data.session?.access_token;
       
       // Charger la recherche
-      const searchResponse = await fetch(apiUrl(`/api/recruiter/searches/${searchId}`), {
+      const searchResponse = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/searches/${searchId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -64,7 +63,7 @@ export default function SearchAnalysisPage() {
       }
 
       // Charger tous les candidats
-      const candidatesResponse = await fetch(apiUrl('/api/candidates'), {
+      const candidatesResponse = await fetch('https://ux-jobs-pro-backend.onrender.com/api/candidates', {
         headers: {
           'Authorization': `Bearer ${token}`
         }

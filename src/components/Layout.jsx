@@ -6,7 +6,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import { usePermissions } from "../hooks/usePermissions";
 import { ConditionalRender } from "./RoleGuard";
-import { apiUrl } from "../utils/apiUrl";
 
 export default function Layout({ children, hideFooter = false, hideTopBar = false }) {
   const { user, signOut, isAuthenticated } = useAuth();
@@ -23,7 +22,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
       try {
         // Récupérer directement le profil du candidat par email
-        const response = await fetch(apiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`), {
+        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates/profile/${encodeURIComponent(user.email)}`, {
           headers: {
             'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
           }

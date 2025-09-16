@@ -24,7 +24,7 @@ export default function CandidateCard({ candidate }) {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch(`http://localhost:3001/api/recruiter/favorites/${candidate.id}/check`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}/check`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -52,7 +52,7 @@ export default function CandidateCard({ candidate }) {
       
       if (isFavorited) {
         // Retirer des favoris
-        const response = await fetch(`http://localhost:3001/api/recruiter/favorites/${candidate.id}`, {
+        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -64,7 +64,7 @@ export default function CandidateCard({ candidate }) {
         }
       } else {
         // Ajouter aux favoris
-        const response = await fetch(`http://localhost:3001/api/recruiter/favorites/${candidate.id}`, {
+        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`

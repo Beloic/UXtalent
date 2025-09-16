@@ -65,7 +65,7 @@ export default function JobDetailPage() {
       
       console.log('📤 [CLIENT] Données envoyées:', requestData);
       
-      const response = await fetch('http://localhost:3001/api/candidates', {
+      const response = await fetch('https://ux-jobs-pro-backend.onrender.com/api/candidates', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export default function JobDetailPage() {
       if (!token) return;
 
       // Vérifier dans la table applications
-      const response = await fetch(`http://localhost:3001/api/candidates?action=check_application&jobId=${job.id}`, {
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates?action=check_application&jobId=${job.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -133,13 +133,13 @@ export default function JobDetailPage() {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/jobs/${id}`);
+        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/jobs/${id}`);
         if (response.ok) {
           const jobData = await response.json();
           setJob(jobData);
           
           // Pour les offres similaires, on peut charger toutes les offres et filtrer
-          const allJobsResponse = await fetch('http://localhost:3001/api/jobs');
+          const allJobsResponse = await fetch('https://ux-jobs-pro-backend.onrender.com/api/jobs');
           if (allJobsResponse.ok) {
             const allJobs = await allJobsResponse.json();
             const similar = allJobs
