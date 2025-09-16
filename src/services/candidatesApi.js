@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { authenticatedFetch } from '../utils/auth';
 
-const API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com/api';
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'https://ux-jobs-pro-backend.onrender.com') + '/api';
 
 
 // Hook pour récupérer les candidats avec filtres
