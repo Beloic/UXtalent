@@ -233,16 +233,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   </Link>
                 </ConditionalRender>
                 
-                {/* Bouton pour les admins */}
-                <ConditionalRender role="admin">
-                  <Link 
-                    to="/admin" 
-                    className="inline-flex items-center gap-2 px-4 py-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-xl transition-all duration-200"
-                  >
-                    <Settings className="w-4 h-4" />
-                    <span className="hidden md:inline">Admin</span>
-                  </Link>
-                </ConditionalRender>
                 
                 <button
                   onClick={handleSignOut}

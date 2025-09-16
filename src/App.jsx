@@ -9,7 +9,6 @@ import CandidateDetailPage from "./pages/CandidateDetailPage";
 import AddProfilePage from "./pages/AddProfilePage";
 import MyProfilePage from "./pages/MyProfilePage";
 import ProfileStatsPage from "./pages/ProfileStatsPage";
-import AdminDashboard from "./pages/AdminDashboard";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import SearchAnalysisPage from "./pages/SearchAnalysisPage";
 import ForumPage from "./pages/ForumPage";
@@ -144,14 +143,6 @@ export default function App() {
             <ProtectedRoute>
               <ProfileStatsPage />
             </ProtectedRoute>
-          </Layout>
-        } />
-        <Route path="/admin-dashboard" element={
-          <AdminDashboard />
-        } />
-        <Route path="/admin" element={
-          <Layout>
-            <AdminDashboard />
           </Layout>
         } />
         <Route path="/recruiter-dashboard" element={

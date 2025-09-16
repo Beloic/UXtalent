@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Users, MessageSquare, TrendingUp, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, Trash2, Upload, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import PlanManager from '../components/PlanManager';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { usePermissions } from '../hooks/usePermissions';
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 export default function MyProfilePage() {
   const { user } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
-  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [activeTab, setActiveTab] = useState('stats');
   const [profileStats, setProfileStats] = useState({
@@ -72,7 +72,7 @@ export default function MyProfilePage() {
       }
       
       // Charger les statistiques avec le token
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/profile-stats/${user.id}`, {
+      const response = await fetch(buildApiUrl(`/api/profile-stats/${user.id}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -106,7 +106,7 @@ export default function MyProfilePage() {
         return;
       }
       
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/profile-stats/${user.id}/chart?period=${chartPeriod}&offset=${chartOffset}`, {
+      const response = await fetch(buildApiUrl(`/api/profile-stats/${user.id}/chart?period=${chartPeriod}&offset=${chartOffset}`), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ export default function MyProfilePage() {
       setIsLoadingProfile(true);
       
       // Utiliser la nouvelle route spécifique pour récupérer le profil par email
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates/profile/${encodeURIComponent(user.email)}`);
+      const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`));
       
       if (response.ok) {
         const existingCandidate = await response.json();
@@ -383,8 +383,8 @@ export default function MyProfilePage() {
       
       // Déterminer l'URL et la méthode selon si le profil existe déjà
       const url = formData.id 
-        ? `https://ux-jobs-pro-backend.onrender.com/api/candidates/${formData.id}` 
-        : 'https://ux-jobs-pro-backend.onrender.com/api/candidates';
+        ? buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`)
+        : buildApiUrl(API_ENDPOINTS.CANDIDATES);
       const method = formData.id ? 'PUT' : 'POST';
       
       // Obtenir le token une seule fois
