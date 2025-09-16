@@ -111,7 +111,7 @@ jobs:
           EOF
 
       - name: 📂 Transférer les fichiers via SSH
-        uses: appleboy/scp-action@v1.0.3
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
@@ -121,7 +121,7 @@ jobs:
           target: ${{ secrets.DEPLOY_PATH }}/current/
 
       - name: 🔧 Installation et démarrage
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
