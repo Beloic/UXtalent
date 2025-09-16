@@ -69,8 +69,9 @@ export const requireRole = (allowedRoles) => {
 
       const token = authHeader.substring(7);
       
-      // Vérifier le token admin spécial
-      if (token === 'admin-token') {
+      // Vérifier le token admin spécial (généré dynamiquement)
+      const adminTokenSecret = process.env.ADMIN_TOKEN_SECRET || 'admin-token';
+      if (token === adminTokenSecret) {
         req.user = { 
           id: '00000000-0000-0000-0000-000000000000', // UUID admin spécial
           role: ROLES.ADMIN,

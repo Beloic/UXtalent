@@ -1,0 +1,227 @@
+name: 🚀 Déploiement UX Jobs Pro
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+
+jobs:
+  # Job de tests et validation
+  test:
+    name: 🧪 Tests et Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Installer les dépendances
+        run: npm ci
+
+      - name: 🔍 Audit de sécurité
+        run: npm audit --audit-level=moderate
+
+      - name: 🏗️ Build de l'application
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: 🧪 Tests (si disponibles)
+        run: |
+          if [ -f "package.json" ] && grep -q '"test"' package.json; then
+            npm test
+          else
+            echo "Aucun script de test trouvé"
+          fi
+
+  # Job de déploiement (seulement sur main)
+  deploy:
+    name: 🚀 Déploiement Production
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Installer les dépendances
+        run: npm ci
+
+      - name: 🏗️ Build de l'application
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: 📁 Créer l'archive de déploiement
+        run: |
+          tar -czf deploy.tar.gz \
+            dist/ \
+            server.js \
+            package.json \
+            package-lock.json \
+            src/ \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=.github
+
+      - name: 🔐 Créer le fichier .env de production
+        run: |
+          cat > .env << EOF
+          # Configuration Supabase
+          VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}
+          
+          # Configuration du serveur
+          PORT=${{ secrets.PORT || '3001' }}
+          NODE_ENV=production
+          
+          # Configuration de sécurité
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          ADMIN_TOKEN_SECRET=${{ secrets.ADMIN_TOKEN_SECRET }}
+          
+          # Configuration de base de données
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          
+          # Configuration de monitoring
+          SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          LOG_LEVEL=${{ secrets.LOG_LEVEL || 'info' }}
+          EOF
+
+      - name: 🚀 Déployer sur le serveur
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || '22' }}
+          script: |
+            # Créer le répertoire de déploiement
+            mkdir -p ${{ secrets.DEPLOY_PATH }}
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # Arrêter l'application si elle tourne
+            if pm2 list | grep -q "ux-jobs-pro"; then
+              pm2 stop ux-jobs-pro
+              pm2 delete ux-jobs-pro
+            fi
+            
+            # Sauvegarder l'ancienne version
+            if [ -d "current" ]; then
+              mv current backup-$(date +%Y%m%d-%H%M%S)
+            fi
+            
+            # Créer le nouveau répertoire
+            mkdir -p current
+
+      - name: 📤 Upload de l'archive
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || '22' }}
+          source: "deploy.tar.gz,.env"
+          target: ${{ secrets.DEPLOY_PATH }}/current/
+
+      - name: 🔧 Installation et démarrage
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || '22' }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}/current
+            
+            # Extraire l'archive
+            tar -xzf deploy.tar.gz
+            rm deploy.tar.gz
+            
+            # Installer les dépendances de production
+            npm ci --production
+            
+            # Démarrage avec PM2
+            pm2 start server.js --name "ux-jobs-pro" --env production
+            
+            # Sauvegarder la configuration PM2
+            pm2 save
+            pm2 startup
+
+      - name: ✅ Vérification du déploiement
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || '22' }}
+          script: |
+            # Vérifier que l'application est bien démarrée
+            sleep 10
+            if pm2 list | grep -q "ux-jobs-pro.*online"; then
+              echo "✅ Application déployée avec succès"
+              pm2 logs ux-jobs-pro --lines 10
+            else
+              echo "❌ Erreur lors du déploiement"
+              pm2 logs ux-jobs-pro --lines 20
+              exit 1
+            fi
+
+  # Job de notification
+  notify:
+    name: 📢 Notification
+    runs-on: ubuntu-latest
+    needs: [test, deploy]
+    if: always()
+    
+    steps:
+      - name: 📢 Notification Slack (optionnel)
+        if: ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: '#deployments'
+          text: |
+            🚀 Déploiement UX Jobs Pro
+            Status: ${{ job.status }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: 📧 Notification Email (optionnel)
+        if: ${{ secrets.EMAIL_NOTIFICATION }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Déploiement UX Jobs Pro - ${{ job.status }}"
+          to: ${{ secrets.EMAIL_TO }}
+          from: ${{ secrets.EMAIL_FROM }}
+          body: |
+            Déploiement terminé avec le statut: ${{ job.status }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

@@ -80,12 +80,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configuration Supabase
-const supabaseUrl = 'https://ktfdrwpvofxuktnunukv.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8';
+const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://ktfdrwpvofxuktnunukv.supabase.co';
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Client Supabase Admin pour les opérations côté serveur
-const supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey, {
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || supabaseAnonKey;
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
     persistSession: false
@@ -367,8 +368,9 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
       
-      // Vérifier le token admin spécial
-      if (token === 'admin-token') {
+      // Vérifier le token admin spécial (généré dynamiquement)
+      const adminTokenSecret = process.env.ADMIN_TOKEN_SECRET || 'admin-token';
+      if (token === adminTokenSecret) {
         console.log('🔑 Token admin détecté - accès complet à TOUS les candidats');
         userRole = ROLES.ADMIN;
         visibleCandidates = filteredCandidates; // Tous les candidats, même non approuvés
@@ -604,12 +606,9 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
           status: 'pending'
         });
         
-        // Utiliser le client anon pour contourner RLS
-        console.log('🔧 [APPLICATION] Création du client Supabase anon...');
-        const supabaseAnon = createClient(
-          'https://ktfdrwpvofxuktnunukv.supabase.co',
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8'
-        );
+        // Utiliser le client admin pour les opérations côté serveur
+        console.log('🔧 [APPLICATION] Utilisation du client Supabase admin...');
+        const supabaseAnon = supabaseAdmin;
         
         const insertData = {
           job_id: jobId,

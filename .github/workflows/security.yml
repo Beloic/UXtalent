@@ -1,0 +1,141 @@
+name: 🔒 Audit de Sécurité
+
+on:
+  schedule:
+    # Exécution quotidienne à 2h du matin UTC
+    - cron: '0 2 * * *'
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-audit:
+    name: 🔍 Audit de Sécurité
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Installer les dépendances
+        run: npm ci
+
+      - name: 🔍 Audit NPM
+        run: |
+          echo "🔍 Audit des dépendances NPM..."
+          npm audit --audit-level=moderate --json > audit-results.json || true
+          
+          # Vérifier s'il y a des vulnérabilités critiques
+          if npm audit --audit-level=critical; then
+            echo "❌ Vulnérabilités critiques détectées"
+            exit 1
+          else
+            echo "✅ Aucune vulnérabilité critique"
+          fi
+
+      - name: 🔐 Scan des secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: 📊 Analyse de la qualité du code
+        uses: sonarqube-quality-gate-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: 🛡️ Scan de vulnérabilités avec Snyk
+        if: ${{ secrets.SNYK_TOKEN }}
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+      - name: 📋 Rapport de sécurité
+        run: |
+          echo "## 🔒 Rapport de Sécurité" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Résultats de l'audit NPM" >> $GITHUB_STEP_SUMMARY
+          if [ -f "audit-results.json" ]; then
+            vulnerabilities=$(jq '.metadata.vulnerabilities.total' audit-results.json)
+            echo "- **Total des vulnérabilités:** $vulnerabilities" >> $GITHUB_STEP_SUMMARY
+            echo "- **Critiques:** $(jq '.metadata.vulnerabilities.critical' audit-results.json)" >> $GITHUB_STEP_SUMMARY
+            echo "- **Hautes:** $(jq '.metadata.vulnerabilities.high' audit-results.json)" >> $GITHUB_STEP_SUMMARY
+            echo "- **Modérées:** $(jq '.metadata.vulnerabilities.moderate' audit-results.json)" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🛡️ Recommandations" >> $GITHUB_STEP_SUMMARY
+          echo "- Mettre à jour les dépendances vulnérables" >> $GITHUB_STEP_SUMMARY
+          echo "- Vérifier les secrets exposés" >> $GITHUB_STEP_SUMMARY
+          echo "- Analyser les vulnérabilités détectées" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📤 Upload des résultats
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-results
+          path: audit-results.json
+          retention-days: 30
+
+  dependency-check:
+    name: 📦 Vérification des Dépendances
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Installer les dépendances
+        run: npm ci
+
+      - name: 🔍 Vérifier les dépendances obsolètes
+        run: |
+          echo "🔍 Vérification des dépendances obsolètes..."
+          npm outdated --json > outdated-deps.json || true
+          
+          # Compter les dépendances obsolètes
+          outdated_count=$(jq 'length' outdated-deps.json)
+          echo "📊 Nombre de dépendances obsolètes: $outdated_count"
+          
+          if [ "$outdated_count" -gt 0 ]; then
+            echo "⚠️ Des dépendances sont obsolètes:"
+            cat outdated-deps.json | jq -r 'to_entries[] | "\(.key): \(.value.current) -> \(.value.latest)"'
+          fi
+
+      - name: 📋 Rapport des dépendances
+        run: |
+          echo "## 📦 Rapport des Dépendances" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f "outdated-deps.json" ]; then
+            outdated_count=$(jq 'length' outdated-deps.json)
+            echo "### 📊 Dépendances obsolètes: $outdated_count" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Package | Version Actuelle | Version Latest |" >> $GITHUB_STEP_SUMMARY
+            echo "|---------|------------------|----------------|" >> $GITHUB_STEP_SUMMARY
+            cat outdated-deps.json | jq -r 'to_entries[] | "| \(.key) | \(.value.current) | \(.value.latest) |"' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Toutes les dépendances sont à jour" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 📤 Upload des résultats
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-results
+          path: outdated-deps.json
+          retention-days: 30
