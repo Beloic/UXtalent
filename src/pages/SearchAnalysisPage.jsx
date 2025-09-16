@@ -7,25 +7,18 @@ import {
   Users,
   Target,
   TrendingUp,
-  Clock,
   CheckCircle,
   AlertCircle,
   Star,
   MapPin,
-  Briefcase,
   DollarSign,
   Calendar,
-  Filter,
-  Download,
   RefreshCw,
   Eye,
   Heart,
   MessageCircle,
-  ExternalLink,
   Zap,
-  BarChart3,
-  PieChart,
-  Activity
+  BarChart3
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 

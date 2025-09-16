@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star } from "lucide-react";
+import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import { usePermissions } from "../hooks/usePermissions";
 import { ConditionalRender } from "./RoleGuard";
 
-export default function Layout({ children, hideFooter = false }) {
+export default function Layout({ children, hideFooter = false, hideTopBar = false }) {
   const { user, signOut, isAuthenticated } = useAuth();
   const { isCandidate, isRecruiter, isAdmin, userRole } = usePermissions();
   const [hasProfile, setHasProfile] = useState(null);
@@ -100,7 +100,8 @@ export default function Layout({ children, hideFooter = false }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top nav */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-lg">
+      {!hideTopBar && (
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-lg">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center gap-3">
           <Link to="/" className="flex items-center gap-3 font-bold text-gray-900">
             <motion.div 
@@ -128,6 +129,19 @@ export default function Layout({ children, hideFooter = false }) {
                 >
                   <List className="w-4 h-4" />
                   Talents
+                </NavLink>
+                <NavLink 
+                  to="/jobs" 
+                  className={({ isActive }) => 
+                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive 
+                        ? 'text-blue-600 bg-blue-50 font-medium' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`
+                  }
+                >
+                  <Briefcase className="w-4 h-4" />
+                  Offres
                 </NavLink>
                 <NavLink 
                   to="/forum" 
@@ -164,6 +178,13 @@ export default function Layout({ children, hideFooter = false }) {
                 >
                   <List className="w-4 h-4" />
                   Talents
+                </Link>
+                <Link 
+                  to="/login" 
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  Offres
                 </Link>
                 <Link 
                   to="/login" 
@@ -259,6 +280,7 @@ export default function Layout({ children, hideFooter = false }) {
           </div>
         </div>
       </header>
+      )}
 
       <main>{children}</main>
 

@@ -62,11 +62,19 @@ export default function MyProfilePage() {
     try {
       setIsLoadingStats(true);
       
+      // Obtenir le token une seule fois
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
       
-      // Ensuite, charger les statistiques (toujours avec l'UUID utilisateur)
+      if (!token) {
+        console.error('Token d\'authentification manquant');
+        return;
+      }
+      
+      // Charger les statistiques avec le token
       const response = await fetch(`http://localhost:3001/api/profile-stats/${user.id}`, {
         headers: {
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          'Authorization': `Bearer ${token}`
         }
       });
       
@@ -81,7 +89,7 @@ export default function MyProfilePage() {
     } finally {
       setIsLoadingStats(false);
     }
-  }, [user, formData.id]);
+  }, [user]);
 
   // Charger les données du graphique
   const loadChartData = useCallback(async () => {
@@ -89,9 +97,18 @@ export default function MyProfilePage() {
     
     setIsLoadingChart(true);
     try {
+      // Obtenir le token une seule fois
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        console.error('Token d\'authentification manquant');
+        return;
+      }
+      
       const response = await fetch(`http://localhost:3001/api/profile-stats/${user.id}/chart?period=${chartPeriod}&offset=${chartOffset}`, {
         headers: {
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
@@ -127,14 +144,7 @@ export default function MyProfilePage() {
       loadProfileStats();
       loadChartData();
     }
-  }, [activeTab, user, loadProfileStats, loadChartData]);
-
-  // Recharger les statistiques quand l'utilisateur revient à l'onglet stats
-  useEffect(() => {
-    if (activeTab === 'stats' && user && formData.id) {
-      loadProfileStats();
-    }
-  }, [activeTab, user, formData.id, loadProfileStats]);
+  }, [activeTab, user]); // Suppression des dépendances pour éviter les boucles infinies
 
   useEffect(() => {
     if (user) {
@@ -377,11 +387,21 @@ export default function MyProfilePage() {
         : 'http://localhost:3001/api/candidates';
       const method = formData.id ? 'PUT' : 'POST';
       
+      // Obtenir le token une seule fois
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        console.error('Token d\'authentification manquant');
+        setMessage('❌ Erreur d\'authentification. Veuillez vous reconnecter.');
+        return;
+      }
+      
       const response = await fetch(url, {
         method: method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(candidateData)
       });

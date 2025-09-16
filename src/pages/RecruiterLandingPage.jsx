@@ -2,33 +2,18 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  Users, 
-  Briefcase, 
-  Star, 
   ArrowRight, 
   CheckCircle, 
-  Globe, 
-  Award,
   Clock,
-  TrendingUp,
   Shield,
   Zap,
-  Heart,
-  Target,
-  Play,
-  Mail,
-  Calendar,
-  Eye,
   Palette,
-  Code,
-  UserCheck,
   Search,
-  Filter,
   BarChart3,
-  FileText,
   Building2,
-  UserPlus,
   MessageSquare,
+  Mail,
+  Play,
   X
 } from 'lucide-react';
 

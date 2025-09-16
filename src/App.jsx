@@ -14,6 +14,8 @@ import RecruiterDashboard from "./pages/RecruiterDashboard";
 import SearchAnalysisPage from "./pages/SearchAnalysisPage";
 import ForumPage from "./pages/ForumPage";
 import ForumPostPage from "./pages/ForumPostPage";
+import JobsPage from "./pages/JobsPage";
+import JobDetailPage from "./pages/JobDetailPage";
 import LegalPage from "./pages/LegalPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import FAQPage from "./pages/FAQPage";
@@ -145,9 +147,7 @@ export default function App() {
           </Layout>
         } />
         <Route path="/admin-dashboard" element={
-          <Layout>
-            <AdminDashboard />
-          </Layout>
+          <AdminDashboard />
         } />
         <Route path="/admin" element={
           <Layout>
@@ -179,6 +179,20 @@ export default function App() {
           <Layout>
             <ProtectedRoute>
               <ForumPostPage />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/jobs" element={
+          <Layout>
+            <ProtectedRoute>
+              <JobsPage />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/jobs/:id" element={
+          <Layout>
+            <ProtectedRoute>
+              <JobDetailPage />
             </ProtectedRoute>
           </Layout>
         } />

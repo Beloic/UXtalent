@@ -470,7 +470,7 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
             transition: all 0.3s ease !important;
           }
           .rkk-column-content {
-            min-height: 400px !important;
+            min-height: 300px !important;
             gap: 0.5rem !important;
             display: flex !important;
             flex-direction: column !important;

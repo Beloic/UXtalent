@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, UserPlus, Users } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
+import { authenticatedFetch } from '../utils/auth';
 
 export default function CandidateProfileGuard({ children }) {
   const { user, isAuthenticated } = useAuth();
@@ -17,26 +17,51 @@ export default function CandidateProfileGuard({ children }) {
       }
 
       try {
-        // Vérifier si le candidat a déjà un profil dans la base de données
-        const response = await fetch('http://localhost:3001/api/candidates', {
-          headers: {
-            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-          }
+        console.log('🔍 [CandidateProfileGuard] Vérification du profil candidat...');
+        
+        // Utiliser le helper d'authentification pour faire l'appel API
+        const response = await authenticatedFetch('http://localhost:3001/api/candidates');
+
+        console.log('📡 [CandidateProfileGuard] Réponse API:', {
+          status: response.status,
+          statusText: response.statusText,
+          ok: response.ok
         });
 
         if (response.ok) {
           const data = await response.json();
-          // Chercher un profil avec l'userId correspondant
-          const userProfile = data.candidates?.find(candidate => candidate.userId === user.id);
+          // Chercher un profil avec l'email correspondant (plus fiable que l'UUID)
+          const userProfile = data.candidates?.find(candidate => candidate.email === user.email);
           setHasProfile(!!userProfile);
+          console.log('✅ [CandidateProfileGuard] Profil trouvé:', !!userProfile, 'pour email:', user.email);
         } else if (response.status === 404) {
           // Si 404, cela signifie qu'il n'y a pas encore de profils dans la base
           setHasProfile(false);
+          console.log('📭 [CandidateProfileGuard] Aucun candidat dans la base (404)');
+        } else if (response.status === 401) {
+          console.log('🔐 [CandidateProfileGuard] Erreur d\'authentification (401)');
+          // Essayer de récupérer les détails de l'erreur
+          try {
+            const errorData = await response.json();
+            console.log('🔍 [CandidateProfileGuard] Détails erreur 401:', errorData);
+          } catch (e) {
+            console.log('🔍 [CandidateProfileGuard] Impossible de lire les détails de l\'erreur');
+          }
+          setHasProfile(false);
         } else {
+          console.log('❌ [CandidateProfileGuard] Erreur inattendue:', response.status);
           setHasProfile(false);
         }
       } catch (error) {
-        console.error('Erreur lors de la vérification du profil:', error);
+        console.error('❌ [CandidateProfileGuard] Erreur lors de la vérification du profil:', error);
+        
+        // Si c'est une erreur d'authentification, afficher un message plus détaillé
+        if (error.message.includes('Authentification échouée')) {
+          console.log('🔐 [CandidateProfileGuard] Problème d\'authentification détecté');
+          // Optionnel : forcer une nouvelle tentative de connexion
+          // await supabase.auth.refreshSession();
+        }
+        
         // En cas d'erreur, on considère qu'il n'y a pas de profil
         setHasProfile(false);
       } finally {

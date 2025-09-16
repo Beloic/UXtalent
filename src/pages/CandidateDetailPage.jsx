@@ -14,7 +14,6 @@ import {
   Star,
   CheckCircle,
   Heart,
-  HeartOff,
   Map,
   Eye,
   TrendingUp,
@@ -165,12 +164,6 @@ function ProfileViewsStats({ candidateId }) {
         </div>
       </div>
 
-      {/* Note informative */}
-      <div className="mt-4 text-center">
-        <p className="text-sm text-gray-500">
-          💡 Les graphiques détaillés sont disponibles dans le profil premium du candidat
-        </p>
-      </div>
     </div>
   );
 }
@@ -460,7 +453,7 @@ export default function CandidateDetailPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contenu principal */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-8">
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
               {/* Header du profil */}
               <div className="flex items-start gap-6 mb-8">
@@ -648,14 +641,12 @@ export default function CandidateDetailPage() {
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Bloc séparé pour les tendances de vues */}
-          <div className="lg:col-span-2 mt-8">
+            {/* Bloc des tendances de vues - directement en dessous du profil candidat */}
             <ProfileViewsStats candidateId={candidate.id} />
           </div>
 
-          {/* Barre latérale droite */}
+          {/* Barre latérale droite - Bloc Informations */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-xl p-6 border border-white/20 backdrop-blur-sm sticky top-8">
               <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">

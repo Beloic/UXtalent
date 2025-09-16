@@ -25,23 +25,29 @@ import {
   XCircle,
   MessageSquare,
   Layout,
-  Search
+  Plus,
+  RefreshCw,
+  Building2,
+  X,
+  Pause,
+  Play
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { RoleGuard } from '../components/RoleGuard';
 import { usePermissions } from '../hooks/usePermissions';
 import CandidateKanban from '../components/CandidateKanban';
 import Calendar from '../components/Calendar';
 import AppointmentIndicator from '../components/AppointmentIndicator';
-import RecruiterSearches from '../components/RecruiterSearches';
-import RecruiterCompany from '../components/RecruiterCompany';
+import PublishJobForm from '../components/PublishJobForm';
+import EditJobForm from '../components/EditJobForm';
 import { loadAppointments } from '../services/appointmentsApi';
 
 export default function RecruiterDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { isRecruiter } = usePermissions();
+  const [searchParams] = useSearchParams();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
@@ -51,6 +57,11 @@ export default function RecruiterDashboard() {
   const [candidatesLoading, setCandidatesLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [myJobs, setMyJobs] = useState([]);
+  const [loadingJobs, setLoadingJobs] = useState(false);
+  const [jobApplications, setJobApplications] = useState({});
+  const [loadingApplications, setLoadingApplications] = useState(false);
+  const [editingJob, setEditingJob] = useState(null);
 
   // Fonction pour obtenir le prochain rendez-vous d'un candidat
   const getNextAppointmentForCandidate = (candidateId) => {
@@ -92,6 +103,76 @@ export default function RecruiterDashboard() {
         hour: '2-digit', 
         minute: '2-digit' 
       });
+    }
+  };
+
+  // Charger les offres du recruteur
+  const loadMyJobs = async () => {
+    try {
+      setLoadingJobs(true);
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        console.error('Token d\'authentification manquant');
+        return;
+      }
+
+      const response = await fetch('http://localhost:3001/api/jobs', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const jobsData = await response.json();
+        setMyJobs(jobsData);
+        
+        // Charger les candidatures pour chaque offre
+        await loadApplicationsForJobs(jobsData, token);
+      } else {
+        console.error('Erreur lors du chargement des offres');
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des offres:', error);
+    } finally {
+      setLoadingJobs(false);
+    }
+  };
+
+  // Charger les candidatures pour les offres
+  const loadApplicationsForJobs = async (jobs, token) => {
+    try {
+      setLoadingApplications(true);
+      const applicationsData = {};
+      
+      for (const job of jobs) {
+        try {
+          const response = await fetch(`http://localhost:3001/api/candidates?action=get_job_applications&jobId=${job.id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.ok) {
+            const result = await response.json();
+            applicationsData[job.id] = result.applications || [];
+          } else if (response.status === 503) {
+            // Table applications non trouvée
+            console.warn(`Table applications non trouvée pour l'offre ${job.id}`);
+            applicationsData[job.id] = [];
+          }
+        } catch (error) {
+          console.error(`Erreur lors du chargement des candidatures pour l'offre ${job.id}:`, error);
+          applicationsData[job.id] = [];
+        }
+      }
+      
+      setJobApplications(applicationsData);
+    } catch (error) {
+      console.error('Erreur lors du chargement des candidatures:', error);
+    } finally {
+      setLoadingApplications(false);
     }
   };
 
@@ -373,6 +454,14 @@ export default function RecruiterDashboard() {
     }
   }, [user, isRecruiter, loadFavorites, loadCandidates, loadAppointmentsData]);
 
+  // Détecter le paramètre tab dans l'URL
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['favorites', 'kanban', 'myjobs', 'publish'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
   // Recharger les données quand on change d'onglet
   useEffect(() => {
     if (user && isRecruiter) {
@@ -397,6 +486,117 @@ export default function RecruiterDashboard() {
       loadData();
     }
   }, [activeTab, user, isRecruiter, loadFavorites, loadCandidates, loadAppointmentsData]);
+
+  // Charger les offres quand l'onglet "Mes offres" est sélectionné
+  useEffect(() => {
+    if (activeTab === 'myjobs') {
+      loadMyJobs();
+    }
+  }, [activeTab]);
+
+  // Fonction pour démarrer l'édition d'une offre
+  const handleEditJob = (job) => {
+    setEditingJob(job);
+  };
+
+  // Fonction pour annuler l'édition
+  const handleCancelEdit = () => {
+    setEditingJob(null);
+  };
+
+  // Fonction pour mettre à jour une offre après édition
+  const handleJobUpdated = (updatedJob) => {
+    setMyJobs(prevJobs => 
+      prevJobs.map(job => 
+        job.id === updatedJob.id ? updatedJob : job
+      )
+    );
+    setEditingJob(null);
+    setMessage('✅ Offre mise à jour avec succès !');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  // Fonction pour mettre en pause une offre
+  const handlePauseJob = async (jobId) => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        setMessage('❌ Session expirée. Veuillez vous reconnecter.');
+        setTimeout(() => setMessage(''), 3000);
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3001/api/jobs/${jobId}/pause`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const pausedJob = await response.json();
+        setMyJobs(prevJobs => 
+          prevJobs.map(job => 
+            job.id === pausedJob.id ? pausedJob : job
+          )
+        );
+        setMessage('⏸️ Offre mise en pause avec succès !');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Erreur inconnue' }));
+        setMessage(`❌ Erreur lors de la mise en pause: ${errorData.error || 'Erreur inconnue'}`);
+        setTimeout(() => setMessage(''), 5000);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise en pause de l\'offre:', error);
+      setMessage('❌ Erreur lors de la mise en pause de l\'offre');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  // Fonction pour reprendre une offre
+  const handleResumeJob = async (jobId) => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        setMessage('❌ Session expirée. Veuillez vous reconnecter.');
+        setTimeout(() => setMessage(''), 3000);
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3001/api/jobs/${jobId}/resume`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const resumedJob = await response.json();
+        setMyJobs(prevJobs => 
+          prevJobs.map(job => 
+            job.id === resumedJob.id ? resumedJob : job
+          )
+        );
+        setMessage('▶️ Offre reprise avec succès !');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Erreur inconnue' }));
+        setMessage(`❌ Erreur lors de la reprise: ${errorData.error || 'Erreur inconnue'}`);
+        setTimeout(() => setMessage(''), 5000);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la reprise de l\'offre:', error);
+      setMessage('❌ Erreur lors de la reprise de l\'offre');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
 
   if (!user) {
     return (
@@ -456,91 +656,79 @@ export default function RecruiterDashboard() {
                 <button
                   onClick={() => setActiveTab('favorites')}
                   disabled={refreshing}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'favorites'
                       ? 'bg-blue-600 text-white shadow-lg'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {refreshing && activeTab === 'favorites' ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <Heart className="w-5 h-5" />
+                    <Heart className="w-4 h-4" />
                   )}
-                  Mes Favoris
+                  Favoris
                 </button>
                 <button
                   onClick={() => setActiveTab('kanban')}
                   disabled={refreshing}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'kanban'
                       ? 'bg-blue-600 text-white shadow-lg'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {refreshing && activeTab === 'kanban' ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <Layout className="w-5 h-5" />
+                    <Layout className="w-4 h-4" />
                   )}
-                  Vue Kanban
+                  Gestion des talents
                   {candidates.length > 0 && !refreshing && (
-                    <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-1 rounded-full">
+                    <span className="bg-purple-100 text-purple-800 text-xs font-medium px-1.5 py-0.5 rounded-full">
                       {candidates.length}
                     </span>
                   )}
                 </button>
                 <button
-                  onClick={() => setActiveTab('calendar')}
+                  onClick={() => setActiveTab('myjobs')}
                   disabled={refreshing}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
-                    activeTab === 'calendar'
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'myjobs'
                       ? 'bg-blue-600 text-white shadow-lg'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  {refreshing && activeTab === 'calendar' ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  {refreshing && activeTab === 'myjobs' ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <CalendarIcon className="w-5 h-5" />
+                    <Briefcase className="w-4 h-4" />
                   )}
-                  Calendrier
+                  Mes offres
+                  {myJobs.length > 0 && !refreshing && (
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-1.5 py-0.5 rounded-full">
+                      {myJobs.length}
+                    </span>
+                  )}
                 </button>
                 <button
-                  onClick={() => setActiveTab('searches')}
+                  onClick={() => setActiveTab('publish')}
                   disabled={refreshing}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
-                    activeTab === 'searches'
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'publish'
                       ? 'bg-blue-600 text-white shadow-lg'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  {refreshing && activeTab === 'searches' ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  {refreshing && activeTab === 'publish' ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <Search className="w-5 h-5" />
+                    <Plus className="w-4 h-4" />
                   )}
-                  Mes Recherches
-                </button>
-                <button
-                  onClick={() => setActiveTab('company')}
-                  disabled={refreshing}
-                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
-                    activeTab === 'company'
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'text-gray-600 hover:text-gray-900'
-                  } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {refreshing && activeTab === 'company' ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Building className="w-5 h-5" />
-                  )}
-                  Mon Entreprise
+                  Publier
                 </button>
               </div>
             </div>
-            
           </motion.div>
 
           {/* Message de statut */}
@@ -561,8 +749,6 @@ export default function RecruiterDashboard() {
               </div>
             </motion.div>
           )}
-
-
 
           {/* Contenu des onglets */}
           <AnimatePresence mode="wait">
@@ -596,7 +782,7 @@ export default function RecruiterDashboard() {
                           <button
                             onClick={() => exportFavorites('csv')}
                             disabled={exporting}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <FileText className="w-4 h-4" />
                             {exporting ? 'Export...' : 'Export CSV'}
@@ -605,7 +791,7 @@ export default function RecruiterDashboard() {
                           <button
                             onClick={() => exportFavorites('json')}
                             disabled={exporting}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <Database className="w-4 h-4" />
                             {exporting ? 'Export...' : 'Export JSON'}
@@ -614,8 +800,8 @@ export default function RecruiterDashboard() {
                       )}
                       
                       {favorites.length > 0 && (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-xl font-semibold">
-                          <Heart className="w-5 h-5 fill-current" />
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Heart className="w-4 h-4 fill-current text-red-500" />
                           <span>{favorites.length} favori{favorites.length > 1 ? 's' : ''}</span>
                         </div>
                       )}
@@ -623,165 +809,138 @@ export default function RecruiterDashboard() {
                   </div>
                 </div>
             
-            {loading ? (
-              <div className="p-12 text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-red-600 mx-auto mb-4"></div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Chargement des favoris...</h3>
-                <p className="text-gray-600">Récupération de vos candidats favoris</p>
-              </div>
-            ) : favorites.length === 0 ? (
-              <div className="p-12 text-center">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun favori pour le moment</h3>
-                <p className="text-gray-600 mb-6">Commencez par ajouter des candidats à vos favoris depuis la liste des candidats.</p>
-                <Link 
-                  to="/candidates" 
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-                >
-                  <Users className="w-5 h-5" />
-                  Voir tous les candidats
-                </Link>
-              </div>
-            ) : (
-              <div className="divide-y divide-gray-200">
-                {favorites.map((candidate, index) => (
-                  <motion.div
-                    key={candidate.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="p-8 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
-                          {candidate.photo ? (
-                            <img 
-                              src={candidate.photo} 
-                              alt={candidate.name}
-                              className="w-16 h-16 rounded-2xl object-cover"
-                            />
-                          ) : (
-                            <span className="text-white font-bold text-xl">
-                              {candidate.name?.charAt(0)}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-3 mb-1">
-                            <h3 className="text-xl font-bold text-gray-900">{candidate.name}</h3>
-                            {candidate.status && (
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                candidate.status === 'À contacter' ? 'bg-gray-100 text-gray-700' :
-                                candidate.status === 'Entretien prévu' ? 'bg-blue-100 text-blue-700' :
-                                candidate.status === 'En cours' ? 'bg-yellow-100 text-yellow-700' :
-                                candidate.status === 'Accepté' ? 'bg-green-100 text-green-700' :
-                                candidate.status === 'Refusé' ? 'bg-red-100 text-red-700' :
-                                'bg-gray-100 text-gray-700'
-                              }`}>
-                                {candidate.status}
+                {loading ? (
+                  <div className="p-12 text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-red-600 mx-auto mb-4"></div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Chargement des favoris...</h3>
+                    <p className="text-gray-600">Récupération de vos candidats favoris</p>
+                  </div>
+                ) : favorites.length === 0 ? (
+                  <div className="p-12 text-center">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun favori pour le moment</h3>
+                    <p className="text-gray-600 mb-6">Commencez par ajouter des candidats à vos favoris depuis la liste des candidats.</p>
+                    <Link 
+                      to="/candidates" 
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+                    >
+                      <Users className="w-5 h-5" />
+                      Voir tous les candidats
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-200">
+                    {favorites.map((candidate, index) => (
+                      <motion.div
+                        key={candidate.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="p-8 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-6">
+                            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
+                              {candidate.photo ? (
+                                <img 
+                                  src={candidate.photo} 
+                                  alt={candidate.name}
+                                  className="w-16 h-16 rounded-2xl object-cover"
+                                />
+                              ) : (
+                                <span className="text-white font-bold text-xl">
+                                  {candidate.name?.charAt(0)}
+                                </span>
+                              )}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-3 mb-1">
+                                <h3 className="text-xl font-bold text-gray-900">{candidate.name}</h3>
+                                {candidate.status && (
+                                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                    candidate.status === 'À contacter' ? 'bg-gray-100 text-gray-700' :
+                                    candidate.status === 'Entretien prévu' ? 'bg-blue-100 text-blue-700' :
+                                    candidate.status === 'En cours' ? 'bg-yellow-100 text-yellow-700' :
+                                    candidate.status === 'Accepté' ? 'bg-green-100 text-green-700' :
+                                    candidate.status === 'Refusé' ? 'bg-red-100 text-red-700' :
+                                    'bg-gray-100 text-gray-700'
+                                  }`}>
+                                    {candidate.status}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-gray-600 font-medium mb-2">{candidate.title}</p>
+                              <div className="flex items-center gap-4 text-sm text-gray-500">
+                                <div className="flex items-center gap-1">
+                                  <MapPin className="w-4 h-4" />
+                                  {candidate.location}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Briefcase className="w-4 h-4" />
+                                  {candidate.experience || 'Mid'}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <DollarSign className="w-4 h-4" />
+                                  {candidate.annualSalary ? `${candidate.annualSalary}€` : 'Non spécifié'}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <CalendarIcon className="w-4 h-4" />
+                                  Ajouté le {new Date(candidate.favoritedAt).toLocaleDateString('fr-FR')}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-4">
+                            {candidate.planType === 'premium' && (
+                              <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded-full">
+                                Premium
                               </span>
                             )}
+                            {candidate.planType === 'pro' && (
+                              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full">
+                                Pro
+                              </span>
+                            )}
+                            
+                            {/* Indicateur de rendez-vous */}
+                            <AppointmentIndicator 
+                              candidateId={candidate.id} 
+                              appointments={appointments} 
+                            />
+                            
+                            {/* Badge de rendez-vous planifié */}
+                            {getNextAppointmentForCandidate(candidate.id) && (
+                              <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-semibold rounded-full flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                Entretien prévu
+                              </span>
+                            )}
+                            
+                            <div className="flex items-center gap-2">
+                              <button 
+                                onClick={() => navigate(`/candidates/${candidate.id}`)}
+                                className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors font-medium"
+                              >
+                                <Eye className="w-4 h-4" />
+                                Voir profil
+                              </button>
+                              
+                              <button 
+                                onClick={() => removeFromFavorites(candidate.id)}
+                                className="inline-flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors font-medium"
+                              >
+                                <HeartOff className="w-4 h-4" />
+                                Retirer
+                              </button>
+                            </div>
                           </div>
-                          <p className="text-gray-600 font-medium mb-2">{candidate.title}</p>
-                          <div className="flex items-center gap-4 text-sm text-gray-500">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="w-4 h-4" />
-                              {candidate.location}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Briefcase className="w-4 h-4" />
-                              {candidate.experience || 'Mid'}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <DollarSign className="w-4 h-4" />
-                              {candidate.annualSalary ? `${candidate.annualSalary}€` : 'Non spécifié'}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <CalendarIcon className="w-4 h-4" />
-                              Ajouté le {new Date(candidate.favoritedAt).toLocaleDateString('fr-FR')}
-                            </div>
-                          </div>
-                          
-                          {/* Affichage du prochain rendez-vous */}
-                          {(() => {
-                            const nextAppointment = getNextAppointmentForCandidate(candidate.id);
-                            if (nextAppointment) {
-                              return (
-                                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <Clock className="w-4 h-4 text-blue-600" />
-                                    <span className="text-sm font-semibold text-blue-800">Prochain rendez-vous</span>
-                                  </div>
-                                  <div className="text-sm text-blue-700">
-                                    <div className="font-medium">{nextAppointment.title}</div>
-                                    <div className="flex items-center gap-4 mt-1">
-                                      <span>{formatAppointmentDate(nextAppointment)}</span>
-                                      <span className="capitalize">{nextAppointment.type}</span>
-                                      {nextAppointment.location && (
-                                        <span>{nextAppointment.location}</span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            }
-                            return null;
-                          })()}
                         </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4">
-                        {candidate.planType === 'premium' && (
-                          <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded-full">
-                            Premium
-                          </span>
-                        )}
-                        {candidate.planType === 'pro' && (
-                          <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full">
-                            Pro
-                          </span>
-                        )}
-                        
-                        {/* Indicateur de rendez-vous */}
-                        <AppointmentIndicator 
-                          candidateId={candidate.id} 
-                          appointments={appointments} 
-                        />
-                        
-                        {/* Badge de rendez-vous planifié */}
-                        {getNextAppointmentForCandidate(candidate.id) && (
-                          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-semibold rounded-full flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            Entretien prévu
-                          </span>
-                        )}
-                        
-                        <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => navigate(`/candidates/${candidate.id}`)}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors font-medium"
-                          >
-                            <Eye className="w-4 h-4" />
-                            Voir profil
-                          </button>
-                          
-                          <button 
-                            onClick={() => removeFromFavorites(candidate.id)}
-                            className="inline-flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors font-medium"
-                          >
-                            <HeartOff className="w-4 h-4" />
-                            Retirer
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             )}
-
 
             {activeTab === 'kanban' && (
               <motion.div 
@@ -834,72 +993,324 @@ export default function RecruiterDashboard() {
                     </Link>
                   </div>
                 ) : (
-                  <CandidateKanban 
-                    candidates={candidates}
-                    onUpdateStatus={updateCandidateStatus}
-                    onToggleFavorite={addToFavorites}
-                    favorites={favorites}
-                    onRefreshCandidates={loadCandidates}
-                    appointments={appointments}
-                  />
+                  <div className="space-y-8">
+                    {/* Bloc Kanban des candidats */}
+                    <div className="bg-white rounded-3xl shadow-xl border border-gray-100">
+                      <div className="p-6">
+                        <CandidateKanban 
+                          candidates={candidates}
+                          onUpdateStatus={updateCandidateStatus}
+                          onToggleFavorite={addToFavorites}
+                          favorites={favorites}
+                          onRefreshCandidates={loadCandidates}
+                          appointments={appointments}
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Bloc Calendrier */}
+                    <div className="bg-white rounded-3xl shadow-xl border border-gray-100">
+                      <div className="p-6 border-b border-gray-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <div className="flex items-center gap-3">
+                              <h2 className="text-2xl font-bold text-gray-900">Calendrier des Rendez-vous</h2>
+                              {refreshing && (
+                                <div className="flex items-center gap-2 text-blue-600">
+                                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                                  <span className="text-sm font-medium">Mise à jour...</span>
+                                </div>
+                              )}
+                            </div>
+                            <p className="text-gray-600 mt-2">Planifiez et gérez vos entretiens</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        <Calendar candidates={candidates} favorites={favorites} />
+                      </div>
+                    </div>
+                  </div>
                 )}
               </motion.div>
             )}
 
-            {activeTab === 'calendar' && (
+            {activeTab === 'myjobs' && (
               <motion.div 
-                key="calendar"
+                key="myjobs"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white rounded-3xl shadow-xl border border-gray-100"
+                className="space-y-8"
               >
-                <div className="p-8 border-b border-gray-200">
-                  <div className="flex items-center justify-between mb-6">
+                {/* Formulaire d'édition */}
+                {editingJob && (
+                  <EditJobForm 
+                    job={editingJob}
+                    onJobUpdated={handleJobUpdated}
+                    onCancel={handleCancelEdit}
+                  />
+                )}
+
+                {/* Liste des offres */}
+                <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+                      <Briefcase className="w-6 h-6 text-white" />
+                    </div>
                     <div>
-                      <div className="flex items-center gap-3">
-                        <h2 className="text-2xl font-bold text-gray-900">Calendrier des Rendez-vous</h2>
-                        {refreshing && (
-                          <div className="flex items-center gap-2 text-blue-600">
-                            <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                            <span className="text-sm font-medium">Mise à jour...</span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-gray-600 mt-2">Planifiez et gérez vos entretiens</p>
+                      <h2 className="text-2xl font-bold text-gray-900">Mes offres d'emploi</h2>
+                      <p className="text-gray-600">Gérez vos offres publiées</p>
                     </div>
                   </div>
+                  <button
+                    onClick={loadMyJobs}
+                    disabled={loadingJobs}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${loadingJobs ? 'animate-spin' : ''}`} />
+                    Actualiser
+                  </button>
                 </div>
-                <div className="p-8">
-                  <Calendar candidates={candidates} favorites={favorites} />
+
+                {loadingJobs ? (
+                  <div className="flex items-center justify-center py-16">
+                    <div className="text-center">
+                      <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+                      <p className="text-gray-600">Chargement de vos offres...</p>
+                    </div>
+                  </div>
+                ) : myJobs.length === 0 ? (
+                  <div className="text-center py-16">
+                    <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucune offre publiée</h3>
+                    <p className="text-gray-600 mb-6">Vous n'avez pas encore publié d'offres d'emploi.</p>
+                    <button
+                      onClick={() => setActiveTab('publish')}
+                      className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+                    >
+                      Publier ma première offre
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {myJobs.map((job) => {
+                      const applications = jobApplications[job.id] || [];
+                      
+                      return (
+                        <div key={job.id} className="border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-3">
+                                <h3 className="text-xl font-semibold text-gray-900">{job.title}</h3>
+                                <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                                  job.status === 'active' 
+                                    ? 'bg-emerald-100 text-emerald-700' 
+                                    : job.status === 'pending_approval'
+                                    ? 'bg-amber-100 text-amber-700'
+                                    : job.status === 'paused'
+                                    ? 'bg-orange-100 text-orange-700'
+                                    : 'bg-red-100 text-red-700'
+                                }`}>
+                                  {job.status === 'active' ? '✓ Publiée' : 
+                                   job.status === 'pending_approval' ? '⏳' : 
+                                   job.status === 'paused' ? '⏸️ En pause' :
+                                   '✗ Rejetée'}
+                                </span>
+                                {applications.length > 0 && (
+                                  <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
+                                    {applications.length} candidature{applications.length > 1 ? 's' : ''}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-6 text-sm text-gray-600 mb-3">
+                                <div className="flex items-center gap-2">
+                                  <Building2 className="w-4 h-4" />
+                                  {job.company}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <MapPin className="w-4 h-4" />
+                                  {job.location}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Clock className="w-4 h-4" />
+                                  {job.type}
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-500">
+                                Créée le {new Date(job.created_at).toLocaleDateString('fr-FR')}
+                                {job.rejection_reason && (
+                                  <span className="ml-4 text-red-600">
+                                    Raison du rejet: {job.rejection_reason}
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 ml-4">
+                              {job.status === 'pending_approval' && (
+                                <span className="text-sm text-amber-600 font-medium">
+                                  En attente de validation
+                                </span>
+                              )}
+                              {job.status === 'rejected' && (
+                                <button
+                                  onClick={() => setActiveTab('publish')}
+                                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors"
+                                >
+                                  Republier
+                                </button>
+                              )}
+                              {job.status === 'active' && (
+                                <>
+                                  <button
+                                    onClick={() => handleEditJob(job)}
+                                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Modifier
+                                  </button>
+                                  <button
+                                    onClick={() => handlePauseJob(job.id)}
+                                    className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition-colors flex items-center gap-2"
+                                  >
+                                    <Pause className="w-4 h-4" />
+                                    Mettre en pause
+                                  </button>
+                                  <button
+                                    onClick={() => navigate(`/jobs/${job.id}`)}
+                                    className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center gap-2"
+                                  >
+                                    <ExternalLink className="w-4 h-4" />
+                                    Accéder à l'offre
+                                  </button>
+                                </>
+                              )}
+                              {job.status === 'paused' && (
+                                <>
+                                  <button
+                                    onClick={() => handleEditJob(job)}
+                                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Modifier
+                                  </button>
+                                  <button
+                                    onClick={() => handleResumeJob(job.id)}
+                                    className="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors flex items-center gap-2"
+                                  >
+                                    <Play className="w-4 h-4" />
+                                    Reprendre
+                                  </button>
+                                  <button
+                                    onClick={() => navigate(`/jobs/${job.id}`)}
+                                    className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center gap-2"
+                                  >
+                                    <ExternalLink className="w-4 h-4" />
+                                    Accéder à l'offre
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* Affichage des candidatures - maintenant en pleine largeur */}
+                          {applications.length > 0 && (
+                            <div className="mt-4 bg-gray-50 rounded-xl">
+                              <div className="p-4 pb-0">
+                                <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                  <Users className="w-4 h-4" />
+                                  Candidatures ({applications.length})
+                                </h4>
+                              </div>
+                              <div className="flex gap-0">
+                                {applications.slice(0, 5).map((application, index) => (
+                                  <div key={application.id} className={`flex-1 bg-white hover:shadow-md transition-all duration-200 ${index === 0 ? 'rounded-l-xl' : ''} ${index === applications.slice(0, 5).length - 1 ? 'rounded-r-xl' : ''} ${index < applications.slice(0, 5).length - 1 ? 'border-r border-gray-100' : ''}`}>
+                                    <div className="p-4">
+                                      <div className="flex items-center gap-3 mb-3">
+                                        <div className="relative">
+                                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-sm">
+                                            <span className="text-sm font-semibold text-white">
+                                              {application.candidate?.name?.charAt(0) || '?'}
+                                            </span>
+                                          </div>
+                                          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                          <h4 className="text-sm font-semibold text-gray-900 truncate">
+                                            {application.candidate?.name || 'Candidat anonyme'}
+                                          </h4>
+                                          {application.candidate?.title && (
+                                            <p className="text-xs text-gray-600 truncate">
+                                              {application.candidate.title}
+                                            </p>
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center justify-between gap-4">
+                                        <div className="flex items-center gap-4 text-xs text-gray-500 flex-1">
+                                          <span>Postulé le {new Date(application.applied_at).toLocaleDateString('fr-FR')}</span>
+                                          {application.candidate?.location && (
+                                            <div className="flex items-center gap-1">
+                                              <MapPin className="w-3 h-3" />
+                                              <span className="truncate">{application.candidate.location}</span>
+                                            </div>
+                                          )}
+                                        </div>
+                                        <button 
+                                          onClick={() => {
+                                            if (application.candidate?.id) {
+                                              navigate(`/candidates/${application.candidate.id}`);
+                                            } else {
+                                              setMessage('❌ Impossible d\'accéder au profil : ID du candidat manquant');
+                                              setTimeout(() => setMessage(''), 3000);
+                                            }
+                                          }}
+                                          className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1 flex-shrink-0"
+                                        >
+                                          <Eye className="w-3 h-3" />
+                                          Profil
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                                {applications.length > 5 && (
+                                  <div className="flex-shrink-0 w-32 bg-gray-100 rounded-r-xl flex items-center justify-center">
+                                    <p className="text-xs text-gray-500 text-center">
+                                      +{applications.length - 5} autre{applications.length - 5 > 1 ? 's' : ''}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
                 </div>
               </motion.div>
             )}
 
-            {activeTab === 'searches' && (
+            {activeTab === 'publish' && (
               <motion.div 
-                key="searches"
+                key="publish"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white rounded-3xl shadow-xl border border-gray-100"
               >
-                <RecruiterSearches />
-              </motion.div>
-            )}
-
-            {activeTab === 'company' && (
-              <motion.div 
-                key="company"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: 0.2 }}
-                className="bg-white rounded-3xl shadow-xl border border-gray-100"
-              >
-                <RecruiterCompany />
+                <PublishJobForm onJobPublished={() => {
+                  setMessage('✅ Offre soumise avec succès ! Elle sera visible après validation par l\'administrateur.');
+                  setTimeout(() => setMessage(''), 5000);
+                }} />
               </motion.div>
             )}
           </AnimatePresence>

@@ -709,35 +709,7 @@ export const resetMetrics = async () => {
 };
 
 // ===== MIGRATION DES DONNÉES =====
-
-export const migrateFromJSON = async () => {
-  try {
-    console.log('🔄 Début de la migration des données JSON vers Supabase...');
-    
-    // Migration des candidats
-    const candidatesData = await import('../../data/candidates.json', { assert: { type: 'json' } });
-    if (candidatesData.default && candidatesData.default.candidates) {
-      for (const candidate of candidatesData.default.candidates) {
-        await addCandidate(candidate);
-      }
-      console.log(`✅ ${candidatesData.default.candidates.length} candidats migrés`);
-    }
-    
-    // Migration des posts du forum
-    const forumData = await import('../../data/forum.json', { assert: { type: 'json' } });
-    if (forumData.default && forumData.default.posts) {
-      for (const post of forumData.default.posts) {
-        await addPost(post);
-      }
-      console.log(`✅ ${forumData.default.posts.length} posts migrés`);
-    }
-    
-    console.log('✅ Migration terminée avec succès !');
-  } catch (error) {
-    console.error('❌ Erreur lors de la migration:', error);
-    throw error;
-  }
-};
+// Fonction supprimée - utilisation directe de Supabase uniquement
 
 // ===== TRACKING PROFIL =====
 

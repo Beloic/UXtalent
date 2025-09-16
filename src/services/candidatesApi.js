@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { authenticatedFetch } from '../utils/auth';
 
 const API_BASE_URL = 'http://localhost:3001/api';
 
@@ -38,22 +39,8 @@ export function useCandidates(filters = {}) {
         }
         if (filters.sortBy) params.append('sortBy', filters.sortBy);
 
-        // Récupérer le token d'authentification
-        const { data: { session } } = await supabase.auth.getSession();
-        const headers = {};
-        
-        console.log('🔑 Session Supabase:', session);
-        
-        if (session?.access_token) {
-          headers.Authorization = `Bearer ${session.access_token}`;
-          console.log('✅ Token d\'authentification ajouté aux headers');
-        } else {
-          console.log('❌ Aucun token d\'authentification trouvé');
-        }
-
-        const response = await fetch(`${API_BASE_URL}/candidates?${params.toString()}`, {
-          headers
-        });
+        // Utiliser le helper d'authentification
+        const response = await authenticatedFetch(`${API_BASE_URL}/candidates?${params.toString()}`);
         
         if (!response.ok) {
           if (response.status === 404) {
@@ -104,7 +91,8 @@ export function useCandidate(id) {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/candidates/${id}`);
+        // Utiliser le helper d'authentification
+        const response = await authenticatedFetch(`${API_BASE_URL}/candidates/${id}`);
         
         if (!response.ok) {
           if (response.status === 404) {
@@ -133,11 +121,8 @@ export function useCandidate(id) {
 
 // Fonction pour ajouter un candidat
 export async function addCandidate(candidateData) {
-  const response = await fetch(`${API_BASE_URL}/candidates`, {
+  const response = await authenticatedFetch(`${API_BASE_URL}/candidates`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(candidateData),
   });
 
@@ -150,11 +135,8 @@ export async function addCandidate(candidateData) {
 
 // Fonction pour mettre à jour un candidat
 export async function updateCandidate(id, candidateData) {
-  const response = await fetch(`${API_BASE_URL}/candidates/${id}`, {
+  const response = await authenticatedFetch(`${API_BASE_URL}/candidates/${id}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(candidateData),
   });
 
@@ -167,7 +149,7 @@ export async function updateCandidate(id, candidateData) {
 
 // Fonction pour supprimer un candidat
 export async function deleteCandidate(id) {
-  const response = await fetch(`${API_BASE_URL}/candidates/${id}`, {
+  const response = await authenticatedFetch(`${API_BASE_URL}/candidates/${id}`, {
     method: 'DELETE',
   });
 
@@ -180,11 +162,8 @@ export async function deleteCandidate(id) {
 
 // Fonction pour mettre à jour le plan d'un candidat
 export async function updateCandidatePlan(id, planType, durationMonths = 1) {
-  const response = await fetch(`${API_BASE_URL}/candidates/${id}/plan`, {
+  const response = await authenticatedFetch(`${API_BASE_URL}/candidates/${id}/plan`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({ planType, durationMonths }),
   });
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Filter, X, Users, MapPin, Briefcase, Clock, Search, Star, Award, Globe, DollarSign, Calendar } from "lucide-react";
+import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar } from "lucide-react";
 import CandidateCard from "../components/CandidateCard";
 import CandidateCardBlurred from "../components/CandidateCardBlurred";
 import SignupCard from "../components/SignupCard";
@@ -46,8 +46,8 @@ export default function CandidatesListPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Titre simple */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="mb-12">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
             {isCandidate ? "Découvrez d'autres talents UX/UI" : "Talents UX/UI disponibles"}
           </h1>
           <p className="text-gray-600">

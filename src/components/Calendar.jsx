@@ -307,7 +307,7 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
   const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header du calendrier */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -354,7 +354,7 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
         {/* En-têtes des jours */}
         <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
           {dayNames.map(day => (
-            <div key={day} className="p-4 text-center text-sm font-semibold text-gray-600">
+            <div key={day} className="p-2 text-center text-sm font-semibold text-gray-600">
               {day}
             </div>
           ))}
@@ -370,7 +370,7 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
             return (
               <div
                 key={index}
-                className={`min-h-[120px] p-2 border-r border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors ${
+                className={`min-h-[80px] p-2 border-r border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors ${
                   !day.isCurrentMonth ? 'bg-gray-50 text-gray-400' : ''
                 } ${isToday ? 'bg-blue-50' : ''} ${isSelected ? 'bg-blue-100' : ''}`}
                 onClick={() => openAddModalForDate(day.date)}
