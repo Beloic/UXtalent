@@ -120,7 +120,11 @@ app.use(helmet({
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-domain.com', 'https://www.your-domain.com']
+    ? [
+        'https://68c95b0e4609f669abca7e3b--superlative-custard-0c39a4.netlify.app',
+        'https://superlative-custard-0c39a4.netlify.app',
+        'https://ux-jobs-pro.netlify.app'
+      ]
     : true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
