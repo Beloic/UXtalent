@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { authenticatedFetch } from '../utils/auth';
+import { getBaseUrl } from '../config/api';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = `${getBaseUrl()}/api`;
 
 // Hook pour récupérer les candidats avec filtres
 export function useCandidates(filters = {}) {

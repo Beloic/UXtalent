@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase';
+import { getBaseUrl } from '../config/api';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = `${getBaseUrl()}/api`;
 
 // Fonction utilitaire pour obtenir le token d'authentification
 const getAuthToken = async () => {

@@ -1,8 +1,18 @@
-// Configuration des URLs de l'API
-const API_BASE_URLS = [
-  'http://localhost:3001',
-  'http://localhost:5173'
-];
+// Configuration des URLs de l'API selon l'environnement
+const getApiBaseUrls = () => {
+  // En production (Vercel), utiliser le même domaine
+  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    return [window.location.origin];
+  }
+  
+  // En développement, utiliser localhost
+  return [
+    'http://localhost:3001',
+    'http://localhost:5173'
+  ];
+};
+
+const API_BASE_URLS = getApiBaseUrls();
 
 // Cache pour l'URL qui fonctionne
 let workingApiUrl = null;
@@ -41,18 +51,6 @@ export const getApiBaseUrl = async () => {
   return API_BASE_URLS[0];
 };
 
-// Fonction pour construire une URL complète
-export const buildApiUrl = async (endpoint) => {
-  const baseUrl = await getApiBaseUrl();
-  return `${baseUrl}${endpoint}`;
-};
-
-// Fonction synchrone pour les cas où on ne peut pas attendre
-export const buildApiUrlSync = (endpoint) => {
-  const baseUrl = workingApiUrl || API_BASE_URLS[0];
-  return `${baseUrl}${endpoint}`;
-};
-
 // URLs spécifiques
 export const API_ENDPOINTS = {
   CANDIDATES: '/api/candidates',
@@ -62,4 +60,30 @@ export const API_ENDPOINTS = {
   FORUM_STATS: '/api/forum/stats',
   METRICS: '/api/metrics',
   STATS: '/api/stats'
+};
+
+// Fonction utilitaire pour obtenir l'URL de base selon l'environnement
+export const getBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    // En production (Vercel), utiliser le même domaine
+    if (window.location.hostname.includes('vercel.app')) {
+      return window.location.origin;
+    }
+    // En développement, utiliser localhost
+    return 'http://localhost:3001';
+  }
+  // Côté serveur, utiliser localhost par défaut
+  return 'http://localhost:3001';
+};
+
+// Fonction pour construire une URL API complète (asynchrone pour compatibilité)
+export const buildApiUrl = async (endpoint) => {
+  const baseUrl = await getApiBaseUrl();
+  return `${baseUrl}${endpoint}`;
+};
+
+// Fonction synchrone pour les cas où on ne peut pas attendre
+export const buildApiUrlSync = (endpoint) => {
+  const baseUrl = getBaseUrl();
+  return `${baseUrl}${endpoint}`;
 };
