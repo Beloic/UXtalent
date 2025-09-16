@@ -240,7 +240,7 @@ export default function AdminDashboard() {
     }
 
     try {
-      const apiUrl = await buildApiUrl(`/api/admin/forum/posts/${postId}`);
+      const apiUrl = await buildApiUrl(`/api/forum/posts/${postId}`);
       const response = await fetch(apiUrl, {
         method: 'DELETE'
       });
@@ -264,7 +264,7 @@ export default function AdminDashboard() {
     }
 
     try {
-      const apiUrl = await buildApiUrl(`/api/admin/forum/posts/${postId}/replies/${replyId}`);
+      const apiUrl = await buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`);
       const response = await fetch(apiUrl, {
         method: 'DELETE'
       });
