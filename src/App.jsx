@@ -212,4 +212,4 @@ export default function App() {
       </Routes>
     </AuthProvider>
   );
-}
+}// Force redeploy Tue Sep 16 16:06:43 CEST 2025
