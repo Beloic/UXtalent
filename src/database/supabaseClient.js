@@ -121,6 +121,8 @@ export const updateCandidate = async (id, candidateData) => {
   try {
     // Convertir les noms de colonnes de camelCase vers snake_case pour Supabase
     const dbData = { ...candidateData };
+    // Supprimer les champs non supportés par le schéma Supabase (évite les erreurs 500)
+    delete dbData.phone;
     
     // Convertir les champs de rémunération si ils existent
     if (candidateData.dailyRate !== undefined) {
