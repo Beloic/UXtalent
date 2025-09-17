@@ -268,7 +268,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                         <p className="text-sm">Essayez d'ajuster vos filtres</p>
                       </div>
                     ) : (
-                      filteredCandidates.map((candidate) => (
+                      candidates.map((candidate) => (
                         <div key={candidate.candidateId} className="p-6 hover:bg-gray-50 transition-colors">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
@@ -290,65 +290,100 @@ const MatchingDashboard = ({ recruiterId }) => {
                               </div>
 
 
-                              {/* Score détaillé avec barres de progression */}
+                              {/* Score détaillé avec barres de progression améliorées */}
                               {candidate.scoreBreakdown && (
                                 <div className="mt-4 pt-4 border-t border-gray-100">
-                                  <div className="text-xs font-medium text-gray-700 mb-3">Détail du score de compatibilité</div>
-                                  <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-xs text-gray-600">Expérience</span>
-                                      <div className="flex items-center">
-                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full mr-2">
-                                          <div 
-                                            className="h-1.5 bg-green-500 rounded-full transition-all duration-300"
-                                            style={{ width: `${candidate.scoreBreakdown.experience * 100}%` }}
-                                          ></div>
-                                        </div>
-                                        <span className="text-xs font-medium text-green-600 w-8 text-right">
+                                  <div className="text-sm font-semibold text-gray-800 mb-4">Détail du score de compatibilité</div>
+                                  <div className="space-y-4">
+                                    {/* Expérience */}
+                                    <div className="space-y-2">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-gray-700">Expérience</span>
+                                        <span className="text-sm font-bold text-green-600">
                                           {formatScore(candidate.scoreBreakdown.experience)}%
                                         </span>
                                       </div>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-xs text-gray-600">Localisation</span>
-                                      <div className="flex items-center">
-                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full mr-2">
+                                      <div className="relative">
+                                        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                                           <div 
-                                            className="h-1.5 bg-purple-500 rounded-full transition-all duration-300"
-                                            style={{ width: `${candidate.scoreBreakdown.location * 100}%` }}
-                                          ></div>
+                                            className="h-3 bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-1000 ease-out relative"
+                                            style={{ 
+                                              width: `${candidate.scoreBreakdown.experience * 100}%`,
+                                              animationDelay: '0.1s'
+                                            }}
+                                          >
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+                                          </div>
                                         </div>
-                                        <span className="text-xs font-medium text-purple-600 w-8 text-right">
+                                      </div>
+                                    </div>
+
+                                    {/* Localisation */}
+                                    <div className="space-y-2">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-gray-700">Localisation</span>
+                                        <span className="text-sm font-bold text-purple-600">
                                           {formatScore(candidate.scoreBreakdown.location)}%
                                         </span>
                                       </div>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-xs text-gray-600">Salaire</span>
-                                      <div className="flex items-center">
-                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full mr-2">
+                                      <div className="relative">
+                                        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                                           <div 
-                                            className="h-1.5 bg-orange-500 rounded-full transition-all duration-300"
-                                            style={{ width: `${candidate.scoreBreakdown.salary * 100}%` }}
-                                          ></div>
+                                            className="h-3 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full transition-all duration-1000 ease-out relative"
+                                            style={{ 
+                                              width: `${candidate.scoreBreakdown.location * 100}%`,
+                                              animationDelay: '0.2s'
+                                            }}
+                                          >
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+                                          </div>
                                         </div>
-                                        <span className="text-xs font-medium text-orange-600 w-8 text-right">
+                                      </div>
+                                    </div>
+
+                                    {/* Salaire */}
+                                    <div className="space-y-2">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-gray-700">Salaire</span>
+                                        <span className="text-sm font-bold text-orange-600">
                                           {formatScore(candidate.scoreBreakdown.salary)}%
                                         </span>
                                       </div>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-xs text-gray-600">Disponibilité</span>
-                                      <div className="flex items-center">
-                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full mr-2">
+                                      <div className="relative">
+                                        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                                           <div 
-                                            className="h-1.5 bg-red-500 rounded-full transition-all duration-300"
-                                            style={{ width: `${candidate.scoreBreakdown.availability * 100}%` }}
-                                          ></div>
+                                            className="h-3 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full transition-all duration-1000 ease-out relative"
+                                            style={{ 
+                                              width: `${candidate.scoreBreakdown.salary * 100}%`,
+                                              animationDelay: '0.3s'
+                                            }}
+                                          >
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+                                          </div>
                                         </div>
-                                        <span className="text-xs font-medium text-red-600 w-8 text-right">
+                                      </div>
+                                    </div>
+
+                                    {/* Disponibilité */}
+                                    <div className="space-y-2">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-gray-700">Disponibilité</span>
+                                        <span className="text-sm font-bold text-red-600">
                                           {formatScore(candidate.scoreBreakdown.availability)}%
                                         </span>
+                                      </div>
+                                      <div className="relative">
+                                        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                                          <div 
+                                            className="h-3 bg-gradient-to-r from-red-400 to-red-600 rounded-full transition-all duration-1000 ease-out relative"
+                                            style={{ 
+                                              width: `${candidate.scoreBreakdown.availability * 100}%`,
+                                              animationDelay: '0.4s'
+                                            }}
+                                          >
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
