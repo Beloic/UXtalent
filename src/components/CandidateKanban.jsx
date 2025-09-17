@@ -530,9 +530,22 @@ const CandidateKanban = ({
     const candidateId = move.cardId.replace('card-', '');
     const newStatus = move.toColumnId;
     
+    console.log('🔄 Déplacement de carte initié:', {
+      candidateId,
+      fromColumn: move.fromColumnId,
+      toColumn: move.toColumnId,
+      toIndex: move.toIndex,
+      move
+    });
+    
     // Mise à jour optimiste de l'état local immédiatement
     setLocalBoardData(prevData => {
       if (!prevData) return prevData;
+      
+      console.log('📊 Données avant mise à jour optimiste:', {
+        fromColumnChildren: prevData[move.fromColumnId]?.children?.length || 0,
+        toColumnChildren: prevData[move.toColumnId]?.children?.length || 0
+      });
       
       const newData = { ...prevData };
       
@@ -583,6 +596,11 @@ const CandidateKanban = ({
         }
       }
       
+      console.log('📊 Données après mise à jour optimiste:', {
+        fromColumnChildren: newData[move.fromColumnId]?.children?.length || 0,
+        toColumnChildren: newData[move.toColumnId]?.children?.length || 0
+      });
+      
       return newData;
     });
     
@@ -592,31 +610,47 @@ const CandidateKanban = ({
         setIsLoading(true);
         setError(null);
         
+        console.log('🚀 Appel API pour déplacement:', {
+          candidateId,
+          fromColumn: move.fromColumnId,
+          toColumn: newStatus,
+          toIndex: move.toIndex,
+          hasOnMoveCandidate: !!onMoveCandidate,
+          hasKanbanData: !!kanbanData,
+          hasOnKanbanDataChange: !!onKanbanDataChange
+        });
+        
         // Utiliser la nouvelle fonction si disponible, sinon fallback sur l'ancien système
         if (onMoveCandidate) {
           const result = await onMoveCandidate(candidateId, move.fromColumnId, newStatus, move.toIndex);
-          console.log(`Carte ${candidateId} déplacée vers ${newStatus} (nouveau système):`, result);
+          console.log('✅ Carte déplacée (nouveau système):', result);
         } else {
           // Utiliser l'ancien service API centralisé
           const result = await moveCandidateInKanban(candidateId, move.fromColumnId, newStatus, move.toIndex);
-          console.log(`Carte ${candidateId} déplacée vers ${newStatus} (ancien système):`, result);
+          console.log('✅ Carte déplacée (ancien système):', result);
           
           // Mettre à jour les données Kanban si disponibles
           if (kanbanData && onKanbanDataChange) {
+            console.log('🔄 Rechargement des données Kanban...');
             // Recharger les données depuis l'API pour avoir la version la plus récente
             const updatedKanbanData = await getKanbanData();
+            console.log('📊 Nouvelles données Kanban:', updatedKanbanData);
             onKanbanDataChange(updatedKanbanData);
           } else if (onUpdateStatus) {
+            console.log('🔄 Mise à jour du statut (fallback)...');
             // Fallback sur l'ancien système
             onUpdateStatus(candidateId, newStatus);
           }
         }
         
+        console.log('✅ Déplacement terminé avec succès');
+        
       } catch (error) {
-        console.error('Erreur lors du déplacement du candidat:', error);
+        console.error('❌ Erreur lors du déplacement du candidat:', error);
         setError('Erreur lors du déplacement du candidat');
         
         // En cas d'erreur, recharger les données pour restaurer l'état correct
+        console.log('🔄 Rechargement des données après erreur...');
         if (onRefresh) {
           onRefresh();
         } else if (onRefreshCandidates) {
@@ -626,7 +660,7 @@ const CandidateKanban = ({
         setIsLoading(false);
       }
     } else {
-      console.log(`Carte ${candidateId} réorganisée dans la colonne ${newStatus}`);
+      console.log(`📋 Carte ${candidateId} réorganisée dans la colonne ${newStatus}`);
     }
   }, [onMoveCandidate, kanbanData, onKanbanDataChange, onUpdateStatus, onRefreshCandidates, onRefresh]);
 
@@ -668,20 +702,21 @@ const CandidateKanban = ({
           .rkk-board {
             display: flex !important;
             width: 100% !important;
-            gap: 1.5rem;
+            gap: 0.75rem;
             overflow-x: hidden;
             justify-content: space-between;
           }
           .rkk-column-outer {
             flex: 1 !important;
-            min-width: 220px !important;
+            min-width: 0 !important;
             max-width: none !important;
             width: auto !important;
             transition: all 0.3s ease !important;
           }
           .rkk-column {
             width: 100% !important;
-            min-width: 220px !important;
+            min-width: 0 !important;
+            max-width: none !important;
             transition: all 0.3s ease !important;
           }
           .rkk-column-content {
@@ -851,33 +886,18 @@ const CandidateKanban = ({
             }
           }
           @media (max-width: 1400px) {
-            .rkk-column-outer {
-              min-width: 200px !important;
-              max-width: none !important;
-              width: auto !important;
-            }
-            .rkk-column {
-              min-width: 200px !important;
+            .rkk-board {
+              gap: 0.5rem;
             }
           }
           @media (max-width: 1200px) {
-            .rkk-column-outer {
-              min-width: 180px !important;
-              max-width: none !important;
-              width: auto !important;
-            }
-            .rkk-column {
-              min-width: 180px !important;
+            .rkk-board {
+              gap: 0.375rem;
             }
           }
           @media (max-width: 1000px) {
-            .rkk-column-outer {
-              min-width: 160px !important;
-              max-width: none !important;
-              width: auto !important;
-            }
-            .rkk-column {
-              min-width: 160px !important;
+            .rkk-board {
+              gap: 0.25rem;
             }
           }
         `

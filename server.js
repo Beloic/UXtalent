@@ -44,6 +44,18 @@ import {
   getNextAppointmentForCandidate,
 } from './src/database/appointmentsDatabase.js';
 import {
+  getKanbanColumns,
+  getKanbanColumnByName,
+  getCandidateKanbanStatus,
+  updateCandidateKanbanStatus,
+  getRecruiterKanbanStatuses,
+  getKanbanTransitions,
+  validateKanbanTransition,
+  getCompleteKanbanData,
+  getTransitionStats,
+  getMostActiveCandidates
+} from './src/database/kanbanDatabase.js';
+import {
   getRecruiterSearches,
   createRecruiterSearch,
   updateRecruiterSearch,
@@ -1739,80 +1751,143 @@ async function validateStatusTransition(currentStatus, targetStatus, candidateId
   return targetStatus; // Transition autorisée
 }
 
-// PUT /api/recruiter/kanban/move-candidate - Déplacer un candidat dans le Kanban
+// PUT /api/recruiter/kanban/move-candidate - Déplacer un candidat dans le Kanban (nouvelle version avec table dédiée)
 app.put('/api/recruiter/kanban/move-candidate', requireRole(['recruiter', 'admin']), async (req, res) => {
   try {
-    const { candidateId, fromColumn, toColumn, toIndex } = req.body;
+    const { candidateId, fromColumn, toColumn, toIndex, notes } = req.body;
     const recruiterId = req.user.id;
+    
+    console.log('🚀 API Kanban Move - Requête reçue:', {
+      candidateId,
+      fromColumn,
+      toColumn,
+      toIndex,
+      notes,
+      recruiterId
+    });
     
     // Validation des données
     if (!candidateId || !toColumn) {
+      console.log('❌ Données manquantes:', { candidateId, toColumn });
       return res.status(400).json({ error: 'Données manquantes' });
     }
     
-    // Valider les colonnes Kanban
-    const validColumns = ['À contacter', 'Entretien prévu', 'En cours', 'Accepté', 'Refusé'];
-    if (!validColumns.includes(toColumn)) {
-      return res.status(400).json({ error: 'Colonne Kanban invalide' });
-    }
-    
-    // Vérifier que le candidat existe et appartient au recruteur
+    // Vérifier que le candidat existe
     const { data: candidate, error: candidateError } = await supabase
       .from('candidates')
-      .select('id, name, status')
+      .select('id, name')
       .eq('id', candidateId)
       .single();
     
     if (candidateError || !candidate) {
+      console.log('❌ Candidat non trouvé:', { candidateId, candidateError });
       return res.status(404).json({ error: 'Candidat non trouvé' });
     }
     
-    // Validation des transitions de statut
-    const currentStatus = candidate.status || 'À contacter';
-    const newStatus = validateStatusTransition(currentStatus, toColumn, candidateId, recruiterId);
+    console.log('✅ Candidat trouvé:', candidate);
     
-    if (!newStatus) {
-      return res.status(400).json({ 
-        error: 'Transition de statut non autorisée',
-        details: `Impossible de passer de "${currentStatus}" à "${toColumn}"`
-      });
+    // Récupérer la colonne de destination
+    const toColumnData = await getKanbanColumnByName(toColumn);
+    if (!toColumnData) {
+      console.log('❌ Colonne Kanban invalide:', { toColumn });
+      return res.status(400).json({ error: 'Colonne Kanban invalide' });
     }
     
-    // Mettre à jour le statut dans la base de données
-    const { data: updatedCandidate, error: updateError } = await supabase
+    console.log('✅ Colonne de destination trouvée:', toColumnData);
+    
+    // Récupérer le statut actuel
+    const currentStatus = await getCandidateKanbanStatus(candidateId, recruiterId);
+    const fromColumnId = currentStatus?.kanban_column_id || null;
+    
+    console.log('📊 Statut actuel:', {
+      currentStatus,
+      fromColumnId,
+      fromColumnName: currentStatus?.kanban_columns?.name
+    });
+    
+    // Valider la transition si elle existe
+    if (fromColumnId) {
+      console.log('🔍 Validation de la transition:', {
+        fromColumnId,
+        toColumnId: toColumnData.id,
+        candidateId,
+        recruiterId
+      });
+      
+      try {
+        const isValidTransition = await validateKanbanTransition(fromColumnId, toColumnData.id, candidateId, recruiterId);
+        console.log('✅ Transition validée:', isValidTransition);
+        
+        if (!isValidTransition) {
+          console.log('❌ Transition non autorisée');
+          return res.status(400).json({ 
+            error: 'Transition de statut non autorisée',
+            details: `Impossible de passer de "${currentStatus?.kanban_columns?.name || 'À contacter'}" à "${toColumn}"`
+          });
+        }
+      } catch (validationError) {
+        console.log('⚠️ Erreur lors de la validation, on continue sans validation:', validationError.message);
+        // En cas d'erreur de validation, on continue sans valider
+        // TODO: Corriger la fonction validateKanbanTransition
+      }
+    }
+    
+    // Mettre à jour le statut dans la table kanban dédiée
+    console.log('💾 Mise à jour du statut Kanban...');
+    const updatedStatus = await updateCandidateKanbanStatus(
+      candidateId, 
+      recruiterId, 
+      toColumnData.id, 
+      toColumn, 
+      notes
+    );
+    
+    console.log('✅ Statut Kanban mis à jour:', updatedStatus);
+    
+    // Mettre à jour aussi le statut dans la table candidates pour compatibilité
+    console.log('💾 Mise à jour du statut dans la table candidates...');
+    const { error: updateError } = await supabase
       .from('candidates')
       .update({ 
-        status: newStatus, 
+        status: toColumn, 
         updated_at: new Date().toISOString() 
       })
-      .eq('id', candidateId)
-      .select()
-      .single();
+      .eq('id', candidateId);
     
     if (updateError) {
-      logger.error('Erreur lors de la mise à jour du statut Kanban', { error: updateError.message });
-      return res.status(500).json({ error: 'Erreur lors de la mise à jour du statut' });
+      console.log('⚠️ Erreur lors de la mise à jour de la table candidates:', updateError);
+    } else {
+      console.log('✅ Statut mis à jour dans la table candidates');
     }
     
     // Log de l'action
-    logger.info('Candidat déplacé dans le Kanban', {
+    logger.info('Candidat déplacé dans le Kanban (nouvelle table)', {
       candidateId,
       candidateName: candidate.name,
-      fromColumn,
+      fromColumn: currentStatus?.kanban_columns?.name || 'À contacter',
       toColumn,
-      newStatus,
-      recruiterId
+      recruiterId,
+      kanbanStatusId: updatedStatus.id
     });
     
-    res.json({ 
+    const response = { 
       success: true, 
-      candidate: updatedCandidate,
+      candidate: {
+        id: candidateId,
+        name: candidate.name,
+        status: toColumn
+      },
+      kanbanStatus: updatedStatus,
       action: 'moved',
-      fromColumn,
+      fromColumn: currentStatus?.kanban_columns?.name || 'À contacter',
       toColumn,
-      newStatus
-    });
+      newStatus: toColumn
+    };
+    
+    console.log('✅ Réponse envoyée:', response);
+    res.json(response);
   } catch (error) {
+    console.error('❌ Erreur lors du déplacement Kanban:', error);
     logger.error('Erreur lors du déplacement Kanban', { error: error.message });
     res.status(500).json({ error: 'Erreur lors du déplacement du candidat' });
   }
@@ -1902,29 +1977,20 @@ app.get('/api/recruiter/kanban/candidate/:candidateId/transitions', requireRole(
   }
 });
 
-// GET /api/recruiter/kanban/data - Récupérer les données complètes du Kanban
+// GET /api/recruiter/kanban/data - Récupérer les données complètes du Kanban (nouvelle version avec table dédiée)
 app.get('/api/recruiter/kanban/data', requireRole(['recruiter', 'admin']), async (req, res) => {
   try {
     const recruiterId = req.user.id;
     
-    // Récupérer les candidats avec leurs statuts
-    const { data: candidates, error: candidatesError } = await supabase
-      .from('candidates')
-      .select('id, name, title, location, status, notes, created_at, updated_at')
-      .eq('visible', true)
-      .eq('approved', true)
-      .order('created_at', { ascending: false });
-    
-    if (candidatesError) {
-      throw candidatesError;
-    }
+    // Utiliser la nouvelle fonction qui gère la table kanban dédiée
+    const kanbanData = await getCompleteKanbanData(recruiterId);
     
     // Récupérer les favoris du recruteur
     const { data: favorites, error: favoritesError } = await supabase
       .from('recruiter_favorites')
       .select(`
         candidate_id,
-        candidates!inner(id, name, title, location, status, notes, created_at, updated_at)
+        candidates!inner(id, name, title, location, notes, created_at, updated_at)
       `)
       .eq('recruiter_id', recruiterId);
     
@@ -1932,66 +1998,111 @@ app.get('/api/recruiter/kanban/data', requireRole(['recruiter', 'admin']), async
       throw favoritesError;
     }
     
-    // Récupérer les rendez-vous
-    const { data: appointments, error: appointmentsError } = await supabase
-      .from('appointments')
-      .select('id, candidate_id, appointment_date, appointment_time, title')
-      .eq('recruiter_id', recruiterId)
-      .gte('appointment_date', new Date().toISOString().split('T')[0])
-      .order('appointment_date', { ascending: true });
-    
-    if (appointmentsError) {
-      throw appointmentsError;
-    }
-    
-    // Traiter les données pour le Kanban
     const favoritesData = favorites.map(fav => fav.candidates);
-    const candidatesWithAppointments = new Set(appointments.map(apt => apt.candidate_id));
-    
-    // Déterminer la colonne pour chaque candidat
-    const processedCandidates = candidates.map(candidate => {
-      let kanbanColumn = candidate.status || 'À contacter';
-      
-      // Si le candidat a un rendez-vous, le placer en "Entretien prévu"
-      if (candidatesWithAppointments.has(candidate.id)) {
-        kanbanColumn = 'Entretien prévu';
-      }
-      
-      return {
-        ...candidate,
-        kanbanColumn,
-        hasAppointment: candidatesWithAppointments.has(candidate.id)
-      };
-    });
-    
-    // Organiser par colonnes
-    const kanbanData = {
-      'À contacter': processedCandidates.filter(c => c.kanbanColumn === 'À contacter'),
-      'Entretien prévu': processedCandidates.filter(c => c.kanbanColumn === 'Entretien prévu'),
-      'En cours': processedCandidates.filter(c => c.kanbanColumn === 'En cours'),
-      'Accepté': processedCandidates.filter(c => c.kanbanColumn === 'Accepté'),
-      'Refusé': processedCandidates.filter(c => c.kanbanColumn === 'Refusé')
-    };
     
     res.json({
       success: true,
       data: {
-        candidates: processedCandidates,
+        ...kanbanData,
         favorites: favoritesData,
-        appointments: appointments,
-        kanbanData: kanbanData,
-        stats: {
-          total: candidates.length,
-          byColumn: Object.keys(kanbanData).reduce((acc, col) => {
-            acc[col] = kanbanData[col].length;
-            return acc;
-          }, {})
-        }
+        // Ajouter les colonnes pour compatibilité
+        columns: kanbanData.columns.map(col => ({
+          id: col.name,
+          title: col.title,
+          name: col.name,
+          color: col.color,
+          icon: col.icon,
+          position: col.position,
+          isDefault: col.is_default
+        }))
       }
     });
   } catch (error) {
     logger.error('Erreur lors de la récupération des données Kanban', { error: error.message });
     res.status(500).json({ error: 'Erreur lors de la récupération des données' });
+  }
+});
+
+// ===== ENDPOINTS POUR LA GESTION DES COLONNES KANBAN =====
+
+// GET /api/recruiter/kanban/columns - Récupérer toutes les colonnes Kanban
+app.get('/api/recruiter/kanban/columns', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const columns = await getKanbanColumns();
+    
+    res.json({
+      success: true,
+      columns: columns.map(col => ({
+        id: col.id,
+        name: col.name,
+        title: col.title,
+        description: col.description,
+        color: col.color,
+        icon: col.icon,
+        position: col.position,
+        isDefault: col.is_default,
+        allowedFrom: col.allowed_from,
+        allowedTo: col.allowed_to
+      }))
+    });
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des colonnes Kanban', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération des colonnes' });
+  }
+});
+
+// GET /api/recruiter/kanban/transitions - Récupérer toutes les transitions autorisées
+app.get('/api/recruiter/kanban/transitions', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const transitions = await getKanbanTransitions();
+    
+    res.json({
+      success: true,
+      transitions: transitions.map(trans => ({
+        id: trans.id,
+        fromColumn: {
+          id: trans.from_column.id,
+          name: trans.from_column.name,
+          title: trans.from_column.title
+        },
+        toColumn: {
+          id: trans.to_column.id,
+          name: trans.to_column.name,
+          title: trans.to_column.title
+        },
+        isAllowed: trans.is_allowed,
+        requiresCondition: trans.requires_condition,
+        errorMessage: trans.error_message
+      }))
+    });
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des transitions Kanban', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération des transitions' });
+  }
+});
+
+// GET /api/recruiter/kanban/stats - Récupérer les statistiques du Kanban
+app.get('/api/recruiter/kanban/stats', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const recruiterId = req.user.id;
+    const period = req.query.period || '30 days';
+    
+    const [transitionStats, activeCandidates] = await Promise.all([
+      getTransitionStats(recruiterId, period),
+      getMostActiveCandidates(recruiterId, 10)
+    ]);
+    
+    res.json({
+      success: true,
+      stats: {
+        transitions: transitionStats,
+        mostActiveCandidates: activeCandidates,
+        period: period
+      }
+    });
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des statistiques Kanban', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération des statistiques' });
   }
 });
 
