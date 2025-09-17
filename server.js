@@ -327,23 +327,10 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
               candidate_id_type: typeof application.candidate_id
             });
             
-            // Utiliser UNIQUEMENT la table de correspondance candidate_id_mapping
-            const { data: mapping, error: mappingError } = await supabaseAdmin
-              .from('candidate_id_mapping')
-              .select('candidate_db_id')
-              .eq('candidate_id', application.candidate_id)
-              .single();
-            
-            if (mappingError || !mapping) {
-              console.error('❌ [GET_JOB_APPLICATIONS] Aucune correspondance trouvée pour:', application.candidate_id);
-              return { ...application, candidate: null };
-            }
-            
-            // Chercher le candidat par ID entier depuis la table de mapping
             const { data: candidate, error: candidateError } = await supabaseAdmin
               .from('candidates')
               .select('id, name, title, location, bio, skills, experience, availability')
-              .eq('id', mapping.candidate_db_id)
+              .eq('id', application.candidate_id)
               .single();
 
             if (candidateError) {

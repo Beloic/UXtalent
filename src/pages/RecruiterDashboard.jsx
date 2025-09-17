@@ -1257,8 +1257,8 @@ export default function RecruiterDashboard() {
                                           )}
                                         </div>
                                         {(() => {
-                                          // Utiliser candidate_id de l'application en priorité, puis l'ID du candidat si disponible
-                                          const candidateId = application.candidate_id || application.candidate?.id;
+                                          // Utiliser l'ID numérique du candidat (pas l'UUID) pour le lien
+                                          const candidateId = application.candidate?.id || application.candidate_id;
                                           if (!candidateId) {
                                             return (
                                               <span className="px-3 py-1 bg-gray-400 text-white rounded-lg text-xs font-medium flex items-center gap-1 flex-shrink-0">
