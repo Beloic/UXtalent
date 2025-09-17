@@ -729,7 +729,7 @@ export default function RecruiterDashboard() {
                   ) : (
                     <TrendingUp className="w-4 h-4" />
                   )}
-                  Matching IA
+                  Matching
                 </button>
               </div>
             </div>
