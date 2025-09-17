@@ -340,6 +340,25 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
                 code: candidateError.code
               });
               
+              // Si on a first_name et last_name dans l'application, créer un objet candidat temporaire
+              if (application.first_name && application.last_name) {
+                console.log('✅ [GET_JOB_APPLICATIONS] Utilisation des données de l\'application:', {
+                  first_name: application.first_name,
+                  last_name: application.last_name
+                });
+                const tempCandidate = {
+                  id: application.candidate_id, // Garder l'ID original
+                  name: `${application.first_name} ${application.last_name}`.trim(),
+                  title: 'Candidat',
+                  location: 'Non spécifié',
+                  bio: 'Informations limitées',
+                  skills: [],
+                  experience: 'Non spécifié',
+                  availability: 'Non spécifié'
+                };
+                return { ...application, candidate: tempCandidate };
+              }
+              
               // Essayer de trouver le candidat par email si l'ID ne fonctionne pas
               const { data: candidateByEmail, error: emailError } = await supabaseAdmin
                 .from('candidates')
@@ -2058,6 +2077,23 @@ app.post('/api/applications', requireRole(['candidate']), async (req, res) => {
       return res.status(400).json({ error: 'Vous avez déjà postulé à cette offre' });
     }
 
+    // Récupérer les infos du candidat pour inclure nom/prénom
+    const { data: candidateInfo, error: candidateError } = await supabaseAdmin
+      .from('candidates')
+      .select('name, email')
+      .eq('id', candidateId)
+      .single();
+
+    if (candidateError) {
+      console.error('Erreur lors de la récupération du candidat:', candidateError);
+      return res.status(500).json({ error: 'Erreur lors de la récupération des informations candidat' });
+    }
+
+    // Extraire prénom et nom
+    const nameParts = candidateInfo.name ? candidateInfo.name.split(' ') : ['', ''];
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
     // Créer la candidature
     const { data: application, error: insertError } = await supabaseAdmin
       .from('applications')
@@ -2065,7 +2101,10 @@ app.post('/api/applications', requireRole(['candidate']), async (req, res) => {
         job_id: jobId,
         candidate_id: candidateId,
         recruiter_id: job.recruiter_id,
-        status: 'pending'
+        status: 'pending',
+        first_name: firstName,
+        last_name: lastName,
+        candidate_email: candidateInfo.email
       })
       .select()
       .single();
