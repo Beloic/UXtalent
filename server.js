@@ -775,6 +775,14 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
 // PUT /api/candidates/:id - Mettre à jour un candidat
 app.put('/api/candidates/:id', async (req, res) => {
   try {
+    console.log('🛠️ [PUT_CANDIDATE] Requête reçue');
+    console.log('🛠️ [PUT_CANDIDATE] Params.id:', req.params?.id);
+    console.log('🛠️ [PUT_CANDIDATE] Authorization header présent:', !!req.headers?.authorization);
+    try {
+      console.log('🛠️ [PUT_CANDIDATE] Body keys:', Object.keys(req.body || {}));
+    } catch (e) {
+      console.log('🛠️ [PUT_CANDIDATE] Impossible de lister les clés du body');
+    }
     // Traiter le champ yearsOfExperience avant l'envoi à Supabase
     const candidateData = { ...req.body };
     
@@ -799,10 +807,28 @@ app.put('/api/candidates/:id', async (req, res) => {
       delete candidateData.yearsOfExperience;
     }
     
+    console.log('🛠️ [PUT_CANDIDATE] Données prêtes à être mises à jour (aperçu):', {
+      id: req.params?.id,
+      hasBio: typeof candidateData.bio === 'string',
+      bioPreview: (candidateData.bio || '').slice(0, 120),
+      hasSkills: Array.isArray(candidateData.skills),
+      name: candidateData.name,
+      email: candidateData.email,
+      title: candidateData.title,
+      location: candidateData.location
+    });
+
     const updatedCandidate = await updateCandidate(req.params.id, candidateData);
+    console.log('✅ [PUT_CANDIDATE] Mise à jour réussie pour ID:', req.params?.id);
     res.json(updatedCandidate);
   } catch (error) {
-    logger.error('Erreur lors de la mise à jour du candidat', { error: error.message });
+    console.error('❌ [PUT_CANDIDATE] Erreur lors de la mise à jour du candidat:', error?.message);
+    if (error?.stack) {
+      console.error('❌ [PUT_CANDIDATE] Stack:', error.stack);
+    }
+    try {
+      logger.error('Erreur lors de la mise à jour du candidat', { error: error.message, id: req.params?.id });
+    } catch (_) {}
     res.status(500).json({ error: 'Erreur lors de la mise à jour du candidat' });
   }
 });
