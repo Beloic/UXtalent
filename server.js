@@ -140,8 +140,8 @@ app.use(cors({
   maxAge: 86400
 }));
 
-// Pré-vol (preflight)
-app.options('*', cors());
+// Pré-vol (preflight) — Express 5: utiliser une RegExp plutôt que '*'
+app.options(/.*/, cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
