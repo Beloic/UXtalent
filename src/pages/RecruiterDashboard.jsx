@@ -63,6 +63,7 @@ export default function RecruiterDashboard() {
   const [jobApplications, setJobApplications] = useState({});
   const [loadingApplications, setLoadingApplications] = useState(false);
   const [editingJob, setEditingJob] = useState(null);
+  const [showPublishForm, setShowPublishForm] = useState(false);
 
   // Fonction pour obtenir le prochain rendez-vous d'un candidat
   const getNextAppointmentForCandidate = (candidateId) => {
@@ -458,7 +459,7 @@ export default function RecruiterDashboard() {
   // Détecter le paramètre tab dans l'URL
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['favorites', 'kanban', 'myjobs', 'publish'].includes(tabParam)) {
+    if (tabParam && ['favorites', 'kanban', 'myjobs'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -711,22 +712,6 @@ export default function RecruiterDashboard() {
                       {myJobs.length}
                     </span>
                   )}
-                </button>
-                <button
-                  onClick={() => setActiveTab('publish')}
-                  disabled={refreshing}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                    activeTab === 'publish'
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'text-gray-600 hover:text-gray-900'
-                  } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {refreshing && activeTab === 'publish' ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Plus className="w-4 h-4" />
-                  )}
-                  Publier
                 </button>
               </div>
             </div>
@@ -1066,14 +1051,23 @@ export default function RecruiterDashboard() {
                       <p className="text-gray-600">Gérez vos offres publiées</p>
                     </div>
                   </div>
-                  <button
-                    onClick={loadMyJobs}
-                    disabled={loadingJobs}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${loadingJobs ? 'animate-spin' : ''}`} />
-                    Actualiser
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setShowPublishForm(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Publier une offre
+                    </button>
+                    <button
+                      onClick={loadMyJobs}
+                      disabled={loadingJobs}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${loadingJobs ? 'animate-spin' : ''}`} />
+                      Actualiser
+                    </button>
+                  </div>
                 </div>
 
                 {loadingJobs ? (
@@ -1089,7 +1083,7 @@ export default function RecruiterDashboard() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucune offre publiée</h3>
                     <p className="text-gray-600 mb-6">Vous n'avez pas encore publié d'offres d'emploi.</p>
                     <button
-                      onClick={() => setActiveTab('publish')}
+                      onClick={() => setShowPublishForm(true)}
                       className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
                     >
                       Publier ma première offre
@@ -1302,17 +1296,25 @@ export default function RecruiterDashboard() {
               </motion.div>
             )}
 
-            {activeTab === 'publish' && (
+            {showPublishForm && (
               <motion.div 
-                key="publish"
+                key="publish-inline"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.1 }}
+                className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6"
               >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Publier une nouvelle offre</h3>
+                  <button onClick={() => setShowPublishForm(false)} className="text-gray-500 hover:text-gray-700"><X className="w-4 h-4" /></button>
+                </div>
                 <PublishJobForm onJobPublished={() => {
                   setMessage('✅ Offre soumise avec succès ! Elle sera visible après validation par l\'administrateur.');
                   setTimeout(() => setMessage(''), 5000);
+                  setShowPublishForm(false);
+                  // Recharger la liste des offres après publication
+                  loadMyJobs();
                 }} />
               </motion.div>
             )}
