@@ -13,6 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import CandidateNotesModal from './CandidateNotesModal';
 import AppointmentIndicator from './AppointmentIndicator';
+import { buildApiUrl } from '../config/api';
 
 // Composant de carte personnalisé
 const CandidateCard = ({ candidate, currentStatus, onOpenNotes, appointments = [] }) => {
@@ -214,7 +215,7 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
       }
 
       // Appel API pour sauvegarder les notes
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates/${candidateId}/notes`, {
+      const response = await fetch(buildApiUrl(`/api/candidates/${candidateId}/notes`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

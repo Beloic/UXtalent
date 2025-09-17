@@ -181,14 +181,14 @@ function LocationMap({ location }) {
       return;
     }
 
-    // Géocoder la localisation pour obtenir les coordonnées
+    // Géocoder la localisation pour obtenir les coordonnées via le proxy serveur (CORS safe)
     const geocodeLocation = async () => {
       try {
         setLoading(true);
         setError(null);
         
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}&limit=1`
+          buildApiUrl(`/api/geocode?q=${encodeURIComponent(location)}&limit=1`)
         );
         
         if (!response.ok) {
@@ -280,7 +280,7 @@ export default function CandidateDetailPage() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}/check`, {
+      const response = await fetch(buildApiUrl(`/api/recruiter/favorites/${candidate.id}/check`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -305,7 +305,7 @@ export default function CandidateDetailPage() {
       
       if (isFavorited) {
         // Retirer des favoris
-        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}`, {
+        const response = await fetch(buildApiUrl(`/api/recruiter/favorites/${candidate.id}`), {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -319,7 +319,7 @@ export default function CandidateDetailPage() {
         }
       } else {
         // Ajouter aux favoris
-        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}`, {
+        const response = await fetch(buildApiUrl(`/api/recruiter/favorites/${candidate.id}`), {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`

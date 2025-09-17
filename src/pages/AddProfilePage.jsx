@@ -17,6 +17,7 @@ import {
   LogIn
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { buildApiUrl } from "../config/api";
 
 export default function AddProfilePage() {
   const navigate = useNavigate();
@@ -106,7 +107,7 @@ export default function AddProfilePage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('https://ux-jobs-pro-backend.onrender.com/api/candidates', {
+      const response = await fetch(buildApiUrl('/api/candidates'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { User, UserPlus, Users } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { authenticatedFetch } from '../utils/auth';
+import { buildApiUrl } from '../config/api';
 
 export default function CandidateProfileGuard({ children }) {
   const { user, isAuthenticated } = useAuth();
@@ -20,7 +21,7 @@ export default function CandidateProfileGuard({ children }) {
         console.log('🔍 [CandidateProfileGuard] Vérification du profil candidat...');
         
         // Utiliser le helper d'authentification pour faire l'appel API
-        const response = await authenticatedFetch('https://ux-jobs-pro-backend.onrender.com/api/candidates');
+        const response = await authenticatedFetch(buildApiUrl('/api/candidates'));
 
         console.log('📡 [CandidateProfileGuard] Réponse API:', {
           status: response.status,

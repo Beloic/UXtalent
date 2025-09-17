@@ -4,6 +4,7 @@ import { ArrowLeft, MessageSquare, Heart, Reply, Clock, Users, Tag } from 'lucid
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getForumPost, addForumReply, likePost, likeReply } from '../services/forumApi';
+import { buildApiUrl } from '../config/api';
 
 export default function ForumPostPage() {
   const { id } = useParams();
@@ -38,7 +39,7 @@ export default function ForumPostPage() {
 
     try {
       const userId = user.email || 'anonymous';
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/posts/${id}/like`, {
+      const response = await fetch(buildApiUrl(`/api/forum/posts/${id}/like`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +81,7 @@ export default function ForumPostPage() {
 
     try {
       const userId = user.email || 'anonymous';
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/replies/${replyId}/like`, {
+      const response = await fetch(buildApiUrl(`/api/forum/replies/${replyId}/like`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +127,7 @@ export default function ForumPostPage() {
 
   const incrementViews = async () => {
     try {
-      await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/posts/${id}/view`, {
+      await fetch(buildApiUrl(`/api/forum/posts/${id}/view`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

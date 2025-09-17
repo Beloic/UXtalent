@@ -23,6 +23,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
+import { buildApiUrl } from "../config/api";
 
 export default function JobDetailPage() {
   const { id } = useParams();
@@ -65,7 +66,7 @@ export default function JobDetailPage() {
       
       console.log('📤 [CLIENT] Données envoyées:', requestData);
       
-      const response = await fetch('https://ux-jobs-pro-backend.onrender.com/api/candidates', {
+      const response = await fetch(buildApiUrl('/api/candidates'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +114,7 @@ export default function JobDetailPage() {
       if (!token) return;
 
       // Vérifier dans la table applications
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates?action=check_application&jobId=${job.id}`, {
+      const response = await fetch(buildApiUrl(`/api/candidates?action=check_application&jobId=${job.id}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -133,13 +134,13 @@ export default function JobDetailPage() {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/jobs/${id}`);
+        const response = await fetch(buildApiUrl(`/api/jobs/${id}`));
         if (response.ok) {
           const jobData = await response.json();
           setJob(jobData);
           
           // Pour les offres similaires, on peut charger toutes les offres et filtrer
-          const allJobsResponse = await fetch('https://ux-jobs-pro-backend.onrender.com/api/jobs');
+          const allJobsResponse = await fetch(buildApiUrl('/api/jobs'));
           if (allJobsResponse.ok) {
             const allJobs = await allJobsResponse.json();
             const similar = allJobs

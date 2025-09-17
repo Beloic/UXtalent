@@ -158,6 +158,35 @@ app.use('/api/candidates', (req, res, next) => {
   next();
 });
 
+// Proxy géocodage pour contourner CORS de Nominatim
+app.get('/api/geocode', async (req, res) => {
+  try {
+    const q = req.query.q;
+    const limit = req.query.limit || '1';
+    if (!q || typeof q !== 'string') {
+      return res.status(400).json({ error: 'Paramètre q requis' });
+    }
+
+    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=${encodeURIComponent(limit)}`;
+
+    const response = await fetch(nominatimUrl, {
+      headers: {
+        'User-Agent': 'ux-jobs-pro/1.0 (contact: support@uxjobs.pro)'
+      }
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Erreur Nominatim' });
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Erreur proxy géocodage:', error);
+    res.status(500).json({ error: 'Erreur proxy géocodage' });
+  }
+});
+
 // Servir les fichiers statiques
 app.use(express.static(__dirname));
 

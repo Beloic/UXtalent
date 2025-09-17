@@ -4,6 +4,7 @@ import { MessageSquare, Users, Clock, TrendingUp, Heart, Reply, Plus, Search, Fi
 import { useAuth } from '../contexts/AuthContext';
 import { getForumPosts, getForumCategories, getForumStats, createForumPost } from '../services/forumApi';
 import { Link } from 'react-router-dom';
+import { buildApiUrl } from '../config/api';
 
 export default function ForumPage() {
   const { user } = useAuth();
@@ -161,7 +162,7 @@ export default function ForumPage() {
 
     try {
       const userId = user.email || 'anonymous';
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/posts/${postId}/like`, {
+      const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}/like`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +210,7 @@ export default function ForumPage() {
 
     try {
       const userId = user.email || 'anonymous';
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/replies/${replyId}/like`, {
+      const response = await fetch(buildApiUrl(`/api/forum/replies/${replyId}/like`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

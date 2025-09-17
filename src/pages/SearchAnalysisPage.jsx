@@ -21,6 +21,7 @@ import {
   BarChart3
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { buildApiUrl } from '../config/api';
 
 export default function SearchAnalysisPage() {
   const { searchId } = useParams();
@@ -48,7 +49,7 @@ export default function SearchAnalysisPage() {
       const token = session.data.session?.access_token;
       
       // Charger la recherche
-      const searchResponse = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/searches/${searchId}`, {
+      const searchResponse = await fetch(buildApiUrl(`/api/recruiter/searches/${searchId}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -63,7 +64,7 @@ export default function SearchAnalysisPage() {
       }
 
       // Charger tous les candidats
-      const candidatesResponse = await fetch('https://ux-jobs-pro-backend.onrender.com/api/candidates', {
+      const candidatesResponse = await fetch(buildApiUrl('/api/candidates'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }
