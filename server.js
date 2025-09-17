@@ -255,11 +255,24 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
     // Vérifier si c'est une vérification de candidature
     if (req.query.action === 'check_application') {
       const { jobId } = req.query;
-      const candidateId = req.user?.id;
+      const userEmail = req.user?.email;
       
-      if (!candidateId || !jobId) {
+      if (!userEmail || !jobId) {
         return res.status(400).json({ error: 'Paramètres manquants' });
       }
+
+      // Trouver le candidat par email
+      const { data: candidate, error: candidateLookupError } = await supabaseAdmin
+        .from('candidates')
+        .select('id')
+        .eq('email', userEmail)
+        .single();
+
+      if (candidateLookupError || !candidate) {
+        return res.json({ application: null });
+      }
+
+      const candidateId = candidate.id;
 
       const { data: application, error } = await supabaseAdmin
         .from('applications')
@@ -680,14 +693,30 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
     if (req.body.action === 'apply_to_job') {
       console.log('📝 [APPLICATION] Tentative de candidature détectée:', req.body);
       const { jobId, jobTitle, company } = req.body;
-      const candidateId = req.user?.id;
+      const userEmail = req.user?.email;
       
-      console.log('📝 [APPLICATION] JobId:', jobId, 'CandidateId:', candidateId);
+      console.log('📝 [APPLICATION] JobId:', jobId, 'UserEmail:', userEmail);
       
-      if (!candidateId) {
-        console.log('❌ [APPLICATION] Pas de candidat ID dans la requête');
+      if (!userEmail) {
+        console.log('❌ [APPLICATION] Pas d\'email utilisateur dans la requête');
         return res.status(401).json({ error: 'Authentification requise' });
       }
+
+      // Trouver le candidat par email
+      console.log('📝 [APPLICATION] Recherche du candidat par email...');
+      const { data: candidate, error: candidateLookupError } = await supabaseAdmin
+        .from('candidates')
+        .select('id')
+        .eq('email', userEmail)
+        .single();
+
+      if (candidateLookupError || !candidate) {
+        console.log('❌ [APPLICATION] Candidat non trouvé pour l\'email:', userEmail);
+        return res.status(404).json({ error: 'Profil candidat non trouvé. Veuillez créer votre profil candidat d\'abord.' });
+      }
+
+      const candidateId = candidate.id;
+      console.log('✅ [APPLICATION] Candidat trouvé, ID:', candidateId);
       
       try {
         // Récupérer l'offre pour obtenir le recruteur
@@ -722,12 +751,33 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
           return res.status(400).json({ error: 'Vous avez déjà postulé à cette offre' });
         }
 
+        // Récupérer les infos du candidat pour inclure nom/prénom
+        console.log('📝 [APPLICATION] Récupération des infos candidat...');
+        const { data: candidateInfo, error: candidateError } = await supabaseAdmin
+          .from('candidates')
+          .select('name, email')
+          .eq('id', candidateId)
+          .single();
+
+        if (candidateError) {
+          console.log('❌ [APPLICATION] Erreur lors de la récupération du candidat:', candidateError);
+          return res.status(500).json({ error: 'Erreur lors de la récupération des informations candidat' });
+        }
+
+        // Extraire prénom et nom
+        const nameParts = candidateInfo.name ? candidateInfo.name.split(' ') : ['', ''];
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+
         // Créer la candidature
         console.log('📝 [APPLICATION] Création de la candidature...');
         console.log('📝 [APPLICATION] Données à insérer:', {
           job_id: jobId,
           candidate_id: candidateId,
           recruiter_id: job.recruiter_id,
+          first_name: firstName,
+          last_name: lastName,
+          candidate_email: candidateInfo.email,
           status: 'pending'
         });
         
@@ -739,6 +789,9 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
           job_id: jobId,
           candidate_id: candidateId,
           recruiter_id: job.recruiter_id,
+          first_name: firstName,
+          last_name: lastName,
+          candidate_email: candidateInfo.email,
           status: 'pending'
         };
         
