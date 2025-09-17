@@ -127,36 +127,31 @@ const MatchingDashboard = ({ recruiterId }) => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* En-tête */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard de Matching</h1>
-                <p className="mt-1 text-sm text-gray-600">
-                  Trouvez les meilleurs candidats grâce au Matching
-                </p>
-              </div>
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={fetchStats}
-                  className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm"
-                >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Actualiser le Matching
-                </button>
-              </div>
-            </div>
+      <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Dashboard de Matching</h1>
+            <p className="mt-1 text-sm text-gray-600">
+              Trouvez les meilleurs candidats grâce au Matching
+            </p>
+          </div>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={fetchStats}
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Actualiser le Matching
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar - Sélection d'offre et filtres */}
-          <div className="lg:w-80 flex-shrink-0">
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Sidebar - Sélection d'offre et filtres */}
+        <div className="lg:w-80 flex-shrink-0">
             <div className="bg-white rounded-xl shadow-md p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Sélectionner une Offre</h3>
               
@@ -570,7 +565,6 @@ const MatchingDashboard = ({ recruiterId }) => {
                 <p className="text-gray-600">Choisissez une offre dans la sidebar pour voir les candidats recommandés</p>
               </div>
             )}
-          </div>
         </div>
       </div>
     </div>
