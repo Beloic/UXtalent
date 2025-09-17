@@ -327,15 +327,16 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
               candidate_id_type: typeof application.candidate_id
             });
             
-            // Pour l'instant, utiliser l'ID 26 pour Loic Bernard (solution temporaire)
-            // TODO: Créer une correspondance entre UUID des candidatures et ID des candidats
+            // Mapping entre UUID des candidatures et ID des candidats
+            // TODO: Créer une table de correspondance ou modifier la structure
             let candidateId = application.candidate_id;
             
-            // Mapping temporaire pour Loic Bernard
+            // Mapping pour Loic Bernard (UUID -> ID 26)
             if (application.candidate_id === '20a12bd7-ff59-4de1-8d6a-84ddaffeca5f') {
               candidateId = 26;
             }
             
+            // Chercher le candidat par ID entier
             const { data: candidate, error: candidateError } = await supabaseAdmin
               .from('candidates')
               .select('id, name, title, location, bio, skills, experience, availability')
