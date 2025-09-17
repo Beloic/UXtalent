@@ -1,15 +1,18 @@
 -- Script pour forcer le job_id à 26 pour le candidat spécifique
 -- ID du candidat: 20a12bd7-ff59-4de1-8d6a-84ddaffeca5f
 
--- 1. Vérifier les informations du candidat
+-- 1. Trouver le candidat correspondant à ce candidate_id
 SELECT 
-    id,
-    name,
-    email,
-    title,
-    location
-FROM candidates 
-WHERE id = '20a12bd7-ff59-4de1-8d6a-84ddaffeca5f';
+    c.id as candidate_integer_id,
+    c.name,
+    c.email,
+    c.title,
+    c.location,
+    a.candidate_id as candidate_uuid_id
+FROM candidates c
+JOIN applications a ON c.id::text = a.candidate_id::text
+WHERE a.candidate_id = '20a12bd7-ff59-4de1-8d6a-84ddaffeca5f'
+LIMIT 1;
 
 -- 2. Vérifier les candidatures actuelles de ce candidat
 SELECT 
@@ -81,7 +84,7 @@ SELECT
     c.email as candidate_email
 FROM candidates c
 CROSS JOIN jobs j
-WHERE c.id = '20a12bd7-ff59-4de1-8d6a-84ddaffeca5f'
+WHERE c.id::text = '20a12bd7-ff59-4de1-8d6a-84ddaffeca5f'
 AND j.id = 26
 AND NOT EXISTS (
     SELECT 1 
