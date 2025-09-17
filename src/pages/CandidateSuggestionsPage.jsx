@@ -171,7 +171,7 @@ export default function CandidateSuggestionsPage() {
                     </div>
                     <div className="flex items-start">
                       <TrendingUp className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span>Les offres avec un score > 80% sont prioritaires</span>
+                        <span>Les offres avec un score &gt; 80% sont prioritaires</span>
                     </div>
                     <div className="flex items-start">
                       <Eye className="h-4 w-4 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
