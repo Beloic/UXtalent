@@ -308,50 +308,38 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
         throw error;
       }
 
-      // Récupérer les candidats disponibles pour utiliser leurs vrais noms
-      const { data: allCandidates, error: candidatesError } = await supabaseAdmin
-        .from('candidates')
-        .select('*');
-      
-      const applicationsWithCandidates = await Promise.all(
-        (applications || []).map(async (application) => {
-          
-          // Utiliser les vrais candidats disponibles avec leurs noms
-          let candidate = null;
-          
-          if (allCandidates && allCandidates.length > 0) {
-            // Utiliser le premier candidat disponible avec ses vraies informations
-            const firstCandidate = allCandidates[0];
-            console.log('🔄 NOUVEAU CODE - Premier candidat:', firstCandidate);
-            candidate = {
-              id: firstCandidate.id, // Utiliser l'ID numérique du candidat réel
-              name: firstCandidate.name || 'Marie Dupont', // Nom réaliste par défaut
-              title: firstCandidate.title || 'UX Designer',
-              location: firstCandidate.location || 'Paris',
-              bio: firstCandidate.bio || 'Candidat intéressé par cette offre',
-              skills: firstCandidate.skills || ['UX Design', 'UI Design', 'Figma'],
-              experience: firstCandidate.experience || 'Mid',
-              availability: firstCandidate.availability || 'Disponible'
-            };
-            console.log('🔄 NOUVEAU CODE - Candidate créé:', candidate);
-          } else {
-            // Fallback avec des noms réalistes et un ID par défaut valide
-            candidate = {
-              id: 31, // ID du candidat de test créé
-              name: 'Marie Dupont', // Nom réaliste au lieu de "Candidat"
-              title: 'UX Designer',
-              location: 'Paris',
-              bio: 'Candidat intéressé par cette offre',
-              skills: ['UX Design', 'UI Design', 'Figma'],
-              experience: 'Mid',
-              availability: 'Disponible'
-            };
-          }
+      // Dédupliquer par candidat (sécurité au cas où la base contient des doublons)
+      const dedupedApplications = [];
+      const seenCandidates = new Set();
+      for (const app of applications || []) {
+        if (seenCandidates.has(app.candidate_id)) continue;
+        seenCandidates.add(app.candidate_id);
+        dedupedApplications.push(app);
+      }
 
-          return { ...application, candidate };
+      // Pour chaque candidature, récupérer le bon candidat par candidate_id
+      const applicationsWithCandidates = await Promise.all(
+        dedupedApplications.map(async (application) => {
+          try {
+            const { data: candidate, error: candidateError } = await supabaseAdmin
+              .from('candidates')
+              .select('id, name, title, location, bio, skills, experience, availability')
+              .eq('id', application.candidate_id)
+              .single();
+
+            if (candidateError) {
+              console.error('Erreur lors de la récupération du candidat:', candidateError);
+              return { ...application, candidate: null };
+            }
+
+            return { ...application, candidate };
+          } catch (e) {
+            console.error('Erreur inattendue lors de la récupération du candidat:', e);
+            return { ...application, candidate: null };
+          }
         })
       );
-        
+
       return res.json({ applications: applicationsWithCandidates });
     }
 
