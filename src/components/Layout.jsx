@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase } from "lucide-react";
+import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -170,6 +170,21 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   <CreditCard className="w-4 h-4" />
                   Tarif
                 </NavLink>
+                {isAdmin && (
+                  <NavLink 
+                    to="/admin" 
+                    className={({ isActive }) => 
+                      `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                        isActive 
+                          ? 'text-red-600 bg-red-50 font-medium' 
+                          : 'text-gray-600 hover:text-red-600 hover:bg-red-50'
+                      }`
+                    }
+                  >
+                    <Shield className="w-4 h-4" />
+                    Admin
+                  </NavLink>
+                )}
               </>
             ) : (
               <>

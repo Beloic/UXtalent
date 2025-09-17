@@ -1258,28 +1258,22 @@ export default function RecruiterDashboard() {
                                         </div>
                                         {(() => {
                                           const candidateId = application.candidate?.id;
-                                          if (candidateId) {
+                                          if (!candidateId) {
                                             return (
-                                              <Link 
-                                                to={`/candidates/${candidateId}`}
-                                                className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1 flex-shrink-0"
-                                              >
+                                              <span className="px-3 py-1 bg-gray-400 text-white rounded-lg text-xs font-medium flex items-center gap-1 flex-shrink-0">
                                                 <Eye className="w-3 h-3" />
-                                                Profil
-                                              </Link>
+                                                Profil indisponible
+                                              </span>
                                             );
                                           }
                                           return (
-                                            <button 
-                                              onClick={() => {
-                                                setMessage('❌ Impossible d\'accéder au profil : ID du candidat manquant');
-                                                setTimeout(() => setMessage(''), 3000);
-                                              }}
-                                              className="px-3 py-1 bg-gray-200 text-gray-500 rounded-lg text-xs font-medium cursor-not-allowed flex items-center gap-1 flex-shrink-0"
+                                            <Link 
+                                              to={`/candidates/${candidateId}`}
+                                              className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1 flex-shrink-0"
                                             >
                                               <Eye className="w-3 h-3" />
                                               Profil
-                                            </button>
+                                            </Link>
                                           );
                                         })()}
                                       </div>

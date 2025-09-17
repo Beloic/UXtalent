@@ -269,13 +269,20 @@ export default function CandidateCard({ candidate }) {
 
       {/* Actions */}
       <div className="flex justify-center pt-4 border-t border-gray-100">
-        <Link
-          to={`/candidates/${candidate.id}`}
-          className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
-        >
-          <User className="w-4 h-4 mr-2" />
-          Voir le profil complet
-        </Link>
+        {candidate.id ? (
+          <Link
+            to={`/candidates/${candidate.id}`}
+            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
+          >
+            <User className="w-4 h-4 mr-2" />
+            Voir le profil complet
+          </Link>
+        ) : (
+          <span className="inline-flex items-center px-6 py-3 bg-gray-400 text-white text-sm font-medium rounded-xl cursor-not-allowed">
+            <User className="w-4 h-4 mr-2" />
+            Profil indisponible
+          </span>
+        )}
       </div>
     </div>
   );

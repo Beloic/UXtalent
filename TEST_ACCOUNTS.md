@@ -22,6 +22,27 @@
 - ✅ Contact des candidats
 - ✅ Voir tous les candidats approuvés
 
+## Compte Administrateur
+
+### Identifiants de connexion
+- **Email** : `admin@uxjobspro.com`
+- **Mot de passe** : `AdminUXJobs2024!`
+- **Rôle** : `admin`
+- **ID** : `4772b035-159c-428e-8d57-ecd529fe07eb`
+
+### Informations du profil
+- **Nom** : `Administrateur UX Jobs Pro`
+- **Fonction** : `Administrateur`
+- **Statut** : `Confirmé automatiquement`
+
+### Permissions
+- ✅ Accès complet au dashboard admin
+- ✅ Gestion des candidats (approuver/rejeter)
+- ✅ Gestion du forum
+- ✅ Gestion des offres d'emploi
+- ✅ Statistiques complètes
+- ✅ Toutes les permissions recruteur
+
 ## Token Admin (pour développement)
 
 ### Token d'accès complet
@@ -38,10 +59,19 @@
 
 ## Instructions d'utilisation
 
-### 1. Connexion normale
-1. Allez sur http://localhost:5175/
-2. Cliquez sur "Se connecter"
-3. Utilisez les identifiants du compte recruteur ci-dessus
+### 1. Connexion normale (Recruteur)
+1. Allez sur http://localhost:5175/login
+2. Utilisez les identifiants du compte recruteur :
+   - Email : `be.loic23+5@gmail.com`
+   - Mot de passe : `LoicRecruiter2024!`
+3. Vous aurez accès au dashboard recruteur
+
+### 1bis. Connexion Admin
+1. Allez sur http://localhost:5175/login
+2. Utilisez les identifiants du compte admin :
+   - Email : `admin@uxjobspro.com`
+   - Mot de passe : `AdminUXJobs2024!`
+3. Vous aurez automatiquement accès au dashboard admin
 
 ### 2. Connexion admin (pour tests avancés)
 1. Connectez-vous normalement d'abord
