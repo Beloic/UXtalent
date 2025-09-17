@@ -280,11 +280,6 @@ const MatchingDashboard = ({ recruiterId }) => {
                                 <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getScoreColor(candidate.score)}`}>
                                   {formatScore(candidate.score)}%
                                 </span>
-                                {candidate.isFeatured && (
-                                  <span className="ml-2 px-2 py-1 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 text-xs rounded-full border border-purple-300">
-                                    ⭐ Featured
-                                  </span>
-                                )}
                               </div>
 
                               {/* Informations principales */}
