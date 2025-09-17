@@ -327,30 +327,23 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
               candidate_id_type: typeof application.candidate_id
             });
             
-            // Utiliser la table de correspondance pour mapper UUID -> ID candidat
-            let candidateId = application.candidate_id;
-            
-            // Chercher la correspondance dans la table de mapping
+            // Utiliser UNIQUEMENT la table de correspondance candidate_id_mapping
             const { data: mapping, error: mappingError } = await supabaseAdmin
               .from('candidate_id_mapping')
               .select('candidate_db_id')
               .eq('candidate_id', application.candidate_id)
               .single();
             
-            if (!mappingError && mapping) {
-              candidateId = mapping.candidate_db_id;
-            } else {
-              // Fallback pour Loic Bernard si la table n'existe pas encore
-              if (application.candidate_id === '20a12bd7-ff59-4de1-8d6a-84ddaffeca5f') {
-                candidateId = 26;
-              }
+            if (mappingError || !mapping) {
+              console.error('❌ [GET_JOB_APPLICATIONS] Aucune correspondance trouvée pour:', application.candidate_id);
+              return { ...application, candidate: null };
             }
             
-            // Chercher le candidat par ID entier
+            // Chercher le candidat par ID entier depuis la table de mapping
             const { data: candidate, error: candidateError } = await supabaseAdmin
               .from('candidates')
               .select('id, name, title, location, bio, skills, experience, availability')
-              .eq('id', candidateId)
+              .eq('id', mapping.candidate_db_id)
               .single();
 
             if (candidateError) {
