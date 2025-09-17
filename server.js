@@ -340,15 +340,31 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
                 code: candidateError.code
               });
               
-              // Si on a first_name et last_name dans l'application, créer un objet candidat temporaire
+              // Si on a first_name et last_name dans l'application, essayer de trouver le vrai ID du candidat
               if (application.first_name && application.last_name) {
-                console.log('✅ [GET_JOB_APPLICATIONS] Utilisation des données de l\'application:', {
+                console.log('✅ [GET_JOB_APPLICATIONS] Recherche du candidat par nom:', {
                   first_name: application.first_name,
                   last_name: application.last_name
                 });
+                
+                // Chercher le candidat par nom complet
+                const fullName = `${application.first_name} ${application.last_name}`.trim();
+                const { data: candidateByName, error: nameError } = await supabaseAdmin
+                  .from('candidates')
+                  .select('id, name, title, location, bio, skills, experience, availability')
+                  .eq('name', fullName)
+                  .single();
+                  
+                if (!nameError && candidateByName) {
+                  console.log('✅ [GET_JOB_APPLICATIONS] Candidat trouvé par nom:', candidateByName.id);
+                  return { ...application, candidate: candidateByName };
+                }
+                
+                // Si pas trouvé par nom, créer un objet temporaire mais sans ID valide
+                console.log('⚠️ [GET_JOB_APPLICATIONS] Candidat non trouvé par nom, création temporaire');
                 const tempCandidate = {
-                  id: application.candidate_id, // Garder l'ID original
-                  name: `${application.first_name} ${application.last_name}`.trim(),
+                  id: null, // Pas d'ID valide pour éviter les 404
+                  name: fullName,
                   title: 'Candidat',
                   location: 'Non spécifié',
                   bio: 'Informations limitées',
