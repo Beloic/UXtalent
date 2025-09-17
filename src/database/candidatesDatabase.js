@@ -189,7 +189,8 @@ export function addCandidate(candidate) {
 // Mettre à jour un candidat
 export function updateCandidate(id, updates) {
   const candidates = loadCandidates();
-  const candidateIndex = candidates.findIndex(c => c.id === id);
+  const targetId = String(id);
+  const candidateIndex = candidates.findIndex(c => String(c.id) === targetId);
   
   if (candidateIndex === -1) {
     throw new Error('Candidat non trouvé');
