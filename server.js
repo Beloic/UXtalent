@@ -118,18 +118,30 @@ app.use(helmet({
   }
 }));
 
+// CORS: autoriser Netlify/Vercel (y compris les URL de preview) et localhost en dev
+const allowedOrigins = [
+  'https://u-xtalent.vercel.app',
+  'https://ux-jobs-pro.netlify.app',
+  /^https:\/\/.*\.netlify\.app$/, // prévisualisations Netlify
+  /^https:\/\/.*\.vercel\.app$/,  // prévisualisations Vercel
+  'http://localhost:5173',
+  'http://127.0.0.1:5173'
+];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://68c95b0e4609f669abca7e3b--superlative-custard-0c39a4.netlify.app',
-        'https://superlative-custard-0c39a4.netlify.app',
-        'https://ux-jobs-pro.netlify.app'
-      ]
-    : true,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // requêtes server-to-server ou outils
+    const isAllowed = allowedOrigins.some(o => (o instanceof RegExp ? o.test(origin) : o === origin));
+    return isAllowed ? callback(null, true) : callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 86400
 }));
+
+// Pré-vol (preflight)
+app.options('*', cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
