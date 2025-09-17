@@ -31,7 +31,6 @@ export default function MyProfilePage() {
     id: null,
     name: '',
     email: '',
-    phone: '', // Nouveau champ téléphone
     title: '',
     location: '',
     remote: 'hybrid',
@@ -200,7 +199,6 @@ export default function MyProfilePage() {
             id: existingCandidate.id || null,
             name: existingCandidate.name || '',
             email: existingCandidate.email || '',
-            phone: existingCandidate.phone || '',
             title: existingCandidate.title || '',
             location: existingCandidate.location || '',
             remote: existingCandidate.remote || 'hybrid',
@@ -361,7 +359,6 @@ export default function MyProfilePage() {
       const candidateData = {
         name: formData.name,
         email: formData.email,
-        phone: formData.phone || '',
         bio: structuredBio,
         // Préserver le statut existant ou définir comme pending pour les nouveaux profils
         status: formData.id ? undefined : 'pending', // Ne pas modifier le statut pour les profils existants
@@ -523,12 +520,7 @@ export default function MyProfilePage() {
                   <span className="font-medium text-gray-600">Email :</span>
                   <span className="ml-2 text-gray-900">{formData.email}</span>
                 </div>
-                {formData.phone && (
-                  <div>
-                    <span className="font-medium text-gray-600">Téléphone :</span>
-                    <span className="ml-2 text-gray-900">{formData.phone}</span>
-                  </div>
-                )}
+                
                 <div>
                   <span className="font-medium text-gray-600">Titre :</span>
                   <span className="ml-2 text-gray-900">{formData.title}</span>
@@ -820,19 +812,7 @@ export default function MyProfilePage() {
                         />
                       </div>
                       
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Téléphone
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                          placeholder="+33 6 12 34 56 78"
-                        />
-                      </div>
+                      
                     </div>
                   </motion.div>
 
