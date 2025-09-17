@@ -18,7 +18,7 @@ INSERT INTO applications (
 -- Candidature de Loic Bernard pour une offre UX Designer
 (
     26, -- ID de Loic Bernard dans la table candidates
-    'recruiter-uuid-1', -- UUID du recruteur (remplacez par un vrai UUID)
+    '550e8400-e29b-41d4-a716-446655440001', -- UUID du recruteur (remplacez par un vrai UUID)
     1, -- ID de l'offre (remplacez par un vrai job_id)
     'Loic',
     'Bernard',
@@ -31,7 +31,7 @@ INSERT INTO applications (
 -- Candidature de Loic Bernard pour une autre offre
 (
     26, -- ID de Loic Bernard
-    'recruiter-uuid-2', -- UUID d'un autre recruteur
+    '550e8400-e29b-41d4-a716-446655440002', -- UUID d'un autre recruteur
     2, -- ID d'une autre offre
     'Loic',
     'Bernard', 
@@ -44,7 +44,7 @@ INSERT INTO applications (
 -- Candidature d'un autre candidat (si vous en avez d'autres)
 (
     1, -- ID d'un autre candidat (remplacez par un vrai ID)
-    'recruiter-uuid-1',
+    '550e8400-e29b-41d4-a716-446655440001',
     1,
     'Marie',
     'Dubois',

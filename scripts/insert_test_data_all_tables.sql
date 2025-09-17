@@ -103,7 +103,7 @@ INSERT INTO jobs (
     'Télétravail flexible, Mutuelle, Tickets restaurant, Équipe jeune et dynamique',
     ARRAY['UX Design', 'Research', 'Figma', 'Senior'],
     '55-70k€',
-    'recruiter-uuid-1',
+    '550e8400-e29b-41d4-a716-446655440001',
     'active'
 ),
 (
@@ -118,7 +118,7 @@ INSERT INTO jobs (
     '100% remote, Équity, Formation continue, Matériel fourni',
     ARRAY['Product Design', 'SaaS', 'Remote', 'Mid'],
     '45-60k€',
-    'recruiter-uuid-2',
+    '550e8400-e29b-41d4-a716-446655440002',
     'active'
 ),
 (
@@ -133,7 +133,7 @@ INSERT INTO jobs (
     'Télétravail 3j/semaine, Projets internationaux, Formation UX',
     ARRAY['UX Research', 'Psychology', 'International', 'Mid'],
     '40-55k€',
-    'recruiter-uuid-3',
+    '550e8400-e29b-41d4-a716-446655440003',
     'active'
 ) ON CONFLICT DO NOTHING;
 
@@ -149,7 +149,7 @@ INSERT INTO applications (
 -- Candidature de Loic Bernard pour l'offre UX Designer Senior
 (
     26,
-    'recruiter-uuid-1',
+    '550e8400-e29b-41d4-a716-446655440001',
     1, -- ID de la première offre
     'Loic',
     'Bernard',
@@ -161,7 +161,7 @@ INSERT INTO applications (
 -- Candidature de Loic Bernard pour l'offre Product Designer
 (
     26,
-    'recruiter-uuid-2',
+    '550e8400-e29b-41d4-a716-446655440002',
     2, -- ID de la deuxième offre
     'Loic',
     'Bernard',
@@ -173,7 +173,7 @@ INSERT INTO applications (
 -- Candidature de Marie Dubois pour l'offre UX Designer Senior
 (
     (SELECT id FROM candidates WHERE email = 'marie.dubois@email.com'),
-    'recruiter-uuid-1',
+    '550e8400-e29b-41d4-a716-446655440001',
     1,
     'Marie',
     'Dubois',
