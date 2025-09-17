@@ -14,9 +14,6 @@ import {
   Clock, 
   DollarSign,
   Eye,
-  Heart,
-  MessageSquare,
-  Calendar,
   BarChart3,
   RefreshCw
 } from 'lucide-react';
@@ -142,10 +139,10 @@ const MatchingDashboard = ({ recruiterId }) => {
                   Trouvez les meilleurs candidats grâce à l'IA
                 </p>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
                 <button
                   onClick={fetchStats}
-                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm"
                 >
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Actualiser
@@ -160,7 +157,7 @@ const MatchingDashboard = ({ recruiterId }) => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar - Sélection d'offre et filtres */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-xl shadow-md p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Sélectionner une Offre</h3>
               
               {/* Liste des offres */}
@@ -278,7 +275,7 @@ const MatchingDashboard = ({ recruiterId }) => {
             {selectedJob ? (
               <div className="space-y-6">
                 {/* Informations de l'offre sélectionnée */}
-                <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="bg-white rounded-xl shadow-md p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h2 className="text-xl font-bold text-gray-900">{selectedJob.title}</h2>
@@ -311,7 +308,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                 {/* Statistiques rapides */}
                 {stats && (
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="bg-white rounded-lg shadow-md p-4">
+                    <div className="bg-white rounded-xl shadow-md p-4">
                       <div className="flex items-center">
                         <TrendingUp className="h-8 w-8 text-green-600" />
                         <div className="ml-3">
@@ -323,7 +320,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                       </div>
                     </div>
                     
-                    <div className="bg-white rounded-lg shadow-md p-4">
+                    <div className="bg-white rounded-xl shadow-md p-4">
                       <div className="flex items-center">
                         <Star className="h-8 w-8 text-yellow-600" />
                         <div className="ml-3">
@@ -335,7 +332,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                       </div>
                     </div>
                     
-                    <div className="bg-white rounded-lg shadow-md p-4">
+                    <div className="bg-white rounded-xl shadow-md p-4">
                       <div className="flex items-center">
                         <Users className="h-8 w-8 text-blue-600" />
                         <div className="ml-3">
@@ -347,7 +344,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                       </div>
                     </div>
                     
-                    <div className="bg-white rounded-lg shadow-md p-4">
+                    <div className="bg-white rounded-xl shadow-md p-4">
                       <div className="flex items-center">
                         <BarChart3 className="h-8 w-8 text-purple-600" />
                         <div className="ml-3">
@@ -362,7 +359,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                 )}
 
                 {/* Liste des candidats */}
-                <div className="bg-white rounded-lg shadow-md">
+                <div className="bg-white rounded-xl shadow-md">
                   <div className="p-6 border-b border-gray-200">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-semibold text-gray-900">
@@ -389,8 +386,8 @@ const MatchingDashboard = ({ recruiterId }) => {
                         <div key={candidate.candidateId} className="p-6 hover:bg-gray-50 transition-colors">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <div className="flex items-center mb-2">
-                                <h4 className="text-lg font-medium text-gray-900 mr-3">
+                              <div className="flex items-center mb-1">
+                                <h4 className="text-lg font-semibold text-gray-900 mr-3">
                                   {candidate.name}
                                 </h4>
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getScoreColor(candidate.score)}`}>
@@ -402,29 +399,14 @@ const MatchingDashboard = ({ recruiterId }) => {
                                   </span>
                                 )}
                               </div>
-                              
-                              <div className="flex items-center text-sm text-gray-600 mb-2">
+
+                              <div className="flex items-center text-sm text-gray-600">
                                 <span className="mr-4">{candidate.title}</span>
                                 <MapPin className="h-4 w-4 mr-1" />
                                 <span>{candidate.location}</span>
                               </div>
 
-                              {/* Compétences */}
-                              <div className="flex flex-wrap gap-1 mb-2">
-                                {candidate.skills.slice(0, 6).map((skill, idx) => (
-                                  <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                                    {skill}
-                                  </span>
-                                ))}
-                                {candidate.skills.length > 6 && (
-                                  <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                                    +{candidate.skills.length - 6}
-                                  </span>
-                                )}
-                              </div>
-
-                              {/* Détails */}
-                              <div className="flex items-center text-xs text-gray-500 space-x-4">
+                              <div className="mt-2 flex items-center text-xs text-gray-500 space-x-4">
                                 <span className="flex items-center">
                                   <Users className="h-3 w-3 mr-1" />
                                   {candidate.experience}
@@ -448,63 +430,17 @@ const MatchingDashboard = ({ recruiterId }) => {
                               </div>
                             </div>
 
-                            {/* Actions */}
-                            <div className="flex items-center space-x-2 ml-4">
+                            {/* Action minimale */}
+                            <div className="ml-4">
                               <button
-                                className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                className="inline-flex items-center px-3 py-2 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-100"
                                 title="Voir le profil"
                               >
                                 <Eye className="h-4 w-4 mr-1" />
                                 Voir
                               </button>
-                              <button
-                                className="flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                                title="Contacter"
-                              >
-                                <MessageSquare className="h-4 w-4 mr-1" />
-                                Contacter
-                              </button>
-                              <button
-                                className="flex items-center px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                                title="Planifier un entretien"
-                              >
-                                <Calendar className="h-4 w-4 mr-1" />
-                                Entretien
-                              </button>
                             </div>
                           </div>
-
-                          {/* Score détaillé */}
-                          {candidate.scoreBreakdown && (
-                            <div className="mt-3 pt-3 border-t border-gray-100">
-                              <div className="grid grid-cols-6 gap-2 text-xs">
-                                <div className="text-center">
-                                  <div className="font-medium text-gray-700">Compétences</div>
-                                  <div className="text-blue-600">{formatScore(candidate.scoreBreakdown.skills)}%</div>
-                                </div>
-                                <div className="text-center">
-                                  <div className="font-medium text-gray-700">Expérience</div>
-                                  <div className="text-green-600">{formatScore(candidate.scoreBreakdown.experience)}%</div>
-                                </div>
-                                <div className="text-center">
-                                  <div className="font-medium text-gray-700">Localisation</div>
-                                  <div className="text-purple-600">{formatScore(candidate.scoreBreakdown.location)}%</div>
-                                </div>
-                                <div className="text-center">
-                                  <div className="font-medium text-gray-700">Salaire</div>
-                                  <div className="text-orange-600">{formatScore(candidate.scoreBreakdown.salary)}%</div>
-                                </div>
-                                <div className="text-center">
-                                  <div className="font-medium text-gray-700">Disponibilité</div>
-                                  <div className="text-red-600">{formatScore(candidate.scoreBreakdown.availability)}%</div>
-                                </div>
-                                <div className="text-center">
-                                  <div className="font-medium text-gray-700">Plan</div>
-                                  <div className="text-indigo-600">{formatScore(candidate.scoreBreakdown.plan)}%</div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
                         </div>
                       ))
                     )}
