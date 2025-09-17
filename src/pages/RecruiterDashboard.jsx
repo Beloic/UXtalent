@@ -1222,9 +1222,9 @@ export default function RecruiterDashboard() {
                                   Candidatures ({applications.length})
                                 </h4>
                               </div>
-                              <div className="flex gap-0">
-                                {applications.slice(0, 5).map((application, index) => (
-                                  <div key={application.id} className={`flex-1 bg-white hover:shadow-md transition-all duration-200 ${index === 0 ? 'rounded-l-xl' : ''} ${index === applications.slice(0, 5).length - 1 ? 'rounded-r-xl' : ''} ${index < applications.slice(0, 5).length - 1 ? 'border-r border-gray-100' : ''}`}>
+                              <div className="space-y-3">
+                                {applications.map((application, index) => (
+                                  <div key={application.id} className="bg-white hover:shadow-md transition-all duration-200 rounded-xl border border-gray-100">
                                     <div className="p-4">
                                       <div className="flex items-center gap-3 mb-3">
                                         <div className="relative">
@@ -1280,13 +1280,6 @@ export default function RecruiterDashboard() {
                                     </div>
                                   </div>
                                 ))}
-                                {applications.length > 5 && (
-                                  <div className="flex-shrink-0 w-32 bg-gray-100 rounded-r-xl flex items-center justify-center">
-                                    <p className="text-xs text-gray-500 text-center">
-                                      +{applications.length - 5} autre{applications.length - 5 > 1 ? 's' : ''}
-                                    </p>
-                                  </div>
-                                )}
                               </div>
                             </div>
                           )}
