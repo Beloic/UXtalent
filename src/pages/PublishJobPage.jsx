@@ -18,8 +18,7 @@ export default function PublishJobPage() {
             </svg>
             Retour
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Publier une offre</h1>
-          <p className="text-gray-600">Renseignez les informations de votre nouvelle offre d'emploi.</p>
+          {/* Titre et sous-texte supprimés selon demande */}
         </div>
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
           <PublishJobForm onJobPublished={() => {
