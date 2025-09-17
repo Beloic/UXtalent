@@ -904,14 +904,49 @@ const CandidateKanban = ({
               min-width: 180px !important;
             }
           }
-          @media (max-width: 1000px) {
+          /* Responsive improvements */
+          @media (max-width: 1024px) {
             .rkk-column-outer {
-              min-width: 160px !important;
-              max-width: none !important;
-              width: auto !important;
+              min-width: 280px !important;
+              max-width: 280px !important;
+              width: 280px !important;
             }
-            .rkk-column {
-              min-width: 160px !important;
+          }
+          
+          @media (max-width: 768px) {
+            .rkk-board {
+              flex-direction: column;
+              gap: 0.75rem;
+            }
+            .rkk-column-outer {
+              min-width: 100% !important;
+              max-width: 100% !important;
+              width: 100% !important;
+            }
+            .rkk-column-header {
+              padding: 0.75rem;
+              font-size: 0.875rem;
+            }
+            .rkk-column-content {
+              padding: 0.75rem;
+              min-height: 150px;
+            }
+            .rkk-card-outer {
+              padding: 0.5rem;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .rkk-column-header {
+              padding: 0.5rem;
+              font-size: 0.8rem;
+            }
+            .rkk-column-content {
+              padding: 0.5rem;
+              min-height: 120px;
+            }
+            .rkk-card-outer {
+              padding: 0.375rem;
             }
           }
         `

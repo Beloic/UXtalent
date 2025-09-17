@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield } from "lucide-react";
-import { motion } from "framer-motion";
+import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield, Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import { usePermissions } from "../hooks/usePermissions";
@@ -13,6 +13,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   const { isCandidate, isRecruiter, isAdmin, userRole } = usePermissions();
   const [hasProfile, setHasProfile] = useState(null);
   const [candidatePlan, setCandidatePlan] = useState('free');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkProfile = async () => {
@@ -115,6 +116,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             </motion.div>
             <span className="text-xl">UX Talents</span>
           </Link>
+          {/* Navigation Desktop */}
           <nav className="ml-8 hidden md:flex items-center gap-6 text-gray-600">
             {isAuthenticated ? (
               <>
@@ -220,7 +222,16 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             )}
           </nav>
           
-          <div className="ml-auto flex items-center gap-3">
+          {/* Bouton Menu Mobile */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+          
+          {/* Actions Desktop */}
+          <div className="ml-auto hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               <div className="flex items-center gap-3">
                 
@@ -232,7 +243,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
                     >
                       <User className="w-4 h-4" />
-                      <span className="hidden md:inline">Mon profil</span>
+                      Mon profil
                     </Link>
                     {getPlanBadge(candidatePlan)}
                   </div>
@@ -245,7 +256,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     className="inline-flex items-center gap-2 px-4 py-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
                   >
                     <Users className="w-4 h-4" />
-                    <span className="hidden md:inline">Dashboard</span>
+                    Dashboard
                   </Link>
                 </ConditionalRender>
                 
@@ -255,7 +266,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span className="hidden md:inline">Déconnexion</span>
+                  Déconnexion
                 </button>
               </div>
             ) : (
@@ -265,14 +276,14 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   className="inline-flex items-center gap-2 px-4 py-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
                 >
                   <Users className="w-4 h-4" />
-                  <span className="hidden md:inline">Recruteurs</span>
+                  Recruteurs
                 </Link>
                 <Link 
                   to="/login" 
                   className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
                 >
                   <LogIn className="w-4 h-4" />
-                  <span className="hidden md:inline">Connexion</span>
+                  Connexion
                 </Link>
                 <Link 
                   to="/register" 
@@ -287,6 +298,209 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
         </div>
       </header>
       )}
+
+      {/* Menu Mobile */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-b border-gray-200 shadow-lg"
+          >
+            <div className="px-4 py-6 space-y-4">
+              {/* Navigation Mobile */}
+              <nav className="space-y-2">
+                {isAuthenticated ? (
+                  <>
+                    <NavLink 
+                      to="/candidates" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) => 
+                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                          isActive 
+                            ? 'text-blue-600 bg-blue-50 font-medium' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`
+                      }
+                    >
+                      <List className="w-5 h-5" />
+                      Talents
+                    </NavLink>
+                    <NavLink 
+                      to="/jobs" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) => 
+                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                          isActive 
+                            ? 'text-blue-600 bg-blue-50 font-medium' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`
+                      }
+                    >
+                      <Briefcase className="w-5 h-5" />
+                      Offres
+                    </NavLink>
+                    <NavLink 
+                      to="/forum" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) => 
+                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                          isActive 
+                            ? 'text-blue-600 bg-blue-50 font-medium' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`
+                      }
+                    >
+                      <MessageSquare className="w-5 h-5" />
+                      Forum
+                    </NavLink>
+                    <NavLink 
+                      to="/pricing" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) => 
+                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                          isActive 
+                            ? 'text-blue-600 bg-blue-50 font-medium' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`
+                      }
+                    >
+                      <CreditCard className="w-5 h-5" />
+                      Tarif
+                    </NavLink>
+                    {isAdmin && (
+                      <NavLink 
+                        to="/admin" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={({ isActive }) => 
+                          `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                            isActive 
+                              ? 'text-red-600 bg-red-50 font-medium' 
+                              : 'text-gray-600 hover:text-red-600 hover:bg-red-50'
+                          }`
+                        }
+                      >
+                        <Shield className="w-5 h-5" />
+                        Admin
+                      </NavLink>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      to="/login" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      <List className="w-5 h-5" />
+                      Talents
+                    </Link>
+                    <Link 
+                      to="/login" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      <Briefcase className="w-5 h-5" />
+                      Offres
+                    </Link>
+                    <Link 
+                      to="/login" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      <MessageSquare className="w-5 h-5" />
+                      Forum
+                    </Link>
+                    <Link 
+                      to="/pricing" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      <CreditCard className="w-5 h-5" />
+                      Tarif
+                    </Link>
+                  </>
+                )}
+              </nav>
+
+              {/* Actions Mobile */}
+              <div className="border-t border-gray-200 pt-4">
+                {isAuthenticated ? (
+                  <div className="space-y-2">
+                    {/* Bouton pour les candidats */}
+                    <ConditionalRender role="candidate">
+                      <div className="space-y-2">
+                        <Link 
+                          to="/my-profile" 
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
+                        >
+                          <User className="w-5 h-5" />
+                          Mon profil
+                        </Link>
+                        <div className="px-4">
+                          {getPlanBadge(candidatePlan)}
+                        </div>
+                      </div>
+                    </ConditionalRender>
+                    
+                    {/* Bouton pour les recruteurs */}
+                    <ConditionalRender role="recruiter">
+                      <Link 
+                        to="/recruiter-dashboard" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
+                      >
+                        <Users className="w-5 h-5" />
+                        Dashboard
+                      </Link>
+                    </ConditionalRender>
+                    
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200 w-full"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      Déconnexion
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Link 
+                      to="/recruiters" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
+                    >
+                      <Users className="w-5 h-5" />
+                      Recruteurs
+                    </Link>
+                    <Link 
+                      to="/login" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
+                    >
+                      <LogIn className="w-5 h-5" />
+                      Connexion
+                    </Link>
+                    <Link 
+                      to="/register" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-200"
+                    >
+                      <UserPlus className="w-5 h-5" />
+                      Inscription
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main>{children}</main>
 

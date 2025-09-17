@@ -210,7 +210,7 @@ export default function PublishJobForm({ onJobPublished }) {
               <p className="text-gray-600">Commençons par les informations essentielles de votre offre</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   <Briefcase className="w-4 h-4 inline mr-2" />
@@ -222,7 +222,7 @@ export default function PublishJobForm({ onJobPublished }) {
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="ex: UX Designer Senior"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   required
                 />
               </div>
@@ -238,7 +238,7 @@ export default function PublishJobForm({ onJobPublished }) {
                   value={formData.company}
                   onChange={handleInputChange}
                   placeholder="ex: TechCorp"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   required
                 />
               </div>
@@ -254,7 +254,7 @@ export default function PublishJobForm({ onJobPublished }) {
                   value={formData.location}
                   onChange={handleInputChange}
                   placeholder="ex: Paris, France"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   required
                 />
               </div>
@@ -268,7 +268,7 @@ export default function PublishJobForm({ onJobPublished }) {
                   name="remote"
                   value={formData.remote}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="onsite">Sur site</option>
                   <option value="hybrid">Hybride</option>

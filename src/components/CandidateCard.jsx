@@ -117,28 +117,28 @@ export default function CandidateCard({ candidate }) {
     <div className={getCardStyles()}>
       {/* Badge de mise en avant pour Premium/Pro */}
       {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
-        <div className="absolute -top-3 -right-3 z-10">
-          <div className={`text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg ${
+        <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10">
+          <div className={`text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg ${
             candidate.planType === 'pro' 
               ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
               : 'bg-blue-600'
           }`}>
             <span className={candidate.planType === 'pro' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
-            {candidate.planType === 'pro' ? 'Pro' : 'Premium'}
+            <span className="hidden sm:inline">{candidate.planType === 'pro' ? 'Pro' : 'Premium'}</span>
           </div>
         </div>
       )}
       
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div className="flex items-start gap-4 flex-1">
+      <div className="flex items-start justify-between mb-4 sm:mb-6">
+        <div className="flex items-start gap-3 sm:gap-4 flex-1">
           {/* Photo de profil ou Initiales */}
           <div className="relative">
             {candidate.photo ? (
               <img
                 src={candidate.photo}
                 alt={`Photo de ${candidate.name}`}
-                className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-lg"
+                className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl object-cover border-2 border-white shadow-lg"
                 onError={(e) => {
                   console.log('❌ Erreur de chargement de la photo:', candidate.photo);
                   // Utiliser un avatar généré automatiquement
@@ -152,19 +152,19 @@ export default function CandidateCard({ candidate }) {
               <img
                 src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=64&background=6366f1&color=ffffff&bold=true`}
                 alt={`Avatar de ${candidate.name}`}
-                className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-lg"
+                className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl object-cover border-2 border-white shadow-lg"
               />
             )}
           </div>
           
-          <div className="flex-1">
-            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2 group-hover:text-blue-600 transition-colors truncate">
               {candidate.name}
             </h3>
-            <p className="text-lg text-gray-600 mb-3 font-medium">{candidate.title}</p>
-            <div className="flex items-center text-sm text-gray-500 mb-3">
-              <MapPin className="w-4 h-4 mr-2 text-blue-500" />
-              {candidate.location}
+            <p className="text-sm sm:text-lg text-gray-600 mb-2 sm:mb-3 font-medium line-clamp-2">{candidate.title}</p>
+            <div className="flex items-center text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-blue-500 flex-shrink-0" />
+              <span className="truncate">{candidate.location}</span>
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@ export default function CandidateCard({ candidate }) {
           <button
             onClick={toggleFavorite}
             disabled={isLoadingFavorite}
-            className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
+            className={`p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-110 ${
               isFavorited 
                 ? 'bg-red-100 text-red-600 hover:bg-red-200' 
                 : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-red-500'
@@ -182,16 +182,16 @@ export default function CandidateCard({ candidate }) {
             title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
           >
             {isLoadingFavorite ? (
-              <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
             ) : (
-              <Heart className={`w-5 h-5 ${isFavorited ? 'fill-current' : ''}`} />
+              <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${isFavorited ? 'fill-current' : ''}`} />
             )}
           </button>
         )}
       </div>
 
       {/* Bio */}
-      <p className="text-gray-600 text-sm mb-6 line-clamp-3 leading-relaxed">
+      <p className="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-3 leading-relaxed">
         {(() => {
           // Masquer la ligne "Années d'expérience" de la bio puisqu'elle est affichée séparément
           const bio = candidate.bio || '';
@@ -200,22 +200,22 @@ export default function CandidateCard({ candidate }) {
       </p>
 
       {/* Skills */}
-      <div className="mb-6">
-        <div className="flex items-center text-sm text-gray-700 mb-3 font-semibold">
-          <Award className="w-4 h-4 mr-2 text-blue-500" />
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-center text-xs sm:text-sm text-gray-700 mb-2 sm:mb-3 font-semibold">
+          <Award className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-blue-500" />
           Compétences clés
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1 sm:gap-2">
           {(candidate.skills || []).slice(0, 4).map((skill, index) => (
             <span
               key={index}
-              className="px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-medium border border-blue-200"
+              className="px-2 py-1 sm:px-3 sm:py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-medium border border-blue-200"
             >
               {skill}
             </span>
           ))}
           {(candidate.skills || []).length > 4 && (
-            <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+            <span className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
               +{(candidate.skills || []).length - 4}
             </span>
           )}
@@ -223,21 +223,21 @@ export default function CandidateCard({ candidate }) {
       </div>
 
       {/* Details */}
-      <div className="flex items-center justify-between text-sm mb-6">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm mb-4 sm:mb-6 gap-2 sm:gap-0">
+        <div className="flex items-center gap-3 sm:gap-4">
           <div className="flex items-center text-gray-600">
-            <Globe className="w-4 h-4 mr-1 text-blue-500" />
+            <Globe className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-500" />
             <span className="font-medium">{getRemoteLabel(candidate.remote)}</span>
           </div>
           {candidate.salary && (
             <div className="flex items-center text-gray-600">
-              <DollarSign className="w-4 h-4 mr-1 text-green-500" />
+              <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-green-500" />
               <span className="font-medium">{candidate.salary}</span>
             </div>
           )}
         </div>
         <div className="flex items-center text-gray-500">
-          <Clock className="w-4 h-4 mr-1" />
+          <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
           <span className="text-xs">
             Mis à jour {new Date(candidate.updatedAt).toLocaleDateString('fr-FR')}
           </span>
@@ -246,11 +246,11 @@ export default function CandidateCard({ candidate }) {
 
       {/* Rémunération */}
       {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
-        <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-          <div className="text-sm text-gray-700 mb-3 font-semibold">
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-200">
+          <div className="text-xs sm:text-sm text-gray-700 mb-2 sm:mb-3 font-semibold">
             Rémunération souhaitée
           </div>
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm gap-2 sm:gap-0">
             {(candidate.dailyRate || candidate.daily_rate) && (
               <div className="flex items-center text-gray-600">
                 <span className="font-medium mr-1">TJM:</span>
@@ -268,19 +268,21 @@ export default function CandidateCard({ candidate }) {
       )}
 
       {/* Actions */}
-      <div className="flex justify-center pt-4 border-t border-gray-100">
+      <div className="flex justify-center pt-3 sm:pt-4 border-t border-gray-100">
         {candidate.id ? (
           <Link
             to={`/candidates/${candidate.id}`}
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
+            className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
           >
-            <User className="w-4 h-4 mr-2" />
-            Voir le profil complet
+            <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Voir le profil complet</span>
+            <span className="sm:hidden">Profil</span>
           </Link>
         ) : (
-          <span className="inline-flex items-center px-6 py-3 bg-gray-400 text-white text-sm font-medium rounded-xl cursor-not-allowed">
-            <User className="w-4 h-4 mr-2" />
-            Profil indisponible
+          <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gray-400 text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl cursor-not-allowed">
+            <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Profil indisponible</span>
+            <span className="sm:hidden">Indisponible</span>
           </span>
         )}
       </div>

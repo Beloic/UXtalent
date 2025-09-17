@@ -63,30 +63,31 @@ export default function LandingPage() {
               </Link>
             </motion.div>
 
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
               Tu cherches un job en 
               <span className="text-blue-600"> UX UI ?</span>
             </h1>
             
-            <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
               <strong className="text-gray-900">UX Talent</strong> est une plate-forme qui propose un vivier de talents sélectionné et validé par une équipe de Designer seniors. 
               Dans un marché saturé où la concurrence est rude, nous vous offrons un avantage décisif.
             </p>
 
             {/* CTA Principal */}
-            <div className="flex justify-center mb-12">
+            <div className="flex justify-center mb-8 sm:mb-12 px-4 sm:px-0">
               <Link
                 to="/register"
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-blue-600 text-white font-semibold text-lg rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-200"
+                className="group inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-blue-600 text-white font-semibold text-base sm:text-lg rounded-lg sm:rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-200"
               >
-                <Users className="w-5 h-5" />
-                Proposer mon profil
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Proposer mon profil</span>
+                <span className="sm:hidden">Mon profil</span>
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
             {/* Social Proof sobre */}
-            <div className="flex flex-wrap justify-center items-center gap-8 mb-12 text-gray-500">
+            <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 mb-8 sm:mb-12 text-gray-500 px-4 sm:px-0">
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-2">
                   {[
@@ -100,25 +101,25 @@ export default function LandingPage() {
                       key={i} 
                       src={avatar} 
                       alt={`Designer ${i + 1}`}
-                      className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                      className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white object-cover"
                     />
                   ))}
                 </div>
-                <span className="text-sm">+50 designers actifs</span>
+                <span className="text-xs sm:text-sm">+50 designers actifs</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-green-500" />
-                <span className="text-sm">Profils vérifiés</span>
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+                <span className="text-xs sm:text-sm">Profils vérifiés</span>
               </div>
             </div>
 
             {/* Stats professionnelles */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto px-4 sm:px-0">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-center bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+                className="text-center bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100"
               >
                 <div className="text-3xl font-bold text-blue-600 mb-2">50+</div>
                 <div className="text-gray-900 font-semibold">Designers vérifiés</div>
@@ -128,7 +129,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="text-center bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+                className="text-center bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100"
               >
                 <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
                 <div className="text-gray-900 font-semibold">Entreprises partenaires</div>
@@ -138,7 +139,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="text-center bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+                className="text-center bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100"
               >
                 <div className="text-3xl font-bold text-blue-600 mb-2">7 jours</div>
                 <div className="text-gray-900 font-semibold">Délai de réponse</div>
@@ -163,7 +164,7 @@ export default function LandingPage() {
               La réalité du marché UX/UI en 2025
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
-              Le marché du design UX/UI est devenu extrêmement concurrentiel. Voici pourquoi vous avez besoin d'un avantage différenciant.
+              Le marché du design UX/UI est devenu extrêmement concurrentiel.
             </p>
           </motion.div>
 
