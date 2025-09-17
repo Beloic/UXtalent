@@ -154,9 +154,9 @@ const MatchingDashboard = ({ recruiterId }) => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar - Sélection d'offre et filtres */}
-          <div className="lg:col-span-1">
+          <div className="lg:w-80 flex-shrink-0">
             <div className="bg-white rounded-xl shadow-md p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Sélectionner une Offre</h3>
               
@@ -271,7 +271,7 @@ const MatchingDashboard = ({ recruiterId }) => {
           </div>
 
           {/* Contenu principal */}
-          <div className="lg:col-span-3">
+          <div className="flex-1">
             {selectedJob ? (
               <div className="space-y-6">
                 {/* Informations de l'offre sélectionnée */}
