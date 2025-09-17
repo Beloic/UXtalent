@@ -702,21 +702,20 @@ const CandidateKanban = ({
           .rkk-board {
             display: flex !important;
             width: 100% !important;
-            gap: 0.75rem;
+            gap: 1.5rem;
             overflow-x: hidden;
             justify-content: space-between;
           }
           .rkk-column-outer {
             flex: 1 !important;
-            min-width: 0 !important;
+            min-width: 220px !important;
             max-width: none !important;
             width: auto !important;
             transition: all 0.3s ease !important;
           }
           .rkk-column {
             width: 100% !important;
-            min-width: 0 !important;
-            max-width: none !important;
+            min-width: 220px !important;
             transition: all 0.3s ease !important;
           }
           .rkk-column-content {
@@ -886,18 +885,33 @@ const CandidateKanban = ({
             }
           }
           @media (max-width: 1400px) {
-            .rkk-board {
-              gap: 0.5rem;
+            .rkk-column-outer {
+              min-width: 200px !important;
+              max-width: none !important;
+              width: auto !important;
+            }
+            .rkk-column {
+              min-width: 200px !important;
             }
           }
           @media (max-width: 1200px) {
-            .rkk-board {
-              gap: 0.375rem;
+            .rkk-column-outer {
+              min-width: 180px !important;
+              max-width: none !important;
+              width: auto !important;
+            }
+            .rkk-column {
+              min-width: 180px !important;
             }
           }
           @media (max-width: 1000px) {
-            .rkk-board {
-              gap: 0.25rem;
+            .rkk-column-outer {
+              min-width: 160px !important;
+              max-width: none !important;
+              width: auto !important;
+            }
+            .rkk-column {
+              min-width: 160px !important;
             }
           }
         `

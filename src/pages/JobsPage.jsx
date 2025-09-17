@@ -339,26 +339,40 @@ export default function JobsPage() {
                 </div>
               ) : filteredJobs.length === 0 ? (
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center shadow-xl border border-white/20">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Search className="w-8 h-8 text-gray-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucune offre trouvée</h3>
-                  <p className="text-gray-600 mb-6">
-                    Essayez de modifier vos critères de recherche ou de supprimer certains filtres.
-                  </p>
-                  <button 
-                    onClick={() => { 
-                      setRemoteFilter([]); 
-                      setExperienceFilter([]); 
-                      setLocationFilter([]);
-                      setTypeFilter([]);
-                      setSearchQuery(""); 
-                    }}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-                  >
-                    <X className="w-4 h-4" />
-                    Réinitialiser les filtres
-                  </button>
+                  {hasActiveFilters ? (
+                    <>
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Search className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucune offre trouvée</h3>
+                      <p className="text-gray-600 mb-6">
+                        Essayez de modifier vos critères de recherche ou de supprimer certains filtres.
+                      </p>
+                      <button 
+                        onClick={() => { 
+                          setRemoteFilter([]); 
+                          setExperienceFilter([]); 
+                          setLocationFilter([]);
+                          setTypeFilter([]);
+                          setSearchQuery(""); 
+                        }}
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                        Réinitialiser les filtres
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Briefcase className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucune offre disponible</h3>
+                      <p className="text-gray-600 mb-6">
+                        Il n'y a actuellement aucune offre d'emploi disponible. Revenez plus tard pour découvrir de nouvelles opportunités.
+                      </p>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-6">
