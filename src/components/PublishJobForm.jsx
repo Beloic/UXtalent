@@ -162,7 +162,7 @@ export default function PublishJobForm({ onJobPublished }) {
 
       if (response.ok) {
         const newJob = await response.json();
-        setMessage('✅ Offre soumise avec succès ! Elle sera visible après validation par l\'administrateur.');
+        setMessage('✅ Offre publiée avec succès ! Elle est maintenant visible sur la plateforme.');
         setTimeout(() => {
           setMessage('');
           // Réinitialiser le formulaire

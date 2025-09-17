@@ -78,7 +78,7 @@ export const createJob = async (jobData, recruiterId) => {
       benefits: jobData.benefits || null,
       tags: jobData.tags || [],
       recruiter_id: recruiterId,
-      status: 'pending_approval', // Nouveau statut par défaut
+      status: 'active', // Publication immédiate sans validation
       views_count: 0,
       applications_count: 0
     };
