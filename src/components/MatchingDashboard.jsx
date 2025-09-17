@@ -21,6 +21,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import MatchingWidget from './MatchingWidget';
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 const MatchingDashboard = ({ recruiterId }) => {
   const [jobs, setJobs] = useState([]);
@@ -49,7 +50,8 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   const fetchJobs = async () => {
     try {
-      const response = await fetch('/api/jobs', {
+      const apiUrl = buildApiUrl(API_ENDPOINTS.JOBS);
+      const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -76,7 +78,8 @@ const MatchingDashboard = ({ recruiterId }) => {
         includeDetails: 'true'
       });
       
-      const response = await fetch(`/api/matching/candidates/${jobId}?${params}`, {
+      const apiUrl = buildApiUrl(`${API_ENDPOINTS.MATCHING_CANDIDATES}/${jobId}?${params}`);
+      const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -95,7 +98,8 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/matching/stats', {
+      const apiUrl = buildApiUrl(API_ENDPOINTS.MATCHING_STATS);
+      const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

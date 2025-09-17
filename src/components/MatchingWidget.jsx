@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Star, MapPin, Clock, DollarSign, Users, TrendingUp, Eye, Heart } from 'lucide-react';
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 const MatchingWidget = ({ 
   type = 'candidates', // 'candidates' ou 'jobs'
@@ -31,8 +32,8 @@ const MatchingWidget = ({
     
     try {
       const endpoint = type === 'candidates' 
-        ? `/api/matching/candidates/${jobId}`
-        : `/api/matching/jobs/${candidateId}`;
+        ? `${API_ENDPOINTS.MATCHING_CANDIDATES}/${jobId}`
+        : `${API_ENDPOINTS.MATCHING_JOBS}/${candidateId}`;
       
       const params = new URLSearchParams({
         limit: limit.toString(),
@@ -40,7 +41,8 @@ const MatchingWidget = ({
         includeDetails: showDetails.toString()
       });
       
-      const response = await fetch(`${endpoint}?${params}`, {
+      const apiUrl = buildApiUrl(`${endpoint}?${params}`);
+      const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -83,7 +85,8 @@ const MatchingWidget = ({
 
   const handleFeedback = async (recommendationId, action) => {
     try {
-      await fetch('/api/matching/feedback', {
+      const apiUrl = buildApiUrl(API_ENDPOINTS.MATCHING_FEEDBACK);
+      await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
