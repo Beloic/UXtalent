@@ -99,6 +99,33 @@ const PORT = process.env.PORT || 3001;
 // Middleware de sécurité
 import helmet from 'helmet';
 
+// CORS: autoriser Netlify/Vercel (y compris les URL de preview) et localhost en dev
+const allowedOrigins = [
+  'https://u-xtalent.vercel.app',
+  'https://ux-jobs-pro.netlify.app',
+  /^https:\/\/.*\.netlify\.app$/,
+  /^https:\/\/.*\.vercel\.app$/,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173'
+];
+
+// Appliquer CORS AVANT helmet et autres middlewares
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.some(o => (o instanceof RegExp ? o.test(origin) : o === origin));
+    // Ne pas lever d'erreur pour éviter les réponses sans headers CORS
+    return callback(null, isAllowed);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 86400
+}));
+
+// Pré-vol (preflight)
+app.options(/.*/, cors());
+
 // Middleware
 app.use(helmet({
   contentSecurityPolicy: {
@@ -117,31 +144,6 @@ app.use(helmet({
     preload: true
   }
 }));
-
-// CORS: autoriser Netlify/Vercel (y compris les URL de preview) et localhost en dev
-const allowedOrigins = [
-  'https://u-xtalent.vercel.app',
-  'https://ux-jobs-pro.netlify.app',
-  /^https:\/\/.*\.netlify\.app$/, // prévisualisations Netlify
-  /^https:\/\/.*\.vercel\.app$/,  // prévisualisations Vercel
-  'http://localhost:5173',
-  'http://127.0.0.1:5173'
-];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // requêtes server-to-server ou outils
-    const isAllowed = allowedOrigins.some(o => (o instanceof RegExp ? o.test(origin) : o === origin));
-    return isAllowed ? callback(null, true) : callback(new Error(`Not allowed by CORS: ${origin}`));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  maxAge: 86400
-}));
-
-// Pré-vol (preflight) — Express 5: utiliser une RegExp plutôt que '*'
-app.options(/.*/, cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
