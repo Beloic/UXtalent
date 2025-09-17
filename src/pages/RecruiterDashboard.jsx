@@ -32,7 +32,7 @@ import {
   Pause,
   Play
 } from 'lucide-react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { RoleGuard } from '../components/RoleGuard';
 import { usePermissions } from '../hooks/usePermissions';
@@ -48,12 +48,17 @@ export default function RecruiterDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { isRecruiter } = usePermissions();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const getActiveTabFromPath = () => {
+    if (location.pathname.startsWith('/recruiter-dashboard/kanban')) return 'kanban';
+    if (location.pathname.startsWith('/recruiter-dashboard/myjobs')) return 'myjobs';
+    return 'favorites';
+  };
+  const activeTab = getActiveTabFromPath();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [exporting, setExporting] = useState(false);
-  const [activeTab, setActiveTab] = useState('favorites');
   const [candidates, setCandidates] = useState([]);
   const [candidatesLoading, setCandidatesLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
@@ -456,15 +461,9 @@ export default function RecruiterDashboard() {
     }
   }, [user, isRecruiter, loadFavorites, loadCandidates, loadAppointmentsData]);
 
-  // Détecter le paramètre tab dans l'URL
-  useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam && ['favorites', 'kanban', 'myjobs'].includes(tabParam)) {
-      setActiveTab(tabParam);
-    }
-  }, [searchParams]);
+  // Pas de gestion d'état d'onglet: déterminé par le chemin
 
-  // Recharger les données quand on change d'onglet
+  // Recharger les données quand on change de route d'onglet
   useEffect(() => {
     if (user && isRecruiter) {
       setRefreshing(true);
@@ -656,7 +655,7 @@ export default function RecruiterDashboard() {
               {/* Onglets de navigation */}
               <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 flex">
                 <button
-                  onClick={() => setActiveTab('favorites')}
+                  onClick={() => navigate('/recruiter-dashboard/favorites')}
                   disabled={refreshing}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'favorites'
@@ -672,7 +671,7 @@ export default function RecruiterDashboard() {
                   Favoris
                 </button>
                 <button
-                  onClick={() => setActiveTab('kanban')}
+                  onClick={() => navigate('/recruiter-dashboard/kanban')}
                   disabled={refreshing}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'kanban'
@@ -693,7 +692,7 @@ export default function RecruiterDashboard() {
                   )}
                 </button>
                 <button
-                  onClick={() => setActiveTab('myjobs')}
+                  onClick={() => navigate('/recruiter-dashboard/myjobs')}
                   disabled={refreshing}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'myjobs'
@@ -1151,7 +1150,7 @@ export default function RecruiterDashboard() {
                               )}
                               {job.status === 'rejected' && (
                                 <button
-                                  onClick={() => setActiveTab('publish')}
+                                  onClick={() => navigate('/jobs/new')}
                                   className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors"
                                 >
                                   Republier

@@ -146,7 +146,23 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
-        <Route path="/recruiter-dashboard" element={
+        {/* Dashboard recruteur: onglets en pages dédiées */}
+        <Route path="/recruiter-dashboard" element={<Navigate to="/recruiter-dashboard/favorites" replace />} />
+        <Route path="/recruiter-dashboard/favorites" element={
+          <Layout>
+            <ProtectedRoute>
+              <RecruiterDashboard />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/recruiter-dashboard/kanban" element={
+          <Layout>
+            <ProtectedRoute>
+              <RecruiterDashboard />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/recruiter-dashboard/myjobs" element={
           <Layout>
             <ProtectedRoute>
               <RecruiterDashboard />
