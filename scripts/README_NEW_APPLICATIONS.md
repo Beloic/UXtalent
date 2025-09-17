@@ -1,6 +1,6 @@
-# Nouvelle Table Applications
+# Configuration Complète de la Base de Données
 
-Ce dossier contient les scripts pour créer et gérer la nouvelle table `applications` qui remplace l'ancienne structure.
+Ce dossier contient les scripts pour créer et configurer toutes les tables nécessaires au fonctionnement de l'application : `candidates`, `jobs`, et `applications`.
 
 ## Structure de la nouvelle table
 
@@ -22,37 +22,47 @@ La table `applications` contient :
 
 ## Scripts disponibles
 
-### 1. `create_applications_table.sql`
-**Objectif** : Créer la nouvelle table `applications` avec toutes les contraintes et index.
+### 1. `create_all_tables.sql` ⭐ **SCRIPT PRINCIPAL**
+**Objectif** : Créer toutes les tables (`candidates`, `jobs`, `applications`) avec leurs contraintes et index.
 
-**À exécuter** : Dans Supabase SQL Editor
+**À exécuter** : Dans Supabase SQL Editor - **COMMENCEZ PAR CELUI-CI**
 ```sql
 -- Copiez et exécutez le contenu du fichier
+-- Ce script crée toutes les tables nécessaires
 ```
 
-### 2. `insert_test_applications.sql`
-**Objectif** : Insérer des données de test pour vérifier le fonctionnement.
+### 2. `insert_test_data_all_tables.sql`
+**Objectif** : Insérer des données de test complètes dans toutes les tables.
 
-**À exécuter** : Après avoir créé la table
+**À exécuter** : Après avoir créé les tables
 ```sql
--- Modifiez les job_id et recruiter_id selon vos données existantes
--- Puis exécutez le script
+-- Insère Loic Bernard (ID 26) et d'autres données de test
+-- Modifiez les recruiter_id selon vos données existantes
 ```
 
-### 3. `update_server_for_new_applications.sql`
-**Objectif** : Vérifier la structure et les données de la nouvelle table.
+### 3. `verify_database_structure.sql`
+**Objectif** : Vérifier que toutes les tables sont correctement configurées.
 
-**À exécuter** : Pour diagnostiquer la table
+**À exécuter** : Pour diagnostiquer la base de données
 ```sql
 -- Exécutez pour voir la structure et les statistiques
+-- Vérifie les contraintes, index et relations
 ```
 
-### 4. `test_new_applications_flow.sql`
-**Objectif** : Tests complets du flux de candidatures.
+### 4. `create_applications_table.sql`
+**Objectif** : Créer uniquement la table `applications` (si vous avez déjà les autres tables).
 
-**À exécuter** : Pour valider le fonctionnement
+**À exécuter** : Si vous avez déjà `candidates` et `jobs`
 ```sql
--- Exécutez pour vérifier que tout fonctionne correctement
+-- Utilisez ce script si vous avez déjà les autres tables
+```
+
+### 5. `insert_test_applications.sql`
+**Objectif** : Insérer uniquement des données de test dans `applications`.
+
+**À exécuter** : Si vous avez déjà des données dans les autres tables
+```sql
+-- Modifiez les job_id et recruiter_id selon vos données existantes
 ```
 
 ## Avantages de la nouvelle structure
