@@ -321,6 +321,12 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       const applicationsWithCandidates = await Promise.all(
         dedupedApplications.map(async (application) => {
           try {
+            console.log('🔍 [GET_JOB_APPLICATIONS] Application:', {
+              id: application.id,
+              candidate_id: application.candidate_id,
+              candidate_id_type: typeof application.candidate_id
+            });
+            
             const { data: candidate, error: candidateError } = await supabaseAdmin
               .from('candidates')
               .select('id, name, title, location, bio, skills, experience, availability')
@@ -328,10 +334,28 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
               .single();
 
             if (candidateError) {
-              console.error('Erreur lors de la récupération du candidat:', candidateError);
+              console.error('❌ [GET_JOB_APPLICATIONS] Erreur candidat:', {
+                candidate_id: application.candidate_id,
+                error: candidateError.message,
+                code: candidateError.code
+              });
+              
+              // Essayer de trouver le candidat par email si l'ID ne fonctionne pas
+              const { data: candidateByEmail, error: emailError } = await supabaseAdmin
+                .from('candidates')
+                .select('id, name, title, location, bio, skills, experience, availability')
+                .eq('email', application.candidate_email || '')
+                .single();
+                
+              if (!emailError && candidateByEmail) {
+                console.log('✅ [GET_JOB_APPLICATIONS] Candidat trouvé par email:', candidateByEmail.id);
+                return { ...application, candidate: candidateByEmail };
+              }
+              
               return { ...application, candidate: null };
             }
 
+            console.log('✅ [GET_JOB_APPLICATIONS] Candidat trouvé par ID:', candidate.id);
             return { ...application, candidate };
           } catch (e) {
             console.error('Erreur inattendue lors de la récupération du candidat:', e);
