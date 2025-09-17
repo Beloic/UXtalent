@@ -1256,22 +1256,33 @@ export default function RecruiterDashboard() {
                                             </div>
                                           )}
                                         </div>
-                                        <button 
-                                          onClick={() => {
-                                            const fallbackId = application.candidate_id;
-                                            const candidateId = application.candidate?.id || fallbackId;
-                                            if (candidateId) {
-                                              navigate(`/candidates/${candidateId}`);
-                                            } else {
-                                              setMessage('❌ Impossible d\'accéder au profil : ID du candidat manquant');
-                                              setTimeout(() => setMessage(''), 3000);
-                                            }
-                                          }}
-                                          className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1 flex-shrink-0"
-                                        >
-                                          <Eye className="w-3 h-3" />
-                                          Profil
-                                        </button>
+                                        {(() => {
+                                          const fallbackId = application.candidate_id;
+                                          const candidateId = application.candidate?.id || fallbackId;
+                                          if (candidateId) {
+                                            return (
+                                              <Link 
+                                                to={`/candidates/${candidateId}`}
+                                                className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1 flex-shrink-0"
+                                              >
+                                                <Eye className="w-3 h-3" />
+                                                Profil
+                                              </Link>
+                                            );
+                                          }
+                                          return (
+                                            <button 
+                                              onClick={() => {
+                                                setMessage('❌ Impossible d\'accéder au profil : ID du candidat manquant');
+                                                setTimeout(() => setMessage(''), 3000);
+                                              }}
+                                              className="px-3 py-1 bg-gray-200 text-gray-500 rounded-lg text-xs font-medium cursor-not-allowed flex items-center gap-1 flex-shrink-0"
+                                            >
+                                              <Eye className="w-3 h-3" />
+                                              Profil
+                                            </button>
+                                          );
+                                        })()}
                                       </div>
                                     </div>
                                   </div>
