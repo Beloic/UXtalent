@@ -136,7 +136,7 @@ const MatchingDashboard = ({ recruiterId }) => {
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Dashboard de Matching</h1>
                 <p className="mt-1 text-sm text-gray-600">
-                  Trouvez les meilleurs candidats grâce à l'IA
+                  Trouvez les meilleurs candidats grâce au Matching
                 </p>
               </div>
               <div className="flex items-center space-x-3">
