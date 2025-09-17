@@ -32,6 +32,7 @@ export default function JobDetailPage() {
   const [isApplying, setIsApplying] = useState(false);
   const [applicationStatus, setApplicationStatus] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { isRecruiter, isCandidate } = usePermissions();
 
   // Fonction pour postuler à l'offre
@@ -136,6 +137,9 @@ export default function JobDetailPage() {
     const fetchJob = async () => {
       try {
         setLoading(true);
+        setError(null);
+        setJob(null);
+        
         const response = await fetch(buildApiUrl(`/api/jobs/${id}`));
         if (response.ok) {
           const jobData = await response.json();
@@ -150,19 +154,22 @@ export default function JobDetailPage() {
               .slice(0, 3);
             setRelatedJobs(similar);
           }
+        } else if (response.status === 404) {
+          setError('not_found');
         } else {
-          console.error('Erreur lors du chargement de l\'offre');
-          setJob(null);
+          setError('network_error');
         }
       } catch (error) {
         console.error('Erreur lors du chargement de l\'offre:', error);
-        setJob(null);
+        setError('network_error');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchJob();
+    if (id) {
+      fetchJob();
+    }
   }, [id]);
 
   // Vérifier le statut de candidature quand l'offre est chargée
@@ -285,7 +292,7 @@ export default function JobDetailPage() {
     );
   }
 
-  if (!job) {
+  if (error === 'not_found' || (!loading && !job && !error)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center">
@@ -301,6 +308,36 @@ export default function JobDetailPage() {
             <ArrowLeft className="w-4 h-4" />
             Retour aux offres
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (error === 'network_error') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Briefcase className="w-8 h-8 text-red-400" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Erreur de chargement</h1>
+          <p className="text-gray-600 mb-6">Impossible de charger l'offre. Vérifiez votre connexion internet.</p>
+          <div className="flex gap-4 justify-center">
+            <button 
+              onClick={() => window.location.reload()} 
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+            >
+              <Zap className="w-4 h-4" />
+              Réessayer
+            </button>
+            <Link 
+              to="/jobs" 
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Retour aux offres
+            </Link>
+          </div>
         </div>
       </div>
     );

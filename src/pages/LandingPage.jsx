@@ -69,7 +69,8 @@ export default function LandingPage() {
             </h1>
             
             <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
-              <strong className="text-gray-900">UX Talent</strong> est une plate-forme qui propose un vivier de talents sélectionné et validé par une équipe de Designer seniors.
+              <strong className="text-gray-900">UX Talent</strong> est une plate-forme qui propose un vivier de talents sélectionné et validé par une équipe de Designer seniors. 
+              Dans un marché saturé où la concurrence est rude, nous vous offrons un avantage décisif.
             </p>
 
             {/* CTA Principal */}
@@ -148,6 +149,133 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Section Concurrence et Marché */}
+      <section className="py-20 bg-red-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              La réalité du marché UX/UI en 2025
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
+              Le marché du design UX/UI est devenu extrêmement concurrentiel. Voici pourquoi vous avez besoin d'un avantage différenciant.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
+            >
+              <div className="text-4xl font-bold text-red-600 mb-2">85%</div>
+              <div className="text-gray-900 font-semibold mb-2">Taux de saturation</div>
+              <div className="text-gray-600 text-sm">Du marché français</div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
+            >
+              <div className="text-4xl font-bold text-red-600 mb-2">200+</div>
+              <div className="text-gray-900 font-semibold mb-2">Candidats par poste</div>
+              <div className="text-gray-600 text-sm">En moyenne</div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
+            >
+              <div className="text-4xl font-bold text-red-600 mb-2">3 mois</div>
+              <div className="text-gray-900 font-semibold mb-2">Recherche moyenne</div>
+              <div className="text-gray-600 text-sm">Pour trouver un poste</div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
+            >
+              <div className="text-4xl font-bold text-red-600 mb-2">70%</div>
+              <div className="text-gray-900 font-semibold mb-2">Échec des candidatures</div>
+              <div className="text-gray-600 text-sm">Sans réseau</div>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
+          >
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Pourquoi la concurrence est-elle si rude ?
+              </h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-0.5">
+                    <span className="text-red-600 text-sm font-bold">!</span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-900">Saturation du marché</strong>
+                    <p className="text-gray-600 text-sm">Trop de designers pour trop peu de postes qualifiés</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-0.5">
+                    <span className="text-red-600 text-sm font-bold">!</span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-900">Critères de sélection élevés</strong>
+                    <p className="text-gray-600 text-sm">Les entreprises sont de plus en plus exigeantes</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-0.5">
+                    <span className="text-red-600 text-sm font-bold">!</span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-900">Importance du réseau</strong>
+                    <p className="text-gray-600 text-sm">Sans réseau, vos chances sont drastiquement réduites</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
+                <h4 className="text-lg font-bold text-blue-900 mb-3">
+                  Notre solution : La sélection par l'expertise
+                </h4>
+                <p className="text-blue-800 text-sm mb-4">
+                  Nos designers seniors évaluent chaque profil selon des critères professionnels stricts. 
+                  Seuls les meilleurs rejoignent notre pool, garantissant aux recruteurs la qualité qu'ils recherchent.
+                </p>
+                <div className="flex items-center gap-2 text-blue-700">
+                  <Shield className="w-5 h-5" />
+                  <span className="text-sm font-semibold">Validation par des experts</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Pourquoi rejoindre notre pool */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
@@ -162,8 +290,8 @@ export default function LandingPage() {
               Pourquoi rejoindre notre pool de talents ?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Nous sélectionnons soigneusement chaque designer pour garantir la qualité 
-              de notre communauté et maximiser vos chances de trouver l'opportunité idéale.
+              Face à la concurrence rude du marché, nous vous offrons un avantage décisif : 
+              une sélection rigoureuse par des designers seniors qui connaissent les exigences du terrain.
             </p>
           </motion.div>
 
@@ -187,29 +315,29 @@ export default function LandingPage() {
                 <li className="flex items-start gap-3">
                   <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <strong className="text-gray-900">Communauté sélective</strong>
-                    <p className="text-gray-600 text-sm">Seuls les meilleurs profils sont acceptés</p>
+                    <strong className="text-gray-900">Validation par des experts seniors</strong>
+                    <p className="text-gray-600 text-sm">Évaluation rigoureuse par des designers expérimentés</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <strong className="text-gray-900">Visibilité accrue pour les recruteurs</strong>
-                    <p className="text-gray-600 text-sm">Exposition privilégiée aux entreprises partenaires</p>
+                    <strong className="text-gray-900">Avantage concurrentiel décisif</strong>
+                    <p className="text-gray-600 text-sm">Sortez du lot dans un marché saturé</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <strong className="text-gray-900">Accès au forum et aux discussions</strong>
-                    <p className="text-gray-600 text-sm">Échangez avec la communauté de designers</p>
+                    <strong className="text-gray-900">Accès privilégié aux recruteurs</strong>
+                    <p className="text-gray-600 text-sm">Entreprises qui font confiance à notre sélection</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <strong className="text-gray-900">Accompagnement</strong>
-                    <p className="text-gray-600 text-sm">Support personnalisé dans votre recherche</p>
+                    <strong className="text-gray-900">Mentorat et conseils experts</strong>
+                    <p className="text-gray-600 text-sm">Guidance par des professionnels du secteur</p>
                   </div>
                 </li>
               </ul>
@@ -241,15 +369,15 @@ export default function LandingPage() {
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">2</div>
                   <div>
-                    <strong className="text-gray-900">Évaluation du portfolio</strong>
-                    <p className="text-gray-600 text-sm">Analyse de vos projets et compétences</p>
+                    <strong className="text-gray-900">Évaluation par des designers seniors</strong>
+                    <p className="text-gray-600 text-sm">Analyse experte de votre portfolio et compétences</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">3</div>
                   <div>
-                    <strong className="text-gray-900">Intégration au pool</strong>
-                    <p className="text-gray-600 text-sm">Accès aux opportunités sélectionnées</p>
+                    <strong className="text-gray-900">Intégration au pool sélectif</strong>
+                    <p className="text-gray-600 text-sm">Accès aux opportunités premium</p>
                   </div>
                 </div>
               </div>
@@ -428,11 +556,11 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl font-bold text-white mb-6">
-              Prêt à rejoindre notre pool de talents ?
+              Prêt à sortir du lot dans un marché saturé ?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Rejoignez plus de 50 designers vérifiés et accédez à des opportunités 
-              sélectionnées par notre équipe.
+              Rejoignez notre pool sélectif de designers validés par des experts seniors. 
+              Dans un marché où la concurrence est rude, obtenez l'avantage décisif.
             </p>
             
             {/* CTA Principal */}
