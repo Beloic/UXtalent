@@ -260,7 +260,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                     </div>
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     {candidates.length === 0 ? (
                       <div className="p-8 text-center text-gray-500">
                         <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
@@ -269,9 +269,9 @@ const MatchingDashboard = ({ recruiterId }) => {
                       </div>
                     ) : (
                       candidates.map((candidate) => (
-                        <div key={candidate.candidateId} className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all duration-200">
+                        <div key={candidate.candidateId} className="bg-white rounded-xl shadow-md p-8 hover:shadow-lg transition-all duration-200">
                           {/* En-tête candidat */}
-                          <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center">
                               <h4 className="text-xl font-bold text-gray-900 mr-4">
                                 {candidate.name}
@@ -290,7 +290,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                           </div>
 
                           {/* Informations principales */}
-                          <div className="flex items-center text-sm text-gray-600 mb-6">
+                          <div className="flex items-center text-sm text-gray-600 mb-8">
                             <span className="mr-4 font-medium text-base">{candidate.title}</span>
                             <MapPin className="h-4 w-4 mr-1 text-gray-400" />
                             <span className="text-base">{candidate.location}</span>
@@ -299,7 +299,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                           {/* Score détaillé avec barres de progression pleine largeur */}
                           {candidate.scoreBreakdown && (
                             <div className="space-y-6">
-                              <div className="text-lg font-bold text-gray-800 mb-4">Détail du score de compatibilité</div>
+                              <div className="text-lg font-bold text-gray-800 mb-6">Détail du score de compatibilité</div>
                               
                               {/* Expérience */}
                               <div className="space-y-3">
