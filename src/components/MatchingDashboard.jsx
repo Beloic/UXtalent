@@ -386,58 +386,174 @@ const MatchingDashboard = ({ recruiterId }) => {
                         <div key={candidate.candidateId} className="p-6 hover:bg-gray-50 transition-colors">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <div className="flex items-center mb-1">
+                              {/* En-tête candidat */}
+                              <div className="flex items-center mb-3">
                                 <h4 className="text-lg font-semibold text-gray-900 mr-3">
                                   {candidate.name}
                                 </h4>
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getScoreColor(candidate.score)}`}>
+                                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getScoreColor(candidate.score)}`}>
                                   {formatScore(candidate.score)}%
                                 </span>
                                 {candidate.isFeatured && (
-                                  <span className="ml-2 px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
+                                  <span className="ml-2 px-2 py-1 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 text-xs rounded-full border border-purple-300">
                                     ⭐ Featured
                                   </span>
                                 )}
                               </div>
 
-                              <div className="flex items-center text-sm text-gray-600">
-                                <span className="mr-4">{candidate.title}</span>
-                                <MapPin className="h-4 w-4 mr-1" />
+                              {/* Informations principales */}
+                              <div className="flex items-center text-sm text-gray-600 mb-3">
+                                <span className="mr-4 font-medium">{candidate.title}</span>
+                                <MapPin className="h-4 w-4 mr-1 text-gray-400" />
                                 <span>{candidate.location}</span>
                               </div>
 
-                              <div className="mt-2 flex items-center text-xs text-gray-500 space-x-4">
-                                <span className="flex items-center">
-                                  <Users className="h-3 w-3 mr-1" />
-                                  {candidate.experience}
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  {candidate.availability === 'available' ? 'Disponible' : 
-                                   candidate.availability === 'busy' ? 'Occupé' : 'Indisponible'}
-                                </span>
+                              {/* Filtres visuels de recommandation */}
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                                {/* Expérience */}
+                                <div className="flex items-center p-2 bg-blue-50 rounded-lg border border-blue-100">
+                                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                                  <div className="text-xs">
+                                    <div className="font-medium text-blue-900">Expérience</div>
+                                    <div className="text-blue-700">{candidate.experience}</div>
+                                  </div>
+                                </div>
+
+                                {/* Disponibilité */}
+                                <div className={`flex items-center p-2 rounded-lg border ${
+                                  candidate.availability === 'available' 
+                                    ? 'bg-green-50 border-green-100' 
+                                    : candidate.availability === 'busy'
+                                    ? 'bg-yellow-50 border-yellow-100'
+                                    : 'bg-red-50 border-red-100'
+                                }`}>
+                                  <div className={`w-2 h-2 rounded-full mr-2 ${
+                                    candidate.availability === 'available' 
+                                      ? 'bg-green-500' 
+                                      : candidate.availability === 'busy'
+                                      ? 'bg-yellow-500'
+                                      : 'bg-red-500'
+                                  }`}></div>
+                                  <div className="text-xs">
+                                    <div className={`font-medium ${
+                                      candidate.availability === 'available' 
+                                        ? 'text-green-900' 
+                                        : candidate.availability === 'busy'
+                                        ? 'text-yellow-900'
+                                        : 'text-red-900'
+                                    }`}>Disponibilité</div>
+                                    <div className={`${
+                                      candidate.availability === 'available' 
+                                        ? 'text-green-700' 
+                                        : candidate.availability === 'busy'
+                                        ? 'text-yellow-700'
+                                        : 'text-red-700'
+                                    }`}>
+                                      {candidate.availability === 'available' ? 'Disponible' : 
+                                       candidate.availability === 'busy' ? 'Occupé' : 'Indisponible'}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Salaire */}
                                 {candidate.salary && (
-                                  <span className="flex items-center">
-                                    <DollarSign className="h-3 w-3 mr-1" />
-                                    {candidate.salary}
-                                  </span>
+                                  <div className="flex items-center p-2 bg-emerald-50 rounded-lg border border-emerald-100">
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></div>
+                                    <div className="text-xs">
+                                      <div className="font-medium text-emerald-900">Salaire</div>
+                                      <div className="text-emerald-700">{candidate.salary}</div>
+                                    </div>
+                                  </div>
                                 )}
+
+                                {/* Plan */}
                                 {candidate.planType !== 'free' && (
-                                  <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
-                                    {candidate.planType === 'premium' ? '⭐ Premium' : '👑 Pro'}
-                                  </span>
+                                  <div className="flex items-center p-2 bg-purple-50 rounded-lg border border-purple-100">
+                                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                                    <div className="text-xs">
+                                      <div className="font-medium text-purple-900">Plan</div>
+                                      <div className="text-purple-700">
+                                        {candidate.planType === 'premium' ? '⭐ Premium' : '👑 Pro'}
+                                      </div>
+                                    </div>
+                                  </div>
                                 )}
                               </div>
+
+                              {/* Score détaillé avec barres de progression */}
+                              {candidate.scoreBreakdown && (
+                                <div className="mt-4 pt-4 border-t border-gray-100">
+                                  <div className="text-xs font-medium text-gray-700 mb-3">Détail du score de compatibilité</div>
+                                  <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-gray-600">Expérience</span>
+                                      <div className="flex items-center">
+                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full mr-2">
+                                          <div 
+                                            className="h-1.5 bg-green-500 rounded-full transition-all duration-300"
+                                            style={{ width: `${candidate.scoreBreakdown.experience * 100}%` }}
+                                          ></div>
+                                        </div>
+                                        <span className="text-xs font-medium text-green-600 w-8 text-right">
+                                          {formatScore(candidate.scoreBreakdown.experience)}%
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-gray-600">Localisation</span>
+                                      <div className="flex items-center">
+                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full mr-2">
+                                          <div 
+                                            className="h-1.5 bg-purple-500 rounded-full transition-all duration-300"
+                                            style={{ width: `${candidate.scoreBreakdown.location * 100}%` }}
+                                          ></div>
+                                        </div>
+                                        <span className="text-xs font-medium text-purple-600 w-8 text-right">
+                                          {formatScore(candidate.scoreBreakdown.location)}%
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-gray-600">Salaire</span>
+                                      <div className="flex items-center">
+                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full mr-2">
+                                          <div 
+                                            className="h-1.5 bg-orange-500 rounded-full transition-all duration-300"
+                                            style={{ width: `${candidate.scoreBreakdown.salary * 100}%` }}
+                                          ></div>
+                                        </div>
+                                        <span className="text-xs font-medium text-orange-600 w-8 text-right">
+                                          {formatScore(candidate.scoreBreakdown.salary)}%
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-xs text-gray-600">Disponibilité</span>
+                                      <div className="flex items-center">
+                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full mr-2">
+                                          <div 
+                                            className="h-1.5 bg-red-500 rounded-full transition-all duration-300"
+                                            style={{ width: `${candidate.scoreBreakdown.availability * 100}%` }}
+                                          ></div>
+                                        </div>
+                                        <span className="text-xs font-medium text-red-600 w-8 text-right">
+                                          {formatScore(candidate.scoreBreakdown.availability)}%
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
 
-                            {/* Action minimale */}
-                            <div className="ml-4">
+                            {/* Action élégante */}
+                            <div className="ml-6">
                               <button
-                                className="inline-flex items-center px-3 py-2 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-100"
+                                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md"
                                 title="Voir le profil"
                               >
-                                <Eye className="h-4 w-4 mr-1" />
-                                Voir
+                                <Eye className="h-4 w-4 mr-2" />
+                                Voir le profil
                               </button>
                             </div>
                           </div>
