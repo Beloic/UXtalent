@@ -1691,6 +1691,310 @@ app.put('/api/recruiter/candidates/:candidateId/status', requireRole(['recruiter
   }
 });
 
+// ===== ENDPOINT SPÉCIALISÉ POUR LES ACTIONS KANBAN =====
+
+// Fonction de validation des transitions de statut
+async function validateStatusTransition(currentStatus, targetStatus, candidateId, recruiterId) {
+  // Règles de transition autorisées
+  const allowedTransitions = {
+    'À contacter': ['Entretien prévu', 'En cours', 'Accepté', 'Refusé'],
+    'Entretien prévu': ['À contacter', 'En cours', 'Accepté', 'Refusé'],
+    'En cours': ['Entretien prévu', 'Accepté', 'Refusé'],
+    'Accepté': ['En cours'], // Peut revenir en cours si besoin
+    'Refusé': ['À contacter', 'Entretien prévu'] // Peut être reconsidéré
+  };
+
+  // Vérifier si la transition est autorisée
+  if (!allowedTransitions[currentStatus] || !allowedTransitions[currentStatus].includes(targetStatus)) {
+    return null; // Transition non autorisée
+  }
+
+  // Règles spéciales pour certaines transitions
+  if (targetStatus === 'Entretien prévu') {
+    // Vérifier s'il y a un rendez-vous programmé
+    const { data: appointments } = await supabase
+      .from('appointments')
+      .select('id')
+      .eq('recruiter_id', recruiterId)
+      .eq('candidate_id', candidateId)
+      .gte('appointment_date', new Date().toISOString().split('T')[0])
+      .limit(1);
+    
+    if (!appointments || appointments.length === 0) {
+      // Pas de rendez-vous, ne peut pas être en "Entretien prévu"
+      return null;
+    }
+  }
+
+  if (targetStatus === 'Accepté' && currentStatus === 'À contacter') {
+    // Un candidat ne peut pas être accepté directement sans être passé par "En cours"
+    return null;
+  }
+
+  if (targetStatus === 'Refusé' && currentStatus === 'Accepté') {
+    // Un candidat accepté ne peut pas être refusé directement
+    return null;
+  }
+
+  return targetStatus; // Transition autorisée
+}
+
+// PUT /api/recruiter/kanban/move-candidate - Déplacer un candidat dans le Kanban
+app.put('/api/recruiter/kanban/move-candidate', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { candidateId, fromColumn, toColumn, toIndex } = req.body;
+    const recruiterId = req.user.id;
+    
+    // Validation des données
+    if (!candidateId || !toColumn) {
+      return res.status(400).json({ error: 'Données manquantes' });
+    }
+    
+    // Valider les colonnes Kanban
+    const validColumns = ['À contacter', 'Entretien prévu', 'En cours', 'Accepté', 'Refusé'];
+    if (!validColumns.includes(toColumn)) {
+      return res.status(400).json({ error: 'Colonne Kanban invalide' });
+    }
+    
+    // Vérifier que le candidat existe et appartient au recruteur
+    const { data: candidate, error: candidateError } = await supabase
+      .from('candidates')
+      .select('id, name, status')
+      .eq('id', candidateId)
+      .single();
+    
+    if (candidateError || !candidate) {
+      return res.status(404).json({ error: 'Candidat non trouvé' });
+    }
+    
+    // Validation des transitions de statut
+    const currentStatus = candidate.status || 'À contacter';
+    const newStatus = validateStatusTransition(currentStatus, toColumn, candidateId, recruiterId);
+    
+    if (!newStatus) {
+      return res.status(400).json({ 
+        error: 'Transition de statut non autorisée',
+        details: `Impossible de passer de "${currentStatus}" à "${toColumn}"`
+      });
+    }
+    
+    // Mettre à jour le statut dans la base de données
+    const { data: updatedCandidate, error: updateError } = await supabase
+      .from('candidates')
+      .update({ 
+        status: newStatus, 
+        updated_at: new Date().toISOString() 
+      })
+      .eq('id', candidateId)
+      .select()
+      .single();
+    
+    if (updateError) {
+      logger.error('Erreur lors de la mise à jour du statut Kanban', { error: updateError.message });
+      return res.status(500).json({ error: 'Erreur lors de la mise à jour du statut' });
+    }
+    
+    // Log de l'action
+    logger.info('Candidat déplacé dans le Kanban', {
+      candidateId,
+      candidateName: candidate.name,
+      fromColumn,
+      toColumn,
+      newStatus,
+      recruiterId
+    });
+    
+    res.json({ 
+      success: true, 
+      candidate: updatedCandidate,
+      action: 'moved',
+      fromColumn,
+      toColumn,
+      newStatus
+    });
+  } catch (error) {
+    logger.error('Erreur lors du déplacement Kanban', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors du déplacement du candidat' });
+  }
+});
+
+// GET /api/recruiter/kanban/candidate/:candidateId/transitions - Obtenir les transitions autorisées pour un candidat
+app.get('/api/recruiter/kanban/candidate/:candidateId/transitions', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const candidateId = req.params.candidateId;
+    const recruiterId = req.user.id;
+    
+    // Récupérer le candidat
+    const { data: candidate, error: candidateError } = await supabase
+      .from('candidates')
+      .select('id, name, status')
+      .eq('id', candidateId)
+      .single();
+    
+    if (candidateError || !candidate) {
+      return res.status(404).json({ error: 'Candidat non trouvé' });
+    }
+    
+    const currentStatus = candidate.status || 'À contacter';
+    
+    // Règles de transition autorisées
+    const allowedTransitions = {
+      'À contacter': ['Entretien prévu', 'En cours', 'Accepté', 'Refusé'],
+      'Entretien prévu': ['À contacter', 'En cours', 'Accepté', 'Refusé'],
+      'En cours': ['Entretien prévu', 'Accepté', 'Refusé'],
+      'Accepté': ['En cours'],
+      'Refusé': ['À contacter', 'Entretien prévu']
+    };
+    
+    // Vérifier les règles spéciales
+    const availableTransitions = [];
+    
+    for (const targetStatus of allowedTransitions[currentStatus] || []) {
+      // Vérifier les règles spéciales
+      let canTransition = true;
+      let reason = null;
+      
+      if (targetStatus === 'Entretien prévu') {
+        // Vérifier s'il y a un rendez-vous programmé
+        const { data: appointments } = await supabase
+          .from('appointments')
+          .select('id')
+          .eq('recruiter_id', recruiterId)
+          .eq('candidate_id', candidateId)
+          .gte('appointment_date', new Date().toISOString().split('T')[0])
+          .limit(1);
+        
+        if (!appointments || appointments.length === 0) {
+          canTransition = false;
+          reason = 'Aucun rendez-vous programmé';
+        }
+      }
+      
+      if (targetStatus === 'Accepté' && currentStatus === 'À contacter') {
+        canTransition = false;
+        reason = 'Doit passer par "En cours" d\'abord';
+      }
+      
+      if (targetStatus === 'Refusé' && currentStatus === 'Accepté') {
+        canTransition = false;
+        reason = 'Candidat déjà accepté';
+      }
+      
+      availableTransitions.push({
+        status: targetStatus,
+        allowed: canTransition,
+        reason: reason
+      });
+    }
+    
+    res.json({
+      success: true,
+      candidate: {
+        id: candidate.id,
+        name: candidate.name,
+        currentStatus: currentStatus
+      },
+      availableTransitions: availableTransitions
+    });
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des transitions', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération des transitions' });
+  }
+});
+
+// GET /api/recruiter/kanban/data - Récupérer les données complètes du Kanban
+app.get('/api/recruiter/kanban/data', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const recruiterId = req.user.id;
+    
+    // Récupérer les candidats avec leurs statuts
+    const { data: candidates, error: candidatesError } = await supabase
+      .from('candidates')
+      .select('id, name, title, location, status, notes, created_at, updated_at')
+      .eq('visible', true)
+      .eq('approved', true)
+      .order('created_at', { ascending: false });
+    
+    if (candidatesError) {
+      throw candidatesError;
+    }
+    
+    // Récupérer les favoris du recruteur
+    const { data: favorites, error: favoritesError } = await supabase
+      .from('recruiter_favorites')
+      .select(`
+        candidate_id,
+        candidates!inner(id, name, title, location, status, notes, created_at, updated_at)
+      `)
+      .eq('recruiter_id', recruiterId);
+    
+    if (favoritesError) {
+      throw favoritesError;
+    }
+    
+    // Récupérer les rendez-vous
+    const { data: appointments, error: appointmentsError } = await supabase
+      .from('appointments')
+      .select('id, candidate_id, appointment_date, appointment_time, title')
+      .eq('recruiter_id', recruiterId)
+      .gte('appointment_date', new Date().toISOString().split('T')[0])
+      .order('appointment_date', { ascending: true });
+    
+    if (appointmentsError) {
+      throw appointmentsError;
+    }
+    
+    // Traiter les données pour le Kanban
+    const favoritesData = favorites.map(fav => fav.candidates);
+    const candidatesWithAppointments = new Set(appointments.map(apt => apt.candidate_id));
+    
+    // Déterminer la colonne pour chaque candidat
+    const processedCandidates = candidates.map(candidate => {
+      let kanbanColumn = candidate.status || 'À contacter';
+      
+      // Si le candidat a un rendez-vous, le placer en "Entretien prévu"
+      if (candidatesWithAppointments.has(candidate.id)) {
+        kanbanColumn = 'Entretien prévu';
+      }
+      
+      return {
+        ...candidate,
+        kanbanColumn,
+        hasAppointment: candidatesWithAppointments.has(candidate.id)
+      };
+    });
+    
+    // Organiser par colonnes
+    const kanbanData = {
+      'À contacter': processedCandidates.filter(c => c.kanbanColumn === 'À contacter'),
+      'Entretien prévu': processedCandidates.filter(c => c.kanbanColumn === 'Entretien prévu'),
+      'En cours': processedCandidates.filter(c => c.kanbanColumn === 'En cours'),
+      'Accepté': processedCandidates.filter(c => c.kanbanColumn === 'Accepté'),
+      'Refusé': processedCandidates.filter(c => c.kanbanColumn === 'Refusé')
+    };
+    
+    res.json({
+      success: true,
+      data: {
+        candidates: processedCandidates,
+        favorites: favoritesData,
+        appointments: appointments,
+        kanbanData: kanbanData,
+        stats: {
+          total: candidates.length,
+          byColumn: Object.keys(kanbanData).reduce((acc, col) => {
+            acc[col] = kanbanData[col].length;
+            return acc;
+          }, {})
+        }
+      }
+    });
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des données Kanban', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération des données' });
+  }
+});
+
 // GET /api/recruiter/favorites/export - Exporter les favoris en CSV
 app.get('/api/recruiter/favorites/export', requireRole(['recruiter', 'admin']), async (req, res) => {
   try {

@@ -13,10 +13,103 @@ import {
 import { useNavigate } from 'react-router-dom';
 import CandidateNotesModal from './CandidateNotesModal';
 import AppointmentIndicator from './AppointmentIndicator';
+import FavoritesManager from './FavoritesManager';
 import { buildApiUrl } from '../config/api';
+import { 
+  getKanbanData, 
+  moveCandidateInKanban, 
+  updateCandidateNotes as updateNotesApi,
+  addToFavorites as addToFavoritesApi,
+  removeFromFavorites as removeFromFavoritesApi
+} from '../services/kanbanApi';
+
+// Fonction helper pour construire les données du board à partir des données Kanban centralisées
+const buildBoardDataFromKanbanData = (kanbanData) => {
+  const columns = [
+    {
+      id: 'À contacter',
+      title: 'À contacter',
+      parentId: null,
+      children: [],
+      content: { icon: <MessageSquare className="w-5 h-5" />, color: 'bg-gray-100' },
+      totalChildrenCount: 0
+    },
+    {
+      id: 'Entretien prévu',
+      title: 'Entretien prévu',
+      parentId: null,
+      children: [],
+      content: { icon: <Clock className="w-5 h-5" />, color: 'bg-blue-100' },
+      totalChildrenCount: 0
+    },
+    {
+      id: 'En cours',
+      title: 'En cours',
+      parentId: null,
+      children: [],
+      content: { icon: <UserCheck className="w-5 h-5" />, color: 'bg-yellow-100' },
+      totalChildrenCount: 0
+    },
+    {
+      id: 'Accepté',
+      title: 'Accepté',
+      parentId: null,
+      children: [],
+      content: { icon: <CheckCircle className="w-5 h-5" />, color: 'bg-green-100' },
+      totalChildrenCount: 0
+    },
+    {
+      id: 'Refusé',
+      title: 'Refusé',
+      parentId: null,
+      children: [],
+      content: { icon: <XCircle className="w-5 h-5" />, color: 'bg-red-100' },
+      totalChildrenCount: 0
+    }
+  ];
+
+  const allCards = [];
+
+  // Traiter chaque colonne
+  Object.keys(kanbanData).forEach(columnName => {
+    const candidates = kanbanData[columnName] || [];
+    const columnIndex = columns.findIndex(col => col.id === columnName);
+    
+    if (columnIndex !== -1) {
+      candidates.forEach(candidate => {
+        const cardId = `card-${candidate.id}`;
+        
+        allCards.push({
+          id: cardId,
+          title: candidate.name,
+          parentId: columnName,
+          children: [],
+          content: { candidate },
+          type: 'candidate',
+          totalChildrenCount: 0
+        });
+        
+        columns[columnIndex].children.push(cardId);
+        columns[columnIndex].totalChildrenCount++;
+      });
+    }
+  });
+
+  return {
+    root: {
+      id: 'root',
+      title: 'Board',
+      parentId: null,
+      children: columns.map(col => col.id),
+      totalChildrenCount: columns.length
+    },
+    ...columns.reduce((acc, col) => ({ ...acc, [col.id]: col }), {}),
+    ...allCards.reduce((acc, card) => ({ ...acc, [card.id]: card }), {})
+  };
+};
 
 // Composant de carte personnalisé
-const CandidateCard = ({ candidate, currentStatus, onOpenNotes, appointments = [] }) => {
+const CandidateCard = ({ candidate, currentStatus, onOpenNotes, appointments = [], onToggleFavorite = null }) => {
   // Fonction pour obtenir le prochain rendez-vous du candidat
   const getNextAppointment = (candidateId) => {
     const candidateAppointments = appointments.filter(apt => apt.candidate_id == candidateId);
@@ -140,6 +233,15 @@ const CandidateCard = ({ candidate, currentStatus, onOpenNotes, appointments = [
           />
         </div>
         
+        {/* Gestionnaire de favoris */}
+        <div className="mt-2 flex justify-end">
+          <FavoritesManager 
+            candidate={candidate}
+            onToggle={onToggleFavorite}
+            size="small"
+          />
+        </div>
+        
         {/* Affichage de la date de l'entretien si disponible */}
         {nextAppointment && (
           <div className="mt-2 flex items-center gap-1">
@@ -174,19 +276,57 @@ const CandidateCard = ({ candidate, currentStatus, onOpenNotes, appointments = [
   );
 };
 
-const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorites, onRefreshCandidates, appointments = [] }) => {
+const CandidateKanban = ({ 
+  candidates, 
+  onUpdateStatus, 
+  onToggleFavorite, 
+  favorites, 
+  onRefreshCandidates, 
+  appointments = [],
+  // Nouvelles props pour la gestion centralisée
+  kanbanData = null,
+  onKanbanDataChange = null,
+  // Props pour les nouvelles fonctions
+  onMoveCandidate = null,
+  onUpdateNotes = null,
+  onToggleFavoriteNew = null,
+  onRefresh = null,
+  // État de chargement
+  isLoading: externalLoading = false,
+  error: externalError = null
+}) => {
   const navigate = useNavigate();
   const [localBoardData, setLocalBoardData] = useState(null);
   const [notesModal, setNotesModal] = useState({ isOpen: false, candidate: null });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // S'assurer que candidates est un tableau
+  // Utiliser les données Kanban centralisées si disponibles, sinon fallback sur l'ancien système
   const candidatesArray = useMemo(() => {
+    if (kanbanData && kanbanData.candidates) {
+      return kanbanData.candidates;
+    }
+    
     return Array.isArray(candidates) 
       ? candidates 
       : (candidates && Array.isArray(candidates.candidates)) 
         ? candidates.candidates 
         : [];
-  }, [candidates]);
+  }, [candidates, kanbanData]);
+
+  const favoritesArray = useMemo(() => {
+    if (kanbanData && kanbanData.favorites) {
+      return kanbanData.favorites;
+    }
+    return favorites || [];
+  }, [favorites, kanbanData]);
+
+  const appointmentsArray = useMemo(() => {
+    if (kanbanData && kanbanData.appointments) {
+      return kanbanData.appointments;
+    }
+    return appointments || [];
+  }, [appointments, kanbanData]);
 
   // Fonction pour voir le profil
   const handleViewProfile = useCallback((candidateId) => {
@@ -206,49 +346,59 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
   // Fonction pour sauvegarder les notes
   const handleSaveNotes = useCallback(async (candidateId, notes) => {
     try {
-      // Récupérer le token d'authentification
-      const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
-      
-      if (!token) {
-        throw new Error('Token d\'authentification manquant');
-      }
+      setIsLoading(true);
+      setError(null);
 
-      // Appel API pour sauvegarder les notes
-      const response = await fetch(buildApiUrl(`/api/candidates/${candidateId}/notes`), {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ notes })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Erreur lors de la sauvegarde des notes');
-      }
-
-      // Mettre à jour les données locales si nécessaire
-      console.log('Notes sauvegardées avec succès');
-      
-      // Recharger les candidats pour mettre à jour les notes
-      if (onRefreshCandidates) {
-        onRefreshCandidates();
+      // Utiliser la nouvelle fonction si disponible, sinon fallback sur l'ancien système
+      if (onUpdateNotes) {
+        const result = await onUpdateNotes(candidateId, notes);
+        console.log('Notes sauvegardées avec succès (nouveau système):', result);
+        return result;
+      } else {
+        // Utiliser l'ancien service API
+        const result = await updateNotesApi(candidateId, notes);
+        console.log('Notes sauvegardées avec succès (ancien système):', result);
+        
+        // Mise à jour optimiste des données locales
+        if (kanbanData && onKanbanDataChange) {
+          const updatedKanbanData = {
+            ...kanbanData,
+            candidates: kanbanData.candidates.map(candidate => 
+              candidate.id === candidateId 
+                ? { ...candidate, notes: notes }
+                : candidate
+            )
+          };
+          onKanbanDataChange(updatedKanbanData);
+        } else if (onRefreshCandidates) {
+          // Fallback sur l'ancien système
+          onRefreshCandidates();
+        }
+        
+        return result;
       }
     } catch (error) {
       console.error('Erreur lors de la sauvegarde des notes:', error);
+      setError('Erreur lors de la sauvegarde des notes');
       throw error;
+    } finally {
+      setIsLoading(false);
     }
-  }, [onRefreshCandidates]);
+  }, [onUpdateNotes, kanbanData, onKanbanDataChange, onRefreshCandidates]);
 
   // Préparer les données selon la structure BoardData de react-kanban-kit
   const boardData = useMemo(() => {
-    const favoritesSet = new Set(favorites?.map(fav => fav.id) || []);
+    // Si on a des données Kanban centralisées, les utiliser directement
+    if (kanbanData && kanbanData.kanbanData) {
+      return buildBoardDataFromKanbanData(kanbanData.kanbanData);
+    }
+    
+    // Sinon, utiliser l'ancienne logique avec les données locales
+    const favoritesSet = new Set(favoritesArray?.map(fav => fav.id) || []);
     
     // Créer un Set des candidats avec rendez-vous (gérer les types string et number)
     const candidatesWithAppointments = new Set();
-    appointments?.forEach(appointment => {
+    appointmentsArray?.forEach(appointment => {
       if (appointment.candidate_id) {
         // Ajouter les deux versions (string et number) pour gérer les différences de type
         candidatesWithAppointments.add(appointment.candidate_id);
@@ -349,7 +499,7 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
       ...columns.reduce((acc, col) => ({ ...acc, [col.id]: col }), {}),
       ...allCards.reduce((acc, card) => ({ ...acc, [card.id]: card }), {})
     };
-  }, [candidatesArray, favorites, appointments]);
+  }, [candidatesArray, favoritesArray, appointmentsArray, kanbanData]);
 
   // Initialiser l'état local avec les données calculées
   useEffect(() => {
@@ -366,7 +516,8 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
             candidate={candidate}
             onOpenNotes={handleOpenNotes}
             currentStatus={column.title}
-            appointments={appointments}
+            appointments={appointmentsArray}
+            onToggleFavorite={onToggleFavoriteNew}
           />
         );
       },
@@ -375,11 +526,11 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
   };
 
   // Gérer le déplacement des cartes selon CardMove
-  const handleCardMove = useCallback((move) => {
+  const handleCardMove = useCallback(async (move) => {
     const candidateId = move.cardId.replace('card-', '');
     const newStatus = move.toColumnId;
     
-    // Mettre à jour l'état local immédiatement pour éviter le retour à la position initiale
+    // Mise à jour optimiste de l'état local immédiatement
     setLocalBoardData(prevData => {
       if (!prevData) return prevData;
       
@@ -435,20 +586,83 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
       return newData;
     });
     
-    // Appeler la fonction de mise à jour du statut seulement si c'est un changement de colonne
+    // Appeler l'API seulement si c'est un changement de colonne
     if (move.fromColumnId !== move.toColumnId) {
-      onUpdateStatus(candidateId, newStatus);
-      console.log(`Carte ${candidateId} déplacée vers ${newStatus}`);
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // Utiliser la nouvelle fonction si disponible, sinon fallback sur l'ancien système
+        if (onMoveCandidate) {
+          const result = await onMoveCandidate(candidateId, move.fromColumnId, newStatus, move.toIndex);
+          console.log(`Carte ${candidateId} déplacée vers ${newStatus} (nouveau système):`, result);
+        } else {
+          // Utiliser l'ancien service API centralisé
+          const result = await moveCandidateInKanban(candidateId, move.fromColumnId, newStatus, move.toIndex);
+          console.log(`Carte ${candidateId} déplacée vers ${newStatus} (ancien système):`, result);
+          
+          // Mettre à jour les données Kanban si disponibles
+          if (kanbanData && onKanbanDataChange) {
+            // Recharger les données depuis l'API pour avoir la version la plus récente
+            const updatedKanbanData = await getKanbanData();
+            onKanbanDataChange(updatedKanbanData);
+          } else if (onUpdateStatus) {
+            // Fallback sur l'ancien système
+            onUpdateStatus(candidateId, newStatus);
+          }
+        }
+        
+      } catch (error) {
+        console.error('Erreur lors du déplacement du candidat:', error);
+        setError('Erreur lors du déplacement du candidat');
+        
+        // En cas d'erreur, recharger les données pour restaurer l'état correct
+        if (onRefresh) {
+          onRefresh();
+        } else if (onRefreshCandidates) {
+          onRefreshCandidates();
+        }
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       console.log(`Carte ${candidateId} réorganisée dans la colonne ${newStatus}`);
     }
-  }, [onUpdateStatus]);
+  }, [onMoveCandidate, kanbanData, onKanbanDataChange, onUpdateStatus, onRefreshCandidates, onRefresh]);
 
   // Utiliser l'état local s'il existe, sinon utiliser les données calculées
   const currentBoardData = localBoardData || boardData;
 
   return (
     <div className="p-6 w-full min-h-screen">
+      {/* Indicateur de chargement */}
+      {(isLoading || externalLoading) && (
+        <div className="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center gap-2">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+          <span>Mise à jour...</span>
+        </div>
+      )}
+      
+      {/* Indicateur d'erreur */}
+      {(error || externalError) && (
+        <div className="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+          <div className="flex items-center gap-2">
+            <span>{error || externalError}</span>
+            <button 
+              onClick={() => {
+                setError(null);
+                if (externalError && onRefresh) {
+                  onRefresh();
+                }
+              }}
+              className="text-white hover:text-gray-200"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+      
       <style dangerouslySetInnerHTML={{
         __html: `
           .rkk-board {
@@ -755,7 +969,7 @@ const CandidateKanban = ({ candidates, onUpdateStatus, onToggleFavorite, favorit
         candidate={notesModal.candidate}
         onSaveNotes={handleSaveNotes}
         existingNotes={notesModal.candidate?.notes || ''}
-        appointments={appointments}
+        appointments={appointmentsArray}
       />
     </div>
   );
