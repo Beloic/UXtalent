@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { authenticatedFetch } from '../utils/auth';
-
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'https://ux-jobs-pro-backend.onrender.com') + '/api';
+import { buildApiUrl } from '../config/api';
 
 
 // Hook pour récupérer les candidats avec filtres
@@ -41,7 +40,7 @@ export function useCandidates(filters = {}) {
         if (filters.sortBy) params.append('sortBy', filters.sortBy);
 
         // Utiliser le helper d'authentification
-        const response = await authenticatedFetch(`${API_BASE_URL}/candidates?${params.toString()}`);
+        const response = await authenticatedFetch(buildApiUrl(`/api/candidates?${params.toString()}`));
         
         if (!response.ok) {
           if (response.status === 404) {
@@ -93,7 +92,7 @@ export function useCandidate(id) {
         setError(null);
 
         // Utiliser le helper d'authentification
-        const response = await authenticatedFetch(`${API_BASE_URL}/candidates/${id}`);
+        const response = await authenticatedFetch(buildApiUrl(`/api/candidates/${id}`));
         
         if (!response.ok) {
           if (response.status === 404) {
@@ -122,7 +121,7 @@ export function useCandidate(id) {
 
 // Fonction pour ajouter un candidat
 export async function addCandidate(candidateData) {
-  const response = await authenticatedFetch(`${API_BASE_URL}/candidates`, {
+  const response = await authenticatedFetch(buildApiUrl(`/api/candidates`), {
     method: 'POST',
     body: JSON.stringify(candidateData),
   });
@@ -136,7 +135,7 @@ export async function addCandidate(candidateData) {
 
 // Fonction pour mettre à jour un candidat
 export async function updateCandidate(id, candidateData) {
-  const response = await authenticatedFetch(`${API_BASE_URL}/candidates/${id}`, {
+  const response = await authenticatedFetch(buildApiUrl(`/api/candidates/${id}`), {
     method: 'PUT',
     body: JSON.stringify(candidateData),
   });
@@ -150,7 +149,7 @@ export async function updateCandidate(id, candidateData) {
 
 // Fonction pour supprimer un candidat
 export async function deleteCandidate(id) {
-  const response = await authenticatedFetch(`${API_BASE_URL}/candidates/${id}`, {
+  const response = await authenticatedFetch(buildApiUrl(`/api/candidates/${id}`), {
     method: 'DELETE',
   });
 
@@ -163,7 +162,7 @@ export async function deleteCandidate(id) {
 
 // Fonction pour mettre à jour le plan d'un candidat
 export async function updateCandidatePlan(id, planType, durationMonths = 1) {
-  const response = await authenticatedFetch(`${API_BASE_URL}/candidates/${id}/plan`, {
+  const response = await authenticatedFetch(buildApiUrl(`/api/candidates/${id}/plan`), {
     method: 'PUT',
     body: JSON.stringify({ planType, durationMonths }),
   });
@@ -187,7 +186,7 @@ export function useStats() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/stats`);
+        const response = await fetch(buildApiUrl(`/api/stats`));
         
         if (!response.ok) {
           throw new Error(`Erreur HTTP: ${response.status}`);

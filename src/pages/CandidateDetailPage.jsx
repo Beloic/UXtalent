@@ -346,7 +346,7 @@ export default function CandidateDetailPage() {
       hasTrackedViewRef.current = true; // Marquer immédiatement comme tracké
       
       // Envoyer une requête pour tracker la vue (sans email, juste l'ID)
-      fetch(`https://ux-jobs-pro-backend.onrender.com/api/profile-stats/${id}/track-view`, {
+      fetch(buildApiUrl(`/api/profile-stats/${id}/track-view`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

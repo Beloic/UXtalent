@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import { usePermissions } from "../hooks/usePermissions";
+import { buildApiUrl } from "../config/api";
 import { ConditionalRender } from "./RoleGuard";
 
 export default function Layout({ children, hideFooter = false, hideTopBar = false }) {
@@ -22,7 +23,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
       try {
         // Récupérer directement le profil du candidat par email
-        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates/profile/${encodeURIComponent(user.email)}`, {
+        const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`), {
           headers: {
             'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
           }

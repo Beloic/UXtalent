@@ -1,6 +1,5 @@
 import { supabase } from '../lib/supabase';
-
-const API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com/api/forum';
+import { buildApiUrl } from '../config/api';
 
 // Obtenir le token d'authentification
 const getAuthToken = async () => {
@@ -30,7 +29,7 @@ export const getForumPosts = async (filters = {}) => {
     if (filters.page) params.append('page', filters.page);
     if (filters.limit) params.append('limit', filters.limit);
     
-    const response = await fetch(`${API_BASE_URL}/posts?${params.toString()}`);
+    const response = await fetch(buildApiUrl(`/api/forum/posts?${params.toString()}`));
     
     if (!response.ok) {
       if (response.status === 404) {
@@ -50,7 +49,7 @@ export const getForumPosts = async (filters = {}) => {
 // Récupérer un post spécifique avec ses réponses
 export const getForumPost = async (postId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/posts/${postId}`);
+    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}`));
     
     if (!response.ok) {
       if (response.status === 404) {
@@ -75,7 +74,7 @@ export const createForumPost = async (postData) => {
       throw new Error('Vous devez être connecté pour créer un post');
     }
     
-    const response = await fetch(`${API_BASE_URL}/posts`, {
+    const response = await fetch(buildApiUrl(`/api/forum/posts`), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -105,7 +104,7 @@ export const updateForumPost = async (postId, postData) => {
       throw new Error('Vous devez être connecté pour modifier un post');
     }
     
-    const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}`), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -135,7 +134,7 @@ export const deleteForumPost = async (postId) => {
       throw new Error('Vous devez être connecté pour supprimer un post');
     }
     
-    const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}`), {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -163,7 +162,7 @@ export const addForumReply = async (postId, content) => {
       throw new Error('Vous devez être connecté pour répondre à un post');
     }
     
-    const response = await fetch(`${API_BASE_URL}/posts/${postId}/replies`, {
+    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}/replies`), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -187,7 +186,7 @@ export const addForumReply = async (postId, content) => {
 // Récupérer les catégories
 export const getForumCategories = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/categories`);
+    const response = await fetch(buildApiUrl(`/api/forum/categories`));
     
     if (!response.ok) {
       if (response.status === 404) {
@@ -214,7 +213,7 @@ export const getForumCategories = async () => {
 // Récupérer les statistiques du forum
 export const getForumStats = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/stats`);
+    const response = await fetch(buildApiUrl(`/api/forum/stats`));
     
     if (!response.ok) {
       if (response.status === 404) {
@@ -236,7 +235,7 @@ export const likePost = async (postId) => {
   try {
     const userId = localStorage.getItem('userId') || 'anonymous';
     
-    const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/posts/${postId}/like`, {
+    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}/like`), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -260,7 +259,7 @@ export const likeReply = async (replyId) => {
   try {
     const userId = localStorage.getItem('userId') || 'anonymous';
     
-    const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/forum/replies/${replyId}/like`, {
+    const response = await fetch(buildApiUrl(`/api/forum/replies/${replyId}/like`), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

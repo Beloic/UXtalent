@@ -1,6 +1,5 @@
 import { supabase } from '../lib/supabase';
-
-const API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com/api';
+import { buildApiUrl } from '../config/api';
 
 // Fonction utilitaire pour obtenir le token d'authentification
 const getAuthToken = async () => {
@@ -14,7 +13,7 @@ export const loadAppointments = async () => {
     const token = await getAuthToken();
     if (!token) throw new Error('Token d\'authentification manquant');
 
-    const response = await fetch(`${API_BASE_URL}/appointments`, {
+    const response = await fetch(buildApiUrl(`/api/appointments`), {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -43,7 +42,7 @@ export const createAppointment = async (appointmentData) => {
     const token = await getAuthToken();
     if (!token) throw new Error('Token d\'authentification manquant');
 
-    const response = await fetch(`${API_BASE_URL}/appointments`, {
+    const response = await fetch(buildApiUrl(`/api/appointments`), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +74,7 @@ export const updateAppointment = async (appointmentId, appointmentData) => {
     const token = await getAuthToken();
     if (!token) throw new Error('Token d\'authentification manquant');
 
-    const response = await fetch(`${API_BASE_URL}/appointments/${appointmentId}`, {
+    const response = await fetch(buildApiUrl(`/api/appointments/${appointmentId}`), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +101,7 @@ export const deleteAppointment = async (appointmentId) => {
     const token = await getAuthToken();
     if (!token) throw new Error('Token d\'authentification manquant');
 
-    const response = await fetch(`${API_BASE_URL}/appointments/${appointmentId}`, {
+    const response = await fetch(buildApiUrl(`/api/appointments/${appointmentId}`), {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -127,7 +126,7 @@ export const getAppointmentsForCandidate = async (candidateId) => {
     const token = await getAuthToken();
     if (!token) throw new Error('Token d\'authentification manquant');
 
-    const response = await fetch(`${API_BASE_URL}/appointments/candidate/${candidateId}`, {
+    const response = await fetch(buildApiUrl(`/api/appointments/candidate/${candidateId}`), {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -150,7 +149,7 @@ export const getNextAppointmentForCandidate = async (candidateId) => {
     const token = await getAuthToken();
     if (!token) throw new Error('Token d\'authentification manquant');
 
-    const response = await fetch(`${API_BASE_URL}/appointments/candidate/${candidateId}/next`, {
+    const response = await fetch(buildApiUrl(`/api/appointments/candidate/${candidateId}/next`), {
       headers: {
         'Authorization': `Bearer ${token}`
       }

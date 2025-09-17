@@ -1,5 +1,7 @@
-// Configuration des URLs de l'API - Production uniquement
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://ux-jobs-pro-backend.onrender.com';
+// Configuration des URLs de l'API
+// Forcer l'utilisation de la prod pour éviter tout appel localhost en dev ou prod
+const DEFAULT_API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com';
+const API_BASE_URL = DEFAULT_API_BASE_URL;
 
 
 // Fonction pour construire une URL complète
