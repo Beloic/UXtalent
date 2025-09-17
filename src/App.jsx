@@ -27,6 +27,7 @@ import ConfirmEmailPage from "./pages/ConfirmEmailPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import CandidateProfileGuard from "./components/CandidateProfileGuard";
+import PublishJobPage from "./pages/PublishJobPage";
 
 export default function App() {
   return (
@@ -177,6 +178,13 @@ export default function App() {
           <Layout>
             <ProtectedRoute>
               <JobsPage />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/jobs/new" element={
+          <Layout>
+            <ProtectedRoute>
+              <PublishJobPage />
             </ProtectedRoute>
           </Layout>
         } />

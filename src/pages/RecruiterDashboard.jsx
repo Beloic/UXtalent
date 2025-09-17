@@ -1053,7 +1053,7 @@ export default function RecruiterDashboard() {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => setShowPublishForm(true)}
+                      onClick={() => navigate('/jobs/new')}
                       className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
                     >
                       <Plus className="w-4 h-4" />
@@ -1083,7 +1083,7 @@ export default function RecruiterDashboard() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucune offre publiée</h3>
                     <p className="text-gray-600 mb-6">Vous n'avez pas encore publié d'offres d'emploi.</p>
                     <button
-                      onClick={() => setShowPublishForm(true)}
+                      onClick={() => navigate('/jobs/new')}
                       className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
                     >
                       Publier ma première offre
@@ -1296,28 +1296,7 @@ export default function RecruiterDashboard() {
               </motion.div>
             )}
 
-            {showPublishForm && (
-              <motion.div 
-                key="publish-inline"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: 0.1 }}
-                className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Publier une nouvelle offre</h3>
-                  <button onClick={() => setShowPublishForm(false)} className="text-gray-500 hover:text-gray-700"><X className="w-4 h-4" /></button>
-                </div>
-                <PublishJobForm onJobPublished={() => {
-                  setMessage('✅ Offre soumise avec succès ! Elle sera visible après validation par l\'administrateur.');
-                  setTimeout(() => setMessage(''), 5000);
-                  setShowPublishForm(false);
-                  // Recharger la liste des offres après publication
-                  loadMyJobs();
-                }} />
-              </motion.div>
-            )}
+            {/* Formulaire de publication déplacé vers la page /jobs/new */}
           </AnimatePresence>
         </div>
       </div>
