@@ -6,6 +6,7 @@ import LandingPage from "./pages/LandingPage";
 import RecruiterLandingPage from "./pages/RecruiterLandingPage";
 import CandidatesListPage from "./pages/CandidatesListPage";
 import CandidateDetailPage from "./pages/CandidateDetailPage";
+import CandidateSuggestionsPage from "./pages/CandidateSuggestionsPage";
 import AddProfilePage from "./pages/AddProfilePage";
 import MyProfilePage from "./pages/MyProfilePage";
 import ProfileStatsPage from "./pages/ProfileStatsPage";
@@ -127,6 +128,13 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        <Route path="/candidates/suggestions" element={
+          <Layout>
+            <ProtectedRoute>
+              <CandidateSuggestionsPage />
+            </ProtectedRoute>
+          </Layout>
+        } />
         <Route path="/add-profile" element={
           <Layout>
             <ProtectedRoute>
@@ -165,6 +173,13 @@ export default function App() {
           </Layout>
         } />
         <Route path="/recruiter-dashboard/myjobs" element={
+          <Layout>
+            <ProtectedRoute>
+              <RecruiterDashboard />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/recruiter-dashboard/matching" element={
           <Layout>
             <ProtectedRoute>
               <RecruiterDashboard />

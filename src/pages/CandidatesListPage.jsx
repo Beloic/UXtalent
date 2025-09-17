@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar } from "lucide-react";
+import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar, TrendingUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import CandidateCard from "../components/CandidateCard";
 import CandidateCardBlurred from "../components/CandidateCardBlurred";
 import SignupCard from "../components/SignupCard";
@@ -11,6 +12,7 @@ import { usePermissions } from "../hooks/usePermissions";
 const EXPERIENCE_ORDER = { Junior: 1, Mid: 2, Senior: 3, Lead: 4 };
 
 export default function CandidatesListPage() {
+  const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [remote, setRemote] = useState([]); // ["remote","onsite","hybrid"]
   const [experience, setExperience] = useState([]); // ["Junior","Mid","Senior","Lead"]
@@ -47,9 +49,20 @@ export default function CandidatesListPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Titre simple */}
         <div className="mb-12">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            {isCandidate ? "Découvrez d'autres talents UX/UI" : "Talents UX/UI disponibles"}
-          </h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-bold text-gray-900">
+              {isCandidate ? "Découvrez d'autres talents UX/UI" : "Talents UX/UI disponibles"}
+            </h1>
+            {isCandidate && (
+              <button
+                onClick={() => navigate('/candidates/suggestions')}
+                className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Mes Suggestions IA
+              </button>
+            )}
+          </div>
           <p className="text-gray-600">
             {isCandidate 
               ? "Explorez la communauté et découvrez d'autres designers talentueux" 

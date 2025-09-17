@@ -30,7 +30,8 @@ import {
   Building2,
   X,
   Pause,
-  Play
+  Play,
+  TrendingUp
 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -41,6 +42,7 @@ import Calendar from '../components/Calendar';
 import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';
 import EditJobForm from '../components/EditJobForm';
+import MatchingDashboard from '../components/MatchingDashboard';
 import { loadAppointments } from '../services/appointmentsApi';
 import { buildApiUrl } from '../config/api';
 
@@ -52,6 +54,7 @@ export default function RecruiterDashboard() {
   const getActiveTabFromPath = () => {
     if (location.pathname.startsWith('/recruiter-dashboard/kanban')) return 'kanban';
     if (location.pathname.startsWith('/recruiter-dashboard/myjobs')) return 'myjobs';
+    if (location.pathname.startsWith('/recruiter-dashboard/matching')) return 'matching';
     return 'favorites';
   };
   const activeTab = getActiveTabFromPath();
@@ -712,6 +715,22 @@ export default function RecruiterDashboard() {
                     </span>
                   )}
                 </button>
+                <button
+                  onClick={() => navigate('/recruiter-dashboard/matching')}
+                  disabled={refreshing}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'matching'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'text-gray-600 hover:text-gray-900'
+                  } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {refreshing && activeTab === 'matching' ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <TrendingUp className="w-4 h-4" />
+                  )}
+                  Matching IA
+                </button>
               </div>
             </div>
           </motion.div>
@@ -1289,6 +1308,19 @@ export default function RecruiterDashboard() {
                   </div>
                 )}
                 </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'matching' && (
+              <motion.div 
+                key="matching"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: 0.2 }}
+                className="space-y-8"
+              >
+                <MatchingDashboard recruiterId={user?.id} />
               </motion.div>
             )}
 

@@ -56,6 +56,14 @@ import {
   getMostActiveCandidates
 } from './src/database/kanbanDatabase.js';
 import {
+  getBestCandidatesForJob,
+  getBestJobsForCandidate,
+  recordMatchingFeedback,
+  getMatchingStats,
+  getCompatibilityScore,
+  refreshCache
+} from './src/services/matchingApi.js';
+import {
   getRecruiterSearches,
   createRecruiterSearch,
   updateRecruiterSearch,
@@ -3091,6 +3099,116 @@ app.delete('/api/recruiter/company', requireRole(['recruiter', 'admin']), async 
   } catch (error) {
     logger.error('Erreur lors de la suppression de l\'entreprise', { error: error.message });
     res.status(500).json({ error: 'Erreur lors de la suppression de l\'entreprise' });
+  }
+});
+
+// ===== ROUTES POUR LE MATCHING INTELLIGENT =====
+
+// GET /api/matching/candidates/:jobId - Trouve les meilleurs candidats pour une offre
+app.get('/api/matching/candidates/:jobId', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const { limit, minScore, includeDetails } = req.query;
+    
+    const options = {
+      limit: limit ? parseInt(limit) : undefined,
+      minScore: minScore ? parseFloat(minScore) : undefined,
+      includeDetails: includeDetails === 'true'
+    };
+    
+    const result = await getBestCandidatesForJob(jobId, options);
+    res.json(result);
+  } catch (error) {
+    logger.error('Erreur lors de la recherche de candidats pour l\'offre', { 
+      error: error.message, 
+      jobId: req.params.jobId 
+    });
+    res.status(500).json({ error: 'Erreur lors de la recherche de candidats' });
+  }
+});
+
+// GET /api/matching/jobs/:candidateId - Trouve les meilleures offres pour un candidat
+app.get('/api/matching/jobs/:candidateId', requireRole(['candidate', 'recruiter', 'admin']), async (req, res) => {
+  try {
+    const { candidateId } = req.params;
+    const { limit, minScore, includeDetails } = req.query;
+    
+    const options = {
+      limit: limit ? parseInt(limit) : undefined,
+      minScore: minScore ? parseFloat(minScore) : undefined,
+      includeDetails: includeDetails === 'true'
+    };
+    
+    const result = await getBestJobsForCandidate(candidateId, options);
+    res.json(result);
+  } catch (error) {
+    logger.error('Erreur lors de la recherche d\'offres pour le candidat', { 
+      error: error.message, 
+      candidateId: req.params.candidateId 
+    });
+    res.status(500).json({ error: 'Erreur lors de la recherche d\'offres' });
+  }
+});
+
+// GET /api/matching/score/:candidateId/:jobId - Calcule le score de compatibilité
+app.get('/api/matching/score/:candidateId/:jobId', requireRole(['candidate', 'recruiter', 'admin']), async (req, res) => {
+  try {
+    const { candidateId, jobId } = req.params;
+    const result = await getCompatibilityScore(candidateId, jobId);
+    res.json(result);
+  } catch (error) {
+    logger.error('Erreur lors du calcul du score de compatibilité', { 
+      error: error.message, 
+      candidateId: req.params.candidateId,
+      jobId: req.params.jobId
+    });
+    res.status(500).json({ error: 'Erreur lors du calcul du score' });
+  }
+});
+
+// POST /api/matching/feedback - Enregistre le feedback sur les recommandations
+app.post('/api/matching/feedback', authenticateUser, async (req, res) => {
+  try {
+    const feedbackData = {
+      ...req.body,
+      userId: req.user.id,
+      userType: req.user.role
+    };
+    
+    const result = await recordMatchingFeedback(feedbackData);
+    res.json(result);
+  } catch (error) {
+    logger.error('Erreur lors de l\'enregistrement du feedback', { 
+      error: error.message,
+      userId: req.user?.id 
+    });
+    res.status(500).json({ error: 'Erreur lors de l\'enregistrement du feedback' });
+  }
+});
+
+// GET /api/matching/stats - Statistiques de matching globales
+app.get('/api/matching/stats', requireRole(['admin']), async (req, res) => {
+  try {
+    const stats = await getMatchingStats();
+    res.json(stats);
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des statistiques de matching', { 
+      error: error.message 
+    });
+    res.status(500).json({ error: 'Erreur lors de la récupération des statistiques' });
+  }
+});
+
+// POST /api/matching/cache/refresh - Force la mise à jour du cache
+app.post('/api/matching/cache/refresh', requireRole(['admin']), async (req, res) => {
+  try {
+    const result = await refreshCache();
+    res.json(result);
+  } catch (error) {
+    logger.error('Erreur lors de la mise à jour du cache', { 
+      error: error.message 
+    });
+    res.status(500).json({ error: 'Erreur lors de la mise à jour du cache' });
   }
 });
 
