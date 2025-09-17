@@ -9,7 +9,7 @@ SELECT
     c.name as candidate_name,
     j.title as job_title
 FROM applications a
-JOIN candidates c ON a.candidate_id = c.id
+JOIN candidates c ON a.candidate_id::text = c.id::text
 LEFT JOIN jobs j ON a.job_id = j.id
 WHERE c.name ILIKE '%Loic Bernard%' OR c.name ILIKE '%loic bernard%';
 
@@ -17,7 +17,7 @@ WHERE c.name ILIKE '%Loic Bernard%' OR c.name ILIKE '%loic bernard%';
 UPDATE applications 
 SET job_id = 26
 WHERE candidate_id IN (
-    SELECT id 
+    SELECT id::text 
     FROM candidates 
     WHERE name ILIKE '%Loic Bernard%' OR name ILIKE '%loic bernard%'
 );
@@ -32,7 +32,7 @@ SELECT
     a.status,
     a.applied_at
 FROM applications a
-JOIN candidates c ON a.candidate_id = c.id
+JOIN candidates c ON a.candidate_id::text = c.id::text
 LEFT JOIN jobs j ON a.job_id = j.id
 WHERE c.name ILIKE '%Loic Bernard%' OR c.name ILIKE '%loic bernard%';
 
@@ -68,7 +68,7 @@ INSERT INTO applications (
 )
 SELECT 
     26 as job_id,
-    c.id as candidate_id,
+    c.id::text as candidate_id,
     j.recruiter_id,
     'pending' as status,
     NOW() as applied_at,
@@ -82,7 +82,7 @@ AND j.id = 26
 AND NOT EXISTS (
     SELECT 1 
     FROM applications a 
-    WHERE a.candidate_id = c.id 
+    WHERE a.candidate_id::text = c.id::text 
     AND a.job_id = 26
 );
 
@@ -92,5 +92,5 @@ SELECT
     COUNT(*) as total_applications_loic,
     COUNT(CASE WHEN job_id = 26 THEN 1 END) as applications_job_26
 FROM applications a
-JOIN candidates c ON a.candidate_id = c.id
+JOIN candidates c ON a.candidate_id::text = c.id::text
 WHERE c.name ILIKE '%Loic Bernard%' OR c.name ILIKE '%loic bernard%';
