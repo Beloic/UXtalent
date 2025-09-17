@@ -1517,8 +1517,12 @@ app.post('/api/recruiter/favorites/:candidateId', requireRole(['recruiter', 'adm
     const candidateId = req.params.candidateId;
     
     const result = await addToFavorites(recruiterId, candidateId);
-    res.status(201).json({ success: true, favorite: result });
+    res.status(201).json({ success: true, favorite: result, alreadyFavorited: false });
   } catch (error) {
+    // Gestion gracieuse du doublon (au cas où la base renverrait une erreur de contrainte)
+    if (error && (error.code === '23505' || (typeof error.message === 'string' && error.message.includes('duplicate key')))) {
+      return res.status(200).json({ success: true, alreadyFavorited: true });
+    }
     logger.error('Erreur lors de l\'ajout aux favoris', { error: error.message });
     res.status(500).json({ error: 'Erreur lors de l\'ajout aux favoris' });
   }

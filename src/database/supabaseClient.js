@@ -900,6 +900,23 @@ export const getRecruiterContactsStats = async () => {
 // Ajouter un candidat aux favoris d'un recruteur
 export const addToFavorites = async (recruiterId, candidateId) => {
   try {
+    // Vérifier si le favori existe déjà (idempotence)
+    const { data: existingFavorite, error: existsError } = await supabase
+      .from('recruiter_favorites')
+      .select('*')
+      .eq('recruiter_id', recruiterId)
+      .eq('candidate_id', candidateId)
+      .single();
+
+    // PGRST116 = aucune ligne, donc on peut insérer
+    if (existsError && existsError.code !== 'PGRST116') {
+      throw existsError;
+    }
+
+    if (existingFavorite) {
+      return existingFavorite; // Déjà en favori, ne pas échouer
+    }
+
     const { data, error } = await supabase
       .from('recruiter_favorites')
       .insert({
@@ -909,10 +926,24 @@ export const addToFavorites = async (recruiterId, candidateId) => {
       })
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   } catch (error) {
+    // Gérer le cas de doublon (course possible): renvoyer l'existant au lieu d'échouer
+    if (error && (error.code === '23505' || (typeof error.message === 'string' && error.message.includes('duplicate key')))) {
+      try {
+        const { data: existing } = await supabase
+          .from('recruiter_favorites')
+          .select('*')
+          .eq('recruiter_id', recruiterId)
+          .eq('candidate_id', candidateId)
+          .single();
+        if (existing) return existing;
+      } catch (_) {
+        // ignorer et rethrow plus bas
+      }
+    }
     console.error('Erreur lors de l\'ajout aux favoris:', error);
     throw error;
   }
