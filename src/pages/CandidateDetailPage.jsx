@@ -24,6 +24,7 @@ import { useCandidate } from "../services/candidatesApi";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
+import { buildApiUrl } from "../config/api";
 
 // Composant pour les tendances de vues (version simplifiée pour les recruteurs)
 function ProfileViewsStats({ candidateId }) {
