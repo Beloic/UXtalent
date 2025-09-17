@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import CandidateSuggestions from '../components/CandidateSuggestions';
 import { RoleGuard } from '../components/RoleGuard';
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 export default function CandidateSuggestionsPage() {
   const { user } = useAuth();
@@ -42,7 +43,8 @@ export default function CandidateSuggestionsPage() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/matching/stats', {
+      const apiUrl = buildApiUrl(API_ENDPOINTS.MATCHING_STATS);
+      const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

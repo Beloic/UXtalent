@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, MapPin, Clock, DollarSign, Users, TrendingUp, Eye, Heart } from 'lucide-react';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
+import { authenticatedFetch } from '../utils/auth';
 
 const MatchingWidget = ({ 
   type = 'candidates', // 'candidates' ou 'jobs'
@@ -42,11 +43,7 @@ const MatchingWidget = ({
       });
       
       const apiUrl = buildApiUrl(`${endpoint}?${params}`);
-      const response = await fetch(apiUrl, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      const response = await authenticatedFetch(apiUrl);
       
       if (!response.ok) {
         throw new Error('Erreur lors du chargement des recommandations');
@@ -86,12 +83,8 @@ const MatchingWidget = ({
   const handleFeedback = async (recommendationId, action) => {
     try {
       const apiUrl = buildApiUrl(API_ENDPOINTS.MATCHING_FEEDBACK);
-      await fetch(apiUrl, {
+      await authenticatedFetch(apiUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
         body: JSON.stringify({
           recommendationId,
           recommendationType: type.slice(0, -1), // 'candidate' ou 'job'
