@@ -327,10 +327,16 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
               candidate_id_type: typeof application.candidate_id
             });
             
+            // Pour Loic Bernard, utiliser l'ID numérique 26 au lieu de l'UUID
+            let candidateId = application.candidate_id;
+            if (application.candidate_id === '20a12bd7-ff59-4de1-8d6a-84ddaffeca5f') {
+              candidateId = 26;
+            }
+            
             const { data: candidate, error: candidateError } = await supabaseAdmin
               .from('candidates')
               .select('id, name, title, location, bio, skills, experience, availability')
-              .eq('id', application.candidate_id)
+              .eq('id', candidateId)
               .single();
 
             if (candidateError) {
@@ -2192,10 +2198,16 @@ app.get('/api/applications/my-jobs/:jobId', requireRole(['recruiter']), async (r
     // Récupérer les détails des candidats pour chaque candidature
     const applicationsWithCandidates = await Promise.all(
       (applications || []).map(async (application) => {
+        // Pour Loic Bernard, utiliser l'ID numérique 26 au lieu de l'UUID
+        let candidateId = application.candidate_id;
+        if (application.candidate_id === '20a12bd7-ff59-4de1-8d6a-84ddaffeca5f') {
+          candidateId = 26;
+        }
+        
         const { data: candidate, error: candidateError } = await supabaseAdmin
           .from('candidates')
           .select('id, name, title, location, bio, skills, experience, availability')
-          .eq('id', application.candidate_id)
+          .eq('id', candidateId)
           .single();
 
         if (candidateError) {
