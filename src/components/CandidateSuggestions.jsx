@@ -17,6 +17,7 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react';
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 const CandidateSuggestions = ({ candidateId }) => {
   const [suggestions, setSuggestions] = useState([]);
@@ -47,7 +48,8 @@ const CandidateSuggestions = ({ candidateId }) => {
         includeDetails: 'true'
       });
       
-      const response = await fetch(`/api/matching/jobs/${candidateId}?${params}`, {
+      const apiUrl = buildApiUrl(`${API_ENDPOINTS.MATCHING_JOBS}/${candidateId}?${params}`);
+      const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -90,7 +92,8 @@ const CandidateSuggestions = ({ candidateId }) => {
 
   const handleFeedback = async (jobId, action) => {
     try {
-      await fetch('/api/matching/feedback', {
+      const apiUrl = buildApiUrl(API_ENDPOINTS.MATCHING_FEEDBACK);
+      await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
