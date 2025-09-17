@@ -1257,8 +1257,7 @@ export default function RecruiterDashboard() {
                                           )}
                                         </div>
                                         {(() => {
-                                          const fallbackId = application.candidate_id;
-                                          const candidateId = application.candidate?.id || fallbackId;
+                                          const candidateId = application.candidate?.id;
                                           if (candidateId) {
                                             return (
                                               <Link 
