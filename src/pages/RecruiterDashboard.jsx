@@ -1265,8 +1265,10 @@ export default function RecruiterDashboard() {
                                         </div>
                                         <button 
                                           onClick={() => {
-                                            if (application.candidate?.id) {
-                                              navigate(`/candidates/${application.candidate.id}`);
+                                            const fallbackId = application.candidate_id;
+                                            const candidateId = application.candidate?.id || fallbackId;
+                                            if (candidateId) {
+                                              navigate(`/candidates/${candidateId}`);
                                             } else {
                                               setMessage('❌ Impossible d\'accéder au profil : ID du candidat manquant');
                                               setTimeout(() => setMessage(''), 3000);
