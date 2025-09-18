@@ -604,43 +604,45 @@ export default function CandidateDetailPage() {
                 </div>
               </div>
 
-              {/* Contact Actions */}
-              <div className="border-t border-gray-200 pt-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Contacter ce candidat</h2>
-                <div className="flex flex-wrap gap-4">
-                  {candidate.email && (
-                    <a
-                      href={`mailto:${candidate.email}`}
-                      className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
-                    >
-                      <Mail className="w-5 h-5" />
-                      Envoyer un email
-                    </a>
-                  )}
-                  {candidate.linkedin && (
-                    <a
-                      href={candidate.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-3 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-blue-200"
-                    >
-                      <ExternalLink className="w-5 h-5" />
-                      LinkedIn
-                    </a>
-                  )}
-                  {candidate.portfolio && (
-                    <a
-                      href={candidate.portfolio}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
-                    >
-                      <Globe className="w-5 h-5" />
-                      Portfolio
-                    </a>
-                  )}
+              {/* Contact Actions - visibles uniquement pour les recruteurs */}
+              {isRecruiter && (
+                <div className="border-t border-gray-200 pt-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Contacter ce candidat</h2>
+                  <div className="flex flex-wrap gap-4">
+                    {candidate.email && (
+                      <a
+                        href={`mailto:${candidate.email}`}
+                        className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
+                      >
+                        <Mail className="w-5 h-5" />
+                        Envoyer un email
+                      </a>
+                    )}
+                    {candidate.linkedin && (
+                      <a
+                        href={candidate.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-3 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-blue-200"
+                      >
+                        <ExternalLink className="w-5 h-5" />
+                        LinkedIn
+                      </a>
+                    )}
+                    {candidate.portfolio && (
+                      <a
+                        href={candidate.portfolio}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
+                      >
+                        <Globe className="w-5 h-5" />
+                        Portfolio
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Bloc des tendances de vues - directement en dessous du profil candidat */}
