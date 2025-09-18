@@ -1048,8 +1048,8 @@ export default function RecruiterDashboard() {
                   />
                 )}
 
-                {/* Titre des offres */}
-                <div className="mb-8">
+                {/* Container Titre et Actions */}
+                <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
