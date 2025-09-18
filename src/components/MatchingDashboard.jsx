@@ -29,6 +29,7 @@ const MatchingDashboard = ({ recruiterId }) => {
   const [stats, setStats] = useState(null);
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
   const [statsLoaded, setStatsLoaded] = useState(false);
+  const [jobsLoaded, setJobsLoaded] = useState(false);
   const [animateBars, setAnimateBars] = useState(false);
   const hasAnimatedRef = useRef(false);
 
@@ -46,7 +47,7 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   // Déclencher l'animation quand toutes les données sont complètement chargées
   useEffect(() => {
-    if (isFullyLoaded && statsLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+    if (isFullyLoaded && statsLoaded && jobsLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
       hasAnimatedRef.current = true;
       // Délai d'1 seconde après chargement complet des données en base
       const timer = setTimeout(() => {
@@ -54,7 +55,7 @@ const MatchingDashboard = ({ recruiterId }) => {
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [isFullyLoaded, statsLoaded, loading, candidates.length]);
+  }, [isFullyLoaded, statsLoaded, jobsLoaded, loading, candidates.length]);
 
   const fetchJobs = async () => {
     try {
@@ -215,8 +216,10 @@ const MatchingDashboard = ({ recruiterId }) => {
                 setAnimateBars(false);
                 setIsFullyLoaded(false);
                 setStatsLoaded(false);
+                setJobsLoaded(false);
                 hasAnimatedRef.current = false;
                 fetchStats();
+                fetchJobs();
                 if (selectedJob) {
                   fetchCandidatesForJob(selectedJob.id);
                 }
@@ -246,6 +249,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                       setAnimateBars(false);
                       setIsFullyLoaded(false);
                       setStatsLoaded(false);
+                      setJobsLoaded(false);
                       hasAnimatedRef.current = false;
                       fetchCandidatesForJob(job.id);
                     }}
