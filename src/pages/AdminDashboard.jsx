@@ -1835,7 +1835,6 @@ const ForumManagementContent = ({
         <div className="text-center">
           <div className="relative mb-8">
             <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto shadow-lg">
-              <MessageSquare className="w-10 h-10 text-blue-600" />
             </div>
             <div className="absolute inset-0 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"></div>
           </div>
