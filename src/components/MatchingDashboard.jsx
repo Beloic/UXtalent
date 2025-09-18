@@ -291,7 +291,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                           <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center">
                               {/* Photo de profil */}
-                              <div className="relative mr-4">
+                              <div className="mr-4">
                                 {candidate.profilePhoto ? (
                                   <img
                                     src={candidate.profilePhoto}
@@ -303,14 +303,10 @@ const MatchingDashboard = ({ recruiterId }) => {
                                     {candidate.name ? candidate.name.charAt(0).toUpperCase() : '?'}
                                   </div>
                                 )}
-                                {/* Badge de score sur la photo */}
-                                <div className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${getScoreColor(candidate.score)}`}>
-                                  {formatScore(candidate.score)}
-                                </div>
                               </div>
                               
-                              <div className="flex flex-col">
-                                <h4 className="text-xl font-bold text-gray-900 mb-1">
+                              <div className="flex items-center">
+                                <h4 className="text-xl font-bold text-gray-900 mr-3">
                                   {candidate.name}
                                 </h4>
                                 <span className={`px-3 py-1 rounded-full text-sm font-bold ${getRecommendationBadge(candidate.score).color}`}>
