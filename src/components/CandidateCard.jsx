@@ -121,10 +121,10 @@ export default function CandidateCard({ candidate, compact = false }) {
     <div className={getCardStyles()}>
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-3">
           {/* Colonne gauche: Avatar (style carte carrée arrondie) */}
-          <div className="flex flex-col items-start gap-2 w-20 sm:w-24">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden bg-gray-100 shadow">
+          <div className="flex flex-col items-start gap-2 w-24">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-gray-100 shadow">
               {candidate.photo ? (
                 <img
                   src={candidate.photo}
@@ -144,16 +144,16 @@ export default function CandidateCard({ candidate, compact = false }) {
             </div>
           </div>
           {/* Colonne droite: texte principal */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0 flex flex-col justify-between h-16 sm:h-20">
+            <div className="flex items-center justify-between gap-3">
               <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight truncate">
                 {candidate.name}
               </h3>
               {/* Badges plan/exp gardés à droite via bloc existant plus bas */}
             </div>
-            <p className="text-gray-600 text-base font-medium mb-1 line-clamp-2">{candidate.title}</p>
+            <p className="text-gray-600 text-base font-medium line-clamp-2">{candidate.title}</p>
             {/* Ligne de métadonnées alignée à gauche: localisation, expérience, (optionnel) mode de travail */}
-            <div className="flex items-center gap-6 text-gray-500 text-sm mb-2">
+            <div className="flex items-center gap-6 text-gray-500 text-sm">
               {candidate.location && (
                 <div className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1.5 text-red-600" />
