@@ -30,6 +30,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [retryCount, setRetryCount] = useState(0)
 
   const { signUp } = useAuth()
   const navigate = useNavigate()
@@ -111,6 +112,9 @@ export default function RegisterPage() {
           setError('Un compte existe déjà avec cet email')
         } else if (error.message.includes('Password should be at least')) {
           setError('Le mot de passe doit contenir au moins 6 caractères')
+        } else if (error.message.includes('Too Many Requests') || error.message.includes('429')) {
+          setRetryCount(prev => prev + 1)
+          setError('Trop de tentatives d\'inscription. Veuillez attendre quelques minutes avant de réessayer.')
         } else {
           setError(error.message)
         }
