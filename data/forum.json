@@ -1,0 +1,46 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "Test Post",
+      "content": "Ceci est un post de test",
+      "author": "Admin",
+      "category": "UX Design",
+      "likes": 0,
+      "replies": 1,
+      "views": 5,
+      "createdAt": "2025-09-18T10:36:24.437Z",
+      "updatedAt": "2025-09-18T10:36:24.440Z",
+      "isPinned": false,
+      "tags": [
+        "test"
+      ]
+    }
+  ],
+  "replies": [
+    {
+      "id": 1,
+      "postId": 1,
+      "content": "Ceci est une réponse de test que tu peux supprimer",
+      "author": "Test User",
+      "author_id": "test123",
+      "author_avatar": "TU",
+      "likes": 0,
+      "createdAt": "2025-09-18T10:36:24.441Z",
+      "updatedAt": "2025-09-18T10:36:24.441Z"
+    }
+  ],
+  "categories": [
+    {
+      "name": "UX Design",
+      "count": 1,
+      "color": "bg-blue-100 text-blue-700",
+      "description": "Expérience utilisateur et design thinking"
+    }
+  ],
+  "stats": {
+    "totalPosts": 1,
+    "totalReplies": 1,
+    "totalUsers": 1
+  }
+}
