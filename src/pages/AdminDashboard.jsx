@@ -60,8 +60,10 @@ export default function AdminDashboard() {
   const loadCandidates = async () => {
     try {
       setIsLoading(true);
-      const apiUrl = await buildApiUrl(API_ENDPOINTS.CANDIDATES);
+      // Forcer un rechargement complet depuis l'API (éviter tout cache navigateur/proxy)
+      const apiUrl = await buildApiUrl(`${API_ENDPOINTS.CANDIDATES}?t=${Date.now()}`);
       const response = await fetch(apiUrl, {
+        cache: 'no-store',
         headers: {
           'Authorization': 'Bearer admin-token' // Token spécial pour l'administrateur
         }
