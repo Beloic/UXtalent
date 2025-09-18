@@ -1429,8 +1429,8 @@ app.get('/api/candidates/:candidateId/stats', async (req, res) => {
 // DELETE /api/forum/posts/:id/replies/:replyId - Supprimer une réponse
 app.delete('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, res) => {
   try {
-    const { replyId } = req.params;
-    const deleted = await deleteReply(parseInt(replyId));
+    const { id, replyId } = req.params;
+    const deleted = await deleteReply(parseInt(id), parseInt(replyId));
     
     if (deleted) {
       logger.info('Réponse supprimée avec succès', { replyId, user: req.user?.email });
@@ -1466,8 +1466,8 @@ app.delete('/api/admin/forum/posts/:id', (req, res) => {
 // DELETE /api/admin/forum/posts/:id/replies/:replyId - Supprimer une réponse (admin)
 app.delete('/api/admin/forum/posts/:id/replies/:replyId', async (req, res) => {
   try {
-    const { replyId } = req.params;
-    const deleted = await deleteReply(parseInt(replyId));
+    const { id, replyId } = req.params;
+    const deleted = await deleteReply(parseInt(id), parseInt(replyId));
     
     if (deleted) {
       logger.info('Réponse supprimée avec succès (admin)', { replyId });

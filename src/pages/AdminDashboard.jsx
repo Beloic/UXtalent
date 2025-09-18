@@ -1494,6 +1494,7 @@ export default function AdminDashboard() {
             selectedPost={selectedPost}
             setSelectedPost={setSelectedPost}
             loadPostDetails={loadPostDetails}
+            onRefresh={loadForumData}
           />
         )}
 
@@ -1802,7 +1803,8 @@ const ForumManagementContent = ({
   onDeleteReply, 
   selectedPost, 
   setSelectedPost,
-  loadPostDetails
+  loadPostDetails,
+  onRefresh
 }) => {
   const formatTimeAgo = (dateString) => {
     const now = new Date();
@@ -1928,7 +1930,7 @@ const ForumManagementContent = ({
                 {forumStats.totalPosts} discussions
               </span>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition-all duration-200 border border-gray-200/50 hover:border-purple-200/50">
+            <button onClick={onRefresh} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition-all duration-200 border border-gray-200/50 hover:border-purple-200/50">
               <RefreshCw className="w-4 h-4" />
               Actualiser
             </button>
