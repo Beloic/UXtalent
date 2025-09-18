@@ -33,6 +33,7 @@ export default function PricingPage() {
         "Support prioritaire",
         "Tableau de bord complet",
         "Tableau Kanban avancé pour organiser les candidats",
+        "Algorithme de Matching intelligent",
         "Export des données"
       ],
       popular: true,
@@ -249,7 +250,7 @@ export default function PricingPage() {
               </h3>
               <p className="text-gray-600">
                 Vous pouvez annuler votre abonnement à tout moment en nous envoyant un email. 
-                Aucune pénalité, aucune question posée.
+                Aucune pénalité, aucune question posée. La plateforme restera accessible jusqu'à la fin de votre période d'abonnement en cours.
               </p>
             </div>
           </div>
