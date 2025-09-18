@@ -450,6 +450,10 @@ export default function RecruiterLandingPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-300" />
+                    <span>Algorithme de Matching intelligent</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-300" />
                     <span>Export des données</span>
                   </li>
                 </ul>

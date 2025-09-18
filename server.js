@@ -3187,7 +3187,7 @@ app.post('/api/matching/feedback', authenticateUser, async (req, res) => {
 });
 
 // GET /api/matching/stats - Statistiques de matching globales
-app.get('/api/matching/stats', requireRole(['admin']), async (req, res) => {
+app.get('/api/matching/stats', requireRole(['admin', 'recruiter']), async (req, res) => {
   try {
     const stats = await getMatchingStats();
     res.json(stats);
