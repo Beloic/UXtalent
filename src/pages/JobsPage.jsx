@@ -303,23 +303,6 @@ export default function JobsPage() {
               </motion.div>
             )}
 
-            {/* Widget de matching pour les recruteurs */}
-            {isRecruiter && jobs.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="mt-6"
-              >
-                <MatchingWidget 
-                  type="candidates" 
-                  jobId={jobs[0].id} 
-                  limit={3} 
-                  showDetails={false}
-                  className="shadow-lg"
-                />
-              </motion.div>
-            )}
           </aside>
 
           {/* Contenu principal */}

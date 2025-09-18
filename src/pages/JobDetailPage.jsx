@@ -24,6 +24,7 @@ import { Link, useParams } from "react-router-dom";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
 import { buildApiUrl } from "../config/api";
+import MatchingWidget from "../components/MatchingWidget";
 
 export default function JobDetailPage() {
   const { id } = useParams();
@@ -666,6 +667,24 @@ export default function JobDetailPage() {
                 >
                   Voir toutes les offres
                 </Link>
+              </motion.div>
+            )}
+
+            {/* Candidats recommandés pour les recruteurs */}
+            {isRecruiter && job && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                className="bg-white rounded-2xl p-6 shadow-xl border border-white/20 backdrop-blur-sm"
+              >
+                <MatchingWidget 
+                  type="candidates" 
+                  jobId={job.id} 
+                  limit={3} 
+                  showDetails={true}
+                  className="shadow-none"
+                />
               </motion.div>
             )}
 
