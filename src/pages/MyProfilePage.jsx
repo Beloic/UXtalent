@@ -303,8 +303,8 @@ export default function MyProfilePage() {
         );
       case 5: // Rémunération (obligatoire)
         return (
-          formData.dailyRate.trim() &&
-          formData.annualSalary.trim()
+          formData.dailyRate && formData.dailyRate.toString().trim() &&
+          formData.annualSalary && formData.annualSalary.toString().trim()
         );
       case 6: // Liens et portfolio
         return (
