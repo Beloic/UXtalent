@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Globe, User, Briefcase, DollarSign, Award, Clock, Heart } from "lucide-react";
+import { MapPin, Globe, User, Briefcase, DollarSign, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PremiumBadge, ProBadge } from "./Badge";
 import { useAuth } from "../contexts/AuthContext";
@@ -93,198 +93,243 @@ export default function CandidateCard({ candidate }) {
 
   const getExperienceColor = (experience) => {
     switch (experience) {
-      case 'Junior': return 'bg-green-100 text-green-800';
-      case 'Mid': return 'bg-blue-100 text-blue-800';
-      case 'Senior': return 'bg-blue-100 text-blue-800';
-      case 'Lead': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Junior': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'Mid': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'Senior': return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+      case 'Lead': return 'bg-purple-50 text-purple-700 border-purple-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
+
+  const getExperienceIcon = (experience) => {
+    switch (experience) {
+      case 'Junior': return <Zap className="w-3 h-3" />;
+      case 'Mid': return <TrendingUp className="w-3 h-3" />;
+      case 'Senior': return <Star className="w-3 h-3" />;
+      case 'Lead': return <Award className="w-3 h-3" />;
+      default: return <Briefcase className="w-3 h-3" />;
     }
   };
 
 
-  // Définir les styles selon le plan
+  // Définir les styles selon le plan avec design moderne
   const getCardStyles = () => {
+    const baseStyles = "group relative overflow-hidden bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:-translate-y-1 border border-gray-100/50 backdrop-blur-sm";
+    
     if (candidate.planType === 'pro') {
-      return "group bg-gradient-to-br from-amber-50/90 to-orange-50/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border-2 border-amber-500 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 relative";
+      return `${baseStyles} bg-gradient-to-br from-amber-50/80 via-orange-50/60 to-yellow-50/80 border-amber-200/50 hover:border-amber-300/70`;
     } else if (candidate.planType === 'premium') {
-      return "group bg-gradient-to-br from-blue-50/90 to-blue-100/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border-2 border-blue-500 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 relative";
+      return `${baseStyles} bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/80 border-blue-200/50 hover:border-blue-300/70`;
     } else {
-      return "group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-200 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300";
+      return `${baseStyles} hover:border-gray-200/70`;
     }
   };
 
   return (
     <div className={getCardStyles()}>
-      {/* Badge de mise en avant pour Premium/Pro */}
+      {/* Effet de brillance subtil */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      
+      {/* Badge Premium/Pro redesigné */}
       {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
-        <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10">
-          <div className={`text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg ${
+        <div className="absolute -top-1 -right-1 z-20">
+          <div className={`relative px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-xl backdrop-blur-sm ${
             candidate.planType === 'pro' 
-              ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
-              : 'bg-blue-600'
+              ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white' 
+              : 'bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white'
           }`}>
-            <span className={candidate.planType === 'pro' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
-            <span className="hidden sm:inline">{candidate.planType === 'pro' ? 'Pro' : 'Premium'}</span>
+            <Star className="w-3 h-3 fill-current" />
+            <span className="hidden sm:inline font-semibold">{candidate.planType === 'pro' ? 'Pro' : 'Premium'}</span>
+            <div className="absolute inset-0 rounded-full bg-white/20 blur-sm" />
           </div>
         </div>
       )}
       
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4 sm:mb-6">
-        <div className="flex items-start gap-3 sm:gap-4 flex-1">
-          {/* Photo de profil ou Initiales */}
-          <div className="relative">
-            {candidate.photo ? (
-              <img
-                src={candidate.photo}
-                alt={`Photo de ${candidate.name}`}
-                className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl object-cover border-2 border-white shadow-lg"
-                onError={(e) => {
-                  console.log('❌ Erreur de chargement de la photo:', candidate.photo);
-                  // Utiliser un avatar généré automatiquement
-                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=64&background=6366f1&color=ffffff&bold=true`;
-                }}
-                onLoad={() => {
-                  console.log('✅ Photo chargée avec succès:', candidate.photo);
-                }}
-              />
-            ) : (
-              <img
-                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=64&background=6366f1&color=ffffff&bold=true`}
-                alt={`Avatar de ${candidate.name}`}
-                className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl object-cover border-2 border-white shadow-lg"
-              />
-            )}
+      {/* Header redesigné */}
+      <div className="p-6 pb-4">
+        <div className="flex items-start gap-4 mb-4">
+          {/* Photo de profil avec design moderne */}
+          <div className="relative flex-shrink-0">
+            <div className="relative">
+              {candidate.photo ? (
+                <img
+                  src={candidate.photo}
+                  alt={`Photo de ${candidate.name}`}
+                  className="w-16 h-16 rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50"
+                  onError={(e) => {
+                    console.log('❌ Erreur de chargement de la photo:', candidate.photo);
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=80&background=6366f1&color=ffffff&bold=true`;
+                  }}
+                  onLoad={() => {
+                    console.log('✅ Photo chargée avec succès:', candidate.photo);
+                  }}
+                />
+              ) : (
+                <img
+                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=80&background=6366f1&color=ffffff&bold=true`}
+                  alt={`Avatar de ${candidate.name}`}
+                  className="w-16 h-16 rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50"
+                />
+              )}
+              {/* Indicateur de statut en ligne */}
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full shadow-lg">
+                <div className="w-full h-full bg-emerald-400 rounded-full animate-pulse" />
+              </div>
+            </div>
           </div>
           
+          {/* Informations principales */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 sm:mb-2 group-hover:text-blue-600 transition-colors truncate">
-              {candidate.name}
-            </h3>
-            <p className="text-sm sm:text-lg text-gray-600 mb-2 sm:mb-3 font-medium line-clamp-2">{candidate.title}</p>
-            <div className="flex items-center text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">
-              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-blue-500 flex-shrink-0" />
-              <span className="truncate">{candidate.location}</span>
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300 truncate">
+                  {candidate.name}
+                </h3>
+                <p className="text-gray-600 font-medium mb-2 line-clamp-2 leading-relaxed">{candidate.title}</p>
+              </div>
+              
+              {/* Bouton favoris redesigné */}
+              {user && isRecruiter && (
+                <button
+                  onClick={toggleFavorite}
+                  disabled={isLoadingFavorite}
+                  className={`ml-3 p-2.5 rounded-xl transition-all duration-300 hover:scale-110 ${
+                    isFavorited 
+                      ? 'bg-red-50 text-red-500 hover:bg-red-100 shadow-lg' 
+                      : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-red-500'
+                  } ${isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                >
+                  {isLoadingFavorite ? (
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
+                  )}
+                </button>
+              )}
+            </div>
+            
+            {/* Localisation et expérience */}
+            <div className="flex items-center gap-4 mb-3">
+              <div className="flex items-center text-gray-500 text-sm">
+                <MapPin className="w-4 h-4 mr-1.5 text-blue-500" />
+                <span className="font-medium">{candidate.location}</span>
+              </div>
+              {candidate.experience && (
+                <div className={`flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getExperienceColor(candidate.experience)}`}>
+                  {getExperienceIcon(candidate.experience)}
+                  <span className="ml-1">{candidate.experience}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
-        
-        {/* Bouton favoris pour les recruteurs */}
-        {user && isRecruiter && (
-          <button
-            onClick={toggleFavorite}
-            disabled={isLoadingFavorite}
-            className={`p-2 sm:p-3 rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-110 ${
-              isFavorited 
-                ? 'bg-red-100 text-red-600 hover:bg-red-200' 
-                : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-red-500'
-            } ${isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''}`}
-            title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-          >
-            {isLoadingFavorite ? (
-              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <Heart className={`w-4 h-4 sm:w-5 sm:h-5 ${isFavorited ? 'fill-current' : ''}`} />
+
+        {/* Bio redesignée */}
+        <div className="mb-5">
+          <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+            {(() => {
+              const bio = candidate.bio || '';
+              return bio.replace(/Années d'expérience: \d+ ans \([^)]+\)\n\n/, '');
+            })()}
+          </p>
+        </div>
+
+        {/* Compétences redesignées */}
+        <div className="mb-5">
+          <div className="flex items-center mb-3">
+            <Award className="w-4 h-4 mr-2 text-blue-500" />
+            <span className="text-sm font-semibold text-gray-700">Compétences clés</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {(candidate.skills || []).slice(0, 4).map((skill, index) => (
+              <span
+                key={index}
+                className="px-3 py-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 text-xs font-medium rounded-xl border border-blue-200/50 hover:border-blue-300/70 transition-colors duration-200"
+              >
+                {skill}
+              </span>
+            ))}
+            {(candidate.skills || []).length > 4 && (
+              <span className="px-3 py-1.5 bg-gradient-to-r from-gray-50 to-gray-100 text-gray-600 text-xs font-medium rounded-xl border border-gray-200/50">
+                +{(candidate.skills || []).length - 4}
+              </span>
             )}
-          </button>
-        )}
+          </div>
+        </div>
       </div>
 
-      {/* Bio */}
-      <p className="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-3 leading-relaxed">
-        {(() => {
-          // Masquer la ligne "Années d'expérience" de la bio puisqu'elle est affichée séparément
-          const bio = candidate.bio || '';
-          return bio.replace(/Années d'expérience: \d+ ans \([^)]+\)\n\n/, '');
-        })()}
-      </p>
-
-      {/* Skills */}
-      <div className="mb-4 sm:mb-6">
-        <div className="flex items-center text-xs sm:text-sm text-gray-700 mb-2 sm:mb-3 font-semibold">
-          <Award className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-blue-500" />
-          Compétences clés
+      {/* Informations supplémentaires redesignées */}
+      <div className="px-6 pb-4">
+        <div className="bg-gradient-to-r from-gray-50/80 to-gray-100/50 rounded-2xl p-4 mb-4 border border-gray-200/50">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center text-gray-600 text-sm">
+                <Globe className="w-4 h-4 mr-1.5 text-blue-500" />
+                <span className="font-semibold">{getRemoteLabel(candidate.remote)}</span>
+              </div>
+              {candidate.salary && (
+                <div className="flex items-center text-gray-600 text-sm">
+                  <DollarSign className="w-4 h-4 mr-1.5 text-emerald-500" />
+                  <span className="font-semibold">{candidate.salary}</span>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center text-gray-500 text-xs">
+              <Clock className="w-3 h-3 mr-1" />
+              <span>Mis à jour {new Date(candidate.updatedAt).toLocaleDateString('fr-FR')}</span>
+            </div>
+          </div>
+          
+          {/* Rémunération redesignée */}
+          {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
+            <div className="pt-3 border-t border-gray-200/50">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-gray-700">Rémunération souhaitée</span>
+                <div className="flex items-center gap-4">
+                  {(candidate.dailyRate || candidate.daily_rate) && (
+                    <div className="flex items-center text-gray-600">
+                      <span className="text-sm font-medium mr-1">TJM:</span>
+                      <span className="font-bold text-gray-900 text-sm">{candidate.dailyRate || candidate.daily_rate}€</span>
+                    </div>
+                  )}
+                  {(candidate.annualSalary || candidate.annual_salary) && (
+                    <div className="flex items-center text-gray-600">
+                      <span className="text-sm font-medium mr-1">Annuel:</span>
+                      <span className="font-bold text-gray-900 text-sm">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="flex flex-wrap gap-1 sm:gap-2">
-          {(candidate.skills || []).slice(0, 4).map((skill, index) => (
-            <span
-              key={index}
-              className="px-2 py-1 sm:px-3 sm:py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-medium border border-blue-200"
+      </div>
+
+      {/* Actions redesignées */}
+      <div className="px-6 pb-6">
+        <div className="border-t border-gray-200/50 pt-4">
+          {candidate.id ? (
+            <Link
+              to={`/candidates/${candidate.id}`}
+              className="group/btn relative inline-flex items-center justify-center w-full px-6 py-3.5 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 overflow-hidden"
             >
-              {skill}
-            </span>
-          ))}
-          {(candidate.skills || []).length > 4 && (
-            <span className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
-              +{(candidate.skills || []).length - 4}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Details */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm mb-4 sm:mb-6 gap-2 sm:gap-0">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex items-center text-gray-600">
-            <Globe className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-500" />
-            <span className="font-medium">{getRemoteLabel(candidate.remote)}</span>
-          </div>
-          {candidate.salary && (
-            <div className="flex items-center text-gray-600">
-              <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-green-500" />
-              <span className="font-medium">{candidate.salary}</span>
+              {/* Effet de brillance au survol */}
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700" />
+              
+              <Eye className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform duration-200" />
+              <span className="relative z-10">Voir le profil complet</span>
+              
+              {/* Indicateur de progression */}
+              <div className="absolute bottom-0 left-0 h-0.5 bg-white/30 w-0 group-hover/btn:w-full transition-all duration-300" />
+            </Link>
+          ) : (
+            <div className="inline-flex items-center justify-center w-full px-6 py-3.5 bg-gray-300 text-gray-500 font-semibold rounded-2xl cursor-not-allowed">
+              <User className="w-4 h-4 mr-2" />
+              <span>Profil indisponible</span>
             </div>
           )}
         </div>
-        <div className="flex items-center text-gray-500">
-          <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-          <span className="text-xs">
-            Mis à jour {new Date(candidate.updatedAt).toLocaleDateString('fr-FR')}
-          </span>
-        </div>
-      </div>
-
-      {/* Rémunération */}
-      {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
-        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-xl border border-gray-200">
-          <div className="text-xs sm:text-sm text-gray-700 mb-2 sm:mb-3 font-semibold">
-            Rémunération souhaitée
-          </div>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm gap-2 sm:gap-0">
-            {(candidate.dailyRate || candidate.daily_rate) && (
-              <div className="flex items-center text-gray-600">
-                <span className="font-medium mr-1">TJM:</span>
-                <span className="font-bold text-gray-900">{candidate.dailyRate || candidate.daily_rate}€</span>
-              </div>
-            )}
-            {(candidate.annualSalary || candidate.annual_salary) && (
-              <div className="flex items-center text-gray-600">
-                <span className="font-medium mr-1">Annuel:</span>
-                <span className="font-bold text-gray-900">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Actions */}
-      <div className="flex justify-center pt-3 sm:pt-4 border-t border-gray-100">
-        {candidate.id ? (
-          <Link
-            to={`/candidates/${candidate.id}`}
-            className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
-          >
-            <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">Voir le profil complet</span>
-            <span className="sm:hidden">Profil</span>
-          </Link>
-        ) : (
-          <span className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gray-400 text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl cursor-not-allowed">
-            <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">Profil indisponible</span>
-            <span className="sm:hidden">Indisponible</span>
-          </span>
-        )}
       </div>
     </div>
   );
