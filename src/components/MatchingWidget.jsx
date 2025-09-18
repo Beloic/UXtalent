@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, Eye } from 'lucide-react';
+import { TrendingUp, Eye, MapPin } from 'lucide-react';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 import { authenticatedFetch } from '../utils/auth';
 
@@ -94,7 +94,7 @@ const MatchingWidget = ({
             <div className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               {/* Informations principales */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-sm font-medium text-gray-900 truncate">
                     {candidate.name}
                   </span>
@@ -102,8 +102,19 @@ const MatchingWidget = ({
                     {formatScore(candidate.score)}%
                   </span>
                 </div>
-                <div className="text-xs text-gray-600 truncate">
+                <div className="text-xs text-gray-700 truncate">
                   {candidate.title}
+                </div>
+                <div className="text-[11px] text-gray-500 flex items-center gap-3 mt-0.5 truncate">
+                  {candidate.location && (
+                    <span className="inline-flex items-center gap-1 truncate">
+                      <MapPin className="h-3 w-3" />
+                      <span className="truncate">{candidate.location}</span>
+                    </span>
+                  )}
+                  {candidate.seniority && (
+                    <span className="truncate">{candidate.seniority}</span>
+                  )}
                 </div>
               </div>
 
