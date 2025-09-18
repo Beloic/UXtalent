@@ -1171,7 +1171,15 @@ export default function AdminDashboard() {
           )}
         </AnimatePresence>
 
-        {/* Contenu principal basé sur l'onglet actif */}
+        {/* Contenu principal basé sur l'onglet actif (avec transition élégante) */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 16, scale: 0.985, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -16, scale: 0.985, filter: 'blur(6px)' }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
         {activeTab === 'candidates' && (
           <>
             {/* Statistiques ultra-modernes avec glassmorphism */}
@@ -1506,6 +1514,8 @@ export default function AdminDashboard() {
             setJobFilterStatus={setJobFilterStatus}
           />
         )}
+          </motion.div>
+        </AnimatePresence>
       </div>
       </div>
     </Layout>
