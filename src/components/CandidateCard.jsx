@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Globe, User, Briefcase, Coins, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
+import { MapPin, Globe, User, Briefcase, Euro, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PremiumBadge, ProBadge } from "./Badge";
 import { useAuth } from "../contexts/AuthContext";
@@ -122,8 +122,8 @@ export default function CandidateCard({ candidate, compact = false }) {
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-4">
-          {/* Colonne gauche: Avatar + métadonnées */}
-          <div className="flex flex-col items-start gap-2 w-28 sm:w-32">
+          {/* Colonne gauche: Avatar */}
+          <div className="flex flex-col items-start gap-2 w-16 sm:w-16">
             <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100">
               {candidate.photo ? (
                 <img
@@ -142,27 +142,29 @@ export default function CandidateCard({ candidate, compact = false }) {
                 />
               )}
             </div>
-            <div className="space-y-1 text-gray-500 text-xs sm:text-sm">
-              {candidate.location && (
-                <div className="flex items-center">
-                  <MapPin className="w-4 h-4 mr-1.5 text-red-600" />
-                  <span className="truncate max-w-[7rem] sm:max-w-[9rem]">{candidate.location}</span>
-                </div>
-              )}
-              {candidate.remote && (
-                <div className="flex items-center">
-                  <Globe className="w-4 h-4 mr-1.5 text-blue-600" />
-                  <span className="truncate max-w-[7rem] sm:max-w-[9rem]">{getRemoteLabel(candidate.remote)}</span>
-                </div>
-              )}
-            </div>
           </div>
           {/* Colonne droite: texte principal */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1 truncate">
-              {candidate.name}
-            </h3>
-            <p className="text-gray-600 font-medium mb-2 line-clamp-2">{candidate.title}</p>
+            <div className="flex items-center justify-between gap-4">
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1 truncate">
+                {candidate.name}
+              </h3>
+              {candidate.location && (
+                <div className="flex items-center text-gray-500 text-sm flex-shrink-0">
+                  <MapPin className="w-4 h-4 mr-1.5 text-red-600" />
+                  <span className="truncate max-w-[10rem]">{candidate.location}</span>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-gray-600 font-medium mb-2 line-clamp-2 flex-1">{candidate.title}</p>
+              {candidate.remote && (
+                <div className="flex items-center text-gray-500 text-sm flex-shrink-0 mb-2">
+                  <Globe className="w-4 h-4 mr-1.5 text-blue-600" />
+                  <span className="truncate max-w-[10rem]">{getRemoteLabel(candidate.remote)}</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {/* Badges plan + expérience */}
@@ -190,13 +192,13 @@ export default function CandidateCard({ candidate, compact = false }) {
         <div className="flex items-center gap-4 text-sm text-gray-600">
           {(candidate.dailyRate || candidate.daily_rate) && (
             <div className="flex items-center gap-1">
-              <Coins className="w-4 h-4 text-emerald-600" />
+              <Euro className="w-4 h-4 text-emerald-600" />
               <span className="font-medium">{candidate.dailyRate || candidate.daily_rate}€ TJM</span>
             </div>
           )}
           {(candidate.annualSalary || candidate.annual_salary) && (
             <div className="flex items-center gap-1">
-              <Coins className="w-4 h-4 text-emerald-600" />
+              <Euro className="w-4 h-4 text-emerald-600" />
               <span className="font-medium">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€ annuel</span>
             </div>
           )}
