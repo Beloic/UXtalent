@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MapPin, Globe, User, Briefcase, Euro, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
-// import { PremiumBadge, ProBadge } from "./Badge"; // plus utilisé
+import { PremiumBadge, ProBadge } from "./Badge";
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
@@ -153,10 +153,14 @@ export default function CandidateCard({ candidate, compact = false }) {
           {/* Colonne droite: texte principal */}
           <div className="flex-1 min-w-0 flex flex-col justify-between h-16 sm:h-20">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight truncate">
-                {candidate.name}
-              </h3>
-              {/* Badges plan/exp gardés à droite via bloc existant plus bas */}
+              <div className="flex items-center gap-2 min-w-0">
+                <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight truncate">
+                  {candidate.name}
+                </h3>
+                {candidate.planType === 'premium' && <PremiumBadge />}
+                {candidate.planType === 'pro' && <ProBadge />}
+              </div>
+              {/* rien à droite */}
             </div>
             <p className="text-gray-600 text-base font-medium line-clamp-2">{candidate.title}</p>
             {/* Ligne de métadonnées alignée à gauche: localisation, expérience, (optionnel) mode de travail */}
