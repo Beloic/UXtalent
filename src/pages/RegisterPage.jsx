@@ -99,7 +99,7 @@ export default function RegisterPage() {
 
 
     try {
-      const { error } = await signUp(formData.email, formData.password, {
+      const { data, error } = await signUp(formData.email, formData.password, {
         first_name: formData.firstName,
         last_name: formData.lastName,
         company: formData.company,
@@ -116,7 +116,7 @@ export default function RegisterPage() {
         }
       } else {
         // Vérifier si l'utilisateur doit confirmer son email
-        if (data.user && !data.user.email_confirmed_at) {
+        if (data?.user && !data.user.email_confirmed_at) {
           setSuccess('Compte créé ! Un email de confirmation a été envoyé à votre adresse email. Veuillez cliquer sur le lien pour activer votre compte.')
           setTimeout(() => {
             navigate('/confirm-email')
