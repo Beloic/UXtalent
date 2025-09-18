@@ -72,6 +72,7 @@ export async function getBestCandidatesForJob(jobId, options = {}) {
           candidateId: result.candidate.id,
           name: result.candidate.name,
           title: result.candidate.title,
+          profilePhoto: result.candidate.profilePhoto || result.candidate.photo,
           score: result.globalScore,
           matchLevel: result.matchLevel
         }))
@@ -97,6 +98,7 @@ export async function getBestCandidatesForJob(jobId, options = {}) {
         availability: result.candidate.availability,
         planType: result.candidate.planType,
         isFeatured: result.candidate.isFeatured,
+        profilePhoto: result.candidate.profilePhoto || result.candidate.photo,
         score: result.globalScore,
         matchLevel: result.matchLevel,
         scoreBreakdown: {

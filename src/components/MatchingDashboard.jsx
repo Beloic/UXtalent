@@ -27,30 +27,13 @@ const MatchingDashboard = ({ recruiterId }) => {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
-  const [animateBars, setAnimateBars] = useState(false);
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
-  const [jobsLoaded, setJobsLoaded] = useState(false);
-  const [statsLoaded, setStatsLoaded] = useState(false);
-  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
     fetchJobs();
     fetchStats();
   }, [recruiterId]);
 
-  // Déclencher l'animation quand les candidats sont chargés
-  useEffect(() => {
-    console.log('Animation check:', { isFullyLoaded, loading, candidatesLength: candidates.length, hasAnimated: hasAnimatedRef.current });
-    if (isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
-      console.log('Déclenchement de l\'animation');
-      hasAnimatedRef.current = true;
-      // Délai de 1 seconde pour améliorer l'expérience utilisateur
-      const timer = setTimeout(() => {
-        setAnimateBars(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [isFullyLoaded, loading, candidates.length]);
 
   useEffect(() => {
     if (selectedJob) {
@@ -148,32 +131,8 @@ const MatchingDashboard = ({ recruiterId }) => {
     return Math.round(score * 100);
   };
 
-  // Composant de barre de progression animée
-  const AnimatedProgressBar = ({ score, color, delay = 0, label }) => {
-    const [isAnimated, setIsAnimated] = useState(false);
-    const hasAnimated = useRef(false);
-    
-  useEffect(() => {
-    if (animateBars && !hasAnimated.current) {
-      hasAnimated.current = true;
-      // Délai supplémentaire pour chaque barre (en plus du délai principal de 1s)
-      const timer = setTimeout(() => {
-        setIsAnimated(true);
-      }, delay + 200);
-      return () => clearTimeout(timer);
-    }
-  }, [animateBars, delay]);
-
-    // Réinitialiser quand on change d'offre
-    useEffect(() => {
-      if (!animateBars) {
-        hasAnimated.current = false;
-        setIsAnimated(false);
-      }
-    }, [animateBars]);
-
-    const width = isAnimated ? score * 100 : 0;
-
+  // Composant de barre de progression simple
+  const ProgressBar = ({ score, color, label }) => {
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -185,18 +144,16 @@ const MatchingDashboard = ({ recruiterId }) => {
         <div className="relative">
           <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
             <div 
-              className={`h-4 rounded-full transition-all duration-1000 ease-out relative ${
+              className={`h-4 rounded-full ${
                 label === 'Expérience' ? 'bg-gradient-to-r from-green-400 to-green-600' :
                 label === 'Localisation' ? 'bg-gradient-to-r from-purple-400 to-purple-600' :
                 label === 'Salaire' ? 'bg-gradient-to-r from-orange-400 to-orange-600' :
                 'bg-gradient-to-r from-red-400 to-red-600'
               }`}
               style={{ 
-                width: `${width}%`
+                width: `${score * 100}%`
               }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
-            </div>
+            />
           </div>
         </div>
       </div>
@@ -218,9 +175,7 @@ const MatchingDashboard = ({ recruiterId }) => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => {
-                setAnimateBars(false);
                 setIsFullyLoaded(false);
-                hasAnimatedRef.current = false;
                 fetchStats();
                 if (selectedJob) {
                   fetchCandidatesForJob(selectedJob.id);
@@ -248,9 +203,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                     key={job.id}
                     onClick={() => {
                       setSelectedJob(job);
-                      setAnimateBars(false);
                       setIsFullyLoaded(false);
-                      hasAnimatedRef.current = false;
                       fetchCandidatesForJob(job.id);
                     }}
                     className={`w-full text-left p-3 rounded-lg border transition-colors ${
@@ -399,31 +352,27 @@ const MatchingDashboard = ({ recruiterId }) => {
                             <div className="space-y-6">
                               <div className="text-lg font-bold text-gray-800 mb-6">Détail du score de compatibilité</div>
                               
-                              <AnimatedProgressBar 
+                              <ProgressBar 
                                 score={candidate.scoreBreakdown.experience}
                                 color="text-green-600"
-                                delay={0}
                                 label="Expérience"
                               />
 
-                              <AnimatedProgressBar 
+                              <ProgressBar 
                                 score={candidate.scoreBreakdown.location}
                                 color="text-purple-600"
-                                delay={300}
                                 label="Localisation"
                               />
 
-                              <AnimatedProgressBar 
+                              <ProgressBar 
                                 score={candidate.scoreBreakdown.salary}
                                 color="text-orange-600"
-                                delay={600}
                                 label="Salaire"
                               />
 
-                              <AnimatedProgressBar 
+                              <ProgressBar 
                                 score={candidate.scoreBreakdown.availability}
                                 color="text-red-600"
-                                delay={900}
                                 label="Disponibilité"
                               />
                             </div>
