@@ -285,8 +285,11 @@ export default function MyProfilePage() {
           formData.bio.trim() &&
           formData.skills.trim()
         );
-      case 5: // Rémunération (optionnelle)
-        return true;
+      case 5: // Rémunération (obligatoire)
+        return (
+          formData.dailyRate.trim() &&
+          formData.annualSalary.trim()
+        );
       case 6: // Liens et portfolio
         return (
           formData.portfolio.trim() &&
@@ -1009,12 +1012,12 @@ export default function MyProfilePage() {
                       <div className="p-3 bg-yellow-100 rounded-xl">
                         <DollarSign className="w-6 h-6 text-yellow-600" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900">Rémunération souhaitée</h3>
+                      <h3 className="text-xl font-bold text-gray-900">Rémunération souhaitée *</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          TJM (Tarif Journalier Moyen) en €
+                          TJM (Tarif Journalier Moyen) en € *
                         </label>
                         <input
                           type="number"
@@ -1023,12 +1026,13 @@ export default function MyProfilePage() {
                           onChange={handleInputChange}
                           placeholder="ex: 500"
                           min="0"
+                          required
                           className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Salaire annuel souhaité en €
+                          Salaire annuel souhaité en € *
                         </label>
                         <input
                           type="number"
@@ -1037,6 +1041,7 @@ export default function MyProfilePage() {
                           onChange={handleInputChange}
                           placeholder="ex: 60000"
                           min="0"
+                          required
                           className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                         />
                       </div>
