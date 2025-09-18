@@ -999,7 +999,7 @@ export default function RecruiterDashboard() {
                 ) : (
                   <>
                     {/* Container Kanban */}
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-12">
+                    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
                       <CandidateKanban 
                         candidates={candidates}
                         onUpdateStatus={updateCandidateStatus}
@@ -1011,7 +1011,7 @@ export default function RecruiterDashboard() {
                     </div>
                     
                     {/* Container Calendrier */}
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
                       <div className="flex items-center justify-between mb-8">
                         <div>
                           <h2 className="text-2xl font-bold text-gray-900">Calendrier des Rendez-vous</h2>
