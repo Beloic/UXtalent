@@ -101,6 +101,25 @@ const MatchingDashboard = ({ recruiterId }) => {
     return 'text-red-600 bg-red-100';
   };
 
+  const getRecommendationBadge = (score) => {
+    if (score >= 0.8) {
+      return {
+        text: 'Vivement recommandé',
+        color: 'bg-green-100 text-green-800 border border-green-200'
+      };
+    } else if (score >= 0.6) {
+      return {
+        text: 'Recommandé',
+        color: 'bg-blue-100 text-blue-800 border border-blue-200'
+      };
+    } else {
+      return {
+        text: 'À considérer',
+        color: 'bg-orange-100 text-orange-800 border border-orange-200'
+      };
+    }
+  };
+
   const formatScore = (score) => {
     return Math.round(score * 100);
   };
@@ -294,8 +313,8 @@ const MatchingDashboard = ({ recruiterId }) => {
                                 <h4 className="text-xl font-bold text-gray-900 mb-1">
                                   {candidate.name}
                                 </h4>
-                                <span className={`px-3 py-1 rounded-full text-sm font-bold ${getScoreColor(candidate.score)}`}>
-                                  Score: {formatScore(candidate.score)}%
+                                <span className={`px-3 py-1 rounded-full text-sm font-bold ${getRecommendationBadge(candidate.score).color}`}>
+                                  {getRecommendationBadge(candidate.score).text}
                                 </span>
                               </div>
                             </div>
