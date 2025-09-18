@@ -64,7 +64,7 @@ const MatchingDashboard = ({ recruiterId }) => {
       const timer = setTimeout(() => {
         console.log('🎬 [ANIMATION] Animation activée !');
         setAnimateBars(true);
-      }, 1000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [isFullyLoaded, statsLoaded, jobsLoaded, loading, candidates.length]);
@@ -308,58 +308,6 @@ const MatchingDashboard = ({ recruiterId }) => {
             {selectedJob ? (
               <div className="space-y-6">
 
-                {/* Statistiques rapides */}
-                {stats && (
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="bg-white rounded-xl shadow-md p-4">
-                      <div className="flex items-center">
-                        <TrendingUp className="h-8 w-8 text-green-600" />
-                        <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-500">Score Moyen</p>
-                          <p className="text-lg font-semibold text-gray-900">
-                            {Math.round(stats.matching.averageCompatibilityScore * 100)}%
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-xl shadow-md p-4">
-                      <div className="flex items-center">
-                        <Star className="h-8 w-8 text-yellow-600" />
-                        <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-500">Matches Excellents</p>
-                          <p className="text-lg font-semibold text-gray-900">
-                            {stats.matching.highQualityMatches}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-xl shadow-md p-4">
-                      <div className="flex items-center">
-                        <Users className="h-8 w-8 text-blue-600" />
-                        <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-500">Candidats Totaux</p>
-                          <p className="text-lg font-semibold text-gray-900">
-                            {stats.dataQuality.totalCandidates}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-xl shadow-md p-4">
-                      <div className="flex items-center">
-                        <BarChart3 className="h-8 w-8 text-purple-600" />
-                        <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-500">Qualité</p>
-                          <p className="text-lg font-semibold text-gray-900">
-                            {stats.matching.highQualityPercentage}%
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* Liste des candidats */}
                 <div className="mb-8">
