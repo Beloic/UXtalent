@@ -997,9 +997,9 @@ export default function RecruiterDashboard() {
                     </Link>
                   </div>
                 ) : (
-                  <div className="space-y-12">
+                  <>
                     {/* Container Kanban */}
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-12">
                       <CandidateKanban 
                         candidates={candidates}
                         onUpdateStatus={updateCandidateStatus}
@@ -1026,7 +1026,7 @@ export default function RecruiterDashboard() {
                       </div>
                       <Calendar candidates={candidates} favorites={favorites} />
                     </div>
-                  </div>
+                  </>
                 )}
               </motion.div>
             )}
