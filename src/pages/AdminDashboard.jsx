@@ -2059,9 +2059,9 @@ const ForumManagementContent = ({
                         </h4>
                         <div className="space-y-3">
                           {selectedPost.replies.map((reply) => (
-                            <div key={reply.id} className="bg-gray-50 rounded-lg p-4">
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
+                            <div key={reply.id} className="bg-gray-50 rounded-lg p-4 relative group">
+                              <div className="flex items-start justify-between gap-4">
+                                <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2 mb-2">
                                     <div className="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">
                                       {reply.author_avatar || reply.authorAvatar || reply.author?.charAt(0) || 'U'}
@@ -2072,16 +2072,21 @@ const ForumManagementContent = ({
                                   </div>
                                   <p className="text-gray-700 text-sm">{reply.content}</p>
                                 </div>
-                                <button
-                                  onClick={() => {
-                                    console.log('🗑️ Suppression réponse:', selectedPost.id, reply.id);
-                                    onDeleteReply(selectedPost.id, reply.id);
-                                  }}
-                                  className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors ml-2 cursor-pointer"
-                                  title="Supprimer cette réponse"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </button>
+                                <div className="flex-shrink-0">
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      console.log('🗑️ Suppression réponse:', selectedPost.id, reply.id);
+                                      onDeleteReply(selectedPost.id, reply.id);
+                                    }}
+                                    className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-lg transition-all duration-200 cursor-pointer border border-red-200 hover:border-red-300 shadow-sm hover:shadow-md z-10 relative opacity-70 group-hover:opacity-100"
+                                    title="Supprimer cette réponse"
+                                    style={{ minWidth: '32px', minHeight: '32px' }}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           ))}
