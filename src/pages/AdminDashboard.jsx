@@ -80,11 +80,15 @@ export default function AdminDashboard() {
         // Déterminer les groupes sans chevauchement (priorité: rejeté > approuvé > en attente)
         // Un profil avec status === 'pending' doit être classé en attente, même si approved=false et visible=false
         const approvedCandidates = effectiveCandidatesList.filter(c => c.approved === true && c.visible === true);
-        const rejectedCandidates = effectiveCandidatesList.filter(c => (c.approved === false && c.visible === false) && c.status !== 'pending');
+        const rejectedCandidates = effectiveCandidatesList.filter(c => 
+          c.status === 'rejected' || 
+          ((c.approved === false && c.visible === false) && c.status !== 'pending' && c.status !== 'rejected')
+        );
         const pendingCandidates = effectiveCandidatesList.filter(c => 
           c.status === 'pending' || (
             !(c.approved === true && c.visible === true) &&
-            !((c.approved === false && c.visible === false) && c.status !== 'pending')
+            !(c.status === 'rejected') &&
+            !((c.approved === false && c.visible === false) && c.status !== 'pending' && c.status !== 'rejected')
           )
         );
 
@@ -370,7 +374,7 @@ export default function AdminDashboard() {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer admin-token'
         },
-        body: JSON.stringify({ approved: false, visible: false, status: null })
+        body: JSON.stringify({ approved: false, visible: false, status: 'rejected' })
       });
 
       console.log('📡 Réponse du serveur:', response.status, response.statusText);
@@ -1484,13 +1488,13 @@ export default function AdminDashboard() {
                       <CandidateListItem 
                         candidate={candidate} 
                         isApproved={candidate.approved === true && candidate.visible === true}
-                        isRejected={(candidate.approved === false && candidate.visible === false) && candidate.status !== 'pending'}
+                        isRejected={candidate.status === 'rejected' || ((candidate.approved === false && candidate.visible === false) && candidate.status !== 'pending' && candidate.status !== 'rejected')}
                       />
                     ) : (
                       <CandidateCard 
                         candidate={candidate} 
                         isApproved={candidate.approved === true && candidate.visible === true}
-                        isRejected={(candidate.approved === false && candidate.visible === false) && candidate.status !== 'pending'}
+                        isRejected={candidate.status === 'rejected' || ((candidate.approved === false && candidate.visible === false) && candidate.status !== 'pending' && candidate.status !== 'rejected')}
                       />
                     )}
                   </motion.div>
