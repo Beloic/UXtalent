@@ -242,26 +242,28 @@ export default function CandidateCard({ candidate, compact = false }) {
 
       {/* Informations supplémentaires redesignées */}
       <div className="px-6 pb-4">
-        <div className="bg-gradient-to-r from-gray-50/80 to-gray-100/50 rounded-2xl p-4 mb-4 border border-gray-200/50">
-          {/* Rémunération (contraste renforcé) */}
+        <div className="rounded-2xl p-4 mb-4 border border-blue-100 bg-gradient-to-r from-blue-50/80 via-indigo-50/70 to-purple-50/70">
           {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
-            <div className="pt-3 border-t border-gray-200/50">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-800">Rémunération souhaitée</span>
-                <div className="flex items-center gap-4">
-                  {(candidate.dailyRate || candidate.daily_rate) && (
-                    <div className="flex items-center text-gray-900">
-                      <span className="text-sm font-medium mr-1">TJM:</span>
-                      <span className="font-extrabold text-sm">{candidate.dailyRate || candidate.daily_rate}€</span>
-                    </div>
-                  )}
-                  {(candidate.annualSalary || candidate.annual_salary) && (
-                    <div className="flex items-center text-gray-900">
-                      <span className="text-sm font-medium mr-1">Annuel:</span>
-                      <span className="font-extrabold text-sm">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</span>
-                    </div>
-                  )}
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-2">
+                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-white shadow-sm border border-blue-100">
+                  <DollarSign className="w-4 h-4 text-blue-600" />
                 </div>
+                <span className="text-sm font-semibold text-gray-900">Rémunération souhaitée</span>
+              </div>
+              <div className="flex items-center gap-3">
+                {(candidate.dailyRate || candidate.daily_rate) && (
+                  <div className="px-3 py-2 rounded-xl bg-white border border-blue-100 shadow-sm text-right">
+                    <div className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">TJM</div>
+                    <div className="text-base font-extrabold text-gray-900">{candidate.dailyRate || candidate.daily_rate}€</div>
+                  </div>
+                )}
+                {(candidate.annualSalary || candidate.annual_salary) && (
+                  <div className="px-3 py-2 rounded-xl bg-white border border-blue-100 shadow-sm text-right">
+                    <div className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">Annuel</div>
+                    <div className="text-base font-extrabold text-gray-900">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</div>
+                  </div>
+                )}
               </div>
             </div>
           )}
