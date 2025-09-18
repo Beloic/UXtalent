@@ -114,7 +114,8 @@ export default function CandidateCard({ candidate }) {
 
   // Définir les styles selon le plan avec design moderne
   const getCardStyles = () => {
-    const baseStyles = "group relative overflow-hidden bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:-translate-y-1 border border-gray-100/50 backdrop-blur-sm";
+    // overflow-hidden retiré pour permettre au badge de flotter au-dessus du bord
+    const baseStyles = "group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:-translate-y-1 border border-gray-100/50 backdrop-blur-sm";
     
     if (candidate.planType === 'pro') {
       return `${baseStyles} bg-gradient-to-br from-amber-50/80 via-orange-50/60 to-yellow-50/80 border-amber-200/50 hover:border-amber-300/70`;
@@ -132,7 +133,8 @@ export default function CandidateCard({ candidate }) {
       
       {/* Badge Premium/Pro redesigné */}
       {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
-        <div className="absolute -top-1 -right-1 z-20">
+        // Badge flottant au-dessus du bord supérieur droit
+        <div className="absolute top-0 right-0 translate-x-3 -translate-y-3 z-30">
           <div className={`relative px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-xl backdrop-blur-sm ${
             candidate.planType === 'pro' 
               ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white' 
@@ -209,18 +211,12 @@ export default function CandidateCard({ candidate }) {
               )}
             </div>
             
-            {/* Localisation et expérience */}
+            {/* Localisation uniquement (pas de badge Junior/Mid/Senior/Lead) */}
             <div className="flex items-center gap-4 mb-3">
               <div className="flex items-center text-gray-500 text-sm">
                 <MapPin className="w-4 h-4 mr-1.5 text-blue-500" />
                 <span className="font-medium">{candidate.location}</span>
               </div>
-              {candidate.experience && (
-                <div className={`flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getExperienceColor(candidate.experience)}`}>
-                  {getExperienceIcon(candidate.experience)}
-                  <span className="ml-1">{candidate.experience}</span>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -306,27 +302,21 @@ export default function CandidateCard({ candidate }) {
         </div>
       </div>
 
-      {/* Actions redesignées */}
+      {/* Actions redesignées - bouton secondaire (Outline) */}
       <div className="px-6 pb-6">
         <div className="border-t border-gray-200/50 pt-4">
           {candidate.id ? (
             <Link
               to={`/candidates/${candidate.id}`}
-              className="group/btn relative inline-flex items-center justify-center w-full px-6 py-3.5 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 overflow-hidden"
+              className="inline-flex items-center justify-center w-full px-6 py-3.5 rounded-2xl border border-gray-300 text-gray-700 font-semibold bg-white hover:bg-gray-50 hover:border-gray-400 transition-colors"
             >
-              {/* Effet de brillance au survol */}
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700" />
-              
-              <Eye className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform duration-200" />
-              <span className="relative z-10">Voir le profil complet</span>
-              
-              {/* Indicateur de progression */}
-              <div className="absolute bottom-0 left-0 h-0.5 bg-white/30 w-0 group-hover/btn:w-full transition-all duration-300" />
+              <Eye className="w-4 h-4 mr-2" />
+              Voir le profil complet
             </Link>
           ) : (
-            <div className="inline-flex items-center justify-center w-full px-6 py-3.5 bg-gray-300 text-gray-500 font-semibold rounded-2xl cursor-not-allowed">
+            <div className="inline-flex items-center justify-center w-full px-6 py-3.5 rounded-2xl border border-gray-200 text-gray-400 bg-white cursor-not-allowed">
               <User className="w-4 h-4 mr-2" />
-              <span>Profil indisponible</span>
+              Profil indisponible
             </div>
           )}
         </div>
