@@ -212,18 +212,18 @@ export default function CandidateCard({ candidate, compact = false }) {
               </div>
             </div>
             
-            {/* Localisation + mode de travail */}
+            {/* Localisation + mode de travail (même style, avec icône) */}
             <div className={`flex items-center gap-4 ${compact ? 'mb-2' : 'mb-3'}`}>
               <div className="flex items-center text-gray-500 text-sm">
                 <MapPin className="w-4 h-4 mr-1.5 text-blue-500" />
                 <span className="font-medium">{candidate.location}</span>
-                {candidate.remote && (
-                  <>
-                    <span className="mx-2 text-gray-300">•</span>
-                    <span className="text-gray-600 font-medium">{getRemoteLabel(candidate.remote)}</span>
-                  </>
-                )}
               </div>
+              {candidate.remote && (
+                <div className="flex items-center text-gray-500 text-sm">
+                  <Globe className="w-4 h-4 mr-1.5 text-blue-500" />
+                  <span className="font-medium">{getRemoteLabel(candidate.remote)}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -243,26 +243,7 @@ export default function CandidateCard({ candidate, compact = false }) {
       {/* Informations supplémentaires redesignées */}
       <div className="px-6 pb-4">
         <div className="bg-gradient-to-r from-gray-50/80 to-gray-100/50 rounded-2xl p-4 mb-4 border border-gray-200/50">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center text-gray-600 text-sm">
-                <Globe className="w-4 h-4 mr-1.5 text-blue-500" />
-                <span className="font-semibold">{getRemoteLabel(candidate.remote)}</span>
-              </div>
-              {candidate.salary && (
-                <div className="flex items-center text-gray-600 text-sm">
-                  <DollarSign className="w-4 h-4 mr-1.5 text-emerald-500" />
-                  <span className="font-semibold">{candidate.salary}</span>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center text-gray-500 text-xs">
-              <Clock className="w-3 h-3 mr-1" />
-              <span>Mis à jour {new Date(candidate.updatedAt).toLocaleDateString('fr-FR')}</span>
-            </div>
-          </div>
-          
-          {/* Rémunération redesignée */}
+          {/* Rémunération (contraste renforcé) */}
           {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
             <div className="pt-3 border-t border-gray-200/50">
               <div className="flex items-center justify-between">
