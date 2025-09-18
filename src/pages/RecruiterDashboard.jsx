@@ -999,40 +999,34 @@ export default function RecruiterDashboard() {
                 ) : (
                   <div className="space-y-8">
                     {/* Bloc Kanban des candidats */}
-                    <div className="bg-white rounded-3xl shadow-xl border border-gray-100">
-                      <div className="p-6">
-                        <CandidateKanban 
-                          candidates={candidates}
-                          onUpdateStatus={updateCandidateStatus}
-                          onToggleFavorite={addToFavorites}
-                          favorites={favorites}
-                          onRefreshCandidates={loadCandidates}
-                          appointments={appointments}
-                        />
-                      </div>
+                    <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
+                      <CandidateKanban 
+                        candidates={candidates}
+                        onUpdateStatus={updateCandidateStatus}
+                        onToggleFavorite={addToFavorites}
+                        favorites={favorites}
+                        onRefreshCandidates={loadCandidates}
+                        appointments={appointments}
+                      />
                     </div>
                     
                     {/* Bloc Calendrier */}
-                    <div className="bg-white rounded-3xl shadow-xl border border-gray-100">
-                      <div className="p-6 border-b border-gray-200">
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <div className="flex items-center gap-3">
-                              <h2 className="text-2xl font-bold text-gray-900">Calendrier des Rendez-vous</h2>
-                              {refreshing && (
-                                <div className="flex items-center gap-2 text-blue-600">
-                                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                                  <span className="text-sm font-medium">Mise à jour...</span>
-                                </div>
-                              )}
-                            </div>
-                            <p className="text-gray-600 mt-2">Planifiez et gérez vos entretiens</p>
+                    <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <div>
+                          <div className="flex items-center gap-3">
+                            <h2 className="text-2xl font-bold text-gray-900">Calendrier des Rendez-vous</h2>
+                            {refreshing && (
+                              <div className="flex items-center gap-2 text-blue-600">
+                                <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                                <span className="text-sm font-medium">Mise à jour...</span>
+                              </div>
+                            )}
                           </div>
+                          <p className="text-gray-600 mt-2">Planifiez et gérez vos entretiens</p>
                         </div>
                       </div>
-                      <div className="p-6">
-                        <Calendar candidates={candidates} favorites={favorites} />
-                      </div>
+                      <Calendar candidates={candidates} favorites={favorites} />
                     </div>
                   </div>
                 )}
