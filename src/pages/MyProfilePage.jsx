@@ -266,22 +266,6 @@ export default function MyProfilePage() {
 
 
   const validateStep = (step) => {
-    console.log(`🔍 Validation étape ${step}:`, {
-      formData: {
-        name: formData.name,
-        email: formData.email,
-        title: formData.title,
-        location: formData.location,
-        remote: formData.remote,
-        bio: formData.bio,
-        skills: formData.skills,
-        dailyRate: formData.dailyRate,
-        annualSalary: formData.annualSalary,
-        portfolio: formData.portfolio,
-        linkedin: formData.linkedin
-      }
-    });
-
     switch (step) {
       case 1: // Photo (optionnelle) => toujours valide
         return true;
@@ -330,7 +314,6 @@ export default function MyProfilePage() {
   };
 
   const handleSubmit = async (e) => {
-    console.log('🚀 handleSubmit appelé!', { currentStep, formData });
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
@@ -638,41 +621,66 @@ export default function MyProfilePage() {
             </div>
           </motion.div>
 
-          {/* Message de rejet */}
+          {/* Message d'attente de validation */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-lg p-8 text-center"
+            className="bg-yellow-50 border border-yellow-200 rounded-2xl p-8 mb-8"
           >
-            <div className="mb-6">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-yellow-100 rounded-full">
+                <Check className="w-5 h-5 text-yellow-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Votre profil a été rejeté
-              </h2>
-              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                Nous avons examiné votre candidature mais malheureusement, elle ne correspond pas 
-                aux critères actuels de notre annuaire de talents. Cela ne remet pas en question 
-                vos compétences, mais simplement l'adéquation avec nos besoins du moment.
-              </p>
-              
-              <div className="flex justify-center">
-                <a
-                  href="mailto:hello@loicbernard.com?subject=Question sur ma candidature rejetée&body=Bonjour,%0D%0A%0D%0AMon profil a été rejeté et j'aimerais comprendre pourquoi et obtenir des conseils pour l'améliorer.%0D%0A%0D%0AMerci pour votre temps.%0D%0A%0D%0ACordialement"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  Envoyer un email à hello@loicbernard.com
-                </a>
+              <h2 className="text-xl font-semibold text-yellow-800">Profil en attente de validation</h2>
+            </div>
+            <p className="text-yellow-700 mb-4">
+              Votre profil a été soumis avec succès ! Notre équipe examine actuellement votre candidature 
+              et vous contactera sous peu pour vous informer de la suite du processus.
+            </p>
+            <div className="bg-white rounded-xl p-4 border border-yellow-200">
+              <h3 className="font-semibold text-gray-900 mb-2">Informations de votre profil :</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-gray-600">Nom :</span>
+                  <span className="ml-2 text-gray-900">{formData.name}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Email :</span>
+                  <span className="ml-2 text-gray-900">{formData.email}</span>
+                </div>
+                
+                <div>
+                  <span className="font-medium text-gray-600">Titre :</span>
+                  <span className="ml-2 text-gray-900">{formData.title}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Localisation :</span>
+                  <span className="ml-2 text-gray-900">{formData.location}</span>
+                </div>
               </div>
             </div>
+          </motion.div>
 
+          {/* Actions */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex gap-4"
+          >
+            <button
+              onClick={() => setCandidateStatus(null)}
+              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+            >
+              Modifier mon profil
+            </button>
+            <Link 
+              to="/candidates" 
+              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors"
+            >
+              Voir les autres candidats
+            </Link>
           </motion.div>
         </div>
       </div>
