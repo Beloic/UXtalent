@@ -38,17 +38,19 @@ const MatchingDashboard = ({ recruiterId }) => {
     fetchStats();
   }, [recruiterId]);
 
-  // Déclencher l'animation seulement quand TOUTES les données sont chargées
+  // Déclencher l'animation quand les candidats sont chargés
   useEffect(() => {
-    if (jobsLoaded && statsLoaded && isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+    console.log('Animation check:', { isFullyLoaded, loading, candidatesLength: candidates.length, hasAnimated: hasAnimatedRef.current });
+    if (isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+      console.log('Déclenchement de l\'animation');
       hasAnimatedRef.current = true;
       // Délai pour s'assurer que le DOM est rendu
       const timer = setTimeout(() => {
         setAnimateBars(true);
-      }, 500);
+      }, 300);
       return () => clearTimeout(timer);
     }
-  }, [jobsLoaded, statsLoaded, isFullyLoaded, loading, candidates.length]);
+  }, [isFullyLoaded, loading, candidates.length]);
 
   useEffect(() => {
     if (selectedJob) {
@@ -217,8 +219,6 @@ const MatchingDashboard = ({ recruiterId }) => {
               onClick={() => {
                 setAnimateBars(false);
                 setIsFullyLoaded(false);
-                setJobsLoaded(false);
-                setStatsLoaded(false);
                 hasAnimatedRef.current = false;
                 fetchStats();
                 if (selectedJob) {
