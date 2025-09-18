@@ -112,169 +112,66 @@ export default function CandidateCard({ candidate, compact = false }) {
   };
 
 
-  // Définir les styles selon le plan avec design moderne
+  // Style aligné sur la carte d'offre (JobCard)
   const getCardStyles = () => {
-    // overflow-hidden retiré pour permettre au badge de flotter au-dessus du bord
-    const baseStyles = "group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:-translate-y-1 border border-gray-100/50 backdrop-blur-sm";
-    
-    if (candidate.planType === 'pro') {
-      return `${baseStyles} bg-gradient-to-br from-amber-50/80 via-orange-50/60 to-yellow-50/80 border-amber-200/50 hover:border-amber-300/70`;
-    } else if (candidate.planType === 'premium') {
-      return `${baseStyles} bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/80 border-blue-200/50 hover:border-blue-300/70`;
-    } else {
-      return `${baseStyles} hover:border-gray-200/70`;
-    }
+    return "group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 hover:border-blue-200/50";
   };
 
   return (
     <div className={getCardStyles()}>
-      {/* Effet de brillance subtil */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-      
-      {/* Badge Premium/Pro redesigné */}
-      {/* Badge Premium/Pro sera affiché dans l'entête, à droite du nom */}
-      
-      {/* Header */}
-      <div className={`${compact ? 'p-4 pb-3' : 'p-6 pb-4'}`}>
-        <div className={`flex items-start gap-4 ${compact ? 'mb-3' : 'mb-4'}`}>
-          {/* Photo de profil avec design moderne */}
-          <div className="relative flex-shrink-0">
-            <div className="relative">
-              {candidate.photo ? (
-                <img
-                  src={candidate.photo}
-                  alt={`Photo de ${candidate.name}`}
-                  className={`${compact ? 'w-14 h-14' : 'w-16 h-16'} rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50`}
-                  onError={(e) => {
-                    console.log('❌ Erreur de chargement de la photo:', candidate.photo);
-                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=80&background=6366f1&color=ffffff&bold=true`;
-                  }}
-                  onLoad={() => {
-                    console.log('✅ Photo chargée avec succès:', candidate.photo);
-                  }}
-                />
-              ) : (
-                <img
-                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=80&background=6366f1&color=ffffff&bold=true`}
-                  alt={`Avatar de ${candidate.name}`}
-                  className={`${compact ? 'w-14 h-14' : 'w-16 h-16'} rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50`}
-                />
-              )}
-            </div>
-          </div>
-          
-          {/* Informations principales */}
+      {/* Header aligné avec JobCard */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 min-w-0">
-                  <h3 className="text-xl font-bold text-blue-700 group-hover:text-blue-600 transition-colors duration-300 truncate">
-                    {candidate.name}
-                  </h3>
-                </div>
-                <p className={`${compact ? 'mb-1' : 'mb-2'} text-gray-600 font-medium line-clamp-2 leading-relaxed`}>{candidate.title}</p>
-              </div>
-              
-              {/* Badge à gauche du bouton favoris */}
-              <div className="flex items-center gap-2 ml-3">
-                {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
-                  <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 shadow-sm border ${
-                    candidate.planType === 'pro'
-                      ? 'bg-amber-500 text-white border-amber-600'
-                      : 'bg-blue-600 text-white border-blue-700'
-                  }`}>
-                    <Star className="w-3 h-3 fill-current" />
-                    <span>{candidate.planType === 'pro' ? 'Pro' : 'Premium'}</span>
-                  </div>
-                )}
-                {user && isRecruiter && (
-                  <button
-                    onClick={toggleFavorite}
-                    disabled={isLoadingFavorite}
-                    className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-110 ${
-                      isFavorited 
-                        ? 'bg-red-50 text-red-500 hover:bg-red-100 shadow-lg' 
-                        : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-red-500'
-                    } ${isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                  >
-                    {isLoadingFavorite ? (
-                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
-            
-            {/* Localisation + mode de travail (même style, avec icône) */}
-            <div className={`flex items-center gap-4 ${compact ? 'mb-2' : 'mb-3'}`}>
-              <div className="flex items-center text-gray-500 text-sm">
-                <MapPin className="w-4 h-4 mr-1.5 text-rose-500" />
-                <span className="font-medium">{candidate.location}</span>
+            <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1 truncate">
+              {candidate.name}
+            </h3>
+            <p className="text-gray-600 font-medium mb-2 line-clamp-2">{candidate.title}</p>
+            <div className="flex items-center gap-4 text-sm text-gray-500">
+              <div className="flex items-center gap-1">
+                <MapPin className="w-4 h-4 text-red-600" />
+                <span>{candidate.location}</span>
               </div>
               {candidate.remote && (
-                <div className="flex items-center text-gray-500 text-sm">
-                  <Globe className="w-4 h-4 mr-1.5 text-blue-600" />
-                  <span className="font-medium">{getRemoteLabel(candidate.remote)}</span>
+                <div className="flex items-center gap-1">
+                  <Globe className="w-4 h-4 text-blue-600" />
+                  <span>{getRemoteLabel(candidate.remote)}</span>
                 </div>
               )}
             </div>
           </div>
         </div>
-
-        {/* Bio */}
-        <div className={`${compact ? 'mb-3' : 'mb-5'}`}>
-          <p className={`text-gray-600 text-sm ${compact ? 'line-clamp-2' : 'line-clamp-3'} leading-relaxed`}>
-            {(() => {
-              const bio = candidate.bio || '';
-              return bio.replace(/Années d'expérience: \d+ ans \([^)]+\)\n\n/, '');
-            })()}
-          </p>
-        </div>
-
-      </div>
-
-      {/* Informations supplémentaires redesignées */}
-      <div className="px-6 pb-4">
-        {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
-          <div className="p-4 mb-4 border border-gray-200 rounded-2xl bg-white">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-gray-900">Rémunération souhaitée</span>
-              <div className="flex items-center gap-4">
-                {(candidate.dailyRate || candidate.daily_rate) && (
-                  <div className="text-right">
-                    <div className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">TJM</div>
-                    <div className="text-base font-extrabold text-gray-900">{candidate.dailyRate || candidate.daily_rate}€</div>
-                  </div>
-                )}
-                {(candidate.annualSalary || candidate.annual_salary) && (
-                  <div className="text-right">
-                    <div className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">Annuel</div>
-                    <div className="text-base font-extrabold text-gray-900">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</div>
-                  </div>
-                )}
-              </div>
-            </div>
+        {/* Pilule d'expérience pour rappeler le badge type */}
+        {candidate.experience && (
+          <div className={`px-3 py-1.5 rounded-full text-sm font-semibold ${getExperienceColor(candidate.experience)} border`}>
+            {candidate.experience}
           </div>
         )}
       </div>
 
-      {/* Actions redesignées - bouton secondaire (Outline) */}
-      <div className="px-6 pb-6">
-        <div className="border-t border-gray-200/50 pt-4">
+      {/* Description alignée */}
+      <p className="text-gray-600 mb-4 line-clamp-4 leading-relaxed">
+        {(() => {
+          const bio = candidate.bio || '';
+          return bio.replace(/Années d'expérience: \d+ ans \([^)]+\)\n\n/, '');
+        })()}
+      </p>
+
+      {/* Footer avec bouton comme JobCard */}
+      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div />
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
           {candidate.id ? (
             <Link
               to={`/candidates/${candidate.id}`}
-              className="inline-flex items-center justify-center w-full px-6 py-3.5 rounded-2xl border border-gray-300 text-gray-700 font-semibold bg-white hover:bg-gray-50 hover:border-gray-400 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm w-full sm:w-auto justify-center"
             >
-              <Eye className="w-4 h-4 mr-2" />
-              Voir le profil complet
+              Voir le profil
+              <Eye className="w-4 h-4" />
             </Link>
           ) : (
-            <div className="inline-flex items-center justify-center w-full px-6 py-3.5 rounded-2xl border border-gray-200 text-gray-400 bg-white cursor-not-allowed">
-              <User className="w-4 h-4 mr-2" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-400 rounded-xl font-medium text-sm cursor-not-allowed w-full sm:w-auto justify-center">
+              <User className="w-4 h-4" />
               Profil indisponible
             </div>
           )}

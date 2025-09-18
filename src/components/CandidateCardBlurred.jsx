@@ -2,7 +2,7 @@ import React from "react";
 import { MapPin, Globe, User, Briefcase, DollarSign, Award, Clock, Eye, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function CandidateCardBlurred({ candidate, hiddenCount }) {
+export default function CandidateCardBlurred({ candidate, hiddenCount, compact = false }) {
   const getRemoteLabel = (remote) => {
     switch (remote) {
       case 'remote': return 'Full remote';
@@ -23,7 +23,7 @@ export default function CandidateCardBlurred({ candidate, hiddenCount }) {
   };
 
   return (
-    <div className="group bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-200 relative overflow-hidden">
+    <div className={`group bg-white/60 backdrop-blur-sm rounded-2xl ${compact ? 'p-4' : 'p-6'} shadow-xl border border-gray-200 relative overflow-hidden`}>
       {/* Overlay de flou */}
       <div className="absolute inset-0 bg-white/40 backdrop-blur-sm z-10"></div>
       
@@ -34,21 +34,21 @@ export default function CandidateCardBlurred({ candidate, hiddenCount }) {
       </div>
       
       {/* Header */}
-      <div className="flex items-start justify-between mb-6 relative z-5">
+      <div className={`flex items-start justify-between ${compact ? 'mb-3' : 'mb-6'} relative z-5`}>
         <div className="flex items-start gap-4 flex-1">
           {/* Photo de profil floutée */}
           <div className="relative">
-            <div className="w-16 h-16 rounded-2xl bg-gray-300 flex items-center justify-center border-2 border-white shadow-lg">
+            <div className={`${compact ? 'w-14 h-14' : 'w-16 h-16'} rounded-2xl bg-gray-300 flex items-center justify-center border-2 border-white shadow-lg`}>
               <User className="w-8 h-8 text-gray-500" />
             </div>
           </div>
           
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-gray-400 mb-2">
+            <h3 className={`font-bold text-gray-400 ${compact ? 'text-lg mb-1' : 'text-xl mb-2'}`}>
               Profil Premium
             </h3>
-            <p className="text-lg text-gray-400 mb-3 font-medium">Designer UX/UI</p>
-            <div className="flex items-center text-sm text-gray-400 mb-3">
+            <p className={`${compact ? 'text-base mb-2' : 'text-lg mb-3'} text-gray-400 font-medium`}>Designer UX/UI</p>
+            <div className={`flex items-center text-sm text-gray-400 ${compact ? 'mb-2' : 'mb-3'}`}>
               <MapPin className="w-4 h-4 mr-2 text-gray-400" />
               Localisation
             </div>
@@ -57,50 +57,18 @@ export default function CandidateCardBlurred({ candidate, hiddenCount }) {
       </div>
 
       {/* Bio floutée */}
-      <div className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">
+      <div className={`text-gray-400 text-sm ${compact ? 'mb-3' : 'mb-6'} line-clamp-2 leading-relaxed`}>
         <div className="h-4 bg-gray-300 rounded mb-2"></div>
         <div className="h-4 bg-gray-300 rounded mb-2 w-3/4"></div>
         <div className="h-4 bg-gray-300 rounded w-1/2"></div>
       </div>
 
-      {/* Skills floutées */}
-      <div className="mb-6">
-        <div className="flex items-center text-sm text-gray-400 mb-3 font-semibold">
-          <Award className="w-4 h-4 mr-2 text-gray-400" />
-          Compétences clés
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {[...Array(4)].map((_, index) => (
-            <span
-              key={index}
-              className="px-3 py-1 bg-gray-200 text-gray-400 text-xs rounded-full font-medium"
-            >
-              Compétence
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Bloc compétences retiré en mode liste */}
 
-      {/* Details floutées */}
-      <div className="flex items-center justify-between text-sm mb-6">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center text-gray-400">
-            <Globe className="w-4 h-4 mr-1 text-gray-400" />
-            <span className="font-medium">Mode de travail</span>
-          </div>
-          <div className="flex items-center text-gray-400">
-            <DollarSign className="w-4 h-4 mr-1 text-gray-400" />
-            <span className="font-medium">Rémunération</span>
-          </div>
-        </div>
-        <div className="flex items-center text-gray-400">
-          <Clock className="w-4 h-4 mr-1" />
-          <span className="text-xs">Mis à jour récemment</span>
-        </div>
-      </div>
+      {/* Détails retirés pour compacité */}
 
       {/* Message d'upgrade */}
-      <div className="mb-6 p-4 bg-orange-50 rounded-xl border border-orange-200 relative z-5">
+      <div className={`${compact ? 'mb-4' : 'mb-6'} p-4 bg-orange-50 rounded-xl border border-orange-200 relative z-5`}>
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Eye className="w-5 h-5 text-orange-600" />
