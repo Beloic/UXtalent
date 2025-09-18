@@ -508,22 +508,23 @@ export default function JobDetailPage() {
                 </div>
               </div>
 
-              {/* Candidats recommandés pour les recruteurs */}
-              {isRecruiter && job && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="border-t border-gray-200 pt-8"
-                >
-                  <MatchingWidget 
-                    type="candidates" 
-                    jobId={job.id} 
-                    limit={3}
-                  />
-                </motion.div>
-              )}
             </motion.div>
+
+            {/* Bloc séparé: Candidats recommandés pour les recruteurs */}
+            {isRecruiter && job && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="mt-6 bg-white rounded-2xl p-6 shadow-xl border border-white/20 backdrop-blur-sm"
+              >
+                <MatchingWidget 
+                  type="candidates" 
+                  jobId={job.id} 
+                  limit={3}
+                />
+              </motion.div>
+            )}
           </main>
 
           {/* Sidebar */}
