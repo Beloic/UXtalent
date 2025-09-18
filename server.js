@@ -2518,7 +2518,7 @@ app.post('/api/admin/jobs/:id/reject', requireRole(['admin']), async (req, res) 
 
 // Démarrer le serveur
 const server = app.listen(PORT, () => {
-  console.log(`🚀 Serveur Annuaire de Talents démarré sur le port ${PORT}`);
+  console.log(`🚀 Serveur Annuaire de Talents démarré sur le port ${PORT} - Forum Supabase activé`);
   console.log(`👥 API Candidats: http://localhost:${PORT}/api/candidates`);
   console.log(`📊 Statistiques: GET http://localhost:${PORT}/api/stats`);
   console.log(`➕ Ajouter candidat: POST http://localhost:${PORT}/api/candidates`);
