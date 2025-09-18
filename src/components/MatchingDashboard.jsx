@@ -29,6 +29,7 @@ const MatchingDashboard = ({ recruiterId }) => {
   const [stats, setStats] = useState(null);
   const [animateBars, setAnimateBars] = useState(false);
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
+  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
     fetchJobs();
@@ -37,11 +38,12 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   // Déclencher l'animation seulement quand tout est chargé
   useEffect(() => {
-    if (isFullyLoaded && !loading && candidates.length > 0) {
+    if (isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+      hasAnimatedRef.current = true;
       // Délai pour s'assurer que le DOM est rendu
       const timer = setTimeout(() => {
         setAnimateBars(true);
-      }, 200);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [isFullyLoaded, loading, candidates.length]);
@@ -209,6 +211,7 @@ const MatchingDashboard = ({ recruiterId }) => {
               onClick={() => {
                 setAnimateBars(false);
                 setIsFullyLoaded(false);
+                hasAnimatedRef.current = false;
                 fetchStats();
                 if (selectedJob) {
                   fetchCandidatesForJob(selectedJob.id);
@@ -238,6 +241,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                       setSelectedJob(job);
                       setAnimateBars(false);
                       setIsFullyLoaded(false);
+                      hasAnimatedRef.current = false;
                       fetchCandidatesForJob(job.id);
                     }}
                     className={`w-full text-left p-3 rounded-lg border transition-colors ${
