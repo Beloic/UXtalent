@@ -204,6 +204,9 @@ export function updateCandidate(id, updates) {
     if (currentCandidate.status === 'approved') {
       console.log(`🔄 Candidat approuvé mis à jour par l'utilisateur: ${currentCandidate.name} - Retour en attente`);
       updates.status = 'pending'; // Remettre en attente
+    } else if (currentCandidate.status === 'rejected') {
+      console.log(`🔄 Candidat rejeté mis à jour par l'utilisateur: ${currentCandidate.name} - Retour en attente pour réévaluation`);
+      updates.status = 'pending'; // Remettre en attente pour réévaluation
     } else {
       console.log(`🔄 Candidat mis à jour par l'utilisateur: ${currentCandidate.name}`);
     }
