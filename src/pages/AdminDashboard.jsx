@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { 
   Check, X, Eye, User, Calendar, MapPin, Briefcase, ExternalLink, 
   Users, Clock, TrendingUp, Filter, Search, 
@@ -17,6 +18,7 @@ import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [candidates, setCandidates] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState('');
@@ -67,23 +69,23 @@ export default function AdminDashboard() {
       if (response.ok) {
         const data = await response.json();
         const candidatesList = Array.isArray(data) ? data : (data.candidates || []);
-        
+
         // Debug: vérifier que les candidats ont un ID
         console.log('🔍 [ADMIN] Candidats chargés:', candidatesList.map(c => ({ id: c.id, name: c.name })));
-        
-        // Séparer les candidats par statut
-        const pendingCandidates = candidatesList.filter(c => c.status === 'pending' || (c.approved !== true && c.approved !== false && c.visible !== false));
-        const approvedCandidates = candidatesList.filter(c => c.status === 'approved' || (c.approved === true && c.visible === true));
-        const rejectedCandidates = candidatesList.filter(c => c.status === 'rejected' || (c.approved === false || c.visible === false));
-        
+
+        // Déterminer les groupes sans chevauchement (priorité: rejeté > approuvé > en attente)
+        const approvedCandidates = candidatesList.filter(c => c.approved === true || c.status === 'approved');
+        const rejectedCandidates = candidatesList.filter(c => c.approved === false || c.visible === false || c.status === 'rejected');
+        const pendingCandidates = candidatesList.filter(c => !approvedCandidates.includes(c) && !rejectedCandidates.includes(c));
+
         setCandidates({
           pending: pendingCandidates,
           approved: approvedCandidates,
           rejected: rejectedCandidates,
           all: candidatesList
         });
-        
-        // Mettre à jour les statistiques
+
+        // Mettre à jour les statistiques (total = en attente + approuvés)
         setStats({
           total: pendingCandidates.length + approvedCandidates.length,
           pending: pendingCandidates.length,
@@ -1079,7 +1081,19 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600 font-medium">Gestion des candidats et forum</p>
                 </div>
               </div>
-              
+              {/* Bouton de déconnexion */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={async () => {
+                    await signOut();
+                    navigate('/login');
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 hover:bg-white text-gray-700 border border-gray-200 shadow-sm hover:shadow transition-all"
+                >
+                  <Lock className="w-4 h-4" />
+                  <span className="font-semibold">Se déconnecter</span>
+                </button>
+              </div>
             </div>
             
             {/* Navigation moderne */}
