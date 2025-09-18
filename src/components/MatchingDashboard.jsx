@@ -27,6 +27,7 @@ const MatchingDashboard = ({ recruiterId }) => {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
+  const [animateBars, setAnimateBars] = useState(false);
 
   useEffect(() => {
     fetchJobs();
@@ -71,6 +72,8 @@ const MatchingDashboard = ({ recruiterId }) => {
       if (response.ok) {
         const data = await response.json();
         setCandidates(data.candidates || []);
+        // Déclencher l'animation des barres après un court délai
+        setTimeout(() => setAnimateBars(true), 100);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des candidats:', error);
@@ -124,6 +127,51 @@ const MatchingDashboard = ({ recruiterId }) => {
     return Math.round(score * 100);
   };
 
+  // Composant de barre de progression animée
+  const AnimatedProgressBar = ({ score, color, delay = 0, label }) => {
+    const [width, setWidth] = useState(0);
+    
+    useEffect(() => {
+      if (animateBars) {
+        const timer = setTimeout(() => {
+          setWidth(score * 100);
+        }, delay);
+        return () => clearTimeout(timer);
+      } else {
+        setWidth(score * 100);
+      }
+    }, [score, delay, animateBars]);
+
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-base font-semibold text-gray-700">{label}</span>
+          <span className={`text-lg font-bold ${color}`}>
+            {formatScore(score)}%
+          </span>
+        </div>
+        <div className="relative">
+          <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+            <div 
+              className={`h-4 rounded-full transition-all duration-1000 ease-out relative ${
+                label === 'Expérience' ? 'bg-gradient-to-r from-green-400 to-green-600' :
+                label === 'Localisation' ? 'bg-gradient-to-r from-purple-400 to-purple-600' :
+                label === 'Salaire' ? 'bg-gradient-to-r from-orange-400 to-orange-600' :
+                'bg-gradient-to-r from-red-400 to-red-600'
+              }`}
+              style={{ 
+                width: `${width}%`,
+                transitionDelay: `${delay}ms`
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -164,7 +212,11 @@ const MatchingDashboard = ({ recruiterId }) => {
                 {jobs.map(job => (
                   <button
                     key={job.id}
-                    onClick={() => setSelectedJob(job)}
+                    onClick={() => {
+                      setSelectedJob(job);
+                      setAnimateBars(false);
+                      fetchCandidatesForJob(job.id);
+                    }}
                     className={`w-full text-left p-3 rounded-lg border transition-colors ${
                       selectedJob?.id === job.id 
                         ? 'border-blue-500 bg-blue-50' 
@@ -341,97 +393,33 @@ const MatchingDashboard = ({ recruiterId }) => {
                             <div className="space-y-6">
                               <div className="text-lg font-bold text-gray-800 mb-6">Détail du score de compatibilité</div>
                               
-                              {/* Expérience */}
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-base font-semibold text-gray-700">Expérience</span>
-                                  <span className="text-lg font-bold text-green-600">
-                                    {formatScore(candidate.scoreBreakdown.experience)}%
-                                  </span>
-                                </div>
-                                <div className="relative">
-                                  <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-                                    <div 
-                                      className="h-4 bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-1000 ease-out relative"
-                                      style={{ 
-                                        width: `${candidate.scoreBreakdown.experience * 100}%`,
-                                        animationDelay: '0.1s'
-                                      }}
-                                    >
-                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              <AnimatedProgressBar 
+                                score={candidate.scoreBreakdown.experience}
+                                color="text-green-600"
+                                delay={100}
+                                label="Expérience"
+                              />
 
-                              {/* Localisation */}
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-base font-semibold text-gray-700">Localisation</span>
-                                  <span className="text-lg font-bold text-purple-600">
-                                    {formatScore(candidate.scoreBreakdown.location)}%
-                                  </span>
-                                </div>
-                                <div className="relative">
-                                  <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-                                    <div 
-                                      className="h-4 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full transition-all duration-1000 ease-out relative"
-                                      style={{ 
-                                        width: `${candidate.scoreBreakdown.location * 100}%`,
-                                        animationDelay: '0.2s'
-                                      }}
-                                    >
-                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              <AnimatedProgressBar 
+                                score={candidate.scoreBreakdown.location}
+                                color="text-purple-600"
+                                delay={200}
+                                label="Localisation"
+                              />
 
-                              {/* Salaire */}
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-base font-semibold text-gray-700">Salaire</span>
-                                  <span className="text-lg font-bold text-orange-600">
-                                    {formatScore(candidate.scoreBreakdown.salary)}%
-                                  </span>
-                                </div>
-                                <div className="relative">
-                                  <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-                                    <div 
-                                      className="h-4 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full transition-all duration-1000 ease-out relative"
-                                      style={{ 
-                                        width: `${candidate.scoreBreakdown.salary * 100}%`,
-                                        animationDelay: '0.3s'
-                                      }}
-                                    >
-                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              <AnimatedProgressBar 
+                                score={candidate.scoreBreakdown.salary}
+                                color="text-orange-600"
+                                delay={300}
+                                label="Salaire"
+                              />
 
-                              {/* Disponibilité */}
-                              <div className="space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-base font-semibold text-gray-700">Disponibilité</span>
-                                  <span className="text-lg font-bold text-red-600">
-                                    {formatScore(candidate.scoreBreakdown.availability)}%
-                                  </span>
-                                </div>
-                                <div className="relative">
-                                  <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-                                    <div 
-                                      className="h-4 bg-gradient-to-r from-red-400 to-red-600 rounded-full transition-all duration-1000 ease-out relative"
-                                      style={{ 
-                                        width: `${candidate.scoreBreakdown.availability * 100}%`,
-                                        animationDelay: '0.4s'
-                                      }}
-                                    >
-                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                              <AnimatedProgressBar 
+                                score={candidate.scoreBreakdown.availability}
+                                color="text-red-600"
+                                delay={400}
+                                label="Disponibilité"
+                              />
                             </div>
                           )}
                         </div>
