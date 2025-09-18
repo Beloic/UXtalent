@@ -176,8 +176,11 @@ export default function MyProfilePage() {
           let status = 'pending';
           if (existingCandidate.approved === true && existingCandidate.visible === true) {
             status = 'approved';
-          } else if (existingCandidate.approved === false && existingCandidate.visible === false) {
-            // Seulement considérer comme rejeté si explicitement rejeté ET invisible
+          } else if (existingCandidate.status === 'rejected') {
+            // Statut explicitement rejeté
+            status = 'rejected';
+          } else if (existingCandidate.approved === false && existingCandidate.visible === false && existingCandidate.status !== 'pending') {
+            // Considérer comme rejeté si approuvé=false, visible=false ET pas en attente
             status = 'rejected';
           } else {
             // Tous les autres cas sont en attente (nouveaux profils, profils en cours de validation)
@@ -572,6 +575,133 @@ export default function MyProfilePage() {
           </motion.div>
 
           {/* Actions désactivées pour l'état en attente */}
+        </div>
+      </div>
+    );
+  }
+
+  // Interface pour les candidats rejetés
+  if (candidateStatus === 'rejected') {
+    return (
+      <div className="min-h-screen py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          {/* Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <Link 
+                to="/candidates" 
+                className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Retour
+              </Link>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="p-4 rounded-2xl bg-red-600 shadow-lg">
+                <User className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon Profil</h1>
+                <p className="text-gray-600">Votre profil candidat</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Message de rejet */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-red-100 rounded-full">
+                <X className="w-5 h-5 text-red-600" />
+              </div>
+              <h2 className="text-xl font-semibold text-red-800">Profil non retenu</h2>
+            </div>
+            <p className="text-red-700 mb-4">
+              Nous avons examiné votre candidature avec attention. Malheureusement, votre profil ne correspond 
+              pas actuellement aux critères recherchés par nos recruteurs partenaires.
+            </p>
+            <div className="bg-white rounded-xl p-4 border border-red-200">
+              <h3 className="font-semibold text-gray-900 mb-2">Informations de votre profil :</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-gray-600">Nom :</span>
+                  <span className="ml-2 text-gray-900">{formData.name}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Email :</span>
+                  <span className="ml-2 text-gray-900">{formData.email}</span>
+                </div>
+                
+                <div>
+                  <span className="font-medium text-gray-600">Titre :</span>
+                  <span className="ml-2 text-gray-900">{formData.title}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Localisation :</span>
+                  <span className="ml-2 text-gray-900">{formData.location}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Message d'encouragement et possibilité de révision */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-blue-100 rounded-full">
+                <AlertCircle className="w-5 h-5 text-blue-600" />
+              </div>
+              <h2 className="text-xl font-semibold text-blue-800">Que faire maintenant ?</h2>
+            </div>
+            <div className="text-blue-700 space-y-3">
+              <p>
+                Ne vous découragez pas ! Voici quelques suggestions pour améliorer votre profil :
+              </p>
+              <ul className="list-disc list-inside space-y-2 ml-4">
+                <li>Enrichissez votre description professionnelle avec des projets concrets</li>
+                <li>Ajoutez des compétences techniques spécifiques à votre domaine</li>
+                <li>Incluez des liens vers vos réalisations (portfolio, GitHub, etc.)</li>
+                <li>Mettez à jour votre expérience et vos formations</li>
+              </ul>
+              <p className="font-medium">
+                Vous pouvez modifier votre profil à tout moment. Une fois amélioré, 
+                il sera automatiquement soumis pour une nouvelle évaluation.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Bouton pour modifier le profil */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-center"
+          >
+            <button
+              onClick={() => {
+                // Permettre la modification du profil même si rejeté
+                setCurrentStep(1);
+                setActiveTab('profile');
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
+            >
+              <Edit className="w-5 h-5" />
+              Modifier mon profil
+            </button>
+          </motion.div>
         </div>
       </div>
     );
