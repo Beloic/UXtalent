@@ -56,7 +56,8 @@ const MatchingDashboard = ({ recruiterId }) => {
       hasAnimated: hasAnimatedRef.current
     });
     
-    if (isFullyLoaded && statsLoaded && jobsLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+    // Animation se déclenche si les candidats sont chargés, même sans les stats
+    if (isFullyLoaded && jobsLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
       console.log('🎬 [ANIMATION] Déclenchement de l\'animation dans 1 seconde');
       hasAnimatedRef.current = true;
       // Délai d'1 seconde après chargement complet des données en base
@@ -118,16 +119,24 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   const fetchStats = async () => {
     try {
+      console.log('📊 [STATS] Début du chargement des statistiques');
       const apiUrl = buildApiUrl(API_ENDPOINTS.MATCHING_STATS);
+      console.log('📊 [STATS] URL:', apiUrl);
       const response = await authenticatedFetch(apiUrl);
+      console.log('📊 [STATS] Réponse status:', response.status, 'ok:', response.ok);
       
       if (response.ok) {
         const data = await response.json();
+        console.log('📊 [STATS] Données reçues:', data);
         setStats(data);
         setStatsLoaded(true);
+        console.log('📊 [STATS] Stats chargées avec succès');
+      } else {
+        console.error('📊 [STATS] Erreur HTTP:', response.status, response.statusText);
+        setStatsLoaded(true); // Marquer comme chargé même en cas d'erreur
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des statistiques:', error);
+      console.error('📊 [STATS] Erreur lors du chargement des statistiques:', error);
       setStatsLoaded(true); // Marquer comme chargé même en cas d'erreur
     }
   };
