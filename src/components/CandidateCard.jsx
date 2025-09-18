@@ -122,9 +122,9 @@ export default function CandidateCard({ candidate, compact = false }) {
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-4">
-          {/* Colonne gauche: Avatar */}
-          <div className="flex flex-col items-start gap-2 w-16 sm:w-16">
-            <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100">
+          {/* Colonne gauche: Avatar (style carte carrée arrondie) */}
+          <div className="flex flex-col items-start gap-2 w-20 sm:w-24">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden bg-gray-100 shadow">
               {candidate.photo ? (
                 <img
                   src={candidate.photo}
@@ -145,23 +145,31 @@ export default function CandidateCard({ candidate, compact = false }) {
           </div>
           {/* Colonne droite: texte principal */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-4">
-              <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1 truncate">
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight truncate">
                 {candidate.name}
               </h3>
+              {/* Badges plan/exp gardés à droite via bloc existant plus bas */}
+            </div>
+            <p className="text-gray-600 text-base font-medium mb-1 line-clamp-2">{candidate.title}</p>
+            {/* Ligne de métadonnées alignée à gauche: localisation, expérience, (optionnel) mode de travail */}
+            <div className="flex items-center gap-6 text-gray-500 text-sm mb-2">
               {candidate.location && (
-                <div className="flex items-center text-gray-500 text-sm flex-shrink-0">
+                <div className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1.5 text-red-600" />
-                  <span className="truncate max-w-[10rem]">{candidate.location}</span>
+                  <span className="truncate">{candidate.location}</span>
                 </div>
               )}
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-gray-600 font-medium mb-2 line-clamp-2 flex-1">{candidate.title}</p>
+              {candidate.experience && (
+                <div className="flex items-center">
+                  <Briefcase className="w-4 h-4 mr-1.5 text-gray-500" />
+                  <span>{candidate.experience}</span>
+                </div>
+              )}
               {candidate.remote && (
-                <div className="flex items-center text-gray-500 text-sm flex-shrink-0 mb-2">
+                <div className="flex items-center">
                   <Globe className="w-4 h-4 mr-1.5 text-blue-600" />
-                  <span className="truncate max-w-[10rem]">{getRemoteLabel(candidate.remote)}</span>
+                  <span>{getRemoteLabel(candidate.remote)}</span>
                 </div>
               )}
             </div>
