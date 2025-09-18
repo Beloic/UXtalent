@@ -260,7 +260,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                     </div>
                   </div>
 
-                  <div className="space-y-8">
+                  <div className="space-y-12">
                     {candidates.length === 0 ? (
                       <div className="p-8 text-center text-gray-500">
                         <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
@@ -269,7 +269,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                       </div>
                     ) : (
                       candidates.map((candidate) => (
-                        <div key={candidate.candidateId} className="bg-white rounded-xl shadow-md p-8 hover:shadow-lg transition-all duration-200">
+                        <div key={candidate.candidateId} className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
                           {/* En-tête candidat */}
                           <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center">
