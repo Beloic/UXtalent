@@ -33,6 +33,7 @@ export default function JobDetailPage() {
   const [applicationStatus, setApplicationStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const { isRecruiter, isCandidate } = usePermissions();
 
   // Fonction pour postuler à l'offre
@@ -171,6 +172,22 @@ export default function JobDetailPage() {
       fetchJob();
     }
   }, [id]);
+
+  // Récupérer l'ID de l'utilisateur connecté
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        const session = await supabase.auth.getSession();
+        if (session.data.session?.user?.id) {
+          setCurrentUserId(session.data.session.user.id);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération de l\'utilisateur:', error);
+      }
+    };
+
+    getCurrentUser();
+  }, []);
 
   // Vérifier le statut de candidature quand l'offre est chargée
   useEffect(() => {
@@ -474,10 +491,18 @@ export default function JobDetailPage() {
                       )}
                     </button>
                   ) : (
-                    <button className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold">
-                      <Mail className="w-5 h-5" />
-                      Contacter l'entreprise
-                    </button>
+                    // Vérifier si le recruteur est le propriétaire de l'offre
+                    currentUserId && job && currentUserId === job.recruiterId ? (
+                      <div className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-semibold">
+                        <Building2 className="w-5 h-5" />
+                        Votre offre d'emploi
+                      </div>
+                    ) : (
+                      <button className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold">
+                        <Mail className="w-5 h-5" />
+                        Contacter l'entreprise
+                      </button>
+                    )
                   )}
                 </div>
               </div>
