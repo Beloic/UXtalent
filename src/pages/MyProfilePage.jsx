@@ -186,12 +186,6 @@ export default function MyProfilePage() {
           
           setCandidateStatus(status);
           
-          // Si le candidat est rejeté, ne pas charger les données du formulaire
-          if (status === 'rejected') {
-            setMessage('❌ Votre profil a été rejeté');
-            return;
-          }
-          
           // Charger le plan du candidat
           setCandidatePlan(existingCandidate.planType || 'free');
           
@@ -595,98 +589,6 @@ export default function MyProfilePage() {
     );
   }
 
-  // Interface pour les candidats rejetés
-  if (candidateStatus === 'rejected') {
-    return (
-      <div className="min-h-screen py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          {/* Header */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <Link 
-                to="/candidates" 
-                className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Retour
-              </Link>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Message d'attente de validation */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-yellow-50 border border-yellow-200 rounded-2xl p-8 mb-8"
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-yellow-100 rounded-full">
-                <Check className="w-5 h-5 text-yellow-600" />
-              </div>
-              <h2 className="text-xl font-semibold text-yellow-800">Profil en attente de validation</h2>
-            </div>
-            <p className="text-yellow-700 mb-4">
-              Votre profil a été soumis avec succès ! Notre équipe examine actuellement votre candidature 
-              et vous contactera sous peu pour vous informer de la suite du processus.
-            </p>
-            <div className="bg-white rounded-xl p-4 border border-yellow-200">
-              <h3 className="font-semibold text-gray-900 mb-2">Informations de votre profil :</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium text-gray-600">Nom :</span>
-                  <span className="ml-2 text-gray-900">{formData.name}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Email :</span>
-                  <span className="ml-2 text-gray-900">{formData.email}</span>
-                </div>
-                
-                <div>
-                  <span className="font-medium text-gray-600">Titre :</span>
-                  <span className="ml-2 text-gray-900">{formData.title}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Localisation :</span>
-                  <span className="ml-2 text-gray-900">{formData.location}</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Actions */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex gap-4"
-          >
-            <button
-              onClick={() => setCandidateStatus(null)}
-              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-            >
-              Modifier mon profil
-            </button>
-            <Link 
-              to="/candidates" 
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors"
-            >
-              Voir les autres candidats
-            </Link>
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen py-8">
