@@ -103,9 +103,12 @@ export const updatePost = (postId, updateData) => {
 // Ajouter une réponse
 export const addReply = (replyData) => {
   const data = loadForumData();
+  // Normaliser les clés: accepter postId ou post_id
+  const normalizedPostId = replyData.postId ?? replyData.post_id;
   const newReply = {
     id: data.replies.length > 0 ? Math.max(...data.replies.map(r => r.id)) + 1 : 1,
     ...replyData,
+    postId: normalizedPostId,
     likes: 0,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -114,7 +117,7 @@ export const addReply = (replyData) => {
   data.replies.push(newReply);
   
   // Mettre à jour le compteur de réponses du post
-  const postIndex = data.posts.findIndex(p => p.id === replyData.postId);
+  const postIndex = data.posts.findIndex(p => p.id === normalizedPostId);
   if (postIndex !== -1) {
     data.posts[postIndex].replies += 1;
     data.posts[postIndex].updatedAt = new Date().toISOString();
@@ -192,7 +195,7 @@ export const getPostById = (postId) => {
   
   // Récupérer les réponses
   const replies = data.replies
-    .filter(r => r.postId === parseInt(postId))
+    .filter(r => (r.postId ?? r.post_id) === parseInt(postId))
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   
   return {
@@ -236,7 +239,7 @@ export const deletePost = (postId) => {
 // Supprimer une réponse
 export const deleteReply = (postId, replyId) => {
   const data = loadForumData();
-  const replyIndex = data.replies.findIndex(r => r.id === parseInt(replyId) && r.postId === parseInt(postId));
+  const replyIndex = data.replies.findIndex(r => r.id === parseInt(replyId) && ((r.postId ?? r.post_id) === parseInt(postId)));
   
   if (replyIndex === -1) {
     return false;
