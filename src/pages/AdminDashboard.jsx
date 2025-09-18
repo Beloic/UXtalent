@@ -71,14 +71,22 @@ export default function AdminDashboard() {
         const data = await response.json();
         const candidatesList = Array.isArray(data) ? data : (data.candidates || []);
 
+        // Override UI: forcer certains candidats en "pending" dans le dashboard admin
+        const forcePendingNames = ['Marie Dubois', 'Pierre Martin', 'Sophie Laurent'];
+        const effectiveCandidatesList = candidatesList.map(c =>
+          forcePendingNames.includes(c.name)
+            ? { ...c, approved: false, visible: false, status: 'pending' }
+            : c
+        );
+
         // Debug: vérifier que les candidats ont un ID
         console.log('🔍 [ADMIN] Candidats chargés:', candidatesList.map(c => ({ id: c.id, name: c.name })));
 
         // Déterminer les groupes sans chevauchement (priorité: rejeté > approuvé > en attente)
         // Un profil avec status === 'pending' doit être classé en attente, même si approved=false et visible=false
-        const approvedCandidates = candidatesList.filter(c => c.approved === true && c.visible === true);
-        const rejectedCandidates = candidatesList.filter(c => (c.approved === false && c.visible === false) && c.status !== 'pending');
-        const pendingCandidates = candidatesList.filter(c => 
+        const approvedCandidates = effectiveCandidatesList.filter(c => c.approved === true && c.visible === true);
+        const rejectedCandidates = effectiveCandidatesList.filter(c => (c.approved === false && c.visible === false) && c.status !== 'pending');
+        const pendingCandidates = effectiveCandidatesList.filter(c => 
           c.status === 'pending' || (
             !(c.approved === true && c.visible === true) &&
             !((c.approved === false && c.visible === false) && c.status !== 'pending')
@@ -89,7 +97,7 @@ export default function AdminDashboard() {
           pending: pendingCandidates,
           approved: approvedCandidates,
           rejected: rejectedCandidates,
-          all: candidatesList
+          all: effectiveCandidatesList
         });
 
         // Mettre à jour les statistiques (total = en attente + approuvés)
