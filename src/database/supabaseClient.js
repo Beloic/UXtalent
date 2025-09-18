@@ -144,6 +144,17 @@ export const addCandidate = async (candidateData) => {
 
 export const updateCandidate = async (id, candidateData) => {
   try {
+    // Récupérer le candidat actuel pour vérifier son statut
+    const { data: currentCandidate, error: fetchError } = await supabase
+      .from('candidates')
+      .select('status')
+      .eq('id', id)
+      .single();
+    
+    if (fetchError) {
+      console.error('❌ Erreur lors de la récupération du candidat actuel:', fetchError);
+    }
+    
     // Convertir les noms de colonnes de camelCase vers snake_case pour Supabase
     const dbData = { ...candidateData };
     // Supprimer les champs non supportés par le schéma Supabase (évite les erreurs 500)
@@ -161,6 +172,13 @@ export const updateCandidate = async (id, candidateData) => {
     // Ignorer yearsOfExperience car la colonne n'existe pas encore en base
     if (candidateData.yearsOfExperience !== undefined) {
       delete dbData.yearsOfExperience;
+    }
+    
+    // Logique spéciale pour les candidats rejetés : remettre en attente après modification
+    if (currentCandidate?.status === 'rejected' && candidateData.status === 'pending') {
+      console.log(`🔄 Candidat rejeté mis à jour: ${id} - Retour en attente`);
+      dbData.approved = false; // Remettre non approuvé
+      dbData.visible = false;   // Remettre non visible
     }
     
     console.log('🔄 Mise à jour candidat:', { id, dbData });

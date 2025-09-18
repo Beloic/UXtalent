@@ -383,11 +383,10 @@ export default function MyProfilePage() {
         email: formData.email,
         bio: structuredBio,
         // Pour les nouveaux profils : toujours en attente de validation
-        status: formData.id ? undefined : 'pending', // Ne pas modifier le statut pour les profils existants
-        approved: formData.id ? undefined : false, // Nouveaux profils : non approuvés par défaut
-        visible: formData.id ? undefined : false, // Nouveaux profils : non visibles jusqu'à validation
-        // Marquer comme mise à jour par l'utilisateur pour les profils existants
-        updatedByUser: formData.id ? true : undefined,
+        // Pour les profils existants rejetés : remettre en attente après modification
+        status: formData.id ? (candidateStatus === 'rejected' ? 'pending' : undefined) : 'pending',
+        approved: formData.id ? (candidateStatus === 'rejected' ? false : undefined) : false, // Nouveaux profils : non approuvés par défaut
+        visible: formData.id ? (candidateStatus === 'rejected' ? false : undefined) : false, // Nouveaux profils : non visibles jusqu'à validation
         // Tous les champs du formulaire
         title: formData.title || '',
         location: formData.location || '',
@@ -434,8 +433,11 @@ export default function MyProfilePage() {
         if (!formData.id) {
           // Nouveau profil créé - informer qu'il est en attente
           setMessage(`✅ Profil créé avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
+        } else if (candidateStatus === 'rejected') {
+          // Profil rejeté mis à jour - informer qu'il est remis en attente
+          setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
         } else {
-          // Profil mis à jour
+          // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
         }
         
@@ -564,54 +566,7 @@ export default function MyProfilePage() {
             </div>
           </motion.div>
 
-          {/* Message d'encouragement et possibilité de révision */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8"
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-blue-100 rounded-full">
-                <AlertCircle className="w-5 h-5 text-blue-600" />
-              </div>
-              <h2 className="text-xl font-semibold text-blue-800">Vous pouvez toujours modifier votre profil</h2>
-            </div>
-            <div className="text-blue-700 space-y-3">
-              <p>
-                Même si votre profil est en attente de validation, vous pouvez le modifier à tout moment pour l'améliorer :
-              </p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Enrichissez votre description professionnelle avec des projets concrets</li>
-                <li>Ajoutez des compétences techniques spécifiques à votre domaine</li>
-                <li>Incluez des liens vers vos réalisations (portfolio, GitHub, etc.)</li>
-                <li>Mettez à jour votre expérience et vos formations</li>
-              </ul>
-              <p className="font-medium">
-                Toute modification sera automatiquement soumise pour une nouvelle évaluation.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Bouton pour modifier le profil */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-center"
-          >
-            <button
-              onClick={() => {
-                // Permettre la modification du profil même si en attente
-                setCurrentStep(1);
-                setActiveTab('profile');
-              }}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold"
-            >
-              <Edit className="w-5 h-5" />
-              Modifier mon profil
-            </button>
-          </motion.div>
+          {/* Actions désactivées pour l'état en attente */}
         </div>
       </div>
     );
