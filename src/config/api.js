@@ -1,8 +1,7 @@
 // Configuration des URLs de l'API
-// Utiliser le serveur local pour tester les nouvelles fonctionnalités Supabase
+// Forcer l'utilisation de la prod pour éviter tout appel localhost en dev ou prod
 const DEFAULT_API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com';
-const LOCAL_API_BASE_URL = 'http://localhost:3001';
-const API_BASE_URL = LOCAL_API_BASE_URL; // Temporaire pour tester Supabase
+const API_BASE_URL = DEFAULT_API_BASE_URL;
 
 
 // Fonction pour construire une URL complète
