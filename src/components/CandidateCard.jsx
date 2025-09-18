@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Globe, User, Briefcase, DollarSign, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
+import { MapPin, Globe, User, Briefcase, Coins, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PremiumBadge, ProBadge } from "./Badge";
 import { useAuth } from "../contexts/AuthContext";
@@ -122,50 +122,59 @@ export default function CandidateCard({ candidate, compact = false }) {
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-4">
-          {/* Avatar du talent */}
-          <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-            {candidate.photo ? (
-              <img
-                src={candidate.photo}
-                alt={`Photo de ${candidate.name}`}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`;
-                }}
-              />
-            ) : (
-              <img
-                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`}
-                alt={`Avatar de ${candidate.name}`}
-                className="w-full h-full object-cover"
-              />
-            )}
+          {/* Colonne gauche: Avatar + métadonnées */}
+          <div className="flex flex-col items-start gap-2 w-28 sm:w-32">
+            <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100">
+              {candidate.photo ? (
+                <img
+                  src={candidate.photo}
+                  alt={`Photo de ${candidate.name}`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`;
+                  }}
+                />
+              ) : (
+                <img
+                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`}
+                  alt={`Avatar de ${candidate.name}`}
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+            <div className="space-y-1 text-gray-500 text-xs sm:text-sm">
+              {candidate.location && (
+                <div className="flex items-center">
+                  <MapPin className="w-4 h-4 mr-1.5 text-red-600" />
+                  <span className="truncate max-w-[7rem] sm:max-w-[9rem]">{candidate.location}</span>
+                </div>
+              )}
+              {candidate.remote && (
+                <div className="flex items-center">
+                  <Globe className="w-4 h-4 mr-1.5 text-blue-600" />
+                  <span className="truncate max-w-[7rem] sm:max-w-[9rem]">{getRemoteLabel(candidate.remote)}</span>
+                </div>
+              )}
+            </div>
           </div>
+          {/* Colonne droite: texte principal */}
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1 truncate">
               {candidate.name}
             </h3>
             <p className="text-gray-600 font-medium mb-2 line-clamp-2">{candidate.title}</p>
-            <div className="flex items-center gap-4 text-sm text-gray-500">
-              <div className="flex items-center gap-1">
-                <MapPin className="w-4 h-4 text-red-600" />
-                <span>{candidate.location}</span>
-              </div>
-              {candidate.remote && (
-                <div className="flex items-center gap-1">
-                  <Globe className="w-4 h-4 text-blue-600" />
-                  <span>{getRemoteLabel(candidate.remote)}</span>
-                </div>
-              )}
-            </div>
           </div>
         </div>
-        {/* Pilule d'expérience pour rappeler le badge type */}
-        {candidate.experience && (
-          <div className={`px-3 py-1.5 rounded-full text-sm font-semibold ${getExperienceColor(candidate.experience)} border`}>
-            {candidate.experience}
-          </div>
-        )}
+        {/* Badges plan + expérience */}
+        <div className="flex items-center gap-2">
+          {candidate.planType === 'premium' && <PremiumBadge />}
+          {candidate.planType === 'pro' && <ProBadge />}
+          {candidate.experience && (
+            <div className={`px-3 py-1.5 rounded-full text-sm font-semibold ${getExperienceColor(candidate.experience)} border`}>
+              {candidate.experience}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Description alignée */}
@@ -181,13 +190,13 @@ export default function CandidateCard({ candidate, compact = false }) {
         <div className="flex items-center gap-4 text-sm text-gray-600">
           {(candidate.dailyRate || candidate.daily_rate) && (
             <div className="flex items-center gap-1">
-              <DollarSign className="w-4 h-4 text-emerald-600" />
+              <Coins className="w-4 h-4 text-emerald-600" />
               <span className="font-medium">{candidate.dailyRate || candidate.daily_rate}€ TJM</span>
             </div>
           )}
           {(candidate.annualSalary || candidate.annual_salary) && (
             <div className="flex items-center gap-1">
-              <DollarSign className="w-4 h-4 text-emerald-600" />
+              <Coins className="w-4 h-4 text-emerald-600" />
               <span className="font-medium">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€ annuel</span>
             </div>
           )}
