@@ -172,7 +172,7 @@ export default function CandidateCard({ candidate, compact = false }) {
             <div className="flex items-start justify-between mb-2">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 min-w-0">
-                  <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300 truncate">
+                  <h3 className="text-xl font-bold text-blue-700 group-hover:text-blue-600 transition-colors duration-300 truncate">
                     {candidate.name}
                   </h3>
                 </div>
@@ -230,7 +230,7 @@ export default function CandidateCard({ candidate, compact = false }) {
 
         {/* Bio */}
         <div className={`${compact ? 'mb-3' : 'mb-5'}`}>
-          <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+          <p className={`text-gray-600 text-sm ${compact ? 'line-clamp-2' : 'line-clamp-3'} leading-relaxed`}>
             {(() => {
               const bio = candidate.bio || '';
               return bio.replace(/Années d'expérience: \d+ ans \([^)]+\)\n\n/, '');
