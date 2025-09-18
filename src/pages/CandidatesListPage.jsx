@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar, TrendingUp, LayoutGrid, List } from "lucide-react";
+import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CandidateCard from "../components/CandidateCard";
 import CandidateCardBlurred from "../components/CandidateCardBlurred";
@@ -22,7 +22,6 @@ export default function CandidatesListPage() {
   const [sortBy, setSortBy] = useState("recent"); // "recent" | "experience"
   const [page, setPage] = useState(1);
   const pageSize = 8;
-  const [viewMode, setViewMode] = useState("grid"); // "grid" | "list"
   
   const { isRecruiter, isCandidate } = usePermissions();
 
@@ -44,7 +43,6 @@ export default function CandidatesListPage() {
   const paged = candidates.slice((page - 1) * pageSize, page * pageSize);
 
   const hasActiveFilters = remote.length || experience.length || location.length || salaryRange.length || q;
-  const gridClass = viewMode === 'grid' ? "grid grid-cols-1 gap-6 sm:grid-cols-2" : "grid grid-cols-1 gap-6";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -214,31 +212,9 @@ export default function CandidatesListPage() {
                   {loading ? "Chargement..." : `${total} candidat${total>1?"s":""} trouvé${total>1?"s":""}`}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="hidden sm:block text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                  {hasActiveFilters ? 'Filtres actifs' : ''}
-                </div>
-                <div className="flex items-center bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`${viewMode==='grid' ? 'bg-gray-100 text-gray-900' : 'bg-white text-gray-500'} px-3 py-2 flex items-center gap-1 hover:bg-gray-50`}
-                    aria-pressed={viewMode==='grid'}
-                    title="Affichage en grille"
-                  >
-                    <LayoutGrid className="w-4 h-4" />
-                    <span className="hidden sm:inline text-sm">Grille</span>
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`${viewMode==='list' ? 'bg-gray-100 text-gray-900' : 'bg-white text-gray-500'} px-3 py-2 flex items-center gap-1 border-l border-gray-200 hover:bg-gray-50`}
-                    aria-pressed={viewMode==='list'}
-                    title="Affichage en liste"
-                  >
-                    <List className="w-4 h-4" />
-                    <span className="hidden sm:inline text-sm">Liste</span>
-                  </button>
-                </div>
-              </div>
+              {hasActiveFilters && (
+                <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Filtres actifs</div>
+              )}
             </div>
 
             {error && (
@@ -248,7 +224,7 @@ export default function CandidatesListPage() {
             )}
 
             {loading ? (
-              <div className={gridClass}>
+              <div className="grid grid-cols-1 gap-4">
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 animate-pulse">
                     <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
@@ -259,7 +235,7 @@ export default function CandidatesListPage() {
                 ))}
               </div>
             ) : (
-              <div className={gridClass}>
+              <div className="grid grid-cols-1 gap-4">
                 {paged.map((candidate, index) => {
                   if (candidate.isSignupCard) {
                     return <SignupCard key={candidate.id} hiddenCount={candidate.hiddenCount} />;
@@ -270,7 +246,7 @@ export default function CandidatesListPage() {
                     return <CandidateCardBlurred key={`blurred-${candidate.id}`} candidate={candidate} hiddenCount={total - 4} />;
                   }
                   
-                  return <CandidateCard key={candidate.id} candidate={candidate} />;
+                  return <CandidateCard key={candidate.id} candidate={candidate} compact />;
                 })}
                 {paged.length === 0 && (
                   <div className="col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center shadow-xl border border-white/20">
