@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MapPin, Globe, User, Briefcase, Euro, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
-import { PremiumBadge, ProBadge } from "./Badge";
+// import { PremiumBadge, ProBadge } from "./Badge"; // plus utilisé
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
@@ -114,14 +114,21 @@ export default function CandidateCard({ candidate, compact = false }) {
 
   // Style aligné sur la carte d'offre (JobCard)
   const getCardStyles = () => {
-    return "group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 hover:border-blue-200/50";
+    const base = "group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300";
+    if (candidate.planType === 'premium') {
+      return `${base} hover:border-blue-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50`;
+    }
+    if (candidate.planType === 'pro') {
+      return `${base} hover:border-amber-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50`;
+    }
+    return `${base} hover:border-blue-200/50`;
   };
 
   return (
     <div className={getCardStyles()}>
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-0">
           {/* Colonne gauche: Avatar (style carte carrée arrondie) */}
           <div className="flex flex-col items-start gap-2 w-24">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-gray-100 shadow">
@@ -175,16 +182,7 @@ export default function CandidateCard({ candidate, compact = false }) {
             </div>
           </div>
         </div>
-        {/* Badges plan + expérience */}
-        <div className="flex items-center gap-2">
-          {candidate.planType === 'premium' && <PremiumBadge />}
-          {candidate.planType === 'pro' && <ProBadge />}
-          {candidate.experience && (
-            <div className={`px-3 py-1.5 rounded-full text-sm font-semibold ${getExperienceColor(candidate.experience)} border`}>
-              {candidate.experience}
-            </div>
-          )}
-        </div>
+        {/* Rien en haut à droite: le niveau d'expérience est désormais dans la ligne méta */}
       </div>
 
       {/* Description alignée */}
