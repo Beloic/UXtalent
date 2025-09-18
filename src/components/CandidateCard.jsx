@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
 
-export default function CandidateCard({ candidate }) {
+export default function CandidateCard({ candidate, compact = false }) {
   const { user } = useAuth();
   const { isRecruiter } = usePermissions();
   const [isFavorited, setIsFavorited] = useState(false);
@@ -134,9 +134,9 @@ export default function CandidateCard({ candidate }) {
       {/* Badge Premium/Pro redesigné */}
       {/* Badge Premium/Pro sera affiché dans l'entête, à droite du nom */}
       
-      {/* Header redesigné */}
-      <div className="p-6 pb-4">
-        <div className="flex items-start gap-4 mb-4">
+      {/* Header */}
+      <div className={`${compact ? 'p-4 pb-3' : 'p-6 pb-4'}`}>
+        <div className={`flex items-start gap-4 ${compact ? 'mb-3' : 'mb-4'}`}>
           {/* Photo de profil avec design moderne */}
           <div className="relative flex-shrink-0">
             <div className="relative">
@@ -144,7 +144,7 @@ export default function CandidateCard({ candidate }) {
                 <img
                   src={candidate.photo}
                   alt={`Photo de ${candidate.name}`}
-                  className="w-16 h-16 rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50"
+                  className={`${compact ? 'w-14 h-14' : 'w-16 h-16'} rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50`}
                   onError={(e) => {
                     console.log('❌ Erreur de chargement de la photo:', candidate.photo);
                     e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=80&background=6366f1&color=ffffff&bold=true`;
@@ -157,7 +157,7 @@ export default function CandidateCard({ candidate }) {
                 <img
                   src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=80&background=6366f1&color=ffffff&bold=true`}
                   alt={`Avatar de ${candidate.name}`}
-                  className="w-16 h-16 rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50"
+                  className={`${compact ? 'w-14 h-14' : 'w-16 h-16'} rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50`}
                 />
               )}
               {/* Indicateur de statut en ligne */}
@@ -175,53 +175,61 @@ export default function CandidateCard({ candidate }) {
                   <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300 truncate">
                     {candidate.name}
                   </h3>
-                  {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
-                    <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 shadow-sm border ${
-                      candidate.planType === 'pro'
-                        ? 'bg-amber-500 text-white border-amber-600'
-                        : 'bg-blue-600 text-white border-blue-700'
-                    }`}>
-                      <Star className="w-3 h-3 fill-current" />
-                      <span>{candidate.planType === 'pro' ? 'Pro' : 'Premium'}</span>
-                    </div>
-                  )}
                 </div>
-                <p className="text-gray-600 font-medium mb-2 line-clamp-2 leading-relaxed">{candidate.title}</p>
+                <p className={`${compact ? 'mb-1' : 'mb-2'} text-gray-600 font-medium line-clamp-2 leading-relaxed`}>{candidate.title}</p>
               </div>
               
-              {/* Bouton favoris redesigné */}
-              {user && isRecruiter && (
-                <button
-                  onClick={toggleFavorite}
-                  disabled={isLoadingFavorite}
-                  className={`ml-3 p-2.5 rounded-xl transition-all duration-300 hover:scale-110 ${
-                    isFavorited 
-                      ? 'bg-red-50 text-red-500 hover:bg-red-100 shadow-lg' 
-                      : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-red-500'
-                  } ${isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                >
-                  {isLoadingFavorite ? (
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
-                  )}
-                </button>
-              )}
+              {/* Badge à gauche du bouton favoris */}
+              <div className="flex items-center gap-2 ml-3">
+                {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
+                  <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 shadow-sm border ${
+                    candidate.planType === 'pro'
+                      ? 'bg-amber-500 text-white border-amber-600'
+                      : 'bg-blue-600 text-white border-blue-700'
+                  }`}>
+                    <Star className="w-3 h-3 fill-current" />
+                    <span>{candidate.planType === 'pro' ? 'Pro' : 'Premium'}</span>
+                  </div>
+                )}
+                {user && isRecruiter && (
+                  <button
+                    onClick={toggleFavorite}
+                    disabled={isLoadingFavorite}
+                    className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-110 ${
+                      isFavorited 
+                        ? 'bg-red-50 text-red-500 hover:bg-red-100 shadow-lg' 
+                        : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-red-500'
+                    } ${isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                  >
+                    {isLoadingFavorite ? (
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
             
-            {/* Localisation uniquement (pas de badge Junior/Mid/Senior/Lead) */}
-            <div className="flex items-center gap-4 mb-3">
+            {/* Localisation + mode de travail */}
+            <div className={`flex items-center gap-4 ${compact ? 'mb-2' : 'mb-3'}`}>
               <div className="flex items-center text-gray-500 text-sm">
                 <MapPin className="w-4 h-4 mr-1.5 text-blue-500" />
                 <span className="font-medium">{candidate.location}</span>
+                {candidate.remote && (
+                  <>
+                    <span className="mx-2 text-gray-300">•</span>
+                    <span className="text-gray-600 font-medium">{getRemoteLabel(candidate.remote)}</span>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
 
         {/* Bio */}
-        <div className="mb-5">
+        <div className={`${compact ? 'mb-3' : 'mb-5'}`}>
           <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
             {(() => {
               const bio = candidate.bio || '';
