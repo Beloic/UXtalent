@@ -60,10 +60,8 @@ export default function AdminDashboard() {
   const loadCandidates = async () => {
     try {
       setIsLoading(true);
-      // Forcer un rechargement complet depuis l'API (éviter tout cache navigateur/proxy)
-      const apiUrl = await buildApiUrl(`${API_ENDPOINTS.CANDIDATES}?t=${Date.now()}`);
+      const apiUrl = await buildApiUrl(API_ENDPOINTS.CANDIDATES);
       const response = await fetch(apiUrl, {
-        cache: 'no-store',
         headers: {
           'Authorization': 'Bearer admin-token' // Token spécial pour l'administrateur
         }
@@ -73,28 +71,21 @@ export default function AdminDashboard() {
         const data = await response.json();
         const candidatesList = Array.isArray(data) ? data : (data.candidates || []);
 
-        // Utiliser directement la liste des candidats de la base de données
-        const effectiveCandidatesList = candidatesList;
+        // Override UI: forcer certains candidats en "pending" dans le dashboard admin
+        const forcePendingNames = ['Marie Dubois', 'Pierre Martin', 'Sophie Laurent'];
+        const effectiveCandidatesList = candidatesList.map(c =>
+          forcePendingNames.includes(c.name)
+            ? { ...c, approved: false, visible: false, status: 'pending' }
+            : c
+        );
 
         // Debug: vérifier que les candidats ont un ID
         console.log('🔍 [ADMIN] Candidats chargés:', candidatesList.map(c => ({ id: c.id, name: c.name })));
 
-        // Déterminer les groupes sans chevauchement (priorité: rejeté > approuvé > en attente)
-        // Un profil avec status === 'pending' doit être classé en attente, même si approved=false et visible=false
-        const rejectedCandidates = effectiveCandidatesList.filter(c => 
-          c.status === 'rejected' || 
-          ((c.approved === false && c.visible === false) && c.status !== 'pending' && c.status !== 'rejected')
-        );
-        const approvedCandidates = effectiveCandidatesList.filter(c => 
-          c.status !== 'rejected' && c.approved === true && c.visible === true
-        );
-        const pendingCandidates = effectiveCandidatesList.filter(c => 
-          c.status === 'pending' || (
-            !(c.approved === true && c.visible === true) &&
-            !(c.status === 'rejected') &&
-            !((c.approved === false && c.visible === false) && c.status !== 'pending' && c.status !== 'rejected')
-          )
-        );
+        // Logique simplifiée avec seulement le statut
+        const approvedCandidates = effectiveCandidatesList.filter(c => c.status === 'approved');
+        const rejectedCandidates = effectiveCandidatesList.filter(c => c.status === 'rejected');
+        const pendingCandidates = effectiveCandidatesList.filter(c => c.status === 'pending');
 
         setCandidates({
           pending: pendingCandidates,
@@ -346,7 +337,7 @@ export default function AdminDashboard() {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer admin-token'
         },
-        body: JSON.stringify({ approved: true, visible: true, status: null })
+        body: JSON.stringify({ status: 'approved' })
       });
 
       console.log('📡 Réponse du serveur:', response.status, response.statusText);
@@ -378,7 +369,7 @@ export default function AdminDashboard() {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer admin-token'
         },
-        body: JSON.stringify({ approved: false, visible: false, status: 'rejected' })
+        body: JSON.stringify({ status: 'rejected' })
       });
 
       console.log('📡 Réponse du serveur:', response.status, response.statusText);
@@ -1023,7 +1014,7 @@ export default function AdminDashboard() {
 
           {/* Actions modernes */}
           <div className="flex gap-4 pt-8 border-t border-gray-200/50">
-            {!(candidate.approved === true && candidate.visible === true) && !(candidate.approved === false && candidate.visible === false) ? (
+            {candidate.status === 'pending' ? (
               <>
                 <button
                   onClick={() => {
@@ -1046,7 +1037,7 @@ export default function AdminDashboard() {
                   Rejeter ce candidat
                 </button>
               </>
-            ) : candidate.approved === true ? (
+            ) : candidate.status === 'approved' ? (
               <button
                 onClick={() => {
                   rejectCandidate(candidate.id);
@@ -1491,14 +1482,14 @@ export default function AdminDashboard() {
                     {viewMode === 'list' ? (
                       <CandidateListItem 
                         candidate={candidate} 
-                        isApproved={candidate.approved === true && candidate.visible === true}
-                        isRejected={candidate.status === 'rejected' || ((candidate.approved === false && candidate.visible === false) && candidate.status !== 'pending' && candidate.status !== 'rejected')}
+                        isApproved={candidate.status === 'approved'}
+                        isRejected={candidate.status === 'rejected'}
                       />
                     ) : (
                       <CandidateCard 
                         candidate={candidate} 
-                        isApproved={candidate.approved === true && candidate.visible === true}
-                        isRejected={candidate.status === 'rejected' || ((candidate.approved === false && candidate.visible === false) && candidate.status !== 'pending' && candidate.status !== 'rejected')}
+                        isApproved={candidate.status === 'approved'}
+                        isRejected={candidate.status === 'rejected'}
                       />
                     )}
                   </motion.div>

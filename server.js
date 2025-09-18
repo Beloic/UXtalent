@@ -551,13 +551,13 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
           console.log(`✅ Utilisateur authentifié avec le rôle: ${userRole}`);
           
           if (userRole === ROLES.RECRUITER) {
-            // Les recruteurs voient tous les candidats approuvés ET visibles
-            visibleCandidates = filteredCandidates.filter(c => c.approved === true && c.visible === true);
+            // Les recruteurs voient tous les candidats approuvés
+            visibleCandidates = filteredCandidates.filter(c => c.status === 'approved');
             totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = true;
           } else if (userRole === ROLES.CANDIDATE) {
-            // Les candidats voient seulement les premiers candidats approuvés ET visibles + leur propre profil
-            const approvedCandidates = filteredCandidates.filter(c => c.approved === true && c.visible === true);
+            // Les candidats voient seulement les premiers candidats approuvés + leur propre profil
+            const approvedCandidates = filteredCandidates.filter(c => c.status === 'approved');
             // Trouver le profil perso dans TOUTE la base (pas uniquement les filtres)
             const allCandidates = await loadCandidates();
             const ownProfileAll = allCandidates.filter(c => (

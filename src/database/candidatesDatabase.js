@@ -38,7 +38,7 @@ export function loadCandidates() {
       languages: ["Français", "Anglais"],
       photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
       visible: true,
-      approved: true,
+      status: 'approved',
       createdAt: "2024-01-15T10:00:00Z",
       updatedAt: "2024-01-15T10:00:00Z"
     },
@@ -59,7 +59,7 @@ export function loadCandidates() {
       languages: ["Français", "Anglais", "Espagnol"],
       photo: "",
       visible: true,
-      approved: true,
+      status: 'approved',
       createdAt: "2024-01-14T14:30:00Z",
       updatedAt: "2024-01-14T14:30:00Z"
     },
@@ -80,7 +80,7 @@ export function loadCandidates() {
       languages: ["Français", "Anglais", "Mandarin"],
       photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
       visible: true,
-      approved: true,
+      status: 'approved',
       createdAt: "2024-01-13T09:15:00Z",
       updatedAt: "2024-01-13T09:15:00Z"
     },
@@ -183,7 +183,7 @@ export function addCandidate(candidate) {
   
   const updatedCandidates = [newCandidate, ...existingCandidates];
   saveCandidates(updatedCandidates);
-  console.log(`✨ Nouveau candidat ajouté: ${newCandidate.name} (approved: ${newCandidate.approved}, visible: ${newCandidate.visible}, status: ${newCandidate.status})`);
+  console.log(`✨ Nouveau candidat ajouté: ${newCandidate.name} (status: ${newCandidate.status})`);
   return newCandidate;
 }
 
@@ -201,20 +201,12 @@ export function updateCandidate(id, updates) {
   
   // Si c'est une mise à jour par l'utilisateur
   if (updates.updatedByUser) {
-    if (currentCandidate.approved === true) {
-      console.log(`🔄 Candidat approuvé mis à jour par l'utilisateur: ${currentCandidate.name} - Statut: Mis à jour`);
-      updates.approved = false; // Remettre en attente
-      updates.visible = false;   // Rendre invisible temporairement
+    if (currentCandidate.status === 'approved') {
+      console.log(`🔄 Candidat approuvé mis à jour par l'utilisateur: ${currentCandidate.name} - Retour en attente`);
+      updates.status = 'pending'; // Remettre en attente
     } else {
-      console.log(`🔄 Candidat mis à jour par l'utilisateur: ${currentCandidate.name} - Statut: Mis à jour`);
+      console.log(`🔄 Candidat mis à jour par l'utilisateur: ${currentCandidate.name}`);
     }
-    // FORCER le statut 'updated' pour les mises à jour utilisateur
-    updates.status = 'updated';
-    console.log(`✅ Statut 'updated' FORCÉ pour: ${currentCandidate.name}`);
-  } else if (updates.status === null) {
-    // Si status est explicitement défini à null (par l'admin), on le supprime du candidat
-    delete updates.status;
-    console.log(`🔄 Statut réinitialisé pour le candidat: ${currentCandidate.name}`);
   }
   
   candidates[candidateIndex] = {
@@ -224,7 +216,7 @@ export function updateCandidate(id, updates) {
   };
   
   saveCandidates(candidates);
-  console.log(`📝 Candidat mis à jour: ${candidates[candidateIndex].name} (approved: ${candidates[candidateIndex].approved}, visible: ${candidates[candidateIndex].visible}, status: ${candidates[candidateIndex].status || 'none'})`);
+  console.log(`📝 Candidat mis à jour: ${candidates[candidateIndex].name} (status: ${candidates[candidateIndex].status || 'none'})`);
   return candidates[candidateIndex];
 }
 

@@ -21,7 +21,8 @@ import {
   Eye,
   Palette,
   Code,
-  UserCheck
+  UserCheck,
+  X
 } from 'lucide-react';
 
 export default function LandingPage() {

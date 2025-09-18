@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare } from 'lucide-react';
+import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
@@ -172,20 +172,8 @@ export default function MyProfilePage() {
         const existingCandidate = await response.json();
         
         if (existingCandidate) {
-          // Déterminer le statut du candidat (priorité: rejeté > approuvé > en attente)
-          let status = 'pending';
-          if (existingCandidate.status === 'rejected') {
-            // Statut explicitement rejeté - PRIORITÉ ABSOLUE
-            status = 'rejected';
-          } else if (existingCandidate.approved === true && existingCandidate.visible === true) {
-            status = 'approved';
-          } else if (existingCandidate.approved === false && existingCandidate.visible === false && existingCandidate.status !== 'pending') {
-            // Considérer comme rejeté si approuvé=false, visible=false ET pas en attente
-            status = 'rejected';
-          } else {
-            // Tous les autres cas sont en attente (nouveaux profils, profils en cours de validation)
-            status = 'pending';
-          }
+          // Logique simplifiée : utiliser directement le statut
+          const status = existingCandidate.status || 'pending';
           
           setCandidateStatus(status);
           

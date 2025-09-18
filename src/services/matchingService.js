@@ -365,7 +365,7 @@ function extractSalaryMax(salaryRange, annualSalary) {
  */
 export function findBestCandidatesForJob(candidates, job, limit = 10) {
   const candidatesWithScores = candidates
-    .filter(candidate => candidate.approved && candidate.visible)
+    .filter(candidate => candidate.status === 'approved')
     .map(candidate => ({
       candidate,
       ...calculateCompatibilityScore(candidate, job)
