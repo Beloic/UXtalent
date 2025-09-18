@@ -426,8 +426,8 @@ export default function AdminDashboard() {
     } else if (filterStatus === 'rejected') {
       filtered = candidates.rejected || [];
     } else if (filterStatus === 'all') {
-      // Pour "Tous", on exclut les candidats rejetés
-      filtered = [...(candidates.pending || []), ...(candidates.approved || [])];
+      // Les approuvés n'apparaissent que dans le filtre "approuvés"
+      filtered = [...(candidates.pending || [])];
     }
     
     // Filtrage par recherche
