@@ -455,7 +455,38 @@ export default function CandidateDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contenu principal */}
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm relative">
+              {/* Badges + Favori en haut à droite */}
+              <div className="absolute top-4 right-4 flex items-center gap-3">
+                {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
+                  <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
+                    candidate.planType === 'pro' 
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
+                      : 'bg-blue-600'
+                  }`}>
+                    <span className={candidate.planType === 'pro' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
+                    {candidate.planType === 'pro' ? 'Pro' : 'Premium'}
+                  </span>
+                )}
+                {user && isRecruiter && (
+                  <button
+                    onClick={toggleFavorite}
+                    disabled={isLoadingFavorite}
+                    className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
+                      isFavorited 
+                        ? 'bg-red-100 text-red-600 hover:bg-red-200' 
+                        : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-red-500'
+                    } ${isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                  >
+                    {isLoadingFavorite ? (
+                      <div className="w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <Heart className={`w-6 h-6 ${isFavorited ? 'fill-current' : ''}`} />
+                    )}
+                  </button>
+                )}
+              </div>
               {/* Header du profil */}
               <div className="flex items-start gap-6 mb-8">
                 {/* Photo de profil */}
@@ -483,37 +514,6 @@ export default function CandidateDetailPage() {
                     <h1 className="text-4xl font-bold text-gray-900">
                       {candidate.name}
                     </h1>
-                    {/* Badge Premium/Pro */}
-                    {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
-                      <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
-                        candidate.planType === 'pro' 
-                          ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
-                          : 'bg-blue-600'
-                      }`}>
-                        <span className={candidate.planType === 'pro' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
-                        {candidate.planType === 'pro' ? 'Pro' : 'Premium'}
-                      </span>
-                    )}
-                    
-                    {/* Bouton favoris pour les recruteurs */}
-                    {user && isRecruiter && (
-                      <button
-                        onClick={toggleFavorite}
-                        disabled={isLoadingFavorite}
-                        className={`p-3 rounded-xl transition-all duration-200 hover:scale-110 ${
-                          isFavorited 
-                            ? 'bg-red-100 text-red-600 hover:bg-red-200' 
-                            : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-red-500'
-                        } ${isLoadingFavorite ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                      >
-                        {isLoadingFavorite ? (
-                          <div className="w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                        ) : (
-                          <Heart className={`w-6 h-6 ${isFavorited ? 'fill-current' : ''}`} />
-                        )}
-                      </button>
-                    )}
                   </div>
                   <p className="text-xl text-gray-600 mb-4">{candidate.title || 'Titre non spécifié'}</p>
                   <div className="flex items-center gap-4">
