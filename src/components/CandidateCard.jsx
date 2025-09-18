@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Globe, User, Briefcase, DollarSign, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
+import { MapPin, Globe, User, Briefcase, DollarSign, Award, Clock, Heart, Star, Zap, TrendingUp, Eye, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PremiumBadge, ProBadge } from "./Badge";
 import { useAuth } from "../contexts/AuthContext";
@@ -122,6 +122,21 @@ export default function CandidateCard({ candidate, compact = false }) {
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-4">
+          {/* Avatar */}
+          <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+            {(() => {
+              const avatar = candidate.photo || candidate.profilePhoto;
+              const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name || 'UX Designer')}&size=64&background=E5E7EB&color=111827&bold=true`;
+              return (
+                <img
+                  src={avatar || fallback}
+                  onError={(e) => { e.currentTarget.src = fallback; }}
+                  alt={`Avatar de ${candidate.name}`}
+                  className="w-full h-full object-cover"
+                />
+              );
+            })()}
+          </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-1 truncate">
               {candidate.name}
@@ -156,6 +171,41 @@ export default function CandidateCard({ candidate, compact = false }) {
           return bio.replace(/Années d'expérience: \d+ ans \([^)]+\)\n\n/, '');
         })()}
       </p>
+
+      {/* Rémunération sous ligne de séparation */}
+      {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary || candidate.createdAt || candidate.created_at) && (
+        <div className="pt-4 border-t border-gray-100 mb-2">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">Rémunération souhaitée</span>
+            <div className="flex items-center gap-6 flex-1 justify-end">
+              {(candidate.dailyRate || candidate.daily_rate) && (
+                <div className="text-right">
+                  <div className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">TJM</div>
+                  <div className="text-base font-extrabold text-gray-900">{candidate.dailyRate || candidate.daily_rate}€</div>
+                </div>
+              )}
+              {(candidate.annualSalary || candidate.annual_salary) && (
+                <div className="text-right">
+                  <div className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">Annuel</div>
+                  <div className="text-base font-extrabold text-gray-900">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</div>
+                </div>
+              )}
+              {(candidate.createdAt || candidate.created_at) && (
+                <div className="flex items-center gap-2 text-sm text-gray-500 whitespace-nowrap">
+                  <Calendar className="w-4 h-4" />
+                  <span>
+                    Inscription le {(() => {
+                      const raw = candidate.createdAt || candidate.created_at;
+                      const d = new Date(raw);
+                      return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('fr-FR');
+                    })()}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer avec bouton comme JobCard */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
