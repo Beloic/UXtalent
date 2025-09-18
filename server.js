@@ -1131,7 +1131,7 @@ app.get('/api/forum/posts/:id', async (req, res) => {
 });
 
 // POST /api/forum/posts - Créer un nouveau post
-app.post('/api/forum/posts', authenticateUser, (req, res) => {
+app.post('/api/forum/posts', authenticateUser, async (req, res) => {
   try {
     const { title, content, category, tags = [] } = req.body;
     
