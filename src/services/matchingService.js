@@ -6,11 +6,11 @@
 // ===== CONFIGURATION DES POIDS =====
 const SCORING_WEIGHTS = {
   SKILLS: 0.35,        // 35% - Compétences techniques
-  EXPERIENCE: 0.20,     // 20% - Niveau d'expérience
+  EXPERIENCE: 0.25,     // 25% - Niveau d'expérience (augmenté)
   LOCATION: 0.15,       // 15% - Localisation et remote
   SALARY: 0.15,         // 15% - Rémunération
-  AVAILABILITY: 0.10,  // 10% - Disponibilité
-  PLAN: 0.05           // 5% - Plan premium (bonus visibilité)
+  AVAILABILITY: 0.05,  // 5% - Disponibilité (réduit)
+  PLAN: 0.05           // 5% - Plan premium (remis pour avantage premium)
 };
 
 // ===== NIVEAUX D'EXPÉRIENCE =====
@@ -59,8 +59,9 @@ export function calculateCompatibilityScore(candidate, job) {
 }
 
 /**
- * Score des compétences (35% du score total)
+ * Score des compétences (40% du score total)
  * Compare les compétences du candidat avec les tags requis de l'offre
+ * Algorithme amélioré pour plus de différenciation
  */
 function calculateSkillsScore(candidateSkills, jobTags) {
   if (!candidateSkills || !jobTags || candidateSkills.length === 0 || jobTags.length === 0) {
@@ -75,30 +76,45 @@ function calculateSkillsScore(candidateSkills, jobTags) {
     tag.toLowerCase().trim()
   );
 
-  // Calculer l'intersection
-  const matchingSkills = normalizedJobTags.filter(tag => 
+  // Calculer l'intersection exacte
+  const exactMatches = normalizedJobTags.filter(tag => 
     normalizedCandidateSkills.includes(tag)
   );
 
-  // Score basé sur le pourcentage de compétences requises possédées
-  const matchRatio = matchingSkills.length / normalizedJobTags.length;
+  // Calculer les correspondances partielles (mots-clés dans les compétences)
+  const partialMatches = normalizedJobTags.filter(tag => 
+    normalizedCandidateSkills.some(skill => 
+      skill.includes(tag) || tag.includes(skill)
+    )
+  );
+
+  // Score de base : correspondances exactes (70% du score)
+  const exactMatchRatio = exactMatches.length / normalizedJobTags.length;
   
-  // Bonus si le candidat a plus de compétences que requises
-  const bonusRatio = Math.min(0.2, (normalizedCandidateSkills.length - normalizedJobTags.length) / normalizedJobTags.length);
+  // Score bonus : correspondances partielles (20% du score)
+  const partialMatchRatio = (partialMatches.length - exactMatches.length) / normalizedJobTags.length;
   
-  return Math.min(1, matchRatio + bonusRatio);
+  // Bonus pour compétences supplémentaires (10% du score)
+  const extraSkills = normalizedCandidateSkills.length - normalizedJobTags.length;
+  const bonusRatio = Math.min(0.1, extraSkills / Math.max(normalizedJobTags.length, 1));
+  
+  // Score final avec pondération
+  const finalScore = (exactMatchRatio * 0.7) + (partialMatchRatio * 0.2) + bonusRatio;
+  
+  return Math.min(1, finalScore);
 }
 
 /**
- * Score d'expérience (20% du score total)
+ * Score d'expérience (25% du score total)
  * Compare le niveau d'expérience du candidat avec celui requis
+ * Algorithme amélioré pour plus de différenciation
  */
 function calculateExperienceScore(candidateExperience, jobSeniority) {
   const candidateLevel = EXPERIENCE_LEVELS[candidateExperience] || 0;
   const jobLevel = EXPERIENCE_LEVELS[jobSeniority] || 0;
 
   if (candidateLevel === 0 || jobLevel === 0) {
-    return 0.5; // Score neutre si données manquantes
+    return 0.3; // Score plus bas si données manquantes
   }
 
   // Score optimal si expérience exacte
@@ -106,16 +122,28 @@ function calculateExperienceScore(candidateExperience, jobSeniority) {
     return 1.0;
   }
 
-  // Score réduit si sous-qualifié
+  // Score réduit si sous-qualifié (plus pénalisant)
   if (candidateLevel < jobLevel) {
     const gap = jobLevel - candidateLevel;
-    return Math.max(0.2, 1 - (gap * 0.3));
+    if (gap === 1) {
+      return 0.7; // Junior pour poste Mid
+    } else if (gap === 2) {
+      return 0.4; // Junior pour poste Senior
+    } else {
+      return 0.1; // Gap trop important
+    }
   }
 
-  // Score réduit si sur-qualifié (mais moins pénalisant)
+  // Score réduit si sur-qualifié (moins pénalisant mais différencié)
   if (candidateLevel > jobLevel) {
     const gap = candidateLevel - jobLevel;
-    return Math.max(0.6, 1 - (gap * 0.15));
+    if (gap === 1) {
+      return 0.9; // Senior pour poste Mid
+    } else if (gap === 2) {
+      return 0.8; // Lead pour poste Mid
+    } else {
+      return 0.7; // Sur-qualification importante
+    }
   }
 
   return 0.5;
@@ -124,11 +152,12 @@ function calculateExperienceScore(candidateExperience, jobSeniority) {
 /**
  * Score de localisation (15% du score total)
  * Compare la localisation et les préférences de travail à distance
+ * Algorithme amélioré pour plus de précision
  */
 function calculateLocationScore(candidateLocation, candidateRemote, jobLocation, jobRemote) {
   let score = 0;
 
-  // Score basé sur la compatibilité des préférences remote
+  // Score basé sur la compatibilité des préférences remote (60% du score localisation)
   const candidateRemoteType = REMOTE_TYPES[candidateRemote] || 1;
   const jobRemoteType = REMOTE_TYPES[jobRemote] || 1;
 
@@ -144,16 +173,19 @@ function calculateLocationScore(candidateLocation, candidateRemote, jobLocation,
     score += 0.1; // Incompatibilité
   }
 
-  // Score basé sur la localisation géographique
+  // Score basé sur la localisation géographique (40% du score localisation)
   if (candidateLocation && jobLocation) {
     const candidateCity = extractCity(candidateLocation);
     const jobCity = extractCity(jobLocation);
     
     if (candidateCity === jobCity) {
-      score += 0.4; // Même ville
+      score += 0.4; // Même ville = score parfait
     } else if (isSameRegion(candidateCity, jobCity)) {
       score += 0.2; // Même région
+    } else if (isSameCountry(candidateCity, jobCity)) {
+      score += 0.1; // Même pays
     }
+    // Sinon score = 0 pour la partie géographique
   }
 
   return Math.min(1, score);
@@ -211,19 +243,20 @@ function calculateAvailabilityScore(candidateAvailability) {
 
 /**
  * Score du plan (5% du score total)
- * Bonus pour les candidats premium/pro
+ * Bonus pour les candidats premium/pro - Pro plus important que Premium
  */
 function calculatePlanScore(planType, isFeatured) {
+  // Candidat featured = score maximum
   if (isFeatured) return 1.0;
   
   switch (planType) {
     case 'pro':
-      return 0.8;
+      return 1.0; // Score maximum pour Pro
     case 'premium':
-      return 0.6;
+      return 0.7; // Score élevé pour Premium
     case 'free':
     default:
-      return 0.4;
+      return 0.3; // Score plus bas pour Free
   }
 }
 
@@ -271,6 +304,23 @@ function isSameRegion(city1, city2) {
     }
   }
   return false;
+}
+
+/**
+ * Vérifie si deux villes sont dans le même pays
+ */
+function isSameCountry(city1, city2) {
+  const frenchCities = [
+    'paris', 'lyon', 'marseille', 'toulouse', 'nice', 'nantes', 'montpellier',
+    'strasbourg', 'bordeaux', 'lille', 'rennes', 'reims', 'saint-étienne',
+    'le havre', 'toulon', 'grenoble', 'dijon', 'angers', 'nîmes', 'villeurbanne',
+    'saint-denis', 'le mans', 'aix-en-provence', 'clermont-ferrand', 'brest',
+    'tours', 'limoges', 'amiens', 'annecy', 'perpignan', 'boulogne-billancourt',
+    'orléans', 'mulhouse', 'rouen', 'caen', 'besançon', 'metz', 'dunkerque',
+    'saint-pierre', 'fort-de-france', 'cayenne', 'saint-denis', 'saint-paul'
+  ];
+  
+  return frenchCities.includes(city1) && frenchCities.includes(city2);
 }
 
 /**
