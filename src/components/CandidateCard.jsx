@@ -211,12 +211,12 @@ export default function CandidateCard({ candidate, compact = false }) {
             {/* Localisation + mode de travail (même style, avec icône) */}
             <div className={`flex items-center gap-4 ${compact ? 'mb-2' : 'mb-3'}`}>
               <div className="flex items-center text-gray-500 text-sm">
-                <MapPin className="w-4 h-4 mr-1.5 text-blue-500" />
+                <MapPin className="w-4 h-4 mr-1.5 text-rose-500" />
                 <span className="font-medium">{candidate.location}</span>
               </div>
               {candidate.remote && (
                 <div className="flex items-center text-gray-500 text-sm">
-                  <Globe className="w-4 h-4 mr-1.5 text-blue-500" />
+                  <Globe className="w-4 h-4 mr-1.5 text-blue-600" />
                   <span className="font-medium">{getRemoteLabel(candidate.remote)}</span>
                 </div>
               )}
@@ -238,32 +238,27 @@ export default function CandidateCard({ candidate, compact = false }) {
 
       {/* Informations supplémentaires redesignées */}
       <div className="px-6 pb-4">
-        <div className="rounded-2xl p-4 mb-4 border border-blue-100 bg-gradient-to-r from-blue-50/80 via-indigo-50/70 to-purple-50/70">
-          {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2">
-                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-white shadow-sm border border-blue-100">
-                  <DollarSign className="w-4 h-4 text-blue-600" />
-                </div>
-                <span className="text-sm font-semibold text-gray-900">Rémunération souhaitée</span>
-              </div>
-              <div className="flex items-center gap-3">
+        {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
+          <div className="p-4 mb-4 border border-gray-200 rounded-2xl bg-white">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-gray-900">Rémunération souhaitée</span>
+              <div className="flex items-center gap-4">
                 {(candidate.dailyRate || candidate.daily_rate) && (
-                  <div className="px-3 py-2 rounded-xl bg-white border border-blue-100 shadow-sm text-right">
+                  <div className="text-right">
                     <div className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">TJM</div>
                     <div className="text-base font-extrabold text-gray-900">{candidate.dailyRate || candidate.daily_rate}€</div>
                   </div>
                 )}
                 {(candidate.annualSalary || candidate.annual_salary) && (
-                  <div className="px-3 py-2 rounded-xl bg-white border border-blue-100 shadow-sm text-right">
+                  <div className="text-right">
                     <div className="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">Annuel</div>
                     <div className="text-base font-extrabold text-gray-900">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</div>
                   </div>
                 )}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Actions redesignées - bouton secondaire (Outline) */}
