@@ -556,7 +556,12 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
           } else if (userRole === ROLES.CANDIDATE) {
             // Les candidats voient seulement les premiers candidats approuvés + leur propre profil
             const approvedCandidates = filteredCandidates.filter(c => c.approved === true);
-            const ownProfile = filteredCandidates.filter(c => c.userId === authUser.id);
+            const ownProfile = filteredCandidates.filter(c => (
+              (c.email && authUser.email && c.email.toLowerCase() === authUser.email.toLowerCase()) ||
+              (c.userId && c.userId === authUser.id) ||
+              (c.auth_user_id && c.auth_user_id === authUser.id) ||
+              (c.id && c.id === authUser.id)
+            ));
             
             // Limiter à 4 profils complets pour les candidats
             const maxVisibleForCandidates = 4;
