@@ -72,6 +72,15 @@ export default function RecruiterDashboard() {
   const [loadingApplications, setLoadingApplications] = useState(false);
   const [editingJob, setEditingJob] = useState(null);
   const [showPublishForm, setShowPublishForm] = useState(false);
+  const [openDropdowns, setOpenDropdowns] = useState({});
+
+  // Fonction pour toggle le dropdown des candidatures
+  const toggleDropdown = (jobId) => {
+    setOpenDropdowns(prev => ({
+      ...prev,
+      [jobId]: !prev[jobId]
+    }));
+  };
 
   // Fonction pour obtenir le prochain rendez-vous d'un candidat
   const getNextAppointmentForCandidate = (candidateId) => {
@@ -1224,74 +1233,88 @@ export default function RecruiterDashboard() {
                             </div>
                           </div>
                           
-                          {/* Affichage des candidatures - maintenant en pleine largeur */}
+                          {/* Dropdown des candidatures */}
                           {applications.length > 0 && (
-                            <div className="mt-4 bg-gray-50 rounded-xl">
-                              <div className="p-4 pb-0">
-                                <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                                  <Users className="w-4 h-4" />
-                                  Candidatures ({applications.length})
-                                </h4>
-                              </div>
-                              <div className="space-y-3">
-                                {applications.map((application, index) => (
-                                  <div key={application.id} className="bg-white hover:shadow-md transition-all duration-200 rounded-xl border border-gray-100">
-                                    <div className="p-4">
-                                      <div className="flex items-center gap-3 mb-3">
-                                        <div className="relative">
-                                          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-sm">
-                                            <span className="text-sm font-semibold text-white">
-                                              {application.candidate?.name?.charAt(0) || '?'}
-                                            </span>
+                            <div className="mt-4">
+                              <button
+                                onClick={() => toggleDropdown(job.id)}
+                                className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <Users className="w-4 h-4 text-gray-600" />
+                                  <span className="text-sm font-semibold text-gray-900">
+                                    Candidatures ({applications.length})
+                                  </span>
+                                </div>
+                                <div className={`transform transition-transform duration-200 ${openDropdowns[job.id] ? 'rotate-180' : ''}`}>
+                                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </div>
+                              </button>
+                              
+                              {/* Contenu du dropdown */}
+                              {openDropdowns[job.id] && (
+                                <div className="mt-2 space-y-3">
+                                  {applications.map((application, index) => (
+                                    <div key={application.id} className="bg-white hover:shadow-md transition-all duration-200 rounded-xl border border-gray-100">
+                                      <div className="p-4">
+                                        <div className="flex items-center gap-3 mb-3">
+                                          <div className="relative">
+                                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-sm">
+                                              <span className="text-sm font-semibold text-white">
+                                                {application.candidate?.name?.charAt(0) || '?'}
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div className="flex-1 min-w-0">
+                                            <h4 className="text-sm font-semibold text-gray-900 truncate">
+                                              {application.candidate?.name || 'Candidat anonyme'}
+                                            </h4>
+                                            {application.candidate?.title && (
+                                              <p className="text-xs text-gray-600 truncate">
+                                                {application.candidate.title}
+                                              </p>
+                                            )}
                                           </div>
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                          <h4 className="text-sm font-semibold text-gray-900 truncate">
-                                            {application.candidate?.name || 'Candidat anonyme'}
-                                          </h4>
-                                          {application.candidate?.title && (
-                                            <p className="text-xs text-gray-600 truncate">
-                                              {application.candidate.title}
-                                            </p>
-                                          )}
-                                        </div>
-                                      </div>
-                                      <div className="flex items-center justify-between gap-4">
-                                        <div className="flex items-center gap-4 text-xs text-gray-500 flex-1">
-                                          <span>Postulé le {new Date(application.applied_at).toLocaleDateString('fr-FR')}</span>
-                                          {application.candidate?.location && (
-                                            <div className="flex items-center gap-1">
-                                              <MapPin className="w-3 h-3" />
-                                              <span className="truncate">{application.candidate.location}</span>
-                                            </div>
-                                          )}
-                                        </div>
-                                        {(() => {
-                                          // Utiliser l'ID numérique du candidat (pas l'UUID) pour le lien
-                                          const candidateId = application.candidate?.id || application.candidate_id;
-                                          if (!candidateId) {
+                                        <div className="flex items-center justify-between gap-4">
+                                          <div className="flex items-center gap-4 text-xs text-gray-500 flex-1">
+                                            <span>Postulé le {new Date(application.applied_at).toLocaleDateString('fr-FR')}</span>
+                                            {application.candidate?.location && (
+                                              <div className="flex items-center gap-1">
+                                                <MapPin className="w-3 h-3" />
+                                                <span className="truncate">{application.candidate.location}</span>
+                                              </div>
+                                            )}
+                                          </div>
+                                          {(() => {
+                                            // Utiliser l'ID numérique du candidat (pas l'UUID) pour le lien
+                                            const candidateId = application.candidate?.id || application.candidate_id;
+                                            if (!candidateId) {
+                                              return (
+                                                <span className="px-3 py-1 bg-gray-400 text-white rounded-lg text-xs font-medium flex items-center gap-1 flex-shrink-0">
+                                                  <Eye className="w-3 h-3" />
+                                                  Profil indisponible
+                                                </span>
+                                              );
+                                            }
                                             return (
-                                              <span className="px-3 py-1 bg-gray-400 text-white rounded-lg text-xs font-medium flex items-center gap-1 flex-shrink-0">
+                                              <Link 
+                                                to={`/candidates/${candidateId}`}
+                                                className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1 flex-shrink-0"
+                                              >
                                                 <Eye className="w-3 h-3" />
-                                                Profil indisponible
-                                              </span>
+                                                Profil
+                                              </Link>
                                             );
-                                          }
-                                          return (
-                                            <Link 
-                                              to={`/candidates/${candidateId}`}
-                                              className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1 flex-shrink-0"
-                                            >
-                                              <Eye className="w-3 h-3" />
-                                              Profil
-                                            </Link>
-                                          );
-                                        })()}
+                                          })()}
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                ))}
-                              </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
