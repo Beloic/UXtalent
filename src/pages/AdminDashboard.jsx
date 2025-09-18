@@ -274,13 +274,20 @@ export default function AdminDashboard() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
+      console.log('🔑 Token:', token ? 'présent' : 'absent');
+      
       const apiUrl = await buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`);
+      console.log('🌐 URL:', apiUrl);
+      
       const response = await fetch(apiUrl, {
         method: 'DELETE',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       });
 
+      console.log('📡 Réponse:', response.status, response.statusText);
+
       if (response.ok) {
+        console.log('✅ Suppression réussie');
         setMessage('Réponse supprimée avec succès');
         loadForumData(); // Recharger les données
         if (selectedPost) {
@@ -290,6 +297,7 @@ export default function AdminDashboard() {
       } else {
         let errorData = {};
         try { errorData = await response.json(); } catch(_) {}
+        console.log('❌ Erreur:', errorData);
         setMessage(`Erreur: ${errorData.error || 'Suppression impossible'}`);
       }
     } catch (error) {
