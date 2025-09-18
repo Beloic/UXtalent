@@ -176,7 +176,8 @@ export const getPostById = async (postId) => {
 
     return {
       ...post,
-      replies: replies || []
+      replies: replies || [],
+      replies_count: replies?.length || 0
     };
   } catch (error) {
     console.error('Erreur lors de la récupération du post:', error);

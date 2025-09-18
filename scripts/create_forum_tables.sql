@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS forum_posts (
   author_avatar VARCHAR(10),
   category VARCHAR(100) REFERENCES forum_categories(name),
   likes INTEGER DEFAULT 0,
-  replies_count INTEGER DEFAULT 0,
+  replies INTEGER DEFAULT 0,
   views INTEGER DEFAULT 0,
   is_pinned BOOLEAN DEFAULT FALSE,
   tags TEXT[] DEFAULT '{}',
@@ -72,12 +72,12 @@ RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
     UPDATE forum_posts 
-    SET replies_count = replies_count + 1, updated_at = NOW()
+    SET replies = replies + 1, updated_at = NOW()
     WHERE id = NEW.post_id;
     RETURN NEW;
   ELSIF TG_OP = 'DELETE' THEN
     UPDATE forum_posts 
-    SET replies_count = GREATEST(replies_count - 1, 0), updated_at = NOW()
+    SET replies = GREATEST(replies - 1, 0), updated_at = NOW()
     WHERE id = OLD.post_id;
     RETURN OLD;
   END IF;
