@@ -1594,12 +1594,6 @@ const JobsManagementContent = ({
     return (
       <div className="flex items-center justify-center py-16">
         <div className="text-center">
-          <div className="relative mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto shadow-lg">
-              <Briefcase className="w-10 h-10 text-blue-600" />
-            </div>
-            <div className="absolute inset-0 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin"></div>
-          </div>
           <h3 className="text-xl font-bold text-gray-900 mb-2">Chargement des offres...</h3>
           <p className="text-gray-600">Récupération des données en cours</p>
         </div>
