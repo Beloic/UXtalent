@@ -1048,34 +1048,35 @@ export default function RecruiterDashboard() {
                   />
                 )}
 
-                {/* Liste des offres */}
-                <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
-                      <Briefcase className="w-6 h-6 text-white" />
+                {/* Titre des offres */}
+                <div className="mb-8">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+                        <Briefcase className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Mes offres d'emploi</h2>
+                        <p className="text-gray-600">Gérez vos offres publiées</p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900">Mes offres d'emploi</h2>
-                      <p className="text-gray-600">Gérez vos offres publiées</p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => navigate('/jobs/new')}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Publier une offre
+                      </button>
+                      <button
+                        onClick={loadMyJobs}
+                        disabled={loadingJobs}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
+                      >
+                        <RefreshCw className={`w-4 h-4 ${loadingJobs ? 'animate-spin' : ''}`} />
+                        Actualiser
+                      </button>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => navigate('/jobs/new')}
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Publier une offre
-                    </button>
-                    <button
-                      onClick={loadMyJobs}
-                      disabled={loadingJobs}
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
-                    >
-                      <RefreshCw className={`w-4 h-4 ${loadingJobs ? 'animate-spin' : ''}`} />
-                      Actualiser
-                    </button>
                   </div>
                 </div>
 
@@ -1104,7 +1105,7 @@ export default function RecruiterDashboard() {
                       const applications = jobApplications[job.id] || [];
                       
                       return (
-                        <div key={job.id} className="border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+                        <div key={job.id} className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <div className="flex items-center gap-3 mb-3">
@@ -1298,7 +1299,6 @@ export default function RecruiterDashboard() {
                     })}
                   </div>
                 )}
-                </div>
               </motion.div>
             )}
 
