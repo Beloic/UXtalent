@@ -245,19 +245,17 @@ const MatchingDashboard = ({ recruiterId }) => {
                 )}
 
                 {/* Liste des candidats */}
-                <div className="bg-white rounded-xl shadow-md">
-                  <div className="p-6 border-b border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        Candidats Recommandés ({candidates.length})
-                      </h3>
-                      {loading && (
-                        <div className="flex items-center text-gray-500">
-                          <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                          Chargement...
-                        </div>
-                      )}
-                    </div>
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Candidats Recommandés ({candidates.length})
+                    </h3>
+                    {loading && (
+                      <div className="flex items-center text-gray-500">
+                        <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                        Chargement...
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-12">
