@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import Layout from '../components/Layout';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
+import { supabase } from '../lib/supabase';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -270,9 +271,12 @@ export default function AdminDashboard() {
     }
 
     try {
-      const apiUrl = await buildApiUrl(`/api/admin/forum/posts/${postId}/replies/${replyId}`);
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const apiUrl = await buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`);
       const response = await fetch(apiUrl, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       });
 
       if (response.ok) {
@@ -283,8 +287,9 @@ export default function AdminDashboard() {
           loadPostDetails(selectedPost.id);
         }
       } else {
-        const errorData = await response.json();
-        setMessage(`Erreur: ${errorData.error}`);
+        let errorData = {};
+        try { errorData = await response.json(); } catch(_) {}
+        setMessage(`Erreur: ${errorData.error || 'Suppression impossible'}`);
       }
     } catch (error) {
       console.error('Erreur lors de la suppression de la réponse:', error);
