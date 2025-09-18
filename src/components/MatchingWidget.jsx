@@ -66,11 +66,24 @@ const MatchingWidget = ({
     return 'bg-rose-50 text-rose-700 border border-rose-100';
   };
 
+  const buildFallbackAvatar = (name) => {
+    const safe = encodeURIComponent(name || 'UX Designer');
+    return `https://ui-avatars.com/api/?name=${safe}&background=E5E7EB&color=111827&size=64&bold=true`;
+  };
+
   const resolveAvatar = (c) => {
-    const src = c.photo || c.avatar || c.image || null;
-    if (src) return src;
-    const name = encodeURIComponent(c.name || 'UX Designer');
-    return `https://ui-avatars.com/api/?name=${name}&background=E5E7EB&color=111827&size=64&bold=true`;
+    const possible = [
+      c?.photo,
+      c?.photoUrl,
+      c?.photo_url,
+      c?.profilePhoto,
+      c?.profile_photo,
+      c?.avatar,
+      c?.avatar_url,
+      c?.image,
+      c?.picture
+    ].find(Boolean);
+    return possible || buildFallbackAvatar(c?.name);
   };
 
   const openProfile = (candidateObj) => {
@@ -126,6 +139,7 @@ const MatchingWidget = ({
                   alt={c.name || 'Candidat'}
                   className="h-9 w-9 rounded-full object-cover flex-shrink-0 border border-gray-200"
                   loading="lazy"
+                  onError={(e) => { e.currentTarget.src = buildFallbackAvatar(c?.name); }}
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
