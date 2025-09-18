@@ -10,18 +10,6 @@ import {
   updateCandidate, 
   deleteCandidate,
   updateCandidatePlan,
-  addPost,
-  updatePost,
-  deletePost,
-  addReply,
-  deleteReply,
-  togglePostLike,
-  toggleReplyLike,
-  incrementPostViews,
-  getForumStats,
-  getCategories,
-  getPosts,
-  getPostById,
   getAllMetrics,
   resetMetrics,
   recordMetric,
@@ -35,6 +23,20 @@ import {
   getRecruiterFavorites,
   isCandidateFavorited,
 } from './src/database/supabaseClient.js';
+import {
+  addPost,
+  updatePost,
+  deletePost,
+  addReply,
+  deleteReply,
+  togglePostLike,
+  toggleReplyLike,
+  incrementPostViews,
+  getForumStats,
+  getCategories,
+  getPosts,
+  getPostById
+} from './src/database/supabaseForum.js';
 import {
   loadAppointments,
   createAppointment,
@@ -1098,7 +1100,12 @@ app.get('/api/forum/posts', async (req, res) => {
   try {
     const { category, search, page = 1, limit = 100 } = req.query;
     
-    const result = await getPosts(category, search, parseInt(page), parseInt(limit));
+    const result = await getPosts({
+      category,
+      search,
+      page: parseInt(page),
+      limit: parseInt(limit)
+    });
     
     res.json(result);
   } catch (error) {
@@ -1146,7 +1153,7 @@ app.post('/api/forum/posts', authenticateUser, (req, res) => {
         : req.user.email?.split('@')[0]?.substring(0, 2).toUpperCase() || 'U'
     };
     
-    const newPost = addPost(postData);
+    const newPost = await addPost(postData);
     res.status(201).json(newPost);
   } catch (error) {
     logger.error('Erreur lors de la création du post', { error: error.message });
@@ -1232,7 +1239,7 @@ app.post('/api/forum/posts/:id/replies', authenticateUser, async (req, res) => {
         : req.user.email?.split('@')[0]?.substring(0, 2).toUpperCase() || 'U'
     };
     
-    const newReply = addReply(replyData);
+    const newReply = await addReply(replyData);
     res.status(201).json(newReply);
   } catch (error) {
     logger.error('Erreur lors de la création de la réponse', { error: error.message });
