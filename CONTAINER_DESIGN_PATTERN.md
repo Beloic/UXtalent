@@ -143,4 +143,10 @@ Ce pattern doit être appliqué à toutes les nouvelles pages et composants. Lor
 
 **Date de création** : 2025-01-18  
 **Dernière mise à jour** : 2025-01-18  
-**Version** : 1.0
+**Version** : 1.1
+
+## Changelog
+
+### Version 1.1 (2025-01-18)
+- Ajout de dropdowns pour les candidatures des offres d'emploi
+- Amélioration de l'organisation des contenus avec états fermés par défaut
