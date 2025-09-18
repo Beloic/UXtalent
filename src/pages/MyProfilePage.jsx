@@ -52,7 +52,7 @@ export default function MyProfilePage() {
   const [userPlan, setUserPlan] = useState('free');
   const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
 
-  const totalSteps = 1;
+  const totalSteps = 6;
 
   // Fonction pour charger les statistiques du profil
   const loadProfileStats = useCallback(async () => {
@@ -266,15 +266,48 @@ export default function MyProfilePage() {
 
 
   const validateStep = (step) => {
-    // Validation pour l'étape unique - tous les champs essentiels
-    return formData.name.trim() && 
-           formData.email.trim() && 
-           formData.title.trim() && 
-           formData.location.trim() && 
-           formData.bio.trim() && 
-           formData.skills.trim() && 
-           formData.portfolio.trim() && 
-           formData.linkedin.trim();
+    switch (step) {
+      case 1: // Photo (optionnelle) => toujours valide
+        return true;
+      case 2: // Informations personnelles
+        return (
+          formData.name.trim() &&
+          formData.email.trim()
+        );
+      case 3: // Informations professionnelles
+        return (
+          formData.title.trim() &&
+          formData.location.trim() &&
+          formData.remote
+        );
+      case 4: // Présentation et compétences
+        return (
+          formData.bio.trim() &&
+          formData.skills.trim()
+        );
+      case 5: // Rémunération (optionnelle)
+        return true;
+      case 6: // Liens et portfolio
+        return (
+          formData.portfolio.trim() &&
+          formData.linkedin.trim()
+        );
+      default:
+        return true;
+    }
+  };
+
+  const goNextStep = () => {
+    if (validateStep(currentStep)) {
+      setCurrentStep((s) => Math.min(totalSteps, s + 1));
+    } else {
+      setMessage('❌ Veuillez compléter les champs requis avant de continuer.');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
+  const goPrevStep = () => {
+    setCurrentStep((s) => Math.max(1, s - 1));
   };
 
   const handleSubmit = async (e) => {
@@ -737,7 +770,22 @@ export default function MyProfilePage() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-8">
-                  {/* Photo de profil */}
+                  {/* Indicateur de progression */}
+                  <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-medium text-gray-600">Étape {currentStep} sur {totalSteps}</span>
+                      <span className="text-sm text-gray-500">{Math.round((currentStep/totalSteps)*100)}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-2 bg-blue-600 rounded-full transition-all duration-300"
+                        style={{ width: `${(currentStep/totalSteps)*100}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Étape 1: Photo de profil */}
+                  {currentStep === 1 && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -766,9 +814,10 @@ export default function MyProfilePage() {
                       />
                     </div>
                   </motion.div>
+                  )}
             
-
-                  {/* Informations personnelles */}
+                  {/* Étape 2: Informations personnelles */}
+                  {currentStep === 2 && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -815,8 +864,10 @@ export default function MyProfilePage() {
                       
                     </div>
                   </motion.div>
+                  )}
 
-                  {/* Informations professionnelles */}
+                  {/* Étape 3: Informations professionnelles */}
+                  {currentStep === 3 && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -896,8 +947,10 @@ export default function MyProfilePage() {
                       </div>
                     </div>
                   </motion.div>
+                  )}
 
-                  {/* Présentation et compétences */}
+                  {/* Étape 4: Présentation et compétences */}
+                  {currentStep === 4 && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -942,8 +995,10 @@ export default function MyProfilePage() {
                       </div>
                     </div>
                   </motion.div>
+                  )}
 
-                  {/* Rémunération */}
+                  {/* Étape 5: Rémunération */}
+                  {currentStep === 5 && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -987,8 +1042,10 @@ export default function MyProfilePage() {
                       </div>
                     </div>
                   </motion.div>
+                  )}
 
-                  {/* Liens et portfolio */}
+                  {/* Étape 6: Liens et portfolio */}
+                  {currentStep === 6 && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -1047,35 +1104,58 @@ export default function MyProfilePage() {
                       </div>
                     </div>
                   </motion.div>
+                  )}
 
-                  {/* Bouton de soumission */}
+                  {/* Navigation Wizard */}
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
-                    className="flex justify-center pt-6"
+                    className="flex items-center justify-between pt-6"
                   >
                     <button
-                      type="submit"
-                      disabled={isLoading || !validateStep(currentStep)}
-                      className={`inline-flex items-center gap-2 px-8 py-4 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ${
-                        isLoading
-                          ? 'bg-gray-400 text-white'
-                          : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
-                      }`}
+                      type="button"
+                      onClick={goPrevStep}
+                      disabled={currentStep === 1 || isLoading}
+                      className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${currentStep === 1 || isLoading ? 'opacity-50 cursor-not-allowed bg-gray-100 text-gray-500' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                     >
-                      {isLoading ? (
-                        <>
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          Sauvegarde en cours...
-                        </>
-                      ) : (
-                        <>
-                          <Save className="w-5 h-5" />
-                          {formData.id ? 'Mettre à jour le profil' : 'Créer mon profil'}
-                        </>
-                      )}
+                      <ChevronLeft className="w-5 h-5" />
+                      Précédent
                     </button>
+
+                    {currentStep < totalSteps ? (
+                      <button
+                        type="button"
+                        onClick={goNextStep}
+                        className={`inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all ${validateStep(currentStep) ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
+                        disabled={!validateStep(currentStep) || isLoading}
+                      >
+                        Suivant
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={isLoading || !validateStep(currentStep)}
+                        className={`inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all ${
+                          isLoading
+                            ? 'bg-gray-400 text-white'
+                            : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
+                        }`}
+                      >
+                        {isLoading ? (
+                          <>
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            Sauvegarde en cours...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-5 h-5" />
+                            {formData.id ? 'Mettre à jour le profil' : 'Créer mon profil'}
+                          </>
+                        )}
+                      </button>
+                    )}
                   </motion.div>
                 </form>
               </div>

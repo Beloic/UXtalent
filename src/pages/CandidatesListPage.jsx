@@ -53,15 +53,7 @@ export default function CandidatesListPage() {
             <h1 className="text-2xl font-bold text-gray-900">
               {isCandidate ? "Découvrez d'autres talents UX/UI" : "Talents UX/UI disponibles"}
             </h1>
-            {isCandidate && (
-              <button
-                onClick={() => navigate('/candidates/suggestions')}
-                className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-              >
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Mes Suggestions IA
-              </button>
-            )}
+            {/* Bouton suggestions supprimé pour les candidats */}
           </div>
           <p className="text-gray-600">
             {isCandidate 
