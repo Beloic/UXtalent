@@ -49,6 +49,7 @@ export default function MyProfilePage() {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [message, setMessage] = useState('');
   const [candidateStatus, setCandidateStatus] = useState(null); // 'approved', 'rejected', 'pending', null
+  const [isEditingRejected, setIsEditingRejected] = useState(false); // Mode édition pour candidats rejetés
   const [userPlan, setUserPlan] = useState('free');
   const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
 
@@ -175,6 +176,7 @@ export default function MyProfilePage() {
           // Logique simplifiée : utiliser directement le statut
           const status = existingCandidate.status || 'pending';
           
+          console.log('🔍 [DEBUG] Statut du candidat chargé:', status, 'pour le candidat:', existingCandidate.name);
           setCandidateStatus(status);
           
           // Charger le plan du candidat
@@ -436,6 +438,9 @@ export default function MyProfilePage() {
         } else if (candidateStatus === 'rejected') {
           // Profil rejeté mis à jour - informer qu'il est remis en attente
           setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
+          // Remettre le statut à pending et sortir du mode édition
+          setCandidateStatus('pending');
+          setIsEditingRejected(false);
         } else {
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
@@ -572,8 +577,9 @@ export default function MyProfilePage() {
     );
   }
 
-  // Interface pour les candidats rejetés
-  if (candidateStatus === 'rejected') {
+  // Interface pour les candidats rejetés (sauf s'ils sont en mode édition)
+  console.log('🔍 [DEBUG] Vérification du statut pour affichage:', candidateStatus, 'isEditingRejected:', isEditingRejected);
+  if (candidateStatus === 'rejected' && !isEditingRejected) {
     return (
       <div className="min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
@@ -684,7 +690,9 @@ export default function MyProfilePage() {
           >
             <button
               onClick={() => {
+                console.log('🔍 [DEBUG] Bouton "Modifier mon profil" cliqué');
                 // Permettre la modification du profil même si rejeté
+                setIsEditingRejected(true);
                 setCurrentStep(1);
                 setActiveTab('profile');
               }}
