@@ -176,10 +176,11 @@ export default function MyProfilePage() {
           let status = 'pending';
           if (existingCandidate.approved === true && existingCandidate.visible === true) {
             status = 'approved';
-          } else if (existingCandidate.approved === false || existingCandidate.visible === false) {
+          } else if (existingCandidate.approved === false && existingCandidate.visible === false) {
+            // Seulement considérer comme rejeté si explicitement rejeté ET invisible
             status = 'rejected';
           } else {
-            // approved !== true && approved !== false && visible !== false
+            // Tous les autres cas sont en attente (nouveaux profils, profils en cours de validation)
             status = 'pending';
           }
           
