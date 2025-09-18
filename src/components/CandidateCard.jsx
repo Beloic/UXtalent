@@ -132,20 +132,7 @@ export default function CandidateCard({ candidate }) {
       <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       
       {/* Badge Premium/Pro redesigné */}
-      {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
-        // Badge flottant au-dessus du bord supérieur droit
-        <div className="absolute top-0 right-0 translate-x-3 -translate-y-3 z-30">
-          <div className={`relative px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-xl backdrop-blur-sm ${
-            candidate.planType === 'pro' 
-              ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white' 
-              : 'bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 text-white'
-          }`}>
-            <Star className="w-3 h-3 fill-current" />
-            <span className="hidden sm:inline font-semibold">{candidate.planType === 'pro' ? 'Pro' : 'Premium'}</span>
-            <div className="absolute inset-0 rounded-full bg-white/20 blur-sm" />
-          </div>
-        </div>
-      )}
+      {/* Badge Premium/Pro sera affiché dans l'entête, à droite du nom */}
       
       {/* Header redesigné */}
       <div className="p-6 pb-4">
@@ -184,9 +171,21 @@ export default function CandidateCard({ candidate }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between mb-2">
               <div className="flex-1 min-w-0">
-                <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300 truncate">
-                  {candidate.name}
-                </h3>
+                <div className="flex items-center gap-2 min-w-0">
+                  <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300 truncate">
+                    {candidate.name}
+                  </h3>
+                  {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
+                    <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 shadow-sm border ${
+                      candidate.planType === 'pro'
+                        ? 'bg-amber-500 text-white border-amber-600'
+                        : 'bg-blue-600 text-white border-blue-700'
+                    }`}>
+                      <Star className="w-3 h-3 fill-current" />
+                      <span>{candidate.planType === 'pro' ? 'Pro' : 'Premium'}</span>
+                    </div>
+                  )}
+                </div>
                 <p className="text-gray-600 font-medium mb-2 line-clamp-2 leading-relaxed">{candidate.title}</p>
               </div>
               
@@ -221,7 +220,7 @@ export default function CandidateCard({ candidate }) {
           </div>
         </div>
 
-        {/* Bio redesignée */}
+        {/* Bio */}
         <div className="mb-5">
           <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
             {(() => {
@@ -231,28 +230,6 @@ export default function CandidateCard({ candidate }) {
           </p>
         </div>
 
-        {/* Compétences redesignées */}
-        <div className="mb-5">
-          <div className="flex items-center mb-3">
-            <Award className="w-4 h-4 mr-2 text-blue-500" />
-            <span className="text-sm font-semibold text-gray-700">Compétences clés</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {(candidate.skills || []).slice(0, 4).map((skill, index) => (
-              <span
-                key={index}
-                className="px-3 py-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 text-xs font-medium rounded-xl border border-blue-200/50 hover:border-blue-300/70 transition-colors duration-200"
-              >
-                {skill}
-              </span>
-            ))}
-            {(candidate.skills || []).length > 4 && (
-              <span className="px-3 py-1.5 bg-gradient-to-r from-gray-50 to-gray-100 text-gray-600 text-xs font-medium rounded-xl border border-gray-200/50">
-                +{(candidate.skills || []).length - 4}
-              </span>
-            )}
-          </div>
-        </div>
       </div>
 
       {/* Informations supplémentaires redesignées */}
@@ -281,18 +258,18 @@ export default function CandidateCard({ candidate }) {
           {(candidate.dailyRate || candidate.annualSalary || candidate.daily_rate || candidate.annual_salary) && (
             <div className="pt-3 border-t border-gray-200/50">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-700">Rémunération souhaitée</span>
+                <span className="text-sm font-semibold text-gray-800">Rémunération souhaitée</span>
                 <div className="flex items-center gap-4">
                   {(candidate.dailyRate || candidate.daily_rate) && (
-                    <div className="flex items-center text-gray-600">
+                    <div className="flex items-center text-gray-900">
                       <span className="text-sm font-medium mr-1">TJM:</span>
-                      <span className="font-bold text-gray-900 text-sm">{candidate.dailyRate || candidate.daily_rate}€</span>
+                      <span className="font-extrabold text-sm">{candidate.dailyRate || candidate.daily_rate}€</span>
                     </div>
                   )}
                   {(candidate.annualSalary || candidate.annual_salary) && (
-                    <div className="flex items-center text-gray-600">
+                    <div className="flex items-center text-gray-900">
                       <span className="text-sm font-medium mr-1">Annuel:</span>
-                      <span className="font-bold text-gray-900 text-sm">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</span>
+                      <span className="font-extrabold text-sm">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</span>
                     </div>
                   )}
                 </div>
