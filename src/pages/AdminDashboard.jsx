@@ -266,6 +266,7 @@ export default function AdminDashboard() {
   };
 
   const deleteForumReply = async (postId, replyId) => {
+    console.log('🗑️ deleteForumReply appelée avec:', postId, replyId);
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette réponse ? Cette action est irréversible.')) {
       return;
     }
@@ -2072,9 +2073,12 @@ const ForumManagementContent = ({
                                   <p className="text-gray-700 text-sm">{reply.content}</p>
                                 </div>
                                 <button
-                                  onClick={() => onDeleteReply(selectedPost.id, reply.id)}
-                                  className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors ml-2"
-                                  title="Delete reply"
+                                  onClick={() => {
+                                    console.log('🗑️ Suppression réponse:', selectedPost.id, reply.id);
+                                    onDeleteReply(selectedPost.id, reply.id);
+                                  }}
+                                  className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors ml-2 cursor-pointer"
+                                  title="Supprimer cette réponse"
                                 >
                                   <Trash2 className="w-3 h-3" />
                                 </button>
