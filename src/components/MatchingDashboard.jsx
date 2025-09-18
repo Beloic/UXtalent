@@ -248,7 +248,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                 <div className="mb-8">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold text-gray-900">
-                      Candidats Recommandés ({candidates.length})
+                      {candidates.length === 1 ? 'Candidat Recommandé' : 'Candidats Recommandés'} ({candidates.length})
                     </h3>
                     {loading && (
                       <div className="flex items-center text-gray-500">
@@ -281,7 +281,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                             <button
                               className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-sm hover:shadow-md"
                               title="Voir le profil"
-                              onClick={() => window.location.href = `/candidate/${candidate.candidateId}`}
+                              onClick={() => window.location.href = `/candidates/${candidate.candidateId}`}
                             >
                               <Eye className="h-4 w-4 mr-2" />
                               Voir le profil
