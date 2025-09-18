@@ -1121,7 +1121,6 @@ export default function AdminDashboard() {
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                <Users className="w-4 h-4" />
                 Candidats
                 {stats.pending > 0 && (
                   <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">
@@ -1137,7 +1136,6 @@ export default function AdminDashboard() {
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                <MessageSquare className="w-4 h-4" />
                 Forum
                 {forumStats.totalPosts > 0 && (
                   <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
@@ -1153,7 +1151,6 @@ export default function AdminDashboard() {
                     : 'text-gray-600 hover:text-gray-800'
                 }`}
               >
-                <Briefcase className="w-4 h-4" />
                 Offres
                 {jobsStats.pending > 0 && (
                   <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">
