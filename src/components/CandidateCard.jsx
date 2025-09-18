@@ -114,7 +114,7 @@ export default function CandidateCard({ candidate, compact = false }) {
 
   // Style aligné sur la carte d'offre (JobCard)
   const getCardStyles = () => {
-    const base = "group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300";
+    const base = "group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300";
     if (candidate.planType === 'premium') {
       return `${base} hover:border-blue-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50`;
     }
@@ -126,6 +126,11 @@ export default function CandidateCard({ candidate, compact = false }) {
 
   return (
     <div className={getCardStyles()}>
+      {/* Badges en haut à droite */}
+      <div className="absolute top-3 right-3 flex items-center gap-2">
+        {candidate.planType === 'premium' && <PremiumBadge />}
+        {candidate.planType === 'pro' && <ProBadge />}
+      </div>
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-0">
@@ -157,8 +162,6 @@ export default function CandidateCard({ candidate, compact = false }) {
                 <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight truncate">
                   {candidate.name}
                 </h3>
-                {candidate.planType === 'premium' && <PremiumBadge />}
-                {candidate.planType === 'pro' && <ProBadge />}
               </div>
               {/* rien à droite */}
             </div>
