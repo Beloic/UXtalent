@@ -1,6 +1,5 @@
 /**
- * Widget de Matching Intelligent - Version Minimaliste
- * Affiche les recommandations de candidats avec un design épuré
+ * Widget de Matching Intelligent - Carte séparée (style détails talent)
  */
 
 import React, { useState, useEffect } from 'react';
@@ -57,77 +56,71 @@ const MatchingWidget = ({
     }
   };
 
-  const formatScore = (score) => {
-    return Math.round(score * 100);
+  const scorePct = (score) => Math.round(score * 100);
+  const scoreTone = (score) => {
+    if (score >= 0.8) return 'bg-emerald-50 text-emerald-700 border border-emerald-100';
+    if (score >= 0.6) return 'bg-amber-50 text-amber-700 border border-amber-100';
+    if (score >= 0.4) return 'bg-orange-50 text-orange-700 border border-orange-100';
+    return 'bg-rose-50 text-rose-700 border border-rose-100';
   };
 
   if (loading) {
     return (
-      <div className={`${className}`}>
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-400"></div>
+      <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 ${className}`}>
+        <div className="p-6 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-600 border-t-transparent"></div>
         </div>
       </div>
     );
   }
 
   if (error || recommendations.length === 0) {
-    return null; // Ne rien afficher en cas d'erreur ou de résultats vides
+    return null;
   }
 
   return (
-    <div className={`${className}`}>
-      {/* En-tête minimaliste */}
-      <div className="mb-4">
+    <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 ${className}`}>
+      {/* Header */}
+      <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-gray-600" />
-          <h3 className="text-sm font-medium text-gray-900">
-            Candidats Recommandés
-          </h3>
+          <TrendingUp className="h-5 w-5 text-blue-600" />
+          <h3 className="text-base font-semibold text-gray-900">Candidats recommandés</h3>
         </div>
+        <div className="text-sm text-gray-500">{recommendations.length} résultat{recommendations.length > 1 ? 's' : ''}</div>
       </div>
 
-      {/* Liste des candidats - Design minimaliste */}
-      <div className="space-y-3">
-        {recommendations.map((candidate) => (
-          <div key={candidate.candidateId} className="group">
-            <div className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              {/* Informations principales */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-sm font-medium text-gray-900 truncate">
-                    {candidate.name}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    {formatScore(candidate.score)}%
+      {/* Liste */}
+      <div className="divide-y divide-gray-100">
+        {recommendations.map((c) => (
+          <div key={c.candidateId} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div className="flex items-start justify-between gap-3">
+              {/* Infos principales */}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-900 truncate">{c.name}</span>
+                  <span className={`text-[11px] px-2 py-0.5 rounded-full ${scoreTone(c.score)}`}>
+                    {scorePct(c.score)}%
                   </span>
                 </div>
-                <div className="text-xs text-gray-700 truncate">
-                  {candidate.title}
-                </div>
-                <div className="text-[11px] text-gray-500 flex items-center gap-3 mt-0.5 truncate">
-                  {candidate.location && (
+                <div className="text-xs text-gray-700 mt-0.5 truncate">{c.title}</div>
+                <div className="text-[11px] text-gray-500 flex items-center gap-3 mt-1 truncate">
+                  {c.location && (
                     <span className="inline-flex items-center gap-1 truncate">
                       <MapPin className="h-3 w-3" />
-                      <span className="truncate">{candidate.location}</span>
+                      <span className="truncate">{c.location}</span>
                     </span>
                   )}
-                  {candidate.seniority && (
-                    <span className="truncate">{candidate.seniority}</span>
-                  )}
+                  {c.seniority && <span className="truncate">{c.seniority}</span>}
                 </div>
               </div>
 
-              {/* Action unique */}
+              {/* Action */}
               <button
-                onClick={() => {
-                  // Action pour voir le profil
-                  console.log('Voir profil:', candidate.candidateId);
-                }}
-                className="p-1 text-gray-400 hover:text-gray-600 transition-colors opacity-0 group-hover:opacity-100"
+                onClick={() => console.log('Voir profil:', c.candidateId)}
+                className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                 title="Voir le profil"
               >
-                <Eye className="h-3 w-3" />
+                <Eye className="h-4 w-4" />
               </button>
             </div>
           </div>
