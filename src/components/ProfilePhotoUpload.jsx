@@ -1,13 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
-
-// Créer le client Supabase seulement si les variables sont définies
-const supabase = supabaseUrl !== 'https://placeholder.supabase.co' && supabaseKey !== 'placeholder-key' 
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
+import { supabase } from '../lib/supabase';
 
 const ProfilePhotoUpload = ({ userId, currentPhoto, onPhotoChange, onError }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -16,12 +8,6 @@ const ProfilePhotoUpload = ({ userId, currentPhoto, onPhotoChange, onError }) =>
   const handleFileSelect = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
-    // Vérifier si Supabase est configuré
-    if (!supabase) {
-      onError('Configuration Supabase manquante. Veuillez configurer les variables d\'environnement dans le fichier .env');
-      return;
-    }
 
     // Vérifier le type de fichier
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -77,12 +63,6 @@ const ProfilePhotoUpload = ({ userId, currentPhoto, onPhotoChange, onError }) =>
 
   const handleRemovePhoto = async () => {
     if (!currentPhoto) return;
-
-    // Vérifier si Supabase est configuré
-    if (!supabase) {
-      onError('Configuration Supabase manquante. Veuillez configurer les variables d\'environnement dans le fichier .env');
-      return;
-    }
 
     try {
       // Extraire le nom du fichier de l'URL

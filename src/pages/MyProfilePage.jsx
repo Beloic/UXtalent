@@ -14,7 +14,7 @@ export default function MyProfilePage() {
   const { user } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
   const [currentStep, setCurrentStep] = useState(1);
-  const [activeTab, setActiveTab] = useState('stats');
+  const [activeTab, setActiveTab] = useState('profile');
   const [profileStats, setProfileStats] = useState({
     profileViews: 0,
     profileViewsToday: 0,
@@ -683,17 +683,6 @@ export default function MyProfilePage() {
               {isCandidate && (
                 <>
                   <button
-                    onClick={() => setActiveTab('stats')}
-                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
-                      activeTab === 'stats'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    <BarChart3 className="w-5 h-5" />
-                    Statistiques
-                  </button>
-                  <button
                     onClick={() => setActiveTab('profile')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'profile'
@@ -703,6 +692,17 @@ export default function MyProfilePage() {
                   >
                     <Settings className="w-5 h-5" />
                     Profil
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('stats')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'stats'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <BarChart3 className="w-5 h-5" />
+                    Statistiques
                   </button>
                   <button
                     onClick={() => setActiveTab('plan')}
