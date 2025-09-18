@@ -28,6 +28,7 @@ const MatchingDashboard = ({ recruiterId }) => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
+  const [statsLoaded, setStatsLoaded] = useState(false);
   const [animateBars, setAnimateBars] = useState(false);
   const hasAnimatedRef = useRef(false);
 
@@ -43,17 +44,17 @@ const MatchingDashboard = ({ recruiterId }) => {
     }
   }, [selectedJob]);
 
-  // Déclencher l'animation quand les candidats sont chargés
+  // Déclencher l'animation quand toutes les données sont complètement chargées
   useEffect(() => {
-    if (isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+    if (isFullyLoaded && statsLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
       hasAnimatedRef.current = true;
-      // Délai pour s'assurer que le DOM est rendu
+      // Délai d'1 seconde après chargement complet des données en base
       const timer = setTimeout(() => {
         setAnimateBars(true);
-      }, 500);
+      }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [isFullyLoaded, loading, candidates.length]);
+  }, [isFullyLoaded, statsLoaded, loading, candidates.length]);
 
   const fetchJobs = async () => {
     try {
@@ -87,11 +88,6 @@ const MatchingDashboard = ({ recruiterId }) => {
         const data = await response.json();
       setCandidates(data.candidates || []);
       setIsFullyLoaded(true);
-      
-      // Déclencher l'animation après le chargement
-      setTimeout(() => {
-        setAnimateBars(true);
-      }, 300);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des candidats:', error);
@@ -218,6 +214,7 @@ const MatchingDashboard = ({ recruiterId }) => {
               onClick={() => {
                 setAnimateBars(false);
                 setIsFullyLoaded(false);
+                setStatsLoaded(false);
                 hasAnimatedRef.current = false;
                 fetchStats();
                 if (selectedJob) {
@@ -248,6 +245,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                       setSelectedJob(job);
                       setAnimateBars(false);
                       setIsFullyLoaded(false);
+                      setStatsLoaded(false);
                       hasAnimatedRef.current = false;
                       fetchCandidatesForJob(job.id);
                     }}
