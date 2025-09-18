@@ -953,9 +953,8 @@ export default function RecruiterDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white rounded-3xl shadow-xl border border-gray-100"
               >
-                <div className="p-8 border-b border-gray-200">
+                <div className="mb-8">
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="flex items-center gap-3">
