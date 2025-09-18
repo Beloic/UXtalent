@@ -28,11 +28,23 @@ const MatchingDashboard = ({ recruiterId }) => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
   const [animateBars, setAnimateBars] = useState(false);
+  const [isFullyLoaded, setIsFullyLoaded] = useState(false);
 
   useEffect(() => {
     fetchJobs();
     fetchStats();
   }, [recruiterId]);
+
+  // Déclencher l'animation seulement quand tout est chargé
+  useEffect(() => {
+    if (isFullyLoaded && !loading && candidates.length > 0) {
+      // Délai pour s'assurer que le DOM est rendu
+      const timer = setTimeout(() => {
+        setAnimateBars(true);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isFullyLoaded, loading, candidates.length]);
 
   useEffect(() => {
     if (selectedJob) {
@@ -72,8 +84,7 @@ const MatchingDashboard = ({ recruiterId }) => {
       if (response.ok) {
         const data = await response.json();
         setCandidates(data.candidates || []);
-        // Déclencher l'animation des barres après un court délai
-        setTimeout(() => setAnimateBars(true), 100);
+        setIsFullyLoaded(true);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des candidats:', error);
@@ -196,6 +207,8 @@ const MatchingDashboard = ({ recruiterId }) => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => {
+                setAnimateBars(false);
+                setIsFullyLoaded(false);
                 fetchStats();
                 if (selectedJob) {
                   fetchCandidatesForJob(selectedJob.id);
@@ -224,6 +237,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                     onClick={() => {
                       setSelectedJob(job);
                       setAnimateBars(false);
+                      setIsFullyLoaded(false);
                       fetchCandidatesForJob(job.id);
                     }}
                     className={`w-full text-left p-3 rounded-lg border transition-colors ${
