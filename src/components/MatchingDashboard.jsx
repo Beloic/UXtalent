@@ -47,15 +47,34 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   // Déclencher l'animation quand toutes les données sont complètement chargées
   useEffect(() => {
+    console.log('🎬 [ANIMATION] Vérification conditions:', {
+      isFullyLoaded,
+      statsLoaded,
+      jobsLoaded,
+      loading,
+      candidatesLength: candidates.length,
+      hasAnimated: hasAnimatedRef.current
+    });
+    
     if (isFullyLoaded && statsLoaded && jobsLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+      console.log('🎬 [ANIMATION] Déclenchement de l\'animation dans 1 seconde');
       hasAnimatedRef.current = true;
       // Délai d'1 seconde après chargement complet des données en base
       const timer = setTimeout(() => {
+        console.log('🎬 [ANIMATION] Animation activée !');
         setAnimateBars(true);
       }, 1000);
       return () => clearTimeout(timer);
     }
   }, [isFullyLoaded, statsLoaded, jobsLoaded, loading, candidates.length]);
+
+  // Réinitialiser l'animation quand on change d'offre
+  useEffect(() => {
+    if (selectedJob) {
+      setAnimateBars(false);
+      hasAnimatedRef.current = false;
+    }
+  }, [selectedJob]);
 
   const fetchJobs = async () => {
     try {
@@ -150,22 +169,31 @@ const MatchingDashboard = ({ recruiterId }) => {
     const hasAnimated = useRef(false);
     
     useEffect(() => {
+      console.log(`🎬 [BARRE ${label}] animateBars:`, animateBars, 'hasAnimated:', hasAnimated.current, 'delay:', delay);
       if (animateBars && !hasAnimated.current) {
         hasAnimated.current = true;
+        console.log(`🎬 [BARRE ${label}] Démarrage animation dans ${delay}ms`);
         const timer = setTimeout(() => {
+          console.log(`🎬 [BARRE ${label}] Animation démarrée !`);
           setIsAnimated(true);
         }, delay);
         return () => clearTimeout(timer);
       }
-    }, [animateBars, delay]);
+    }, [animateBars, delay, label]);
 
-    // Réinitialiser quand on change d'offre
+    // Réinitialiser quand on change d'offre ou quand animateBars devient false
     useEffect(() => {
       if (!animateBars) {
         hasAnimated.current = false;
         setIsAnimated(false);
       }
     }, [animateBars]);
+
+    // Réinitialiser quand on change d'offre (via selectedJob)
+    useEffect(() => {
+      hasAnimated.current = false;
+      setIsAnimated(false);
+    }, [selectedJob]);
 
     const width = isAnimated ? score * 100 : 0;
 
@@ -248,8 +276,6 @@ const MatchingDashboard = ({ recruiterId }) => {
                       setSelectedJob(job);
                       setAnimateBars(false);
                       setIsFullyLoaded(false);
-                      setStatsLoaded(false);
-                      setJobsLoaded(false);
                       hasAnimatedRef.current = false;
                       fetchCandidatesForJob(job.id);
                     }}
