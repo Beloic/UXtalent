@@ -174,3 +174,4 @@ backup-*
 env.production
 env.development
 env.staging
+.vercel
