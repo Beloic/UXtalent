@@ -160,10 +160,6 @@ export default function CandidateCard({ candidate, compact = false }) {
                   className={`${compact ? 'w-14 h-14' : 'w-16 h-16'} rounded-2xl object-cover border-3 border-white shadow-xl ring-2 ring-gray-100/50`}
                 />
               )}
-              {/* Indicateur de statut en ligne */}
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full shadow-lg">
-                <div className="w-full h-full bg-emerald-400 rounded-full animate-pulse" />
-              </div>
             </div>
           </div>
           
