@@ -3,7 +3,7 @@
  * Interface complète pour visualiser et gérer les recommandations de candidats
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search, 
   Filter, 
@@ -129,18 +129,28 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   // Composant de barre de progression animée
   const AnimatedProgressBar = ({ score, color, delay = 0, label }) => {
-    const [width, setWidth] = useState(0);
+    const [isAnimated, setIsAnimated] = useState(false);
+    const hasAnimated = useRef(false);
     
     useEffect(() => {
-      if (animateBars) {
+      if (animateBars && !hasAnimated.current) {
+        hasAnimated.current = true;
         const timer = setTimeout(() => {
-          setWidth(score * 100);
+          setIsAnimated(true);
         }, delay);
         return () => clearTimeout(timer);
-      } else {
-        setWidth(score * 100);
       }
-    }, [score, delay, animateBars]);
+    }, [animateBars, delay]);
+
+    // Réinitialiser quand on change d'offre
+    useEffect(() => {
+      if (!animateBars) {
+        hasAnimated.current = false;
+        setIsAnimated(false);
+      }
+    }, [animateBars]);
+
+    const width = isAnimated ? score * 100 : 0;
 
     return (
       <div className="space-y-3">
@@ -160,8 +170,7 @@ const MatchingDashboard = ({ recruiterId }) => {
                 'bg-gradient-to-r from-red-400 to-red-600'
               }`}
               style={{ 
-                width: `${width}%`,
-                transitionDelay: `${delay}ms`
+                width: `${width}%`
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
