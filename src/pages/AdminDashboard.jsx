@@ -71,13 +71,8 @@ export default function AdminDashboard() {
         const data = await response.json();
         const candidatesList = Array.isArray(data) ? data : (data.candidates || []);
 
-        // Override UI: forcer certains candidats en "pending" dans le dashboard admin
-        const forcePendingNames = ['Marie Dubois', 'Pierre Martin', 'Sophie Laurent'];
-        const effectiveCandidatesList = candidatesList.map(c =>
-          forcePendingNames.includes(c.name)
-            ? { ...c, approved: false, visible: false, status: 'pending' }
-            : c
-        );
+        // Utiliser directement la liste des candidats de la base de données
+        const effectiveCandidatesList = candidatesList;
 
         // Debug: vérifier que les candidats ont un ID
         console.log('🔍 [ADMIN] Candidats chargés:', candidatesList.map(c => ({ id: c.id, name: c.name })));
