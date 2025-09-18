@@ -28,6 +28,8 @@ const MatchingDashboard = ({ recruiterId }) => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
+  const [animateBars, setAnimateBars] = useState(false);
+  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
     fetchJobs();
@@ -41,6 +43,18 @@ const MatchingDashboard = ({ recruiterId }) => {
     }
   }, [selectedJob]);
 
+  // Déclencher l'animation quand les candidats sont chargés
+  useEffect(() => {
+    if (isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+      hasAnimatedRef.current = true;
+      // Délai pour s'assurer que le DOM est rendu
+      const timer = setTimeout(() => {
+        setAnimateBars(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isFullyLoaded, loading, candidates.length]);
+
   const fetchJobs = async () => {
     try {
       const apiUrl = buildApiUrl(API_ENDPOINTS.JOBS);
@@ -50,9 +64,6 @@ const MatchingDashboard = ({ recruiterId }) => {
         const data = await response.json();
         setJobs(data);
         setJobsLoaded(true);
-        if (data.length > 0 && !selectedJob) {
-          setSelectedJob(data[0]);
-        }
       }
     } catch (error) {
       console.error('Erreur lors du chargement des offres:', error);
@@ -74,8 +85,13 @@ const MatchingDashboard = ({ recruiterId }) => {
       
       if (response.ok) {
         const data = await response.json();
-        setCandidates(data.candidates || []);
-        setIsFullyLoaded(true);
+      setCandidates(data.candidates || []);
+      setIsFullyLoaded(true);
+      
+      // Déclencher l'animation après le chargement
+      setTimeout(() => {
+        setAnimateBars(true);
+      }, 300);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des candidats:', error);
@@ -131,8 +147,31 @@ const MatchingDashboard = ({ recruiterId }) => {
     return Math.round(score * 100);
   };
 
-  // Composant de barre de progression simple
-  const ProgressBar = ({ score, color, label }) => {
+  // Composant de barre de progression animée
+  const AnimatedProgressBar = ({ score, color, delay = 0, label }) => {
+    const [isAnimated, setIsAnimated] = useState(false);
+    const hasAnimated = useRef(false);
+    
+    useEffect(() => {
+      if (animateBars && !hasAnimated.current) {
+        hasAnimated.current = true;
+        const timer = setTimeout(() => {
+          setIsAnimated(true);
+        }, delay);
+        return () => clearTimeout(timer);
+      }
+    }, [animateBars, delay]);
+
+    // Réinitialiser quand on change d'offre
+    useEffect(() => {
+      if (!animateBars) {
+        hasAnimated.current = false;
+        setIsAnimated(false);
+      }
+    }, [animateBars]);
+
+    const width = isAnimated ? score * 100 : 0;
+
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -144,16 +183,18 @@ const MatchingDashboard = ({ recruiterId }) => {
         <div className="relative">
           <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
             <div 
-              className={`h-4 rounded-full ${
+              className={`h-4 rounded-full transition-all duration-1000 ease-out relative ${
                 label === 'Expérience' ? 'bg-gradient-to-r from-green-400 to-green-600' :
                 label === 'Localisation' ? 'bg-gradient-to-r from-purple-400 to-purple-600' :
                 label === 'Salaire' ? 'bg-gradient-to-r from-orange-400 to-orange-600' :
                 'bg-gradient-to-r from-red-400 to-red-600'
               }`}
               style={{ 
-                width: `${score * 100}%`
+                width: `${width}%`
               }}
-            />
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -175,7 +216,9 @@ const MatchingDashboard = ({ recruiterId }) => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => {
+                setAnimateBars(false);
                 setIsFullyLoaded(false);
+                hasAnimatedRef.current = false;
                 fetchStats();
                 if (selectedJob) {
                   fetchCandidatesForJob(selectedJob.id);
@@ -203,7 +246,9 @@ const MatchingDashboard = ({ recruiterId }) => {
                     key={job.id}
                     onClick={() => {
                       setSelectedJob(job);
+                      setAnimateBars(false);
                       setIsFullyLoaded(false);
+                      hasAnimatedRef.current = false;
                       fetchCandidatesForJob(job.id);
                     }}
                     className={`w-full text-left p-3 rounded-lg border transition-colors ${
@@ -361,27 +406,31 @@ const MatchingDashboard = ({ recruiterId }) => {
                             <div className="space-y-6">
                               <div className="text-lg font-bold text-gray-800 mb-6">Détail du score de compatibilité</div>
                               
-                              <ProgressBar 
+                              <AnimatedProgressBar 
                                 score={candidate.scoreBreakdown.experience}
                                 color="text-green-600"
+                                delay={0}
                                 label="Expérience"
                               />
 
-                              <ProgressBar 
+                              <AnimatedProgressBar 
                                 score={candidate.scoreBreakdown.location}
                                 color="text-purple-600"
+                                delay={200}
                                 label="Localisation"
                               />
 
-                              <ProgressBar 
+                              <AnimatedProgressBar 
                                 score={candidate.scoreBreakdown.salary}
                                 color="text-orange-600"
+                                delay={400}
                                 label="Salaire"
                               />
 
-                              <ProgressBar 
+                              <AnimatedProgressBar 
                                 score={candidate.scoreBreakdown.availability}
                                 color="text-red-600"
+                                delay={600}
                                 label="Disponibilité"
                               />
                             </div>
