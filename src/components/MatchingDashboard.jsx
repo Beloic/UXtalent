@@ -313,12 +313,21 @@ const MatchingDashboard = ({ recruiterId }) => {
                                     src={candidate.profilePhoto}
                                     alt={`Photo de ${candidate.name}`}
                                     className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+                                    onError={(e) => {
+                                      console.log(`❌ Erreur chargement photo pour ${candidate.name}:`, candidate.profilePhoto);
+                                      e.target.style.display = 'none';
+                                      e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                    onLoad={() => {
+                                      console.log(`✅ Photo chargée pour ${candidate.name}:`, candidate.profilePhoto);
+                                    }}
                                   />
-                                ) : (
-                                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-xl border-2 border-gray-200">
-                                    {candidate.name ? candidate.name.charAt(0).toUpperCase() : '?'}
-                                  </div>
-                                )}
+                                ) : null}
+                                <div 
+                                  className={`w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-xl border-2 border-gray-200 ${candidate.profilePhoto ? 'hidden' : 'flex'}`}
+                                >
+                                  {candidate.name ? candidate.name.charAt(0).toUpperCase() : '?'}
+                                </div>
                               </div>
                               
                               <div className="flex items-center">

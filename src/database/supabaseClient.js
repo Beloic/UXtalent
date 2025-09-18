@@ -54,8 +54,25 @@ export const loadCandidates = async () => {
         featuredUntil: candidate.featured_until,
         // Ajouter le champ notes
         notes: candidate.notes || '',
-        // Mapper la photo de profil
-        profilePhoto: candidate.photo || candidate.profile_photo || null
+        // Mapper la photo de profil avec URL complète depuis Supabase Storage
+        profilePhoto: (() => {
+          if (!candidate.photo) return null;
+          
+          // Si c'est déjà une URL complète, la retourner telle quelle
+          if (candidate.photo.startsWith('http')) {
+            return candidate.photo;
+          }
+          
+          // Sinon, construire l'URL depuis Supabase Storage
+          try {
+            const { data } = supabase.storage.from('profile-photos').getPublicUrl(candidate.photo);
+            console.log(`📸 Photo URL construite pour ${candidate.name}:`, data.publicUrl);
+            return data.publicUrl;
+          } catch (error) {
+            console.error(`❌ Erreur construction URL photo pour ${candidate.name}:`, error);
+            return null;
+          }
+        })()
         // yearsOfExperience sera extrait depuis la bio
       };
     });
