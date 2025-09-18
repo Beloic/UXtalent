@@ -266,6 +266,22 @@ export default function MyProfilePage() {
 
 
   const validateStep = (step) => {
+    console.log(`🔍 Validation étape ${step}:`, {
+      formData: {
+        name: formData.name,
+        email: formData.email,
+        title: formData.title,
+        location: formData.location,
+        remote: formData.remote,
+        bio: formData.bio,
+        skills: formData.skills,
+        dailyRate: formData.dailyRate,
+        annualSalary: formData.annualSalary,
+        portfolio: formData.portfolio,
+        linkedin: formData.linkedin
+      }
+    });
+
     switch (step) {
       case 1: // Photo (optionnelle) => toujours valide
         return true;
@@ -314,6 +330,7 @@ export default function MyProfilePage() {
   };
 
   const handleSubmit = async (e) => {
+    console.log('🚀 handleSubmit appelé!', { currentStep, formData });
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
