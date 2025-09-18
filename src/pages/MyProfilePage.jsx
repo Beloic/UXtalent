@@ -172,13 +172,13 @@ export default function MyProfilePage() {
         const existingCandidate = await response.json();
         
         if (existingCandidate) {
-          // Déterminer le statut du candidat
+          // Déterminer le statut du candidat (priorité: rejeté > approuvé > en attente)
           let status = 'pending';
-          if (existingCandidate.approved === true && existingCandidate.visible === true) {
-            status = 'approved';
-          } else if (existingCandidate.status === 'rejected') {
-            // Statut explicitement rejeté
+          if (existingCandidate.status === 'rejected') {
+            // Statut explicitement rejeté - PRIORITÉ ABSOLUE
             status = 'rejected';
+          } else if (existingCandidate.approved === true && existingCandidate.visible === true) {
+            status = 'approved';
           } else if (existingCandidate.approved === false && existingCandidate.visible === false && existingCandidate.status !== 'pending') {
             // Considérer comme rejeté si approuvé=false, visible=false ET pas en attente
             status = 'rejected';

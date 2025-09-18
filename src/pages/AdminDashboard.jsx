@@ -81,10 +81,12 @@ export default function AdminDashboard() {
 
         // Déterminer les groupes sans chevauchement (priorité: rejeté > approuvé > en attente)
         // Un profil avec status === 'pending' doit être classé en attente, même si approved=false et visible=false
-        const approvedCandidates = effectiveCandidatesList.filter(c => c.approved === true && c.visible === true);
         const rejectedCandidates = effectiveCandidatesList.filter(c => 
           c.status === 'rejected' || 
           ((c.approved === false && c.visible === false) && c.status !== 'pending' && c.status !== 'rejected')
+        );
+        const approvedCandidates = effectiveCandidatesList.filter(c => 
+          c.status !== 'rejected' && c.approved === true && c.visible === true
         );
         const pendingCandidates = effectiveCandidatesList.filter(c => 
           c.status === 'pending' || (
