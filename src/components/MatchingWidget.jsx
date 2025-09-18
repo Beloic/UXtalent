@@ -3,6 +3,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TrendingUp, Eye, MapPin } from 'lucide-react';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 import { authenticatedFetch } from '../utils/auth';
@@ -17,6 +18,7 @@ const MatchingWidget = ({
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if ((type === 'candidates' && jobId) || (type === 'jobs' && candidateId)) {
@@ -64,6 +66,22 @@ const MatchingWidget = ({
     return 'bg-rose-50 text-rose-700 border border-rose-100';
   };
 
+  const resolveAvatar = (c) => {
+    const src = c.photo || c.avatar || c.image || null;
+    if (src) return src;
+    const name = encodeURIComponent(c.name || 'UX Designer');
+    return `https://ui-avatars.com/api/?name=${name}&background=E5E7EB&color=111827&size=64&bold=true`;
+  };
+
+  const openProfile = (candidateObj) => {
+    const targetId = candidateObj?.candidateId || candidateObj?.id;
+    if (!targetId) {
+      console.warn('Aucun candidateId/id pour la recommandation:', candidateObj);
+      return;
+    }
+    navigate(`/candidates/${targetId}`);
+  };
+
   if (loading) {
     return (
       <div className={`bg-white rounded-2xl shadow-sm border border-gray-100 ${className}`}>
@@ -92,35 +110,52 @@ const MatchingWidget = ({
       {/* Liste */}
       <div className="divide-y divide-gray-100">
         {recommendations.map((c) => (
-          <div key={c.candidateId} className="px-6 py-4 hover:bg-gray-50 transition-colors">
-            <div className="flex items-start justify-between gap-3">
-              {/* Infos principales */}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-900 truncate">{c.name}</span>
-                  <span className={`text-[11px] px-2 py-0.5 rounded-full ${scoreTone(c.score)}`}>
-                    {scorePct(c.score)}%
-                  </span>
-                </div>
-                <div className="text-xs text-gray-700 mt-0.5 truncate">{c.title}</div>
-                <div className="text-[11px] text-gray-500 flex items-center gap-3 mt-1 truncate">
-                  {c.location && (
-                    <span className="inline-flex items-center gap-1 truncate">
-                      <MapPin className="h-3 w-3" />
-                      <span className="truncate">{c.location}</span>
+          <div
+            key={c.candidateId || c.id}
+            className="px-6 py-4 hover:bg-gray-50 transition-colors cursor-pointer focus:outline-none focus:bg-gray-50"
+            onClick={() => openProfile(c)}
+            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && openProfile(c)}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="flex items-center justify-between gap-3">
+              {/* Avatar + Infos */}
+              <div className="flex items-start gap-3 min-w-0 flex-1">
+                <img
+                  src={resolveAvatar(c)}
+                  alt={c.name || 'Candidat'}
+                  className="h-9 w-9 rounded-full object-cover flex-shrink-0 border border-gray-200"
+                  loading="lazy"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-900 truncate">{c.name}</span>
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full ${scoreTone(c.score)}`}>
+                      {scorePct(c.score)}%
                     </span>
-                  )}
-                  {c.seniority && <span className="truncate">{c.seniority}</span>}
+                  </div>
+                  <div className="text-xs text-gray-700 mt-0.5 truncate">{c.title}</div>
+                  <div className="text-[11px] text-gray-500 flex items-center gap-3 mt-1 truncate">
+                    {c.location && (
+                      <span className="inline-flex items-center gap-1 truncate">
+                        <MapPin className="h-3 w-3" />
+                        <span className="truncate">{c.location}</span>
+                      </span>
+                    )}
+                    {c.seniority && <span className="truncate">{c.seniority}</span>}
+                  </div>
                 </div>
               </div>
 
               {/* Action */}
               <button
-                onClick={() => console.log('Voir profil:', c.candidateId)}
-                className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                type="button"
+                onClick={(e) => { e.stopPropagation(); openProfile(c); }}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm transition-colors"
                 title="Voir le profil"
               >
                 <Eye className="h-4 w-4" />
+                <span className="text-xs font-medium">Voir</span>
               </button>
             </div>
           </div>
