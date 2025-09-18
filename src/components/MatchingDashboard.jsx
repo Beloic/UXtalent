@@ -29,6 +29,8 @@ const MatchingDashboard = ({ recruiterId }) => {
   const [stats, setStats] = useState(null);
   const [animateBars, setAnimateBars] = useState(false);
   const [isFullyLoaded, setIsFullyLoaded] = useState(false);
+  const [jobsLoaded, setJobsLoaded] = useState(false);
+  const [statsLoaded, setStatsLoaded] = useState(false);
   const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
@@ -36,17 +38,17 @@ const MatchingDashboard = ({ recruiterId }) => {
     fetchStats();
   }, [recruiterId]);
 
-  // Déclencher l'animation seulement quand tout est chargé
+  // Déclencher l'animation seulement quand TOUTES les données sont chargées
   useEffect(() => {
-    if (isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
+    if (jobsLoaded && statsLoaded && isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
       hasAnimatedRef.current = true;
       // Délai pour s'assurer que le DOM est rendu
       const timer = setTimeout(() => {
         setAnimateBars(true);
-      }, 300);
+      }, 500);
       return () => clearTimeout(timer);
     }
-  }, [isFullyLoaded, loading, candidates.length]);
+  }, [jobsLoaded, statsLoaded, isFullyLoaded, loading, candidates.length]);
 
   useEffect(() => {
     if (selectedJob) {
@@ -62,12 +64,14 @@ const MatchingDashboard = ({ recruiterId }) => {
       if (response.ok) {
         const data = await response.json();
         setJobs(data);
+        setJobsLoaded(true);
         if (data.length > 0 && !selectedJob) {
           setSelectedJob(data[0]);
         }
       }
     } catch (error) {
       console.error('Erreur lors du chargement des offres:', error);
+      setJobsLoaded(true); // Marquer comme chargé même en cas d'erreur
     }
   };
 
@@ -103,9 +107,11 @@ const MatchingDashboard = ({ recruiterId }) => {
       if (response.ok) {
         const data = await response.json();
         setStats(data);
+        setStatsLoaded(true);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des statistiques:', error);
+      setStatsLoaded(true); // Marquer comme chargé même en cas d'erreur
     }
   };
 
@@ -211,6 +217,8 @@ const MatchingDashboard = ({ recruiterId }) => {
               onClick={() => {
                 setAnimateBars(false);
                 setIsFullyLoaded(false);
+                setJobsLoaded(false);
+                setStatsLoaded(false);
                 hasAnimatedRef.current = false;
                 fetchStats();
                 if (selectedJob) {
