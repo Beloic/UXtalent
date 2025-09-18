@@ -6,15 +6,7 @@ Ce dossier contient les scripts essentiels pour la gestion et le déploiement de
 
 ### 🗄️ **Base de Données**
 
-#### `create_all_tables.sql`
-- **Objectif** : Créer toutes les tables nécessaires (`candidates`, `jobs`, `applications`)
-- **Usage** : Exécuter dans Supabase SQL Editor lors de la première installation
-- **Contenu** : Structure complète des tables avec contraintes et index
-
-#### `verify_database_structure.sql`
-- **Objectif** : Vérifier que la structure de la base de données est correcte
-- **Usage** : Diagnostic et vérification après installation ou mise à jour
-- **Contenu** : Requêtes de vérification des tables, contraintes et données
+Les scripts SQL ont été retirés du dépôt. Utilisez les migrations Supabase ou l'éditeur SQL du dashboard pour gérer le schéma.
 
 ### 🔐 **Sécurité**
 
@@ -37,11 +29,9 @@ Ce dossier contient les scripts essentiels pour la gestion et le déploiement de
 # 1. Générer les secrets
 ./scripts/generate-secrets.sh
 
-# 2. Créer les tables (dans Supabase SQL Editor)
-# Copier le contenu de create_all_tables.sql
+# 2. Créer les tables (via migrations Supabase ou SQL Editor)
 
-# 3. Vérifier l'installation
-# Copier le contenu de verify_database_structure.sql
+# 3. Vérifier l'installation (requêtes ad hoc dans l'éditeur SQL)
 ```
 
 ### Déploiement

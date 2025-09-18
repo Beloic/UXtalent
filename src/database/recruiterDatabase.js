@@ -206,7 +206,8 @@ export const searchCandidatesByCriteria = async (searchCriteria) => {
     let query = supabase
       .from('candidates')
       .select('*')
-      .eq('approved', true);
+      .eq('approved', true)
+      .eq('visible', true);
     
     // Filtrage par type de profil
     if (searchCriteria.profile_type) {

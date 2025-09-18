@@ -174,15 +174,16 @@ export function addCandidate(candidate) {
   const newCandidate = {
     ...candidate,
     id: `candidate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    approved: candidate.approved || false, // Par défaut non approuvé
-    visible: candidate.visible || false,   // Par défaut non visible
+    approved: candidate.approved !== undefined ? candidate.approved : false, // Par défaut non approuvé
+    visible: candidate.visible !== undefined ? candidate.visible : false,   // Par défaut non visible
+    status: candidate.status || 'pending', // Par défaut en attente
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
   
   const updatedCandidates = [newCandidate, ...existingCandidates];
   saveCandidates(updatedCandidates);
-  console.log(`✨ Nouveau candidat ajouté: ${newCandidate.name} (approved: ${newCandidate.approved}, visible: ${newCandidate.visible})`);
+  console.log(`✨ Nouveau candidat ajouté: ${newCandidate.name} (approved: ${newCandidate.approved}, visible: ${newCandidate.visible}, status: ${newCandidate.status})`);
   return newCandidate;
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
 import { motion } from 'framer-motion'
 import { 
   Mail, 
@@ -20,27 +21,18 @@ export default function ConfirmEmailPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est connecté
+    // 2FA/confirmation email désactivée temporairement: rediriger directement
     if (!user) {
       navigate('/login')
+      return
     }
+    navigate('/my-profile')
   }, [user, navigate])
 
   const handleResendEmail = async () => {
-    setResendLoading(true)
-    setError('')
+    // Désactivé temporairement
+    setError('La confirmation par e-mail est désactivée pour le moment.')
     setSuccess('')
-
-    try {
-      // Simuler l'envoi d'un nouvel email de confirmation
-      // Dans un vrai projet, vous appelleriez votre API backend
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setSuccess('Email de confirmation renvoyé !')
-    } catch (err) {
-      setError('Erreur lors de l\'envoi de l\'email')
-    } finally {
-      setResendLoading(false)
-    }
   }
 
   const handleSignOut = async () => {

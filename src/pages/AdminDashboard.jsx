@@ -75,9 +75,15 @@ export default function AdminDashboard() {
         console.log('🔍 [ADMIN] Candidats chargés:', candidatesList.map(c => ({ id: c.id, name: c.name })));
 
         // Déterminer les groupes sans chevauchement (priorité: rejeté > approuvé > en attente)
-        const approvedCandidates = candidatesList.filter(c => c.approved === true || c.status === 'approved');
-        const rejectedCandidates = candidatesList.filter(c => c.approved === false || c.visible === false || c.status === 'rejected');
-        const pendingCandidates = candidatesList.filter(c => !approvedCandidates.includes(c) && !rejectedCandidates.includes(c));
+        // Un profil avec status === 'pending' doit être classé en attente, même si approved=false et visible=false
+        const approvedCandidates = candidatesList.filter(c => c.approved === true && c.visible === true);
+        const rejectedCandidates = candidatesList.filter(c => (c.approved === false && c.visible === false) && c.status !== 'pending');
+        const pendingCandidates = candidatesList.filter(c => 
+          c.status === 'pending' || (
+            !(c.approved === true && c.visible === true) &&
+            !((c.approved === false && c.visible === false) && c.status !== 'pending')
+          )
+        );
 
         setCandidates({
           pending: pendingCandidates,
@@ -1006,7 +1012,7 @@ export default function AdminDashboard() {
 
           {/* Actions modernes */}
           <div className="flex gap-4 pt-8 border-t border-gray-200/50">
-            {candidate.approved !== true && candidate.visible !== false ? (
+            {!(candidate.approved === true && candidate.visible === true) && !(candidate.approved === false && candidate.visible === false) ? (
               <>
                 <button
                   onClick={() => {
@@ -1474,14 +1480,14 @@ export default function AdminDashboard() {
                     {viewMode === 'list' ? (
                       <CandidateListItem 
                         candidate={candidate} 
-                        isApproved={candidate.approved === true}
-                        isRejected={candidate.approved === false || candidate.visible === false}
+                        isApproved={candidate.approved === true && candidate.visible === true}
+                        isRejected={(candidate.approved === false && candidate.visible === false) && candidate.status !== 'pending'}
                       />
                     ) : (
                       <CandidateCard 
                         candidate={candidate} 
-                        isApproved={candidate.approved === true}
-                        isRejected={candidate.approved === false || candidate.visible === false}
+                        isApproved={candidate.approved === true && candidate.visible === true}
+                        isRejected={(candidate.approved === false && candidate.visible === false) && candidate.status !== 'pending'}
                       />
                     )}
                   </motion.div>

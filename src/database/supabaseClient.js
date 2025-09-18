@@ -103,13 +103,23 @@ export const addCandidate = async (candidateData) => {
     const dbData = {
       ...candidateData,
       daily_rate: candidateData.dailyRate,
-      annual_salary: candidateData.annualSalary
+      annual_salary: candidateData.annualSalary,
+      // S'assurer que les nouveaux candidats sont en attente par défaut
+      approved: candidateData.approved !== undefined ? candidateData.approved : false,
+      visible: candidateData.visible !== undefined ? candidateData.visible : false,
+      status: candidateData.status || 'pending'
     };
     
     // Supprimer les propriétés camelCase pour éviter les conflits
     delete dbData.dailyRate;
     delete dbData.annualSalary;
     delete dbData.yearsOfExperience; // Ignorer car la colonne n'existe pas encore
+    
+    console.log('🆕 [SUPABASE] Création candidat avec statut:', { 
+      approved: dbData.approved, 
+      visible: dbData.visible, 
+      status: dbData.status 
+    });
     
     const { data, error } = await supabase
       .from('candidates')

@@ -48,7 +48,8 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
         options: {
-          data: userData
+          data: userData,
+          emailRedirectTo: `${window.location.origin}/confirm-email`
         }
       })
       
@@ -119,7 +120,8 @@ export const AuthProvider = ({ children }) => {
     resetPassword,
     updatePassword,
     isAuthenticated: !!user,
-    isEmailConfirmed: user?.email_confirmed_at ? true : false
+    // 2FA/confirmation email désactivée temporairement: considérer les emails comme confirmés
+    isEmailConfirmed: true
   }
 
   return (

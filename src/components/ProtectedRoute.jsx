@@ -23,10 +23,7 @@ export default function ProtectedRoute({ children, requireEmailConfirmation = fa
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  if (requireEmailConfirmation && !isEmailConfirmed) {
-    // Rediriger vers une page de confirmation d'email
-    return <Navigate to="/confirm-email" replace />
-  }
+  // 2FA/confirmation email désactivée temporairement: ne pas bloquer l'accès
 
   return children
 }

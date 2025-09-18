@@ -99,7 +99,7 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
         
         // Vérifier si c'est une erreur de table manquante
         if (error.message.includes('Table appointments non trouvée')) {
-          alert('⚠️ Configuration requise\n\nLa table des rendez-vous n\'existe pas encore dans Supabase.\n\nVeuillez :\n1. Aller sur https://supabase.com/dashboard\n2. Ouvrir votre projet UX Jobs Pro\n3. Aller dans SQL Editor\n4. Exécuter le script create_appointments_table.sql\n\nPuis recharger cette page.');
+          alert('⚠️ Configuration requise\n\nLa table des rendez-vous n\'existe pas encore dans Supabase.');
         }
         
         setAppointments([]);
@@ -197,7 +197,7 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
       
       // Vérifier si c'est une erreur de table manquante
       if (error.message.includes('Table appointments non trouvée')) {
-        alert('⚠️ Configuration requise\n\nLa table des rendez-vous n\'existe pas encore dans Supabase.\n\nVeuillez :\n1. Aller sur https://supabase.com/dashboard\n2. Ouvrir votre projet UX Jobs Pro\n3. Aller dans SQL Editor\n4. Exécuter le script create_appointments_table.sql\n\nPuis réessayer de créer le rendez-vous.');
+        alert('⚠️ Configuration requise\n\nLa table des rendez-vous n\'existe pas encore dans Supabase.');
       } else {
         alert('Erreur lors de la création du rendez-vous');
       }

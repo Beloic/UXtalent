@@ -115,7 +115,13 @@ export default function RegisterPage() {
           setError(error.message)
         }
       } else {
-        if (formData.role === 'candidate') {
+        // Vérifier si l'utilisateur doit confirmer son email
+        if (data.user && !data.user.email_confirmed_at) {
+          setSuccess('Compte créé ! Un email de confirmation a été envoyé à votre adresse email. Veuillez cliquer sur le lien pour activer votre compte.')
+          setTimeout(() => {
+            navigate('/confirm-email')
+          }, 2000)
+        } else if (formData.role === 'candidate') {
           setSuccess('Compte créé ! Vous allez être redirigé vers votre profil pour compléter vos informations.')
           setTimeout(() => {
             navigate('/my-profile')

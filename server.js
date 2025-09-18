@@ -551,13 +551,13 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
           console.log(`✅ Utilisateur authentifié avec le rôle: ${userRole}`);
           
           if (userRole === ROLES.RECRUITER) {
-            // Les recruteurs voient tous les candidats approuvés
-            visibleCandidates = filteredCandidates.filter(c => c.approved === true);
+            // Les recruteurs voient tous les candidats approuvés ET visibles
+            visibleCandidates = filteredCandidates.filter(c => c.approved === true && c.visible === true);
             totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = true;
           } else if (userRole === ROLES.CANDIDATE) {
-            // Les candidats voient seulement les premiers candidats approuvés + leur propre profil
-            const approvedCandidates = filteredCandidates.filter(c => c.approved === true);
+            // Les candidats voient seulement les premiers candidats approuvés ET visibles + leur propre profil
+            const approvedCandidates = filteredCandidates.filter(c => c.approved === true && c.visible === true);
             // Trouver le profil perso dans TOUTE la base (pas uniquement les filtres)
             const allCandidates = await loadCandidates();
             const ownProfileAll = allCandidates.filter(c => (
@@ -581,7 +581,7 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
           } else {
             // Rôle non reconnu, mode freemium
             console.log(`⚠️ Rôle non reconnu: ${userRole}`);
-            visibleCandidates = filteredCandidates.filter(c => c.approved === true);
+            visibleCandidates = filteredCandidates.filter(c => c.approved === true && c.visible === true);
             totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = false;
           }
@@ -591,8 +591,9 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       // Pas d'authentification - appliquer le freemium basé sur les champs visible et approved
       console.log('🔒 Pas d\'authentification - système freemium activé (visible:true et approved:true uniquement)');
       // IMPORTANT: Filtrer les candidats rejetés pour les visiteurs non authentifiés
-      filteredCandidates = filteredCandidates.filter(c => c.approved === true);
-      const publicCandidates = filteredCandidates.filter(c => c.visible === true);
+      // Seuls les candidats approuvés ET visibles peuvent être vus par les visiteurs non authentifiés
+      filteredCandidates = filteredCandidates.filter(c => c.approved === true && c.visible === true);
+      const publicCandidates = filteredCandidates;
       // Option: masquer la moitié des profils publics pour renforcer le freemium
       const halfIndex = Math.ceil(publicCandidates.length / 2);
       visibleCandidates = publicCandidates.slice(0, halfIndex);
@@ -896,7 +897,21 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
       }
     }
     
-    const newCandidate = addCandidate(candidateData);
+    // S'assurer que les nouveaux candidats sont en attente par défaut
+    const candidateDataWithStatus = {
+      ...candidateData,
+      approved: candidateData.approved !== undefined ? candidateData.approved : false,
+      visible: candidateData.visible !== undefined ? candidateData.visible : false,
+      status: candidateData.status || 'pending'
+    };
+    
+    console.log('🆕 [SERVER] Création candidat avec statut:', { 
+      approved: candidateDataWithStatus.approved, 
+      visible: candidateDataWithStatus.visible, 
+      status: candidateDataWithStatus.status 
+    });
+    
+    const newCandidate = addCandidate(candidateDataWithStatus);
     res.status(201).json(newCandidate);
   } catch (error) {
     logger.error('Erreur lors de l\'ajout du candidat', { error: error.message });
@@ -2622,8 +2637,7 @@ app.post('/api/applications', requireRole(['candidate']), async (req, res) => {
       // Vérifier si c'est une erreur de table manquante
       if (insertError.message.includes('relation "applications" does not exist')) {
         return res.status(503).json({ 
-          error: 'Table applications non trouvée. Veuillez créer la table dans Supabase.',
-          details: 'Exécutez le script SQL dans create_applications_table.sql'
+          error: 'Table applications non trouvée. Veuillez créer la table dans Supabase.'
         });
       }
       throw insertError;
@@ -2808,8 +2822,7 @@ app.get('/api/appointments', authenticateUser, async (req, res) => {
     // Vérifier si c'est une erreur de table manquante
     if (error.message.includes('Table appointments non trouvée')) {
       res.status(503).json({ 
-        error: 'Table appointments non trouvée. Veuillez créer la table dans Supabase.',
-        details: 'Exécutez le script SQL dans create_appointments_table.sql'
+        error: 'Table appointments non trouvée. Veuillez créer la table dans Supabase.'
       });
     } else {
       res.status(500).json({ error: 'Erreur interne du serveur' });
@@ -2858,8 +2871,7 @@ app.post('/api/appointments', authenticateUser, async (req, res) => {
     // Vérifier si c'est une erreur de table manquante
     if (error.message.includes('Table appointments non trouvée')) {
       res.status(503).json({ 
-        error: 'Table appointments non trouvée. Veuillez créer la table dans Supabase.',
-        details: 'Exécutez le script SQL dans create_appointments_table.sql'
+        error: 'Table appointments non trouvée. Veuillez créer la table dans Supabase.'
       });
     } else {
       res.status(500).json({ error: 'Erreur interne du serveur' });

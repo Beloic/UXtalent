@@ -391,10 +391,10 @@ export default function MyProfilePage() {
         name: formData.name,
         email: formData.email,
         bio: structuredBio,
-        // Préserver le statut existant ou définir comme pending pour les nouveaux profils
+        // Pour les nouveaux profils : toujours en attente de validation
         status: formData.id ? undefined : 'pending', // Ne pas modifier le statut pour les profils existants
-        approved: formData.id ? undefined : false, // Ne pas modifier l'approbation pour les profils existants
-        visible: true, // Toujours visible
+        approved: formData.id ? undefined : false, // Nouveaux profils : non approuvés par défaut
+        visible: formData.id ? undefined : false, // Nouveaux profils : non visibles jusqu'à validation
         // Tous les champs du formulaire
         title: formData.title || '',
         location: formData.location || '',
@@ -437,12 +437,19 @@ export default function MyProfilePage() {
       if (response.ok) {
         // L'API PUT retourne souvent une réponse vide, donc on recharge directement le profil
         const isUpdate = formData.id ? 'mis à jour' : 'créé';
-        setMessage(`✅ Profil ${isUpdate} avec succès !`);
         
-        // Faire disparaître le message après 3 secondes
+        if (!formData.id) {
+          // Nouveau profil créé - informer qu'il est en attente
+          setMessage(`✅ Profil créé avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
+        } else {
+          // Profil mis à jour
+          setMessage(`✅ Profil mis à jour avec succès !`);
+        }
+        
+        // Faire disparaître le message après 5 secondes pour les nouveaux profils
         setTimeout(() => {
           setMessage('');
-        }, 3000);
+        }, formData.id ? 3000 : 5000);
         
         // Recharger le profil immédiatement pour récupérer les données à jour
         setTimeout(() => {
@@ -564,26 +571,7 @@ export default function MyProfilePage() {
             </div>
           </motion.div>
 
-          {/* Actions */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex gap-4"
-          >
-            <button
-              onClick={() => setCandidateStatus(null)}
-              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-            >
-              Modifier mon profil
-            </button>
-            <Link 
-              to="/candidates" 
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors"
-            >
-              Voir les autres candidats
-            </Link>
-          </motion.div>
+          {/* Actions désactivées pour l'état en attente */}
         </div>
       </div>
     );
@@ -1123,7 +1111,7 @@ export default function MyProfilePage() {
                       {candidateStatus === 'approved' ? 'Profil approuvé' : 'Processus de validation'}
                     </h3>
                     <p className="text-sm">
-                      Une fois votre profil soumis, notre équipe l'examinera sous 48h. Si votre profil est approuvé, vous apparaîtrez dans notre annuaire de talents et pourrez être contacté par les entreprises.
+                      Une fois votre profil soumis, notre équipe l'examinera sous 48h. Tant que votre profil n'est pas validé par un administrateur, il reste en attente et n'est pas visible dans la liste des candidats. Vous recevrez une notification une fois la validation effectuée.
                     </p>
                   </div>
                 </div>
