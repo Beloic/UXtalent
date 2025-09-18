@@ -44,10 +44,10 @@ const MatchingDashboard = ({ recruiterId }) => {
     if (isFullyLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
       console.log('Déclenchement de l\'animation');
       hasAnimatedRef.current = true;
-      // Délai pour s'assurer que le DOM est rendu
+      // Délai de 1 seconde pour améliorer l'expérience utilisateur
       const timer = setTimeout(() => {
         setAnimateBars(true);
-      }, 300);
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [isFullyLoaded, loading, candidates.length]);
@@ -153,15 +153,16 @@ const MatchingDashboard = ({ recruiterId }) => {
     const [isAnimated, setIsAnimated] = useState(false);
     const hasAnimated = useRef(false);
     
-    useEffect(() => {
-      if (animateBars && !hasAnimated.current) {
-        hasAnimated.current = true;
-        const timer = setTimeout(() => {
-          setIsAnimated(true);
-        }, delay);
-        return () => clearTimeout(timer);
-      }
-    }, [animateBars, delay]);
+  useEffect(() => {
+    if (animateBars && !hasAnimated.current) {
+      hasAnimated.current = true;
+      // Délai supplémentaire pour chaque barre (en plus du délai principal de 1s)
+      const timer = setTimeout(() => {
+        setIsAnimated(true);
+      }, delay + 200);
+      return () => clearTimeout(timer);
+    }
+  }, [animateBars, delay]);
 
     // Réinitialiser quand on change d'offre
     useEffect(() => {
@@ -401,28 +402,28 @@ const MatchingDashboard = ({ recruiterId }) => {
                               <AnimatedProgressBar 
                                 score={candidate.scoreBreakdown.experience}
                                 color="text-green-600"
-                                delay={100}
+                                delay={0}
                                 label="Expérience"
                               />
 
                               <AnimatedProgressBar 
                                 score={candidate.scoreBreakdown.location}
                                 color="text-purple-600"
-                                delay={200}
+                                delay={300}
                                 label="Localisation"
                               />
 
                               <AnimatedProgressBar 
                                 score={candidate.scoreBreakdown.salary}
                                 color="text-orange-600"
-                                delay={300}
+                                delay={600}
                                 label="Salaire"
                               />
 
                               <AnimatedProgressBar 
                                 score={candidate.scoreBreakdown.availability}
                                 color="text-red-600"
-                                delay={400}
+                                delay={900}
                                 label="Disponibilité"
                               />
                             </div>

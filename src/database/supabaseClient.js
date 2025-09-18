@@ -53,7 +53,9 @@ export const loadCandidates = async () => {
         isFeatured: cachedPlan ? cachedPlan.isFeatured : (candidate.is_featured || false),
         featuredUntil: candidate.featured_until,
         // Ajouter le champ notes
-        notes: candidate.notes || ''
+        notes: candidate.notes || '',
+        // Mapper la photo de profil
+        profilePhoto: candidate.photo || candidate.profile_photo || null
         // yearsOfExperience sera extrait depuis la bio
       };
     });
