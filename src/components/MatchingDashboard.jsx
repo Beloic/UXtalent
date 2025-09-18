@@ -245,36 +245,6 @@ const MatchingDashboard = ({ recruiterId }) => {
           <div className="flex-1">
             {selectedJob ? (
               <div className="space-y-6">
-                {/* Informations de l'offre sélectionnée */}
-                <div className="bg-white rounded-xl shadow-md p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h2 className="text-xl font-bold text-gray-900">{selectedJob.title}</h2>
-                      <p className="text-gray-600">{selectedJob.company} • {selectedJob.location}</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-gray-500">Candidats trouvés</div>
-                      <div className="text-2xl font-bold text-blue-600">{candidates.length}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-6 text-sm text-gray-600">
-                    <span className="flex items-center">
-                      <Users className="h-4 w-4 mr-1" />
-                      {selectedJob.seniority}
-                    </span>
-                    <span className="flex items-center">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {selectedJob.remote}
-                    </span>
-                    {selectedJob.salary && (
-                      <span className="flex items-center">
-                        <DollarSign className="h-4 w-4 mr-1" />
-                        {selectedJob.salary}
-                      </span>
-                    )}
-                  </div>
-                </div>
 
                 {/* Statistiques rapides */}
                 {stats && (
