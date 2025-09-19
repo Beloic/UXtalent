@@ -158,7 +158,7 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
-        <Route path="/recruiter-dashboard/kanban" element={
+        <Route path="/recruiter-dashboard/appointments" element={
           <Layout>
             <ProtectedRoute>
               <RecruiterDashboard />

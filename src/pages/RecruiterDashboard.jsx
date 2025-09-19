@@ -24,7 +24,6 @@ import {
   CheckCircle,
   XCircle,
   MessageSquare,
-  Layout,
   Plus,
   RefreshCw,
   Building2,
@@ -37,7 +36,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { RoleGuard } from '../components/RoleGuard';
 import { usePermissions } from '../hooks/usePermissions';
-import CandidateKanban from '../components/CandidateKanban';
 import Calendar from '../components/Calendar';
 import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';
@@ -52,7 +50,7 @@ export default function RecruiterDashboard() {
   const { isRecruiter } = usePermissions();
   const location = useLocation();
   const getActiveTabFromPath = () => {
-    if (location.pathname.startsWith('/recruiter-dashboard/kanban')) return 'kanban';
+    if (location.pathname.startsWith('/recruiter-dashboard/appointments')) return 'appointments';
     if (location.pathname.startsWith('/recruiter-dashboard/myjobs')) return 'myjobs';
     if (location.pathname.startsWith('/recruiter-dashboard/matching')) return 'matching';
     return 'favorites';
@@ -488,7 +486,7 @@ export default function RecruiterDashboard() {
         try {
           if (activeTab === 'favorites') {
             await loadFavorites();
-          } else if (activeTab === 'kanban') {
+          } else if (activeTab === 'appointments') {
             await loadCandidates();
           }
         } finally {
@@ -683,20 +681,20 @@ export default function RecruiterDashboard() {
                   Favoris
                 </button>
                 <button
-                  onClick={() => navigate('/recruiter-dashboard/kanban')}
+                  onClick={() => navigate('/recruiter-dashboard/appointments')}
                   disabled={refreshing}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                    activeTab === 'kanban'
+                    activeTab === 'appointments'
                       ? 'bg-blue-600 text-white shadow-lg'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  {refreshing && activeTab === 'kanban' ? (
+                  {refreshing && activeTab === 'appointments' ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <Layout className="w-4 h-4" />
+                    <CalendarIcon className="w-4 h-4" />
                   )}
-                  Gestion des talents
+                  Mes rendez-vous
                   {candidates.length > 0 && !refreshing && (
                     <span className="bg-purple-100 text-purple-800 text-xs font-medium px-1.5 py-0.5 rounded-full">
                       {candidates.length}
@@ -932,9 +930,9 @@ export default function RecruiterDashboard() {
               </motion.div>
             )}
 
-            {activeTab === 'kanban' && (
+            {activeTab === 'appointments' && (
               <motion.div 
-                key="kanban"
+                key="appointments"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -944,7 +942,7 @@ export default function RecruiterDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="flex items-center gap-3">
-                        <h2 className="text-2xl font-bold text-gray-900">Vue Kanban</h2>
+                        <h2 className="text-2xl font-bold text-gray-900">Mes rendez-vous</h2>
                         {refreshing && (
                           <div className="flex items-center gap-2 text-blue-600">
                             <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
@@ -952,12 +950,12 @@ export default function RecruiterDashboard() {
                           </div>
                         )}
                       </div>
-                      <p className="text-gray-600 mt-2">Organisez vos candidats par statut avec le drag & drop</p>
+                      <p className="text-gray-600 mt-2">Planifiez et gérez vos entretiens avec les candidats</p>
                     </div>
                     <div className="flex items-center gap-4">
                       {candidates.length > 0 && (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-xl font-semibold">
-                          <Layout className="w-5 h-5" />
+                        <div className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-semibold">
+                          <CalendarIcon className="w-5 h-5" />
                           <span>{candidates.length} candidat{candidates.length > 1 ? 's' : ''}</span>
                         </div>
                       )}
@@ -967,53 +965,38 @@ export default function RecruiterDashboard() {
             
                 {candidatesLoading ? (
                   <div className="p-12 text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600 mx-auto mb-4"></div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Chargement du Kanban...</h3>
-                    <p className="text-gray-600">Préparation de la vue Kanban</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Chargement du calendrier...</h3>
+                    <p className="text-gray-600">Préparation de vos rendez-vous</p>
                   </div>
                 ) : candidates.length === 0 ? (
                   <div className="p-12 text-center">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun candidat pour le Kanban</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun candidat pour les rendez-vous</h3>
                     <p className="text-gray-600 mb-6">Les candidats apparaîtront ici une fois qu'ils seront ajoutés.</p>
                     <Link 
                       to="/candidates" 
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
                     >
                       <Users className="w-5 h-5" />
                       Voir tous les candidats
                     </Link>
                   </div>
                 ) : (
-                  <>
-                    {/* Container Kanban */}
-                    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
-                      <CandidateKanban 
-                        candidates={candidates}
-                        onUpdateStatus={updateCandidateStatus}
-                        onToggleFavorite={addToFavorites}
-                        favorites={favorites}
-                        onRefreshCandidates={loadCandidates}
-                        appointments={appointments}
-                      />
-                    </div>
-                    
-                    {/* Container Calendrier */}
-                    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
-                      <div className="flex items-center justify-between mb-8">
-                        <div>
-                          <h2 className="text-2xl font-bold text-gray-900">Calendrier des Rendez-vous</h2>
-                          <p className="text-gray-600 mt-2">Planifiez et gérez vos entretiens</p>
-                        </div>
-                        {refreshing && (
-                          <div className="flex items-center gap-2 text-blue-600">
-                            <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                            <span className="text-sm font-medium">Mise à jour...</span>
-                          </div>
-                        )}
+                  <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
+                    <div className="flex items-center justify-between mb-8">
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Calendrier des Rendez-vous</h2>
+                        <p className="text-gray-600 mt-2">Planifiez et gérez vos entretiens</p>
                       </div>
-                      <Calendar candidates={candidates} favorites={favorites} />
+                      {refreshing && (
+                        <div className="flex items-center gap-2 text-blue-600">
+                          <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                          <span className="text-sm font-medium">Mise à jour...</span>
+                        </div>
+                      )}
                     </div>
-                  </>
+                    <Calendar candidates={candidates} favorites={favorites} />
+                  </div>
                 )}
               </motion.div>
             )}
