@@ -257,7 +257,13 @@ export default function MyProfilePage() {
   // Fonctions pour l'édition inline
   const startEditing = (fieldName, currentValue) => {
     setEditingField(fieldName);
-    setTempValue(currentValue || '');
+    // Pour les champs numériques avec €, on retire le symbole pour l'édition
+    if ((fieldName === 'dailyRate' || fieldName === 'annualSalary') && currentValue) {
+      const numericValue = currentValue.replace(' €', '');
+      setTempValue(numericValue);
+    } else {
+      setTempValue(currentValue || '');
+    }
   };
 
   const cancelEditing = () => {
@@ -1283,32 +1289,36 @@ export default function MyProfilePage() {
                           </div>
 
                           {/* Rémunération */}
-                          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                            <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-700 mb-2">Rémunération souhaitée</p>
-                              <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-gray-600 font-medium">TJM:</span>
-                                  <EditableField
-                                    fieldName="dailyRate"
-                                    value={formData.dailyRate}
-                                    placeholder="Non spécifié"
-                                    type="number"
-                                    className="font-bold text-gray-900"
-                                  />
-                                  {formData.dailyRate && <span className="text-gray-600">€</span>}
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-sm text-gray-600 font-medium">Salaire annuel:</span>
-                                  <EditableField
-                                    fieldName="annualSalary"
-                                    value={formData.annualSalary}
-                                    placeholder="Non spécifié"
-                                    type="number"
-                                    className="font-bold text-gray-900"
-                                  />
-                                  {formData.annualSalary && <span className="text-gray-600">€</span>}
-                                </div>
+                          <div className="space-y-4">
+                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="p-2 bg-blue-100 rounded-lg">
+                                <DollarSign className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-500 mb-1">TJM</p>
+                                <EditableField
+                                  fieldName="dailyRate"
+                                  value={formData.dailyRate ? `${formData.dailyRate} €` : ''}
+                                  placeholder="Non spécifié"
+                                  type="number"
+                                  className="font-semibold text-gray-900"
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="p-2 bg-blue-100 rounded-lg">
+                                <DollarSign className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-500 mb-1">Salaire annuel</p>
+                                <EditableField
+                                  fieldName="annualSalary"
+                                  value={formData.annualSalary ? `${formData.annualSalary} €` : ''}
+                                  placeholder="Non spécifié"
+                                  type="number"
+                                  className="font-semibold text-gray-900"
+                                />
                               </div>
                             </div>
                           </div>
