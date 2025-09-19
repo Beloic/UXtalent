@@ -1135,6 +1135,16 @@ export default function MyProfilePage() {
                        // Sauvegarder automatiquement
                        setTimeout(async () => {
                          try {
+                           console.log('🗑️ Suppression de compétence:', { 
+                             formDataId: formData.id, 
+                             newSkills: newSkills.join(', '),
+                             originalSkills: formData.skills 
+                           });
+                           
+                           if (!formData.id) {
+                             throw new Error('ID du profil manquant');
+                           }
+                           
                            const session = await supabase.auth.getSession();
                            const token = session.data.session?.access_token;
                            
@@ -1143,8 +1153,11 @@ export default function MyProfilePage() {
                            }
 
                            const updateData = { skills: newSkills.join(', ') };
+                           const url = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`);
                            
-                           const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
+                           console.log('📡 Appel API:', { url, updateData });
+                           
+                           const response = await fetch(url, {
                              method: 'PUT',
                              headers: {
                                'Content-Type': 'application/json',
@@ -1153,13 +1166,22 @@ export default function MyProfilePage() {
                              body: JSON.stringify(updateData)
                            });
 
+                           console.log('📡 Réponse API:', { 
+                             status: response.status, 
+                             ok: response.ok,
+                             statusText: response.statusText 
+                           });
+
                            if (response.ok) {
                              setMessage('✅ Compétence supprimée avec succès');
                              setTimeout(() => setMessage(''), 3000);
                            } else {
-                             throw new Error('Erreur lors de la sauvegarde');
+                             const errorText = await response.text();
+                             console.error('❌ Erreur API:', errorText);
+                             throw new Error(`Erreur ${response.status}: ${errorText}`);
                            }
                          } catch (error) {
+                           console.error('❌ Erreur complète:', error);
                            setMessage(`❌ Erreur: ${error.message}`);
                            setTimeout(() => setMessage(''), 3000);
                          }
