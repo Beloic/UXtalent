@@ -1128,10 +1128,10 @@ export default function MyProfilePage() {
                                    }, 100);
                                  }
                                }}
-                               className="w-10 h-10 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors flex items-center justify-center shadow-md hover:shadow-lg"
+                               className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
                                title="Ajouter une compétence"
                              >
-                               <span className="text-xl font-bold">+</span>
+                               <span className="text-lg font-bold">+</span>
                              </button>
                           </div>
                           
