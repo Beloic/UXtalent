@@ -7,7 +7,7 @@ import RecruiterLandingPage from "./pages/RecruiterLandingPage";
 import CandidatesListPage from "./pages/CandidatesListPage";
 import CandidateDetailPage from "./pages/CandidateDetailPage";
 import AddProfilePage from "./pages/AddProfilePage";
-import MyProfilePage from "./pages/MyProfilePage";
+// import MyProfilePage from "./pages/MyProfilePage";
 import ProfileStatsPage from "./pages/ProfileStatsPage";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import SearchAnalysisPage from "./pages/SearchAnalysisPage";
@@ -146,7 +146,7 @@ export default function App() {
         <Route path="/my-profile" element={
           <Layout>
             <ProtectedRoute>
-              <MyProfilePage />
+              {/* <MyProfilePage /> */}
             </ProtectedRoute>
           </Layout>
         } />

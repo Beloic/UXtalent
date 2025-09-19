@@ -15,8 +15,6 @@ export default function MyProfilePage() {
   const { isRecruiter, isCandidate } = usePermissions();
   const [currentStep, setCurrentStep] = useState(1);
   const [activeTab, setActiveTab] = useState('profile');
-  const [editingField, setEditingField] = useState(null);
-  const [tempValue, setTempValue] = useState('');
   const [profileStats, setProfileStats] = useState({
     profileViews: 0,
     profileViewsToday: 0,
@@ -56,57 +54,6 @@ export default function MyProfilePage() {
   const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
 
   const totalSteps = 6;
-
-  // Fonctions pour l'édition inline
-  const startEditing = (field, currentValue) => {
-    setEditingField(field);
-    setTempValue(currentValue || '');
-  };
-
-  const cancelEditing = () => {
-    setEditingField(null);
-    setTempValue('');
-  };
-
-  const saveField = async (field) => {
-    try {
-      setIsLoading(true);
-      
-      const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
-      
-      if (!token) {
-        console.error('Token d\'authentification manquant');
-        return;
-      }
-
-      const updateData = { [field]: tempValue };
-      
-      const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(updateData)
-      });
-
-      if (response.ok) {
-        setFormData(prev => ({ ...prev, [field]: tempValue }));
-        setMessage(`✅ ${field} mis à jour avec succès !`);
-        setTimeout(() => setMessage(''), 3000);
-        setEditingField(null);
-        setTempValue('');
-      } else {
-        const errorData = await response.json();
-        setMessage(`❌ Erreur: ${errorData.message || 'Impossible de mettre à jour'}`);
-      }
-    } catch (error) {
-      setMessage(`❌ Erreur lors de la mise à jour: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // Fonction pour charger les statistiques du profil
   const loadProfileStats = useCallback(async () => {
@@ -775,17 +722,17 @@ export default function MyProfilePage() {
   }
 
 
-  // Affichage du profil en mode public avec édition inline
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
+        {/* Header avec bouton retour et onglets */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center justify-between gap-4 mb-6">
             <Link 
               to="/candidates" 
               className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
@@ -793,168 +740,64 @@ export default function MyProfilePage() {
               <ArrowLeft className="w-4 h-4" />
               Retour
             </Link>
-          </div>
-        </motion.div>
-
-        {/* Message de succès */}
-        {message && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-800"
-          >
-            {message}
-          </motion.div>
-        )}
-
-        {/* Profil principal */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
-        >
-          {/* Header du profil */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white">
-            <div className="flex items-start gap-6">
-              {/* Photo de profil */}
-              <div className="relative">
-                {formData.photo ? (
-                  <img
-                    src={formData.photo}
-                    alt={formData.name}
-                    className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-2xl bg-white/20 border-4 border-white shadow-lg flex items-center justify-center">
-                    <User className="w-12 h-12 text-white" />
-                  </div>
-                )}
-              </div>
-              
-              {/* Informations principales */}
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  {editingField === 'name' ? (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={tempValue}
-                        onChange={(e) => setTempValue(e.target.value)}
-                        className="text-3xl font-bold bg-white/20 border border-white/30 rounded-lg px-3 py-1 text-white placeholder-white/70"
-                        placeholder="Votre nom"
-                        autoFocus
-                      />
-                      <button
-                        onClick={() => saveField('name')}
-                        className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
-                      >
-                        <Check className="w-4 h-4 text-white" />
-                      </button>
-                      <button
-                        onClick={cancelEditing}
-                        className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
-                      >
-                        <X className="w-4 h-4 text-white" />
-                      </button>
-                    </div>
-                  ) : (
-                    <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                      {formData.name || 'Votre nom'}
-                      <button
-                        onClick={() => startEditing('name', formData.name)}
-                        className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                      >
-                        <Edit className="w-4 h-4 text-white" />
-                      </button>
-                    </h1>
-                  )}
-                </div>
-                
-                <div className="flex items-center gap-3 mb-4">
-                  {editingField === 'title' ? (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={tempValue}
-                        onChange={(e) => setTempValue(e.target.value)}
-                        className="text-lg bg-white/20 border border-white/30 rounded-lg px-3 py-1 text-white placeholder-white/70"
-                        placeholder="Votre titre"
-                        autoFocus
-                      />
-                      <button
-                        onClick={() => saveField('title')}
-                        className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
-                      >
-                        <Check className="w-4 h-4 text-white" />
-                      </button>
-                      <button
-                        onClick={cancelEditing}
-                        className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
-                      >
-                        <X className="w-4 h-4 text-white" />
-                      </button>
-                    </div>
-                  ) : (
-                    <p className="text-lg text-white/90 flex items-center gap-2">
-                      {formData.title || 'Votre titre professionnel'}
-                      <button
-                        onClick={() => startEditing('title', formData.title)}
-                        className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                      >
-                        <Edit className="w-4 h-4 text-white" />
-                      </button>
-                    </p>
-                  )}
-                </div>
-                
-                <div className="flex items-center gap-4 text-white/80">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    {editingField === 'location' ? (
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={tempValue}
-                          onChange={(e) => setTempValue(e.target.value)}
-                          className="bg-white/20 border border-white/30 rounded-lg px-2 py-1 text-white placeholder-white/70 text-sm"
-                          placeholder="Votre localisation"
-                          autoFocus
-                        />
-                        <button
-                          onClick={() => saveField('location')}
-                          className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
-                        >
-                          <Check className="w-3 h-3 text-white" />
-                        </button>
-                        <button
-                          onClick={cancelEditing}
-                          className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
-                        >
-                          <X className="w-3 h-3 text-white" />
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        {formData.location || 'Votre localisation'}
-                        <button
-                          onClick={() => startEditing('location', formData.location)}
-                          className="p-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                        >
-                          <Edit className="w-3 h-3 text-white" />
-                        </button>
-                      </span>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Globe className="w-4 h-4" />
-                    <span className="capitalize">{formData.remote || 'hybrid'}</span>
-                  </div>
-                </div>
-              </div>
+            
+            {/* Onglets de navigation */}
+            <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 flex">
+              {isCandidate && (
+                <>
+                  <button
+                    onClick={() => setActiveTab('profile')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'profile'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Settings className="w-5 h-5" />
+                    Profil
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('stats')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'stats'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <BarChart3 className="w-5 h-5" />
+                    Statistiques
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('plan')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'plan'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <DollarSign className="w-5 h-5" />
+                    Mon plan
+                  </button>
+                </>
+              )}
+              {isRecruiter && (
+                <>
+                  <button
+                    onClick={() => setActiveTab('offer')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'offer'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Kanban className="w-5 h-5" />
+                    Mon offre
+                  </button>
+                </>
+              )}
             </div>
           </div>
+        </motion.div>
 
         {/* Contenu des onglets */}
         <AnimatePresence mode="wait">
