@@ -43,7 +43,6 @@ import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';
 import EditJobForm from '../components/EditJobForm';
 import MatchingDashboard from '../components/MatchingDashboard';
-import ExportButton from '../components/ExportButton';
 import { loadAppointments } from '../services/appointmentsApi';
 import { buildApiUrl } from '../config/api';
 
@@ -790,9 +789,6 @@ export default function RecruiterDashboard() {
                       <p className="text-gray-600 mt-2">Gérez vos candidats préférés</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      {/* Bouton d'export des talents */}
-                      <ExportButton />
-                      
                       {favorites.length > 0 && (
                         <div className="flex items-center gap-1 text-sm text-gray-600">
                           <Heart className="w-4 h-4 fill-current text-red-500" />
@@ -959,9 +955,6 @@ export default function RecruiterDashboard() {
                       <p className="text-gray-600 mt-2">Organisez vos candidats par statut avec le drag & drop</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      {/* Bouton d'export des talents */}
-                      <ExportButton />
-                      
                       {candidates.length > 0 && (
                         <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-xl font-semibold">
                           <Layout className="w-5 h-5" />

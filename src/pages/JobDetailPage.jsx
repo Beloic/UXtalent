@@ -18,8 +18,7 @@ import {
   Mail,
   Linkedin,
   Twitter,
-  Send,
-  Eye
+  Send
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { usePermissions } from "../hooks/usePermissions";
@@ -544,40 +543,6 @@ export default function JobDetailPage() {
               
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                    <Users className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Candidats</div>
-                    <div className="font-semibold text-gray-900">
-                      {job.applicationsCount || job.applications_count || 0} candidat{(job.applicationsCount || job.applications_count || 0) > 1 ? 's' : ''}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <Eye className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Vues</div>
-                    <div className="font-semibold text-gray-900">
-                      {job.viewsCount || job.views_count || 0} vue{(job.viewsCount || job.views_count || 0) > 1 ? 's' : ''}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <Building2 className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Entreprise</div>
-                    <div className="font-semibold text-gray-900">{job.company}</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                     <Clock className="w-5 h-5 text-blue-600" />
                   </div>
@@ -598,12 +563,14 @@ export default function JobDetailPage() {
                 </div>
                 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <Globe className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                    <Users className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Mode de travail</div>
-                    <div className="font-semibold text-gray-900">{getRemoteText(job.remote)}</div>
+                    <div className="text-sm text-gray-500">Candidats</div>
+                    <div className="font-semibold text-gray-900">
+                      {job.applicationsCount || job.applications_count || 0} candidat{(job.applicationsCount || job.applications_count || 0) > 1 ? 's' : ''}
+                    </div>
                   </div>
                 </div>
 

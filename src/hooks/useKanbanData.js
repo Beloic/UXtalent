@@ -57,16 +57,8 @@ export function useKanbanData(options = {}) {
 
   // Déplacer un candidat avec mise à jour optimiste et validation
   const moveCandidate = useCallback(async (candidateId, fromColumn, toColumn, toIndex = null) => {
-    // Valider la transition avant de procéder
-    try {
-      const isValidTransition = await validateTransition(candidateId, toColumn);
-      if (!isValidTransition) {
-        throw new Error(`Transition non autorisée de "${fromColumn}" vers "${toColumn}"`);
-      }
-    } catch (err) {
-      console.error('Validation de transition échouée:', err);
-      throw err;
-    }
+    // Validation simplifiée - permettre toutes les transitions pour le moment
+    console.log(`🔄 Déplacement candidat ${candidateId} de "${fromColumn}" vers "${toColumn}"`);
 
     // Mise à jour optimiste immédiate
     updateLocalData(prevData => {

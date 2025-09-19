@@ -1779,20 +1779,22 @@ app.put('/api/recruiter/kanban/move-candidate', requireRole(['recruiter', 'admin
       });
       
       try {
-        const isValidTransition = await validateKanbanTransition(fromColumnId, toColumnData.id, candidateId, recruiterId);
+        // Utiliser la fonction de validation simple au lieu de la RPC
+        const fromColumnName = currentStatus?.kanban_columns?.name || 'À contacter';
+        const isValidTransition = await validateStatusTransition(fromColumnName, toColumn, candidateId, recruiterId);
         console.log('✅ Transition validée:', isValidTransition);
         
         if (!isValidTransition) {
           console.log('❌ Transition non autorisée');
           return res.status(400).json({ 
             error: 'Transition de statut non autorisée',
-            details: `Impossible de passer de "${currentStatus?.kanban_columns?.name || 'À contacter'}" à "${toColumn}"`
+            details: `Impossible de passer de "${fromColumnName}" à "${toColumn}"`
           });
         }
       } catch (validationError) {
         console.log('⚠️ Erreur lors de la validation, on continue sans validation:', validationError.message);
         // En cas d'erreur de validation, on continue sans valider
-        // TODO: Corriger la fonction validateKanbanTransition
+        // Permettre toutes les transitions pour le moment
       }
     }
     

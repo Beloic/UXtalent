@@ -16,6 +16,7 @@ export default function PricingPage() {
         "Filtres de recherche avancés",
         "Contact direct avec les candidats",
         "Tableau Kanban pour organiser les candidats",
+        "Algorithme de Matching intelligent",
         "Export des talents en CSV/JSON",
         "Support par email"
       ],
@@ -53,6 +54,7 @@ export default function PricingPage() {
         "Support dédié 24/7",
         "Tableau de bord personnalisé",
         "Tableau Kanban personnalisé pour organiser les candidats",
+        "Algorithme de Matching intelligent",
         "Export des talents en CSV/JSON",
         "Export avancé des données",
         "Intégrations personnalisées",
