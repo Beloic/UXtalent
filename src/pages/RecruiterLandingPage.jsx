@@ -194,8 +194,8 @@ export default function RecruiterLandingPage() {
                 <li className="flex items-start gap-3">
                   <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <strong className="text-gray-900">Dashboard recruteur</strong>
-                    <p className="text-gray-600 text-sm">Gestion des favoris et tableau Kanban pour organiser vos candidats</p>
+                    <strong className="text-gray-900">Matching intelligent</strong>
+                    <p className="text-gray-600 text-sm">Algorithme de matching pour trouver les meilleurs candidats selon vos critères</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -281,8 +281,8 @@ export default function RecruiterLandingPage() {
               },
               {
                 icon: <BarChart3 className="w-8 h-8" />,
-                title: "Dashboard recruteur",
-                features: ["Gestion des favoris", "Tableau Kanban", "Export des données", "Suivi des candidats"],
+                title: "Matching intelligent",
+                features: ["Algorithme de scoring", "Recommandations personnalisées", "Analyse de compatibilité", "Scores détaillés"],
                 color: "text-green-600",
                 bgColor: "bg-green-100"
               },
@@ -393,7 +393,7 @@ export default function RecruiterLandingPage() {
                   </li>
                   <li className="flex items-center gap-2 text-gray-600">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Tableau Kanban pour organiser les candidats</span>
+                    <span>Dashboard de matching avec scores de compatibilité</span>
                   </li>
                   <li className="flex items-center gap-2 text-gray-600">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -454,7 +454,7 @@ export default function RecruiterLandingPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-300" />
-                    <span>Tableau Kanban avancé</span>
+                    <span>Analyse avancée de compatibilité</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-300" />
