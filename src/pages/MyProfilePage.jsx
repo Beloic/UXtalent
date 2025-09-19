@@ -1081,7 +1081,7 @@ export default function MyProfilePage() {
                                          throw new Error('Token d\'authentification manquant');
                                        }
 
-                                       const updateData = { skills: updatedSkills.join(', ') };
+                                       const updateData = { skills: updatedSkills };
                                        
                                        const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
                                          method: 'PUT',
@@ -1152,7 +1152,7 @@ export default function MyProfilePage() {
                              throw new Error('Token d\'authentification manquant');
                            }
 
-                           const updateData = { skills: newSkills.join(', ') };
+                           const updateData = { skills: newSkills };
                            const url = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`);
                            
                            console.log('📡 Appel API:', { url, updateData });
