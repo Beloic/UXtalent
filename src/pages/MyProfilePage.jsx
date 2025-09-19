@@ -965,6 +965,16 @@ export default function MyProfilePage() {
                       <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm relative">
                         {/* Badges en haut à droite */}
                         <div className="absolute top-4 right-4 flex items-center gap-3">
+                          {/* Bouton pour voir le profil public */}
+                          <Link 
+                            to={`/candidates/${formData.id}`}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                            title="Voir mon profil public"
+                          >
+                            <Eye className="w-4 h-4" />
+                            Voir profil
+                          </Link>
+                          
                           {(candidatePlan === 'premium' || candidatePlan === 'pro') && (
                             <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
                               candidatePlan === 'pro' 
