@@ -292,6 +292,13 @@ export default function MyProfilePage() {
 
       const updateData = { [editingField]: tempValue };
       
+      console.log('💾 Sauvegarde champ:', { 
+        field: editingField, 
+        value: tempValue, 
+        formDataId: formData.id,
+        updateData 
+      });
+      
       const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
         method: 'PUT',
         headers: {
@@ -301,11 +308,24 @@ export default function MyProfilePage() {
         body: JSON.stringify(updateData)
       });
 
+      console.log('📡 Réponse sauvegarde:', { 
+        status: response.status, 
+        ok: response.ok,
+        statusText: response.statusText 
+      });
+
       if (response.ok) {
         setMessage('✅ Champ mis à jour avec succès');
         setTimeout(() => setMessage(''), 3000);
+        
+        // Recharger le profil pour s'assurer que les données sont à jour
+        setTimeout(() => {
+          loadExistingProfile();
+        }, 500);
       } else {
-        throw new Error('Erreur lors de la sauvegarde');
+        const errorText = await response.text();
+        console.error('❌ Erreur sauvegarde:', errorText);
+        throw new Error(`Erreur ${response.status}: ${errorText}`);
       }
     } catch (error) {
       setMessage(`❌ Erreur: ${error.message}`);
