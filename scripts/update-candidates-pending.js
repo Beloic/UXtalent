@@ -21,7 +21,7 @@ async function run() {
     // Récupérer les candidats correspondants
     const { data: found, error: findError } = await supabaseAdmin
       .from('candidates')
-      .select('id, name, approved, visible, status')
+      .select('id, name, status')
       .in('name', names)
 
     if (findError) {
@@ -40,9 +40,9 @@ async function run() {
 
     const { data: updated, error: updateError } = await supabaseAdmin
       .from('candidates')
-      .update({ approved: false, visible: false, status: 'pending', updated_at: new Date().toISOString() })
+      .update({ status: 'pending', updated_at: new Date().toISOString() })
       .in('id', ids)
-      .select('id, name, approved, visible, status')
+      .select('id, name, status')
 
     if (updateError) {
       console.error('Erreur lors de la mise à jour:', updateError.message)

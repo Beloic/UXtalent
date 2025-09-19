@@ -543,7 +543,7 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
         if (userError || !authUser) {
           console.log('❌ Token invalide');
           // Retourner au mode freemium
-          visibleCandidates = filteredCandidates.filter(c => c.approved === true);
+          visibleCandidates = filteredCandidates.filter(c => c.status === 'approved');
           totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
           isAuthenticated = false;
         } else {
@@ -556,8 +556,9 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
             totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = true;
           } else if (userRole === ROLES.CANDIDATE) {
-            // Les candidats voient seulement les premiers candidats approuvés + leur propre profil
+            // Les candidats voient seulement les premiers candidats approuvés (pas leur propre profil s'il n'est pas approuvé)
             const approvedCandidates = filteredCandidates.filter(c => c.status === 'approved');
+            
             // Trouver le profil perso dans TOUTE la base (pas uniquement les filtres)
             const allCandidates = await loadCandidates();
             const ownProfileAll = allCandidates.filter(c => (
@@ -567,32 +568,34 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
               (c.id && c.id === authUser.id)
             ));
             const ownProfile = ownProfileAll.slice(0, 1); // max 1
-            console.log('👤 Profil candidat courant détecté:', ownProfile.map(c => ({ id: c.id, email: c.email })));
+            console.log('👤 Profil candidat courant détecté:', ownProfile.map(c => ({ id: c.id, email: c.email, status: c.status })));
             
             // Limiter à 4 profils complets pour les candidats
             const maxVisibleForCandidates = 4;
             const topApproved = approvedCandidates.slice(0, maxVisibleForCandidates);
-            // Construire la liste en mettant d'abord le profil perso s'il existe
-            const rest = topApproved.filter(ac => !ownProfile.some(op => op.id === ac.id));
-            visibleCandidates = ownProfile.length > 0 ? [...ownProfile, ...rest] : [...rest];
+            
+            // Construire la liste : inclure le profil perso SEULEMENT s'il est approuvé
+            const approvedOwnProfile = ownProfile.filter(op => op.status === 'approved');
+            const rest = topApproved.filter(ac => !approvedOwnProfile.some(op => op.id === ac.id));
+            visibleCandidates = approvedOwnProfile.length > 0 ? [...approvedOwnProfile, ...rest] : [...rest];
             
             totalHiddenCandidates = approvedCandidates.length - maxVisibleForCandidates;
             isAuthenticated = true;
           } else {
             // Rôle non reconnu, mode freemium
             console.log(`⚠️ Rôle non reconnu: ${userRole}`);
-            visibleCandidates = filteredCandidates.filter(c => c.approved === true && c.visible === true);
+            visibleCandidates = filteredCandidates.filter(c => c.status === 'approved');
             totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = false;
           }
         }
       }
     } else {
-      // Pas d'authentification - appliquer le freemium basé sur les champs visible et approved
-      console.log('🔒 Pas d\'authentification - système freemium activé (visible:true et approved:true uniquement)');
+      // Pas d'authentification - appliquer le freemium basé sur le statut
+      console.log('🔒 Pas d\'authentification - système freemium activé (status:approved uniquement)');
       // IMPORTANT: Filtrer les candidats rejetés pour les visiteurs non authentifiés
-      // Seuls les candidats approuvés ET visibles peuvent être vus par les visiteurs non authentifiés
-      filteredCandidates = filteredCandidates.filter(c => c.approved === true && c.visible === true);
+      // Seuls les candidats approuvés peuvent être vus par les visiteurs non authentifiés
+      filteredCandidates = filteredCandidates.filter(c => c.status === 'approved');
       const publicCandidates = filteredCandidates;
       // Option: masquer la moitié des profils publics pour renforcer le freemium
       const halfIndex = Math.ceil(publicCandidates.length / 2);
@@ -679,9 +682,9 @@ app.get('/api/candidates/:id', async (req, res) => {
     const authHeader = req.headers.authorization;
     const hasAuth = !!authHeader && authHeader.startsWith('Bearer ');
 
-    // Si non authentifié et candidat non public, refuser l'accès
-    if (!hasAuth && candidate.visible === false) {
-      console.log('🔒 [GET_CANDIDATE] Accès refusé - candidat non public');
+    // Si non authentifié et candidat non approuvé, refuser l'accès
+    if (!hasAuth && candidate.status !== 'approved') {
+      console.log('🔒 [GET_CANDIDATE] Accès refusé - candidat non approuvé');
       return res.status(404).json({ error: 'Candidat non trouvé' });
     }
 
@@ -900,14 +903,14 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
     // S'assurer que les nouveaux candidats sont en attente par défaut
     const candidateDataWithStatus = {
       ...candidateData,
-      approved: candidateData.approved !== undefined ? candidateData.approved : false,
-      visible: candidateData.visible !== undefined ? candidateData.visible : false,
+      // approved supprimé - utilise uniquement status
+      // visible supprimé - utilise uniquement status
       status: candidateData.status || 'pending'
     };
     
     console.log('🆕 [SERVER] Création candidat avec statut:', { 
-      approved: candidateDataWithStatus.approved, 
-      visible: candidateDataWithStatus.visible, 
+      // approved supprimé - utilise uniquement status 
+      // visible supprimé - utilise uniquement status 
       status: candidateDataWithStatus.status 
     });
     
@@ -1333,7 +1336,7 @@ app.get('/api/profile-stats/:userId', authenticateUser, async (req, res) => {
       dailyViews,
       joinDate: candidate.created_at || candidate.createdAt,
       lastActivity: candidate.updated_at || candidate.updatedAt,
-      profileStatus: candidate.approved ? 'approved' : 'pending'
+      profileStatus: candidate.status || 'pending'
     };
 
     res.json(stats);

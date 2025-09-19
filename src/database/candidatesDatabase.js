@@ -37,7 +37,6 @@ export function loadCandidates() {
       salary: "50-65k€",
       languages: ["Français", "Anglais"],
       photo: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
-      visible: true,
       status: 'approved',
       createdAt: "2024-01-15T10:00:00Z",
       updatedAt: "2024-01-15T10:00:00Z"
@@ -58,7 +57,6 @@ export function loadCandidates() {
       salary: "40-55k€",
       languages: ["Français", "Anglais", "Espagnol"],
       photo: "",
-      visible: true,
       status: 'approved',
       createdAt: "2024-01-14T14:30:00Z",
       updatedAt: "2024-01-14T14:30:00Z"
@@ -79,7 +77,6 @@ export function loadCandidates() {
       salary: "45-60k€",
       languages: ["Français", "Anglais", "Mandarin"],
       photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
-      visible: true,
       status: 'approved',
       createdAt: "2024-01-13T09:15:00Z",
       updatedAt: "2024-01-13T09:15:00Z"
@@ -100,8 +97,7 @@ export function loadCandidates() {
       salary: "65-80k€",
       languages: ["Français", "Anglais"],
       photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-      visible: false,
-      approved: false,
+      status: 'pending',
       createdAt: "2024-01-12T16:20:00Z",
       updatedAt: "2024-01-12T16:20:00Z"
     },
@@ -121,8 +117,7 @@ export function loadCandidates() {
       salary: "30-40k€",
       languages: ["Français", "Anglais"],
       photo: "",
-      visible: false,
-      approved: false,
+      status: 'pending',
       createdAt: "2024-01-11T11:45:00Z",
       updatedAt: "2024-01-11T11:45:00Z"
     },
@@ -142,8 +137,7 @@ export function loadCandidates() {
       salary: "45-60k€",
       languages: ["Français", "Anglais"],
       photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
-      visible: false,
-      approved: false,
+      status: 'pending',
       createdAt: "2024-01-10T14:30:00Z",
       updatedAt: "2024-01-10T14:30:00Z"
     }
@@ -174,8 +168,6 @@ export function addCandidate(candidate) {
   const newCandidate = {
     ...candidate,
     id: `candidate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    approved: candidate.approved !== undefined ? candidate.approved : false, // Par défaut non approuvé
-    visible: candidate.visible !== undefined ? candidate.visible : false,   // Par défaut non visible
     status: candidate.status || 'pending', // Par défaut en attente
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()

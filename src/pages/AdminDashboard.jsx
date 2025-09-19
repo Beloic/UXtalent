@@ -75,7 +75,7 @@ export default function AdminDashboard() {
         const forcePendingNames = ['Marie Dubois', 'Pierre Martin', 'Sophie Laurent'];
         const effectiveCandidatesList = candidatesList.map(c =>
           forcePendingNames.includes(c.name)
-            ? { ...c, approved: false, visible: false, status: 'pending' }
+            ? { ...c, status: 'pending' }
             : c
         );
 
@@ -400,7 +400,7 @@ export default function AdminDashboard() {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer admin-token'
         },
-        body: JSON.stringify({ approved: true, visible: true, status: null })
+        body: JSON.stringify({ status: 'approved' })
       });
 
       if (response.ok) {
@@ -424,7 +424,7 @@ export default function AdminDashboard() {
     if (filterStatus === 'pending') {
       filtered = candidates.pending || [];
     } else if (filterStatus === 'approved') {
-      filtered = candidates.approved || [];
+      filtered = candidates.filter(c => c.status === 'approved') || [];
     } else if (filterStatus === 'rejected') {
       filtered = candidates.rejected || [];
     } else if (filterStatus === 'all') {
@@ -872,11 +872,11 @@ export default function AdminDashboard() {
               )}
               {/* Status badge */}
               <div className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center shadow-xl ${
-                candidate.approved 
+                candidate.status === 'approved' 
                   ? 'bg-gradient-to-br from-emerald-500 to-green-600' 
                   : 'bg-gradient-to-br from-amber-500 to-orange-600'
               }`}>
-                {candidate.approved ? <CheckCircle className="w-5 h-5 text-white" /> : <Clock className="w-5 h-5 text-white" />}
+                {candidate.status === 'approved' ? <CheckCircle className="w-5 h-5 text-white" /> : <Clock className="w-5 h-5 text-white" />}
               </div>
             </div>
 
@@ -887,11 +887,11 @@ export default function AdminDashboard() {
                   <p className="text-xl text-gray-600 mb-3 font-medium">{candidate.title}</p>
                 </div>
                 <div className={`px-6 py-3 text-sm font-bold rounded-2xl ${
-                  candidate.approved 
+                  candidate.status === 'approved' 
                     ? 'bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 border border-emerald-200/50' 
                     : 'bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 border border-amber-200/50'
                 }`}>
-                  {candidate.approved ? '✓ Approuvé' : '⏳ En attente'}
+                  {candidate.status === 'approved' ? '✓ Approuvé' : '⏳ En attente'}
                 </div>
               </div>
               

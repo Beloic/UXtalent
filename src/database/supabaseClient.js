@@ -177,8 +177,7 @@ export const updateCandidate = async (id, candidateData) => {
     // Logique spéciale pour les candidats rejetés : remettre en attente après modification
     if (currentCandidate?.status === 'rejected' && candidateData.status === 'pending') {
       console.log(`🔄 Candidat rejeté mis à jour: ${id} - Retour en attente`);
-      dbData.approved = false; // Remettre non approuvé
-      dbData.visible = false;   // Remettre non visible
+      dbData.status = 'pending'; // Remettre en attente
     }
     
     console.log('🔄 Mise à jour candidat:', { id, dbData });

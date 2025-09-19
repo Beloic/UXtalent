@@ -254,7 +254,7 @@ export async function getMatchingStats() {
       dataQuality: {
         totalCandidates: candidatesCache.length,
         totalJobs: jobsCache.length,
-        approvedCandidates: candidatesCache.filter(c => c.approved).length,
+        approvedCandidates: candidatesCache.filter(c => c.status === 'approved').length,
         activeJobs: jobsCache.filter(j => j.status === 'active').length
       },
       matching: {

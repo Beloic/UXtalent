@@ -387,8 +387,8 @@ export default function MyProfilePage() {
         // Pour les nouveaux profils : toujours en attente de validation
         // Pour les profils existants rejetés : remettre en attente après modification
         status: formData.id ? (candidateStatus === 'rejected' ? 'pending' : undefined) : 'pending',
-        approved: formData.id ? (candidateStatus === 'rejected' ? false : undefined) : false, // Nouveaux profils : non approuvés par défaut
-        visible: formData.id ? (candidateStatus === 'rejected' ? false : undefined) : false, // Nouveaux profils : non visibles jusqu'à validation
+        // approved supprimé - utilise uniquement status
+        // visible supprimé - utilise uniquement status
         // Tous les champs du formulaire
         title: formData.title || '',
         location: formData.location || '',
