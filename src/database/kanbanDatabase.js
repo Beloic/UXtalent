@@ -130,10 +130,7 @@ export const updateCandidateKanbanStatus = async (candidateId, recruiterId, colu
         onConflict: 'candidate_id,recruiter_id',
         ignoreDuplicates: false 
       })
-      .select(`
-        *,
-        kanban_columns!inner(name, title, color, icon)
-      `)
+      .select('*')
       .single();
 
     if (error) throw error;
