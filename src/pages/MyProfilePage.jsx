@@ -140,11 +140,11 @@ export default function MyProfilePage() {
 
   // Charger les statistiques quand l'onglet stats est sélectionné
   useEffect(() => {
-    if (activeTab === 'stats' && user) {
+    if (activeTab === 'stats' && user && !isLoadingStats && !isLoadingChart) {
       loadProfileStats();
       loadChartData();
     }
-  }, [activeTab, user]); // Suppression des dépendances pour éviter les boucles infinies
+  }, [activeTab, user, loadProfileStats, loadChartData, isLoadingStats, isLoadingChart]);
 
   useEffect(() => {
     if (user) {
@@ -159,10 +159,12 @@ export default function MyProfilePage() {
       // Charger le profil depuis la base de données
       loadExistingProfile();
     }
-  }, [user]);
+  }, [user, loadExistingProfile]);
 
 
-  const loadExistingProfile = async () => {
+  const loadExistingProfile = useCallback(async () => {
+    if (isLoadingProfile) return; // Éviter les appels multiples
+    
     try {
       setIsLoadingProfile(true);
       
@@ -240,7 +242,7 @@ export default function MyProfilePage() {
     } finally {
       setIsLoadingProfile(false);
     }
-  };
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
