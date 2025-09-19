@@ -1065,7 +1065,7 @@ export default function MyProfilePage() {
                           <div className="space-y-4">
                             {/* Tags interactifs */}
                             {formData.skills ? (
-                              <div className="flex flex-wrap gap-3">
+                              <div className="flex flex-wrap gap-x-3 gap-y-4">
                                 {formData.skills.split(',').map((skill, index) => (
                                   <div
                                     key={index}
