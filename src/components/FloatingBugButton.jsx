@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bug, X, ExternalLink } from 'lucide-react';
+import { Bug, Minus, ExternalLink } from 'lucide-react';
 
 export default function FloatingBugButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function FloatingBugButton() {
           transition={{ duration: 0.2 }}
         >
           {isOpen ? (
-            <X className="w-6 h-6" />
+            <Minus className="w-6 h-6" />
           ) : (
             <Bug className="w-6 h-6" />
           )}
@@ -51,19 +51,9 @@ export default function FloatingBugButton() {
             className="fixed bottom-24 right-6 z-40 bg-white rounded-2xl shadow-xl border border-gray-200 p-4 min-w-[280px]"
           >
             <div className="space-y-3">
-              <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <Bug className="w-5 h-5 text-red-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Signaler un Bug</h3>
-                  <p className="text-sm text-gray-600">Aidez-nous à améliorer la plateforme</p>
-                </div>
-              </div>
-
               <div className="space-y-2">
                 <a
-                  href="https://uxtalents.featurebase.app/en/roadmap"
+                  href="https://uxtalents.featurebase.app/en"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
@@ -72,8 +62,8 @@ export default function FloatingBugButton() {
                     <ExternalLink className="w-4 h-4 text-blue-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">Accéder à la Roadmap</p>
-                    <p className="text-sm text-gray-600">Signaler directement sur Featurebase</p>
+                    <p className="font-medium text-gray-900">Signaler un Bug</p>
+                    <p className="text-sm text-gray-600">Hyper rapide sans créer de compte</p>
                   </div>
                   <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
                 </a>

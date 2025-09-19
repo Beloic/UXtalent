@@ -22,7 +22,7 @@ export default function ReportBugPage() {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText('https://uxtalents.featurebase.app/en/roadmap');
+    navigator.clipboard.writeText('https://uxtalents.featurebase.app/en');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -132,13 +132,13 @@ export default function ReportBugPage() {
 
               <div className="mt-8 pt-8 border-t border-gray-200">
               <a 
-                href="https://uxtalents.featurebase.app/en/roadmap" 
+                href="https://uxtalents.featurebase.app/en" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white font-semibold rounded-2xl hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
               >
                 <ExternalLink className="w-5 h-5" />
-                Accéder à la Roadmap
+                Signaler un Bug
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
               </div>
