@@ -330,10 +330,10 @@ export default function MyProfilePage() {
             <button
               onClick={saveInlineEdit}
               disabled={isSavingInline}
-              className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors disabled:opacity-50"
+              className="p-2 bg-green-500 text-white hover:bg-green-600 rounded-full transition-colors disabled:opacity-50 shadow-md hover:shadow-lg"
             >
               {isSavingInline ? (
-                <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 <CheckIcon className="w-4 h-4" />
               )}
@@ -341,7 +341,7 @@ export default function MyProfilePage() {
             <button
               onClick={cancelEditing}
               disabled={isSavingInline}
-              className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
+              className="p-2 bg-red-500 text-white hover:bg-red-600 rounded-full transition-colors disabled:opacity-50 shadow-md hover:shadow-lg"
             >
               <XIcon className="w-4 h-4" />
             </button>
@@ -1203,10 +1203,10 @@ export default function MyProfilePage() {
                                   <button
                                     onClick={saveInlineEdit}
                                     disabled={isSavingInline}
-                                    className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors disabled:opacity-50"
+                                    className="p-2 bg-green-500 text-white hover:bg-green-600 rounded-full transition-colors disabled:opacity-50 shadow-md hover:shadow-lg"
                                   >
                                     {isSavingInline ? (
-                                      <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                     ) : (
                                       <CheckIcon className="w-4 h-4" />
                                     )}
@@ -1214,7 +1214,7 @@ export default function MyProfilePage() {
                                   <button
                                     onClick={cancelEditing}
                                     disabled={isSavingInline}
-                                    className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
+                                    className="p-2 bg-red-500 text-white hover:bg-red-600 rounded-full transition-colors disabled:opacity-50 shadow-md hover:shadow-lg"
                                   >
                                     <XIcon className="w-4 h-4" />
                                   </button>
