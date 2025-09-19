@@ -260,7 +260,7 @@ export default function CandidateDetailPage() {
   const { id } = useParams();
   const { candidate, loading, error } = useCandidate(id);
   const { user } = useAuth();
-  const { isRecruiter } = usePermissions();
+  const { isRecruiter, isCandidate } = usePermissions();
   const hasTrackedViewRef = React.useRef(false);
   
   // État pour les favoris
@@ -386,6 +386,15 @@ export default function CandidateDetailPage() {
     }
   };
 
+  // Fonction pour déterminer si le nom doit être masqué
+  const shouldHideName = () => {
+    // Si c'est un candidat et que ce n'est pas son propre profil, masquer le nom
+    if (isCandidate && user?.email !== candidate?.email) {
+      return true;
+    }
+    return false;
+  };
+
 
   if (loading) {
     return (
@@ -491,7 +500,13 @@ export default function CandidateDetailPage() {
               <div className="flex items-start gap-6 mb-8">
                 {/* Photo de profil */}
                 <div className="relative">
-                  {candidate.photo ? (
+                  {shouldHideName() ? (
+                    <img
+                      src={`https://ui-avatars.com/api/?name=Candidat&size=96&background=6366f1&color=ffffff&bold=true`}
+                      alt="Avatar anonyme"
+                      className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
+                    />
+                  ) : candidate.photo ? (
                     <img
                       src={candidate.photo}
                       alt={`Photo de ${candidate.name}`}
@@ -512,7 +527,7 @@ export default function CandidateDetailPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-2">
                     <h1 className="text-4xl font-bold text-gray-900">
-                      {candidate.name}
+                      {shouldHideName() ? "Candidat anonyme" : candidate.name}
                     </h1>
                   </div>
                   <p className="text-xl text-gray-600 mb-4">{candidate.title || 'Titre non spécifié'}</p>

@@ -8,7 +8,7 @@ import { supabase } from "../lib/supabase";
 
 export default function CandidateCard({ candidate, compact = false }) {
   const { user } = useAuth();
-  const { isRecruiter } = usePermissions();
+  const { isRecruiter, isCandidate } = usePermissions();
   const [isFavorited, setIsFavorited] = useState(false);
   const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
 
@@ -111,6 +111,15 @@ export default function CandidateCard({ candidate, compact = false }) {
     }
   };
 
+  // Fonction pour déterminer si le nom doit être masqué
+  const shouldHideName = () => {
+    // Si c'est un candidat et que ce n'est pas son propre profil, masquer le nom
+    if (isCandidate && user?.email !== candidate.email) {
+      return true;
+    }
+    return false;
+  };
+
 
   // Style aligné sur la carte d'offre (JobCard)
   const getCardStyles = () => {
@@ -139,7 +148,13 @@ export default function CandidateCard({ candidate, compact = false }) {
           {/* Colonne gauche: Avatar (style carte carrée arrondie) */}
           <div className="flex flex-col items-start gap-2 w-24">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-gray-100 shadow">
-              {candidate.photo ? (
+              {shouldHideName() ? (
+                <img
+                  src={`https://ui-avatars.com/api/?name=Candidat&size=96&background=6366f1&color=ffffff&bold=true`}
+                  alt="Avatar anonyme"
+                  className="w-full h-full object-cover"
+                />
+              ) : candidate.photo ? (
                 <img
                   src={candidate.photo}
                   alt={`Photo de ${candidate.name}`}
@@ -162,7 +177,7 @@ export default function CandidateCard({ candidate, compact = false }) {
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2 min-w-0">
                 <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight truncate">
-                  {candidate.name}
+                  {shouldHideName() ? "Candidat anonyme" : candidate.name}
                 </h3>
               </div>
               {/* rien à droite */}
