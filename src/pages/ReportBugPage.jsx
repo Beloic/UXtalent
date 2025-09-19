@@ -71,14 +71,13 @@ export default function ReportBugPage() {
       {/* Main Content */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* How to Report */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="bg-white rounded-3xl p-10 shadow-xl border border-gray-100"
-            >
+          {/* How to Report */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="bg-white rounded-3xl p-12 shadow-xl border border-gray-100 max-w-4xl mx-auto"
+          >
               <div className="flex items-center gap-4 mb-8">
                 <div className="p-4 bg-red-100 rounded-2xl">
                   <Bug className="w-8 h-8 text-red-600" />
@@ -144,8 +143,6 @@ export default function ReportBugPage() {
               </a>
               </div>
             </motion.div>
-
-          </div>
         </div>
       </section>
 
