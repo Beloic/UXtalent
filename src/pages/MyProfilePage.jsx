@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle } from 'lucide-react';
+import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
@@ -52,6 +52,11 @@ export default function MyProfilePage() {
   const [isEditingRejected, setIsEditingRejected] = useState(false); // Mode édition pour candidats rejetés
   const [userPlan, setUserPlan] = useState('free');
   const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
+  
+  // États pour l'édition inline
+  const [editingField, setEditingField] = useState(null);
+  const [tempValue, setTempValue] = useState('');
+  const [isSavingInline, setIsSavingInline] = useState(false);
 
   const totalSteps = 6;
 
@@ -247,6 +252,113 @@ export default function MyProfilePage() {
       ...prev,
       [name]: value
     }));
+  };
+
+  // Fonctions pour l'édition inline
+  const startEditing = (fieldName, currentValue) => {
+    setEditingField(fieldName);
+    setTempValue(currentValue || '');
+  };
+
+  const cancelEditing = () => {
+    setEditingField(null);
+    setTempValue('');
+  };
+
+  const saveInlineEdit = async () => {
+    if (!editingField || !user) return;
+    
+    setIsSavingInline(true);
+    try {
+      // Mettre à jour les données locales
+      setFormData(prev => ({
+        ...prev,
+        [editingField]: tempValue
+      }));
+
+      // Sauvegarder en base de données
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        throw new Error('Token d\'authentification manquant');
+      }
+
+      const updateData = { [editingField]: tempValue };
+      
+      const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      if (response.ok) {
+        setMessage('✅ Champ mis à jour avec succès');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        throw new Error('Erreur lors de la sauvegarde');
+      }
+    } catch (error) {
+      setMessage(`❌ Erreur: ${error.message}`);
+      setTimeout(() => setMessage(''), 3000);
+    } finally {
+      setIsSavingInline(false);
+      setEditingField(null);
+      setTempValue('');
+    }
+  };
+
+  // Composant pour les champs éditables
+  const EditableField = ({ fieldName, value, placeholder, type = 'text', className = '' }) => {
+    const isEditing = editingField === fieldName;
+    
+    return (
+      <div className={`relative group ${className}`}>
+        {isEditing ? (
+          <div className="flex items-center gap-2">
+            <input
+              type={type}
+              value={tempValue}
+              onChange={(e) => setTempValue(e.target.value)}
+              className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder={placeholder}
+              autoFocus
+            />
+            <button
+              onClick={saveInlineEdit}
+              disabled={isSavingInline}
+              className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors disabled:opacity-50"
+            >
+              {isSavingInline ? (
+                <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <CheckIcon className="w-4 h-4" />
+              )}
+            </button>
+            <button
+              onClick={cancelEditing}
+              disabled={isSavingInline}
+              className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <XIcon className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="flex-1">{value || placeholder}</span>
+            <button
+              onClick={() => startEditing(fieldName, value)}
+              className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
+            >
+              <Pencil className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
+    );
   };
 
 
@@ -863,11 +975,21 @@ export default function MyProfilePage() {
                           
                           <div className="flex-1">
                             <div className="flex items-center gap-4 mb-2">
-                              <h1 className="text-4xl font-bold text-gray-900">
-                                {formData.name}
-                              </h1>
+                              <EditableField
+                                fieldName="name"
+                                value={formData.name}
+                                placeholder="Votre nom complet"
+                                className="text-4xl font-bold text-gray-900"
+                              />
                             </div>
-                            <p className="text-xl text-gray-600 mb-4">{formData.title || 'Titre non spécifié'}</p>
+                            <div className="mb-4">
+                              <EditableField
+                                fieldName="title"
+                                value={formData.title}
+                                placeholder="Titre non spécifié"
+                                className="text-xl text-gray-600"
+                              />
+                            </div>
                             <div className="flex items-center gap-4">
                               {formData.yearsOfExperience && (
                                 <span className={`px-4 py-2 rounded-full text-sm font-bold ${
@@ -897,9 +1019,12 @@ export default function MyProfilePage() {
                             À propos
                           </h2>
                           <div className="bg-gray-50 rounded-2xl p-6">
-                            <p className="text-gray-700 leading-relaxed text-lg">
-                              {formData.bio || 'Aucune description disponible'}
-                            </p>
+                            <EditableField
+                              fieldName="bio"
+                              value={formData.bio}
+                              placeholder="Aucune description disponible"
+                              className="text-gray-700 leading-relaxed text-lg"
+                            />
                           </div>
                         </div>
 
@@ -909,18 +1034,24 @@ export default function MyProfilePage() {
                             <Briefcase className="w-6 h-6 text-blue-600" />
                             Compétences
                           </h2>
-                          <div className="flex flex-wrap gap-3">
-                            {formData.skills ? (
-                              formData.skills.split(',').map((skill, index) => (
-                                <span
-                                  key={index}
-                                  className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-medium border border-blue-200"
-                                >
-                                  {skill.trim()}
-                                </span>
-                              ))
-                            ) : (
-                              <p className="text-gray-500 italic">Compétences non spécifiées</p>
+                          <div className="space-y-4">
+                            <EditableField
+                              fieldName="skills"
+                              value={formData.skills}
+                              placeholder="Compétences non spécifiées"
+                              className="text-gray-500 italic"
+                            />
+                            {formData.skills && (
+                              <div className="flex flex-wrap gap-3">
+                                {formData.skills.split(',').map((skill, index) => (
+                                  <span
+                                    key={index}
+                                    className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-medium border border-blue-200"
+                                  >
+                                    {skill.trim()}
+                                  </span>
+                                ))}
+                              </div>
                             )}
                           </div>
                         </div>
@@ -982,9 +1113,14 @@ export default function MyProfilePage() {
                               <div className="p-2 bg-blue-100 rounded-lg">
                                 <MapPin className="w-5 h-5 text-blue-600" />
                               </div>
-                              <div>
+                              <div className="flex-1">
                                 <p className="text-sm font-medium text-gray-500 mb-1">Localisation</p>
-                                <p className="font-semibold text-gray-900">{formData.location || 'Non spécifiée'}</p>
+                                <EditableField
+                                  fieldName="location"
+                                  value={formData.location}
+                                  placeholder="Non spécifiée"
+                                  className="font-semibold text-gray-900"
+                                />
                               </div>
                             </div>
                           </div>
@@ -1005,42 +1141,52 @@ export default function MyProfilePage() {
                           </div>
 
                           {/* Années d'expérience */}
-                          {formData.yearsOfExperience && (
-                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                              <div className="p-2 bg-blue-100 rounded-lg">
-                                <Briefcase className="w-5 h-5 text-blue-600" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium text-gray-500 mb-1">Années d'expérience</p>
-                                <p className="font-semibold text-gray-900">
-                                  {formData.yearsOfExperience} {parseInt(formData.yearsOfExperience) === 1 ? 'an XP' : 'ans XP'}
-                                </p>
-                              </div>
+                          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                              <Briefcase className="w-5 h-5 text-blue-600" />
                             </div>
-                          )}
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-500 mb-1">Années d'expérience</p>
+                              <EditableField
+                                fieldName="yearsOfExperience"
+                                value={formData.yearsOfExperience}
+                                placeholder="Non spécifiée"
+                                type="number"
+                                className="font-semibold text-gray-900"
+                              />
+                            </div>
+                          </div>
 
                           {/* Rémunération */}
-                          {(formData.dailyRate || formData.annualSalary) && (
-                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                              <div className="flex-1">
-                                <p className="text-sm font-medium text-gray-700 mb-2">Rémunération souhaitée</p>
-                                <div className="space-y-2">
-                                  {formData.dailyRate && (
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm text-gray-600 font-medium">TJM:</span>
-                                      <span className="font-bold text-gray-900">{formData.dailyRate}€</span>
-                                    </div>
-                                  )}
-                                  {formData.annualSalary && (
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm text-gray-600 font-medium">Salaire annuel:</span>
-                                      <span className="font-bold text-gray-900">{parseInt(formData.annualSalary).toLocaleString('fr-FR')}€</span>
-                                    </div>
-                                  )}
+                          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-700 mb-2">Rémunération souhaitée</p>
+                              <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-gray-600 font-medium">TJM:</span>
+                                  <EditableField
+                                    fieldName="dailyRate"
+                                    value={formData.dailyRate}
+                                    placeholder="Non spécifié"
+                                    type="number"
+                                    className="font-bold text-gray-900"
+                                  />
+                                  {formData.dailyRate && <span className="text-gray-600">€</span>}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm text-gray-600 font-medium">Salaire annuel:</span>
+                                  <EditableField
+                                    fieldName="annualSalary"
+                                    value={formData.annualSalary}
+                                    placeholder="Non spécifié"
+                                    type="number"
+                                    className="font-bold text-gray-900"
+                                  />
+                                  {formData.annualSalary && <span className="text-gray-600">€</span>}
                                 </div>
                               </div>
                             </div>
-                          )}
+                          </div>
 
                           {/* Profil créé */}
                           <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
