@@ -18,7 +18,6 @@ export const buildApiUrlSync = (endpoint) => {
 export const API_ENDPOINTS = {
   CANDIDATES: '/api/candidates',
   JOBS: '/api/jobs',
-  ADMIN_JOBS: '/api/admin/jobs',
   FORUM_POSTS: '/api/forum/posts',
   FORUM_STATS: '/api/forum/stats',
   METRICS: '/api/metrics',

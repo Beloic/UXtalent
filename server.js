@@ -87,13 +87,9 @@ import {
   incrementJobViews,
   incrementJobApplications,
   getJobStats,
-  getPendingJobs,
-  approveJob,
-  rejectJob,
   pauseJob,
   resumeJob,
   getAllJobsForAdmin,
-  loadAllJobsForAdmin,
 } from './src/database/jobsDatabase.js';
 import { metricsMiddleware } from './src/middleware/metricsMiddleware.js';
 import { logger, requestLogger } from './src/logger/logger.js';
@@ -1430,42 +1426,7 @@ app.delete('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req
   }
 });
 
-// Routes admin pour la suppression (sans authentification Supabase)
-// DELETE /api/admin/forum/posts/:id - Supprimer un post du forum (admin)
-app.delete('/api/admin/forum/posts/:id', (req, res) => {
-  try {
-    const { id } = req.params;
-    const deleted = deletePost(parseInt(id));
-    
-    if (deleted) {
-      logger.info('Post supprimé avec succès (admin)', { postId: id });
-      res.status(204).send(); // No Content
-    } else {
-      res.status(404).json({ error: 'Post non trouvé' });
-    }
-  } catch (error) {
-    logger.error('Erreur lors de la suppression du post (admin)', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la suppression du post' });
-  }
-});
-
-// DELETE /api/admin/forum/posts/:id/replies/:replyId - Supprimer une réponse (admin)
-app.delete('/api/admin/forum/posts/:id/replies/:replyId', async (req, res) => {
-  try {
-    const { id, replyId } = req.params;
-    const deleted = await deleteReply(parseInt(id), parseInt(replyId));
-    
-    if (deleted) {
-      logger.info('Réponse supprimée avec succès (admin)', { replyId });
-      res.status(204).send(); // No Content
-    } else {
-      res.status(404).json({ error: 'Réponse non trouvée' });
-    }
-  } catch (error) {
-    logger.error('Erreur lors de la suppression de la réponse (admin)', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la suppression de la réponse' });
-  }
-});
+// Routes admin supprimées
 
 // Routes pour les likes (sans authentification Supabase)
 // POST /api/forum/posts/:id/like - Like/Unlike un post
@@ -2422,78 +2383,7 @@ app.get('/api/recruiter/jobs', requireRole(['recruiter', 'admin']), async (req, 
   }
 });
 
-// ===== ROUTES DE VALIDATION DES OFFRES (ADMIN UNIQUEMENT) =====
-
-// GET /api/admin/jobs - Récupérer toutes les offres pour l'admin
-app.get('/api/admin/jobs', requireRole(['admin']), async (req, res) => {
-  try {
-    console.log('🔍 [ADMIN_JOBS] Récupération de toutes les offres');
-    
-    const jobs = await loadAllJobsForAdmin();
-    
-    console.log(`✅ [ADMIN_JOBS] ${jobs.length} offres récupérées`);
-    res.json(jobs);
-  } catch (error) {
-    logger.error('Erreur lors du chargement des offres admin', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors du chargement des offres' });
-  }
-});
-
-// GET /api/admin/jobs/pending - Récupérer les offres en attente de validation
-app.get('/api/admin/jobs/pending', requireRole(['admin']), async (req, res) => {
-  try {
-    console.log('⏳ [PENDING_JOBS] Récupération des offres en attente');
-    
-    const pendingJobs = await getPendingJobs();
-    
-    console.log(`✅ [PENDING_JOBS] ${pendingJobs.length} offres en attente`);
-    res.json(pendingJobs);
-  } catch (error) {
-    logger.error('Erreur lors du chargement des offres en attente', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors du chargement des offres en attente' });
-  }
-});
-
-// POST /api/admin/jobs/:id/approve - Approuver une offre
-app.post('/api/admin/jobs/:id/approve', requireRole(['admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    console.log('✅ [APPROVE_JOB] Approbation offre:', id);
-    
-    const approvedJob = await approveJob(id);
-    
-    console.log(`✅ [APPROVE_JOB] Offre approuvée: ${id}`);
-    res.json({ 
-      message: 'Offre approuvée avec succès',
-      job: approvedJob 
-    });
-  } catch (error) {
-    logger.error('Erreur lors de l\'approbation de l\'offre', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de l\'approbation de l\'offre' });
-  }
-});
-
-// POST /api/admin/jobs/:id/reject - Rejeter une offre
-app.post('/api/admin/jobs/:id/reject', requireRole(['admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { reason } = req.body;
-    
-    console.log('❌ [REJECT_JOB] Rejet offre:', id, 'Raison:', reason);
-    
-    const rejectedJob = await rejectJob(id, reason);
-    
-    console.log(`❌ [REJECT_JOB] Offre rejetée: ${id}`);
-    res.json({ 
-      message: 'Offre rejetée avec succès',
-      job: rejectedJob 
-    });
-  } catch (error) {
-    logger.error('Erreur lors du rejet de l\'offre', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors du rejet de l\'offre' });
-  }
-});
+// Routes admin supprimées
 
 // Démarrer le serveur
 const server = app.listen(PORT, () => {
