@@ -556,7 +556,7 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
             totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = true;
           } else if (userRole === ROLES.CANDIDATE) {
-            // Les candidats voient seulement les premiers candidats approuvés (pas leur propre profil s'il n'est pas approuvé)
+            // Les candidats voient TOUS les candidats approuvés (4 en clair, les autres floutés)
             const approvedCandidates = filteredCandidates.filter(c => c.status === 'approved');
             
             // Trouver le profil perso dans TOUTE la base (pas uniquement les filtres)
@@ -570,16 +570,15 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
             const ownProfile = ownProfileAll.slice(0, 1); // max 1
             console.log('👤 Profil candidat courant détecté:', ownProfile.map(c => ({ id: c.id, email: c.email, status: c.status })));
             
-            // Limiter à 4 profils complets pour les candidats
-            const maxVisibleForCandidates = 4;
-            const topApproved = approvedCandidates.slice(0, maxVisibleForCandidates);
-            
             // Construire la liste : inclure le profil perso SEULEMENT s'il est approuvé
             const approvedOwnProfile = ownProfile.filter(op => op.status === 'approved');
-            const rest = topApproved.filter(ac => !approvedOwnProfile.some(op => op.id === ac.id));
-            visibleCandidates = approvedOwnProfile.length > 0 ? [...approvedOwnProfile, ...rest] : [...rest];
             
-            totalHiddenCandidates = approvedCandidates.length - maxVisibleForCandidates;
+            // Retourner TOUS les candidats approuvés (le frontend se chargera du floutage)
+            visibleCandidates = approvedCandidates;
+            
+            // Calculer le nombre de candidats cachés (pour la carte d'inscription)
+            const maxVisibleForCandidates = 4;
+            totalHiddenCandidates = Math.max(0, approvedCandidates.length - maxVisibleForCandidates);
             isAuthenticated = true;
           } else {
             // Rôle non reconnu, mode freemium
