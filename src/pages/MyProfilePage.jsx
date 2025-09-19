@@ -312,21 +312,36 @@ export default function MyProfilePage() {
   };
 
   // Composant pour les champs éditables
-  const EditableField = ({ fieldName, value, placeholder, type = 'text', className = '' }) => {
+  const EditableField = ({ fieldName, value, placeholder, type = 'text', className = '', options = null }) => {
     const isEditing = editingField === fieldName;
     
     return (
       <div className={`relative group ${className}`}>
         {isEditing ? (
           <div className="flex items-center gap-2">
-            <input
-              type={type}
-              value={tempValue}
-              onChange={(e) => setTempValue(e.target.value)}
-              className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder={placeholder}
-              autoFocus
-            />
+            {options ? (
+              <select
+                value={tempValue}
+                onChange={(e) => setTempValue(e.target.value)}
+                className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                autoFocus
+              >
+                {options.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type={type}
+                value={tempValue}
+                onChange={(e) => setTempValue(e.target.value)}
+                className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={placeholder}
+                autoFocus
+              />
+            )}
             <button
               onClick={saveInlineEdit}
               disabled={isSavingInline}
@@ -1177,52 +1192,19 @@ export default function MyProfilePage() {
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-medium text-gray-500 mb-1">Mode de travail</p>
-                              {editingField === 'remote' ? (
-                                <div className="flex items-center gap-2">
-                                  <select
-                                    value={tempValue}
-                                    onChange={(e) => setTempValue(e.target.value)}
-                                    className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    autoFocus
-                                  >
-                                    <option value="remote">Full remote</option>
-                                    <option value="hybrid">Hybride</option>
-                                    <option value="onsite">Sur site</option>
-                                  </select>
-                                  <button
-                                    onClick={saveInlineEdit}
-                                    disabled={isSavingInline}
-                                    className="p-2 bg-green-500 text-white hover:bg-green-600 rounded-full transition-colors disabled:opacity-50 shadow-md hover:shadow-lg"
-                                  >
-                                    {isSavingInline ? (
-                                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                    ) : (
-                                      <CheckIcon className="w-4 h-4" />
-                                    )}
-                                  </button>
-                                  <button
-                                    onClick={cancelEditing}
-                                    disabled={isSavingInline}
-                                    className="p-2 bg-red-500 text-white hover:bg-red-600 rounded-full transition-colors disabled:opacity-50 shadow-md hover:shadow-lg"
-                                  >
-                                    <XIcon className="w-4 h-4" />
-                                  </button>
-                                </div>
-                              ) : (
-                                <div className="flex items-center gap-2">
-                                  <span className="flex-1 font-semibold text-gray-900">
-                                    {formData.remote === 'remote' ? 'Full remote' :
-                                     formData.remote === 'onsite' ? 'Sur site' :
-                                     formData.remote === 'hybrid' ? 'Hybride' : 'Non spécifié'}
-                                  </span>
-                                  <button
-                                    onClick={() => startEditing('remote', formData.remote)}
-                                    className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
-                                  >
-                                    <Pencil className="w-4 h-4" />
-                                  </button>
-                                </div>
-                              )}
+                              <EditableField
+                                fieldName="remote"
+                                value={formData.remote === 'remote' ? 'Full remote' :
+                                       formData.remote === 'onsite' ? 'Sur site' :
+                                       formData.remote === 'hybrid' ? 'Hybride' : 'Non spécifié'}
+                                placeholder="Non spécifié"
+                                className="font-semibold text-gray-900"
+                                options={[
+                                  { value: 'remote', label: 'Full remote' },
+                                  { value: 'hybrid', label: 'Hybride' },
+                                  { value: 'onsite', label: 'Sur site' }
+                                ]}
+                              />
                             </div>
                           </div>
 
