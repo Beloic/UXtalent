@@ -1059,41 +1059,97 @@ export default function MyProfilePage() {
                         {/* Liens */}
                         <div className="border-t border-gray-200 pt-8">
                           <h2 className="text-2xl font-bold text-gray-900 mb-6">Liens et portfolio</h2>
-                          <div className="flex flex-wrap gap-4">
-                            {formData.linkedin && (
-                              <a
-                                href={formData.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-3 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-blue-200"
-                              >
-                                <ExternalLink className="w-5 h-5" />
-                                LinkedIn
-                              </a>
-                            )}
-                            {formData.portfolio && (
-                              <a
-                                href={formData.portfolio}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
-                              >
-                                <Globe className="w-5 h-5" />
-                                Portfolio
-                              </a>
-                            )}
-                            {formData.github && (
-                              <a
-                                href={formData.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
-                              >
-                                <ExternalLink className="w-5 h-5" />
-                                GitHub
-                              </a>
-                            )}
+                          <div className="space-y-4">
+                            {/* LinkedIn */}
+                            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="p-2 bg-blue-100 rounded-lg">
+                                <ExternalLink className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-500 mb-1">LinkedIn</p>
+                                <EditableField
+                                  fieldName="linkedin"
+                                  value={formData.linkedin}
+                                  placeholder="https://linkedin.com/in/votre-profil"
+                                  className="font-semibold text-gray-900"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Portfolio */}
+                            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="p-2 bg-gray-100 rounded-lg">
+                                <Globe className="w-5 h-5 text-gray-600" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-500 mb-1">Portfolio</p>
+                                <EditableField
+                                  fieldName="portfolio"
+                                  value={formData.portfolio}
+                                  placeholder="https://votre-portfolio.com"
+                                  className="font-semibold text-gray-900"
+                                />
+                              </div>
+                            </div>
+
+                            {/* GitHub */}
+                            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="p-2 bg-gray-100 rounded-lg">
+                                <ExternalLink className="w-5 h-5 text-gray-600" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-500 mb-1">GitHub</p>
+                                <EditableField
+                                  fieldName="github"
+                                  value={formData.github}
+                                  placeholder="https://github.com/votre-profil"
+                                  className="font-semibold text-gray-900"
+                                />
+                              </div>
+                            </div>
                           </div>
+
+                          {/* Boutons de liens si les URLs sont présentes */}
+                          {(formData.linkedin || formData.portfolio || formData.github) && (
+                            <div className="mt-6">
+                              <h3 className="text-lg font-semibold text-gray-900 mb-4">Accès rapide</h3>
+                              <div className="flex flex-wrap gap-4">
+                                {formData.linkedin && (
+                                  <a
+                                    href={formData.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-3 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-blue-200"
+                                  >
+                                    <ExternalLink className="w-5 h-5" />
+                                    LinkedIn
+                                  </a>
+                                )}
+                                {formData.portfolio && (
+                                  <a
+                                    href={formData.portfolio}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
+                                  >
+                                    <Globe className="w-5 h-5" />
+                                    Portfolio
+                                  </a>
+                                )}
+                                {formData.github && (
+                                  <a
+                                    href={formData.github}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
+                                  >
+                                    <ExternalLink className="w-5 h-5" />
+                                    GitHub
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1130,13 +1186,54 @@ export default function MyProfilePage() {
                             <div className="p-2 bg-blue-100 rounded-lg">
                               <Globe className="w-5 h-5 text-blue-600" />
                             </div>
-                            <div>
+                            <div className="flex-1">
                               <p className="text-sm font-medium text-gray-500 mb-1">Mode de travail</p>
-                              <p className="font-semibold text-gray-900">
-                                {formData.remote === 'remote' ? 'Full remote' :
-                                 formData.remote === 'onsite' ? 'Sur site' :
-                                 formData.remote === 'hybrid' ? 'Hybride' : 'Non spécifié'}
-                              </p>
+                              {editingField === 'remote' ? (
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={tempValue}
+                                    onChange={(e) => setTempValue(e.target.value)}
+                                    className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    autoFocus
+                                  >
+                                    <option value="remote">Full remote</option>
+                                    <option value="hybrid">Hybride</option>
+                                    <option value="onsite">Sur site</option>
+                                  </select>
+                                  <button
+                                    onClick={saveInlineEdit}
+                                    disabled={isSavingInline}
+                                    className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors disabled:opacity-50"
+                                  >
+                                    {isSavingInline ? (
+                                      <div className="w-4 h-4 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                                    ) : (
+                                      <CheckIcon className="w-4 h-4" />
+                                    )}
+                                  </button>
+                                  <button
+                                    onClick={cancelEditing}
+                                    disabled={isSavingInline}
+                                    className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
+                                  >
+                                    <XIcon className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2">
+                                  <span className="flex-1 font-semibold text-gray-900">
+                                    {formData.remote === 'remote' ? 'Full remote' :
+                                     formData.remote === 'onsite' ? 'Sur site' :
+                                     formData.remote === 'hybrid' ? 'Hybride' : 'Non spécifié'}
+                                  </span>
+                                  <button
+                                    onClick={() => startEditing('remote', formData.remote)}
+                                    className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
+                                  >
+                                    <Pencil className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
 
