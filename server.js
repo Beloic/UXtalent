@@ -573,11 +573,11 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
             // Construire la liste : inclure le profil perso SEULEMENT s'il est approuvé
             const approvedOwnProfile = ownProfile.filter(op => op.status === 'approved');
             
-            // Limiter à 4 profils pour les candidats (sans floutage)
-            const maxVisibleForCandidates = 4;
-            visibleCandidates = approvedCandidates.slice(0, maxVisibleForCandidates);
+            // Retourner TOUS les candidats approuvés (le frontend masquera les noms au-delà de 4)
+            visibleCandidates = approvedCandidates;
             
             // Calculer le nombre de candidats cachés (pour la carte d'inscription)
+            const maxVisibleForCandidates = 4;
             totalHiddenCandidates = Math.max(0, approvedCandidates.length - maxVisibleForCandidates);
             isAuthenticated = true;
           } else {
