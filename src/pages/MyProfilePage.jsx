@@ -1061,27 +1061,27 @@ export default function MyProfilePage() {
                               <Briefcase className="w-6 h-6 text-blue-600" />
                               Compétences
                             </h2>
-                            <button
-                              onClick={() => {
-                                const newSkill = prompt('Ajouter une nouvelle compétence:');
-                                if (newSkill && newSkill.trim()) {
-                                  const currentSkills = formData.skills ? formData.skills.split(',').map(s => s.trim()) : [];
-                                  const updatedSkills = [...currentSkills, newSkill.trim()];
-                                  setFormData(prev => ({
-                                    ...prev,
-                                    skills: updatedSkills.join(', ')
-                                  }));
-                                  // Sauvegarder automatiquement
-                                  setTimeout(() => {
-                                    saveInlineEdit();
-                                  }, 100);
-                                }
-                              }}
-                              className="px-4 py-2 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-                            >
-                              <span className="text-lg">+</span>
-                              Ajouter
-                            </button>
+                             <button
+                               onClick={() => {
+                                 const newSkill = prompt('Ajouter une nouvelle compétence:');
+                                 if (newSkill && newSkill.trim()) {
+                                   const currentSkills = formData.skills ? formData.skills.split(',').map(s => s.trim()) : [];
+                                   const updatedSkills = [...currentSkills, newSkill.trim()];
+                                   setFormData(prev => ({
+                                     ...prev,
+                                     skills: updatedSkills.join(', ')
+                                   }));
+                                   // Sauvegarder automatiquement
+                                   setTimeout(() => {
+                                     saveInlineEdit();
+                                   }, 100);
+                                 }
+                               }}
+                               className="w-10 h-10 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors flex items-center justify-center shadow-md hover:shadow-lg"
+                               title="Ajouter une compétence"
+                             >
+                               <span className="text-xl font-bold">+</span>
+                             </button>
                           </div>
                           
                           <div className="space-y-4">
