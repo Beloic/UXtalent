@@ -570,19 +570,10 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
         }
       }
     } else {
-      // Pas d'authentification - appliquer le freemium basé sur le statut
-      console.log('🔒 Pas d\'authentification - système freemium activé (status:approved uniquement)');
-      // IMPORTANT: Filtrer les candidats rejetés pour les visiteurs non authentifiés
-      // Seuls les candidats approuvés peuvent être vus par les visiteurs non authentifiés
-      filteredCandidates = filteredCandidates.filter(c => c.status === 'approved');
-      const publicCandidates = filteredCandidates;
-      // Option: masquer la moitié des profils publics pour renforcer le freemium
-      const halfIndex = Math.ceil(publicCandidates.length / 2);
-      visibleCandidates = publicCandidates.slice(0, halfIndex);
-      // Le nombre de candidats cachés = candidats non-publics + candidats publics non affichés
-      const hiddenNonPublic = filteredCandidates.length - publicCandidates.length;
-      const hiddenPublic = publicCandidates.length - visibleCandidates.length;
-      totalHiddenCandidates = hiddenNonPublic + hiddenPublic;
+      // Pas d'authentification - montrer tous les candidats approuvés
+      console.log('🔒 Pas d\'authentification - affichage de tous les candidats approuvés');
+      visibleCandidates = filteredCandidates.filter(c => c.status === 'approved');
+      totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
     }
     
     // Tri avec mise en avant des plans Premium et Pro
@@ -613,14 +604,7 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       return new Date(b.updatedAt) - new Date(a.updatedAt);
     });
 
-    // Ajouter la carte d'inscription si il y a des candidats masqués
-    if (!isAuthenticated && totalHiddenCandidates > 0) {
-      visibleCandidates.push({
-        id: 'signup-card',
-        isSignupCard: true,
-        hiddenCount: totalHiddenCandidates
-      });
-    }
+    // Plus de carte d'inscription - tous les candidats sont visibles
 
     // Désactiver le masquage forcé pour les utilisateurs authentifiés
     // Conserver le masquage uniquement pour les visiteurs non authentifiés (logique précédente déjà appliquée)
