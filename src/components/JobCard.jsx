@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, Globe, Briefcase, DollarSign, Clock, ExternalLink, Building2, Calendar } from "lucide-react";
+import { MapPin, Globe, Briefcase, DollarSign, Clock, ExternalLink, Building2, Calendar, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function JobCard({ job }) {
@@ -119,11 +119,19 @@ export default function JobCard({ job }) {
         {job.description}
       </p>
 
-      {/* Footer avec date et bouton */}
+      {/* Footer avec date, candidats et bouton */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Calendar className="w-4 h-4" />
-          <span>Publié {formatDate(job.postedAt)}</span>
+        <div className="flex items-center gap-4 text-sm text-gray-500">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            <span>Publié {formatDate(job.postedAt)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-blue-600" />
+            <span className="font-medium text-blue-600">
+              {job.applicationsCount || job.applications_count || 0} candidat{(job.applicationsCount || job.applications_count || 0) > 1 ? 's' : ''}
+            </span>
+          </div>
         </div>
         
         <div className="flex items-center gap-3">
