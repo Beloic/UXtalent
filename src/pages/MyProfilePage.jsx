@@ -147,8 +147,6 @@ export default function MyProfilePage() {
   }, [activeTab, user, loadProfileStats, loadChartData, isLoadingStats, isLoadingChart]);
 
   const loadExistingProfile = useCallback(async () => {
-    if (isLoadingProfile) return; // Éviter les appels multiples
-    
     try {
       setIsLoadingProfile(true);
       
