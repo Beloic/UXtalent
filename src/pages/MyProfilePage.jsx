@@ -318,8 +318,10 @@ export default function MyProfilePage() {
   };
 
   // Composant pour les champs éditables
-  const EditableField = ({ fieldName, value, placeholder, type = 'text', className = '', options = null }) => {
+  const EditableField = ({ fieldName, value, placeholder, type = 'text', className = '', options = null, required = true }) => {
     const isEditing = editingField === fieldName;
+    const isEmpty = !value || value.trim() === '';
+    const isRequired = required && fieldName !== 'github';
     
     return (
       <div className={`relative group ${className}`}>
@@ -329,9 +331,15 @@ export default function MyProfilePage() {
               <select
                 value={tempValue}
                 onChange={(e) => setTempValue(e.target.value)}
-                className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white ${
+                  isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
+                }`}
                 autoFocus
+                required={isRequired}
               >
+                {isRequired && (
+                  <option value="">Sélectionnez une option</option>
+                )}
                 {options.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -343,14 +351,17 @@ export default function MyProfilePage() {
                 type={type}
                 value={tempValue}
                 onChange={(e) => setTempValue(e.target.value)}
-                className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
+                }`}
                 placeholder={placeholder}
                 autoFocus
+                required={isRequired}
               />
             )}
             <button
               onClick={saveInlineEdit}
-              disabled={isSavingInline}
+              disabled={isSavingInline || (isRequired && !tempValue.trim())}
               className="p-2 bg-green-500 text-white hover:bg-green-600 rounded-full transition-colors disabled:opacity-50 shadow-md hover:shadow-lg"
             >
               {isSavingInline ? (
@@ -369,7 +380,12 @@ export default function MyProfilePage() {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <span className="flex-1">{value || placeholder}</span>
+            <span className={`flex-1 ${isRequired && isEmpty ? 'text-red-500 italic' : ''}`}>
+              {value || (isRequired ? `${placeholder} *` : placeholder)}
+            </span>
+            {isRequired && isEmpty && (
+              <span className="text-red-500 text-xs font-medium">Requis</span>
+            )}
             <button
               onClick={() => startEditing(fieldName, value)}
               className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
