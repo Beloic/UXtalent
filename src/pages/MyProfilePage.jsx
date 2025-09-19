@@ -146,22 +146,6 @@ export default function MyProfilePage() {
     }
   }, [activeTab, user, loadProfileStats, loadChartData, isLoadingStats, isLoadingChart]);
 
-  useEffect(() => {
-    if (user) {
-      setFormData(prev => ({
-        ...prev,
-        name: user.user_metadata?.first_name && user.user_metadata?.last_name 
-          ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
-          : user.email?.split('@')[0] || '',
-        email: user.email || ''
-      }));
-
-      // Charger le profil depuis la base de données
-      loadExistingProfile();
-    }
-  }, [user, loadExistingProfile]);
-
-
   const loadExistingProfile = useCallback(async () => {
     if (isLoadingProfile) return; // Éviter les appels multiples
     
@@ -243,6 +227,21 @@ export default function MyProfilePage() {
       setIsLoadingProfile(false);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.user_metadata?.first_name && user.user_metadata?.last_name 
+          ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+          : user.email?.split('@')[0] || '',
+        email: user.email || ''
+      }));
+
+      // Charger le profil depuis la base de données
+      loadExistingProfile();
+    }
+  }, [user, loadExistingProfile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
