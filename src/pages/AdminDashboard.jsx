@@ -79,8 +79,6 @@ export default function AdminDashboard() {
             : c
         );
 
-        // Debug: vérifier que les candidats ont un ID
-        console.log('🔍 [ADMIN] Candidats chargés:', candidatesList.map(c => ({ id: c.id, name: c.name })));
 
         // Logique simplifiée avec seulement le statut
         const approvedCandidates = effectiveCandidatesList.filter(c => c.status === 'approved');

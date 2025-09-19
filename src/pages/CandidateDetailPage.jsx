@@ -467,7 +467,7 @@ export default function CandidateDetailPage() {
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm relative">
               {/* Badges + Favori en haut à droite */}
               <div className="absolute top-4 right-4 flex items-center gap-3">
-                {(candidate.planType === 'premium' || candidate.planType === 'pro') && (
+                {!shouldHideName() && (candidate.planType === 'premium' || candidate.planType === 'pro') && (
                   <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
                     candidate.planType === 'pro' 
                       ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
@@ -500,25 +500,19 @@ export default function CandidateDetailPage() {
               <div className="flex items-start gap-6 mb-8">
                 {/* Photo de profil */}
                 <div className="relative">
-                  {shouldHideName() ? (
-                    <img
-                      src={`https://ui-avatars.com/api/?name=Candidat&size=96&background=6366f1&color=ffffff&bold=true`}
-                      alt="Avatar anonyme"
-                      className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
-                    />
-                  ) : candidate.photo ? (
+                  {candidate.photo ? (
                     <img
                       src={candidate.photo}
-                      alt={`Photo de ${candidate.name}`}
+                      alt={shouldHideName() ? "Photo de candidat anonyme" : `Photo de ${candidate.name}`}
                       className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
                       onError={(e) => {
-                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=96&background=6366f1&color=ffffff&bold=true`;
+                        e.target.src = `https://ui-avatars.com/api/?name=${shouldHideName() ? 'Candidat' : encodeURIComponent(candidate.name)}&size=96&background=6366f1&color=ffffff&bold=true`;
                       }}
                     />
                   ) : (
                     <img
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name)}&size=96&background=6366f1&color=ffffff&bold=true`}
-                      alt={`Avatar de ${candidate.name}`}
+                      src={`https://ui-avatars.com/api/?name=${shouldHideName() ? 'Candidat' : encodeURIComponent(candidate.name)}&size=96&background=6366f1&color=ffffff&bold=true`}
+                      alt={shouldHideName() ? "Avatar anonyme" : `Avatar de ${candidate.name}`}
                       className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
                     />
                   )}

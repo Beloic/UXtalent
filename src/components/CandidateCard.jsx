@@ -137,36 +137,32 @@ export default function CandidateCard({ candidate, compact = false }) {
 
   return (
     <div className={getCardStyles()}>
-      {/* Badges en haut à droite */}
-      <div className="absolute top-3 right-3 flex items-center gap-2">
-        {candidate.planType === 'premium' && <PremiumBadge />}
-        {candidate.planType === 'pro' && <ProBadge />}
-      </div>
+      {/* Badges en haut à droite - masqués pour les candidats anonymes */}
+      {!shouldHideName() && (
+        <div className="absolute top-3 right-3 flex items-center gap-2">
+          {candidate.planType === 'premium' && <PremiumBadge />}
+          {candidate.planType === 'pro' && <ProBadge />}
+        </div>
+      )}
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-0">
           {/* Colonne gauche: Avatar (style carte carrée arrondie) */}
           <div className="flex flex-col items-start gap-2 w-24">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-gray-100 shadow">
-              {shouldHideName() ? (
-                <img
-                  src={`https://ui-avatars.com/api/?name=Candidat&size=96&background=6366f1&color=ffffff&bold=true`}
-                  alt="Avatar anonyme"
-                  className="w-full h-full object-cover"
-                />
-              ) : candidate.photo ? (
+              {candidate.photo ? (
                 <img
                   src={candidate.photo}
-                  alt={`Photo de ${candidate.name}`}
+                  alt={shouldHideName() ? "Photo de candidat anonyme" : `Photo de ${candidate.name}`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`;
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${shouldHideName() ? 'Candidat' : encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`;
                   }}
                 />
               ) : (
                 <img
-                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`}
-                  alt={`Avatar de ${candidate.name}`}
+                  src={`https://ui-avatars.com/api/?name=${shouldHideName() ? 'Candidat' : encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`}
+                  alt={shouldHideName() ? "Avatar anonyme" : `Avatar de ${candidate.name}`}
                   className="w-full h-full object-cover"
                 />
               )}

@@ -11,7 +11,6 @@ export default function AuthDebugger() {
 
   const runAuthDebug = async () => {
     setLoading(true);
-    console.log('🔍 [AuthDebugger] Démarrage du diagnostic d\'authentification...');
 
     try {
       // Test 1: Informations du contexte Auth
@@ -61,10 +60,8 @@ export default function AuthDebugger() {
       };
 
       setDebugInfo(debugData);
-      console.log('🔍 [AuthDebugger] Résultats du diagnostic:', debugData);
 
     } catch (error) {
-      console.error('❌ [AuthDebugger] Erreur lors du diagnostic:', error);
       setDebugInfo({ error: error.message });
     } finally {
       setLoading(false);

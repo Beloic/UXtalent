@@ -176,7 +176,6 @@ export default function MyProfilePage() {
           // Logique simplifiée : utiliser directement le statut
           const status = existingCandidate.status || 'pending';
           
-          console.log('🔍 [DEBUG] Statut du candidat chargé:', status, 'pour le candidat:', existingCandidate.name);
           setCandidateStatus(status);
           
           // Charger le plan du candidat
@@ -578,9 +577,7 @@ export default function MyProfilePage() {
   }
 
   // Interface pour les candidats rejetés (sauf s'ils sont en mode édition)
-  console.log('🔍 [DEBUG] Vérification du statut pour affichage:', candidateStatus, 'isEditingRejected:', isEditingRejected);
   if (candidateStatus === 'rejected' && !isEditingRejected) {
-    console.log('🔍 [DEBUG] Affichage de l\'interface rejetée');
     return (
       <div className="min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
@@ -688,7 +685,6 @@ export default function MyProfilePage() {
             <div className="mb-4">
               <button
                 onClick={() => {
-                  console.log('🔍 [DEBUG] Bouton de test cliqué !');
                   alert('Bouton de test fonctionne !');
                 }}
                 className="px-4 py-2 bg-red-500 text-white rounded mr-4"
@@ -707,16 +703,11 @@ export default function MyProfilePage() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log('🔍 [DEBUG] Bouton "Modifier mon profil" cliqué - événement:', e);
-                  console.log('🔍 [DEBUG] État avant:', { candidateStatus, isEditingRejected, currentStep, activeTab });
                   // Permettre la modification du profil même si rejeté
                   setIsEditingRejected(true);
                   setCurrentStep(1);
                   setActiveTab('profile');
-                  console.log('🔍 [DEBUG] États modifiés - isEditingRejected: true, currentStep: 1, activeTab: profile');
                 }}
-                onMouseDown={() => console.log('🔍 [DEBUG] MouseDown sur le bouton')}
-                onMouseUp={() => console.log('🔍 [DEBUG] MouseUp sur le bouton')}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold cursor-pointer"
                 style={{ pointerEvents: 'auto', zIndex: 1000 }}
               >
@@ -731,7 +722,6 @@ export default function MyProfilePage() {
   }
 
 
-  console.log('🔍 [DEBUG] Affichage de l\'interface normale - candidateStatus:', candidateStatus, 'isEditingRejected:', isEditingRejected);
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">

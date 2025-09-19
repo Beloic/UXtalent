@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar, TrendingUp } from "lucide-react";
+import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CandidateCard from "../components/CandidateCard";
-// CandidateCardBlurred supprimé - plus de floutage
 import SignupCard from "../components/SignupCard";
 import ToggleChip from "../components/ToggleChip";
 import Pagination from "../components/Pagination";
@@ -51,7 +50,7 @@ export default function CandidatesListPage() {
         <div className="mb-12">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold text-gray-900">
-              {isCandidate ? "Découvrez d'autres talents UX/UI" : "Talents UX/UI disponibles"}
+              {isCandidate ? "Communauté UX/UI" : "Talents UX/UI disponibles"}
             </h1>
             {/* Bouton suggestions supprimé pour les candidats */}
           </div>
