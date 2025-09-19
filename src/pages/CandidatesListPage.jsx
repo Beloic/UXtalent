@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CandidateCard from "../components/CandidateCard";
-import CandidateCardBlurred from "../components/CandidateCardBlurred";
+// CandidateCardBlurred supprimé - plus de floutage
 import SignupCard from "../components/SignupCard";
 import ToggleChip from "../components/ToggleChip";
 import Pagination from "../components/Pagination";
@@ -233,10 +233,7 @@ export default function CandidatesListPage() {
                     return <SignupCard key={candidate.id} hiddenCount={candidate.hiddenCount} />;
                   }
                   
-                  // Pour les candidats : afficher les premiers profils complets, puis des profils flous
-                  if (isCandidate && index >= 4) {
-                    return <CandidateCardBlurred key={`blurred-${candidate.id}`} candidate={candidate} hiddenCount={total - 4} />;
-                  }
+                  // Plus de floutage - tous les profils approuvés sont visibles en clair
                   
                   return <CandidateCard key={candidate.id} candidate={candidate} compact />;
                 })}
