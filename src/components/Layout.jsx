@@ -172,21 +172,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   <CreditCard className="w-4 h-4" />
                   Tarif
                 </NavLink>
-                {isAdmin && (
-                  <NavLink 
-                    to="/admin" 
-                    className={({ isActive }) => 
-                      `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-                        isActive 
-                          ? 'text-red-600 bg-red-50 font-medium' 
-                          : 'text-gray-600 hover:text-red-600 hover:bg-red-50'
-                      }`
-                    }
-                  >
-                    <Shield className="w-4 h-4" />
-                    Admin
-                  </NavLink>
-                )}
+                {/* Lien Admin supprimé */}
               </>
             ) : (
               <>
@@ -369,22 +355,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       <CreditCard className="w-5 h-5" />
                       Tarif
                     </NavLink>
-                    {isAdmin && (
-                      <NavLink 
-                        to="/admin" 
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={({ isActive }) => 
-                          `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                            isActive 
-                              ? 'text-red-600 bg-red-50 font-medium' 
-                              : 'text-gray-600 hover:text-red-600 hover:bg-red-50'
-                          }`
-                        }
-                      >
-                        <Shield className="w-5 h-5" />
-                        Admin
-                      </NavLink>
-                    )}
+                    {/* Lien Admin mobile supprimé */}
                   </>
                 ) : (
                   <>

@@ -29,7 +29,7 @@ import PublicRoute from "./components/PublicRoute";
 import CandidateProfileGuard from "./components/CandidateProfileGuard";
 import { RoleGuard } from "./components/RoleGuard";
 import PublishJobPage from "./pages/PublishJobPage";
-import AdminDashboard from "./pages/AdminDashboard";
+// AdminDashboard supprimé
 
 export default function App() {
   return (
@@ -222,16 +222,7 @@ export default function App() {
           </Layout>
         } />
         
-        {/* Route Admin Dashboard */}
-        <Route path="/admin" element={
-          <Layout hideTopBar={true} hideFooter={true}>
-            <ProtectedRoute>
-              <RoleGuard allowedRoles={['admin']}>
-                <AdminDashboard />
-              </RoleGuard>
-            </ProtectedRoute>
-          </Layout>
-        } />
+        {/* Route Admin supprimée */}
         
         {/* Route 404 */}
         <Route path="*" element={
