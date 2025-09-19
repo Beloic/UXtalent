@@ -556,43 +556,9 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
             totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = true;
           } else if (userRole === ROLES.CANDIDATE) {
-            // Les candidats voient TOUS les candidats approuvés (4 en clair, les autres floutés)
-            const approvedCandidates = filteredCandidates.filter(c => c.status === 'approved');
-            
-            // Trouver le profil perso dans TOUTE la base (pas uniquement les filtres)
-            const allCandidates = await loadCandidates();
-            const ownProfileAll = allCandidates.filter(c => (
-              (c.email && authUser.email && c.email.toLowerCase() === authUser.email.toLowerCase()) ||
-              (c.userId && c.userId === authUser.id) ||
-              (c.auth_user_id && c.auth_user_id === authUser.id) ||
-              (c.id && c.id === authUser.id)
-            ));
-            const ownProfile = ownProfileAll.slice(0, 1); // max 1
-            console.log('👤 Profil candidat courant détecté:', ownProfile.map(c => ({ id: c.id, email: c.email, status: c.status })));
-            
-            // Construire la liste : inclure le profil perso SEULEMENT s'il est approuvé
-            const approvedOwnProfile = ownProfile.filter(op => op.status === 'approved');
-            
-            // Retourner TOUS les candidats approuvés mais masquer les noms au-delà de 4
-            const maxVisibleForCandidates = 4;
-            visibleCandidates = approvedCandidates.map((candidate, index) => {
-              if (index < maxVisibleForCandidates) {
-                // Les 4 premiers candidats sont visibles en clair
-                return candidate;
-              } else {
-                // Les autres candidats ont leur nom masqué
-                return {
-                  ...candidate,
-                  name: "Candidat Masqué",
-                  email: "masque@example.com", // Masquer aussi l'email
-                  linkedin: "", // Masquer le LinkedIn
-                  portfolio: "" // Masquer le portfolio
-                };
-              }
-            });
-            
-            // Calculer le nombre de candidats cachés (pour la carte d'inscription)
-            totalHiddenCandidates = Math.max(0, approvedCandidates.length - maxVisibleForCandidates);
+            // Les candidats voient tous les candidats approuvés
+            visibleCandidates = filteredCandidates.filter(c => c.status === 'approved');
+            totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = true;
           } else {
             // Rôle non reconnu, mode freemium
