@@ -176,7 +176,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   }
                 >
                   <CreditCard className="w-4 h-4" />
-                  Tarif
+                  Tarifs
                 </NavLink>
                 {/* Lien Admin supprimé */}
               </>
@@ -208,7 +208,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 >
                   <CreditCard className="w-4 h-4" />
-                  Tarif
+                  Tarifs
                 </Link>
               </>
             )}
@@ -359,7 +359,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       }
                     >
                       <CreditCard className="w-5 h-5" />
-                      Tarif
+                      Tarifs
                     </NavLink>
                     {/* Lien Admin mobile supprimé */}
                   </>
@@ -395,7 +395,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                     >
                       <CreditCard className="w-5 h-5" />
-                      Tarif
+                      Tarifs
                     </Link>
                   </>
                 )}
