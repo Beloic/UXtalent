@@ -290,7 +290,34 @@ export default function MyProfilePage() {
         throw new Error('Token d\'authentification manquant');
       }
 
-      const updateData = { [editingField]: tempValue };
+      let updateData = { [editingField]: tempValue };
+      
+      // Si on sauvegarde la bio, préserver les années d'expérience existantes
+      if (editingField === 'bio' && formData.yearsOfExperience) {
+        const years = parseInt(formData.yearsOfExperience.trim());
+        let experienceLevel = 'Mid';
+        if (years <= 2) {
+          experienceLevel = 'Junior';
+        } else if (years <= 5) {
+          experienceLevel = 'Mid';
+        } else if (years <= 8) {
+          experienceLevel = 'Senior';
+        } else {
+          experienceLevel = 'Lead';
+        }
+        
+        // Vérifier si la bio contient déjà des années d'expérience
+        if (tempValue.includes('Années d\'expérience:')) {
+          // Remplacer les années existantes
+          updateData.bio = tempValue.replace(
+            /Années d'expérience: \d+ ans \([^)]+\)/,
+            `Années d'expérience: ${years} ans (${experienceLevel})`
+          );
+        } else {
+          // Ajouter les années d'expérience au début de la bio
+          updateData.bio = `Années d'expérience: ${years} ans (${experienceLevel})\n\n${tempValue}`;
+        }
+      }
       
       console.log('💾 Sauvegarde champ:', { 
         field: editingField, 
