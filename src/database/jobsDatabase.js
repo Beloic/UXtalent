@@ -245,9 +245,19 @@ export const incrementJobViews = async (jobId) => {
 
 export const incrementJobApplications = async (jobId) => {
   try {
+    // Récupérer la valeur actuelle
+    const { data: currentJob, error: fetchError } = await supabaseAdmin
+      .from('jobs')
+      .select('applications_count')
+      .eq('id', jobId)
+      .single();
+    
+    if (fetchError) throw fetchError;
+    
+    // Incrémenter la valeur
     const { error } = await supabaseAdmin
       .from('jobs')
-      .update({ applications_count: supabaseAdmin.raw('applications_count + 1') })
+      .update({ applications_count: (currentJob?.applications_count || 0) + 1 })
       .eq('id', jobId);
     
     if (error) throw error;
