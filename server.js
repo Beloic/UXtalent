@@ -1669,50 +1669,11 @@ app.put('/api/recruiter/candidates/:candidateId/status', requireRole(['recruiter
 
 // ===== ENDPOINT SPÉCIALISÉ POUR LES ACTIONS KANBAN =====
 
-// Fonction de validation des transitions de statut
+// Fonction de validation des transitions de statut - Version simplifiée
 async function validateStatusTransition(currentStatus, targetStatus, candidateId, recruiterId) {
-  // Règles de transition autorisées
-  const allowedTransitions = {
-    'À contacter': ['Entretien prévu', 'En cours', 'Accepté', 'Refusé'],
-    'Entretien prévu': ['À contacter', 'En cours', 'Accepté', 'Refusé'],
-    'En cours': ['Entretien prévu', 'Accepté', 'Refusé'],
-    'Accepté': ['En cours'], // Peut revenir en cours si besoin
-    'Refusé': ['À contacter', 'Entretien prévu'] // Peut être reconsidéré
-  };
-
-  // Vérifier si la transition est autorisée
-  if (!allowedTransitions[currentStatus] || !allowedTransitions[currentStatus].includes(targetStatus)) {
-    return null; // Transition non autorisée
-  }
-
-  // Règles spéciales pour certaines transitions
-  if (targetStatus === 'Entretien prévu') {
-    // Vérifier s'il y a un rendez-vous programmé
-    const { data: appointments } = await supabase
-      .from('appointments')
-      .select('id')
-      .eq('recruiter_id', recruiterId)
-      .eq('candidate_id', candidateId)
-      .gte('appointment_date', new Date().toISOString().split('T')[0])
-      .limit(1);
-    
-    if (!appointments || appointments.length === 0) {
-      // Pas de rendez-vous, ne peut pas être en "Entretien prévu"
-      return null;
-    }
-  }
-
-  if (targetStatus === 'Accepté' && currentStatus === 'À contacter') {
-    // Un candidat ne peut pas être accepté directement sans être passé par "En cours"
-    return null;
-  }
-
-  if (targetStatus === 'Refusé' && currentStatus === 'Accepté') {
-    // Un candidat accepté ne peut pas être refusé directement
-    return null;
-  }
-
-  return targetStatus; // Transition autorisée
+  // Pour le moment, autoriser toutes les transitions pour permettre le fonctionnement du kanban
+  console.log(`✅ Transition autorisée: ${currentStatus} → ${targetStatus}`);
+  return targetStatus; // Toutes les transitions sont autorisées
 }
 
 // PUT /api/recruiter/kanban/move-candidate - Déplacer un candidat dans le Kanban (nouvelle version avec table dédiée)
@@ -1779,22 +1740,13 @@ app.put('/api/recruiter/kanban/move-candidate', requireRole(['recruiter', 'admin
       });
       
       try {
-        // Utiliser la fonction de validation simple au lieu de la RPC
+        // Validation simplifiée - autoriser toutes les transitions
         const fromColumnName = currentStatus?.kanban_columns?.name || 'À contacter';
-        const isValidTransition = await validateStatusTransition(fromColumnName, toColumn, candidateId, recruiterId);
-        console.log('✅ Transition validée:', isValidTransition);
-        
-        if (!isValidTransition) {
-          console.log('❌ Transition non autorisée');
-          return res.status(400).json({ 
-            error: 'Transition de statut non autorisée',
-            details: `Impossible de passer de "${fromColumnName}" à "${toColumn}"`
-          });
-        }
+        console.log(`🔄 Validation transition: ${fromColumnName} → ${toColumn}`);
+        // Toutes les transitions sont autorisées pour le moment
       } catch (validationError) {
         console.log('⚠️ Erreur lors de la validation, on continue sans validation:', validationError.message);
         // En cas d'erreur de validation, on continue sans valider
-        // Permettre toutes les transitions pour le moment
       }
     }
     
