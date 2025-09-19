@@ -29,7 +29,7 @@ import PublicRoute from "./components/PublicRoute";
 import CandidateProfileGuard from "./components/CandidateProfileGuard";
 import { RoleGuard } from "./components/RoleGuard";
 import PublishJobPage from "./pages/PublishJobPage";
-import CommunityPage from "./pages/CommunityPage";
+import ReportBugPage from "./pages/ReportBugPage";
 // AdminDashboard supprimé
 
 export default function App() {
@@ -110,10 +110,10 @@ export default function App() {
             </Layout>
           </PublicRoute>
         } />
-        <Route path="/community" element={
+        <Route path="/report-bug" element={
           <PublicRoute>
             <Layout hideFooter={true}>
-              <CommunityPage />
+              <ReportBugPage />
             </Layout>
           </PublicRoute>
         } />

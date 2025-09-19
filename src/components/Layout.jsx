@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield, Menu, X } from "lucide-react";
+import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield, Menu, X, Bug } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -165,17 +165,17 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   Forum
                 </NavLink>
                 <NavLink 
-                  to="/community" 
+                  to="/report-bug" 
                   className={({ isActive }) => 
                     `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
                       isActive 
-                        ? 'text-orange-600 bg-orange-50 font-medium' 
+                        ? 'text-red-600 bg-red-50 font-medium' 
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     }`
                   }
                 >
-                  <Users className="w-4 h-4" />
-                  Communauté
+                  <Bug className="w-4 h-4" />
+                  Signaler un Bug
                 </NavLink>
                 <NavLink 
                   to="/pricing" 
@@ -216,11 +216,11 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   Forum
                 </Link>
                 <Link 
-                  to="/community" 
+                  to="/report-bug" 
                   className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 >
-                  <Users className="w-4 h-4" />
-                  Communauté
+                  <Bug className="w-4 h-4" />
+                  Signaler un Bug
                 </Link>
                 <Link 
                   to="/pricing" 
