@@ -45,15 +45,15 @@ export default function FAQPage() {
         },
         {
           question: "Quels sont les critères de validation ?",
-          answer: "Nous validons votre profil selon 4 critères transparents :\n\n🎨 **Portfolio** : Qualité et diversité de vos réalisations\n💼 **Expérience** : Pertinence de votre parcours professionnel\n🔥 **Passion** : Votre engagement et votre vision du design\n🚀 **Potentiel** : Votre capacité d'évolution et d'adaptation\n\nChaque critère est évalué par nos experts selon une grille objective."
+          answer: "Nous validons votre profil selon 4 critères transparents :\n\n• **Portfolio** : Qualité et diversité de vos réalisations\n• **Expérience** : Pertinence de votre parcours professionnel\n• **Passion** : Votre engagement et votre vision du design\n• **Potentiel** : Votre capacité d'évolution et d'adaptation\n\nChaque critère est évalué par nos experts selon une grille objective."
         },
         {
           question: "Combien de temps faut-il pour être validé ?",
-          answer: "⏱️ Processus de validation transparent :\n\n📧 J+1 : Accusé de réception de votre candidature\n📅 J+3 : Première revue par notre équipe\n📅 J+7 : Validation finale et notification\n📅 J+10 : Intégration au pool de talents (si validé)\n\nVous recevrez des notifications à chaque étape."
+          answer: "Processus de validation transparent :\n\n• **J+1** : Accusé de réception de votre candidature\n• **J+3** : Première revue par notre équipe\n• **J+7** : Validation finale et notification\n• **J+10** : Intégration au pool de talents (si validé)\n\nVous recevrez des notifications à chaque étape."
         },
         {
           question: "Que se passe-t-il si ma candidature n'est pas validée ?",
-          answer: "En cas de non-validation, vous recevrez un rapport détaillé incluant :\n\n✅ Vos points forts identifiés\n🔧 Les axes d'amélioration suggérés\n📚 Des ressources pour progresser\n🔄 La possibilité de repostuler après amélioration\n\nVous pourrez repostuler après avoir amélioré votre profil, généralement après 6 mois."
+          answer: "En cas de non-validation, vous recevrez un rapport détaillé incluant :\n\n• Vos points forts identifiés\n• Les axes d'amélioration suggérés\n• Des ressources pour progresser\n• La possibilité de repostuler après amélioration\n\nVous pourrez repostuler après avoir amélioré votre profil, généralement après 6 mois."
         },
         {
           question: "L'inscription est-elle gratuite ?",
@@ -61,11 +61,11 @@ export default function FAQPage() {
         },
         {
           question: "Qui sont nos experts évaluateurs ?",
-          answer: "👥 Notre comité de validation est composé de :\n\n• Directeurs artistiques avec 10+ ans d'expérience\n• Designers seniors ayant travaillé dans des entreprises reconnues\n• Spécialistes UX/UI certifiés et formés aux dernières méthodologies\n\nIls partagent tous une expertise reconnue dans l'industrie et comprennent les enjeux du marché actuel."
+          answer: "Notre comité de validation est composé de :\n\n• Directeurs artistiques avec 10+ ans d'expérience\n• Designers seniors ayant travaillé dans des entreprises reconnues\n• Spécialistes UX/UI certifiés et formés aux dernières méthodologies\n\nIls partagent tous une expertise reconnue dans l'industrie et comprennent les enjeux du marché actuel."
         },
         {
           question: "Comment garantissez-vous l'objectivité du processus ?",
-          answer: "🎯 Notre approche objective :\n\n• Grille d'évaluation standardisée\n• Avis de plusieurs experts pour chaque profil\n• Critères mesurables et transparents\n• Formation continue de nos évaluateurs\n\nAucun profil n'est évalué par une seule personne."
+          answer: "Notre approche objective :\n\n• Grille d'évaluation standardisée\n• Avis de plusieurs experts pour chaque profil\n• Critères mesurables et transparents\n• Formation continue de nos évaluateurs\n\nAucun profil n'est évalué par une seule personne."
         }
       ]
     },

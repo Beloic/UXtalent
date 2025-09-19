@@ -527,19 +527,19 @@ export default function LandingPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
                   <div className="flex items-center justify-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>🎨 Portfolio de qualité et diversité</span>
+                    <span>Portfolio de qualité et diversité</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>💼 Expérience professionnelle pertinente</span>
+                    <span>Expérience professionnelle pertinente</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>🔥 Passion et engagement pour le design</span>
+                    <span>Passion et engagement pour le design</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>🚀 Potentiel d'évolution et d'adaptation</span>
+                    <span>Potentiel d'évolution et d'adaptation</span>
                   </div>
                 </div>
               </div>
