@@ -347,17 +347,31 @@ export default function MyProfilePage() {
                 ))}
               </select>
             ) : (
-              <input
-                type={type}
-                value={tempValue}
-                onChange={(e) => setTempValue(e.target.value)}
-                className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
-                }`}
-                placeholder={placeholder}
-                autoFocus
-                required={isRequired}
-              />
+              fieldName === 'bio' ? (
+                <textarea
+                  value={tempValue}
+                  onChange={(e) => setTempValue(e.target.value)}
+                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                    isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
+                  }`}
+                  placeholder={placeholder}
+                  rows={4}
+                  autoFocus
+                  required={isRequired}
+                />
+              ) : (
+                <input
+                  type={type}
+                  value={tempValue}
+                  onChange={(e) => setTempValue(e.target.value)}
+                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
+                  }`}
+                  placeholder={placeholder}
+                  autoFocus
+                  required={isRequired}
+                />
+              )
             )}
             <button
               onClick={saveInlineEdit}
@@ -968,11 +982,10 @@ export default function MyProfilePage() {
                           {/* Bouton pour voir le profil public */}
                           <Link 
                             to={`/candidates/${formData.id}`}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                            className="inline-flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-all duration-200 shadow-md hover:shadow-lg"
                             title="Voir mon profil public"
                           >
-                            <Eye className="w-4 h-4" />
-                            Voir profil
+                            <Eye className="w-5 h-5" />
                           </Link>
                           
                           {(candidatePlan === 'premium' || candidatePlan === 'pro') && (
