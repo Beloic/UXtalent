@@ -22,7 +22,7 @@ export default function ReportBugPage() {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText('https://trello.com/b/t3LYLAKl/backlog-ux-talent');
+    navigator.clipboard.writeText('https://uxtalents.featurebase.app/en');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -30,8 +30,13 @@ export default function ReportBugPage() {
   return (
     <div className="bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23f3f4f6" fill-opacity="0.4"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40"></div>
+        <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+          <div className="absolute inset-0 opacity-40">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f3f4f6' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              backgroundSize: '60px 60px'
+            }}></div>
+          </div>
         
         <div className="relative max-w-7xl mx-auto px-4 py-20">
           <motion.div
@@ -125,7 +130,7 @@ export default function ReportBugPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Cliquez sur le bouton ci-dessous</h3>
-                    <p className="text-gray-600">Accédez directement à notre tableau Trello dédié aux bugs</p>
+                    <p className="text-gray-600">Accédez directement à notre plateforme Featurebase dédiée aux bugs</p>
                   </div>
                 </div>
 
@@ -134,8 +139,8 @@ export default function ReportBugPage() {
                     2
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Créez une nouvelle carte</h3>
-                    <p className="text-gray-600">Ajoutez une carte avec le titre du problème rencontré</p>
+                    <h3 className="font-semibold text-gray-900 mb-2">Créez un nouveau ticket</h3>
+                    <p className="text-gray-600">Ajoutez un ticket avec le titre du problème rencontré</p>
                   </div>
                 </div>
 
@@ -161,16 +166,16 @@ export default function ReportBugPage() {
               </div>
 
               <div className="mt-8 pt-8 border-t border-gray-200">
-                <a 
-                  href="https://trello.com/b/t3LYLAKl/backlog-ux-talent" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white font-semibold rounded-2xl hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
-                >
-                  <ExternalLink className="w-5 h-5" />
-                  Accéder au Tableau Trello
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </a>
+              <a 
+                href="https://uxtalents.featurebase.app/en" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white font-semibold rounded-2xl hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <ExternalLink className="w-5 h-5" />
+                Accéder à Featurebase
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </a>
               </div>
             </motion.div>
 
@@ -239,7 +244,7 @@ export default function ReportBugPage() {
                   >
                     <div className="flex items-center gap-3">
                       <Copy className="w-5 h-5" />
-                      <span className="font-medium">Copier le lien Trello</span>
+                      <span className="font-medium">Copier le lien Featurebase</span>
                     </div>
                     {copied ? (
                       <CheckCircle className="w-5 h-5 text-green-400" />
@@ -349,7 +354,7 @@ export default function ReportBugPage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
-                href="https://trello.com/b/t3LYLAKl/backlog-ux-talent" 
+                href="https://uxtalents.featurebase.app/en" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 font-semibold rounded-2xl hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
