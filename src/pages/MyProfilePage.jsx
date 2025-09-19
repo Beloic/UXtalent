@@ -14,7 +14,7 @@ export default function MyProfilePage() {
   const { user } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
   const [currentStep, setCurrentStep] = useState(1);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('view');
   const [profileStats, setProfileStats] = useState({
     profileViews: 0,
     profileViewsToday: 0,
@@ -745,6 +745,17 @@ export default function MyProfilePage() {
               {isCandidate && (
                 <>
                   <button
+                    onClick={() => setActiveTab('view')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'view'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Eye className="w-5 h-5" />
+                    Vue
+                  </button>
+                  <button
                     onClick={() => setActiveTab('profile')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'profile'
@@ -800,6 +811,267 @@ export default function MyProfilePage() {
 
         {/* Contenu des onglets */}
         <AnimatePresence mode="wait">
+          {activeTab === 'view' && (
+            <motion.div
+              key="view"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="min-h-screen bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 py-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Contenu principal */}
+                    <div className="lg:col-span-2 space-y-8">
+                      <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm relative">
+                        {/* Badges en haut à droite */}
+                        <div className="absolute top-4 right-4 flex items-center gap-3">
+                          {(candidatePlan === 'premium' || candidatePlan === 'pro') && (
+                            <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
+                              candidatePlan === 'pro' 
+                                ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
+                                : 'bg-blue-600'
+                            }`}>
+                              <span className={candidatePlan === 'pro' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
+                              {candidatePlan === 'pro' ? 'Pro' : 'Premium'}
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Header du profil */}
+                        <div className="flex items-start gap-6 mb-8">
+                          {/* Photo de profil */}
+                          <div className="relative">
+                            {formData.photo?.existing || formData.photo?.preview ? (
+                              <img
+                                src={formData.photo.existing || formData.photo.preview}
+                                alt={`Photo de ${formData.name}`}
+                                className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
+                                onError={(e) => {
+                                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&size=96&background=6366f1&color=ffffff&bold=true`;
+                                }}
+                              />
+                            ) : (
+                              <img
+                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&size=96&background=6366f1&color=ffffff&bold=true`}
+                                alt={`Avatar de ${formData.name}`}
+                                className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
+                              />
+                            )}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <div className="flex items-center gap-4 mb-2">
+                              <h1 className="text-4xl font-bold text-gray-900">
+                                {formData.name}
+                              </h1>
+                            </div>
+                            <p className="text-xl text-gray-600 mb-4">{formData.title || 'Titre non spécifié'}</p>
+                            <div className="flex items-center gap-4">
+                              {formData.yearsOfExperience && (
+                                <span className={`px-4 py-2 rounded-full text-sm font-bold ${
+                                  parseInt(formData.yearsOfExperience) <= 1 ? 'bg-green-100 text-green-800 border border-green-200' :
+                                  parseInt(formData.yearsOfExperience) <= 3 ? 'bg-blue-100 text-blue-800 border border-blue-200' :
+                                  parseInt(formData.yearsOfExperience) <= 6 ? 'bg-purple-100 text-purple-800 border border-purple-200' :
+                                  parseInt(formData.yearsOfExperience) <= 10 ? 'bg-orange-100 text-orange-800 border border-orange-200' :
+                                  'bg-red-100 text-red-800 border border-red-200'
+                                }`}>
+                                  {parseInt(formData.yearsOfExperience) === 1 ? '1 an XP' : `${formData.yearsOfExperience} ans XP`}
+                                </span>
+                              )}
+                              {formData.location && (
+                                <div className="flex items-center text-gray-500">
+                                  <MapPin className="w-5 h-5 mr-2" />
+                                  <span>{formData.location}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Bio */}
+                        <div className="mb-8">
+                          <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <User className="w-6 h-6 text-blue-600" />
+                            À propos
+                          </h2>
+                          <div className="bg-gray-50 rounded-2xl p-6">
+                            <p className="text-gray-700 leading-relaxed text-lg">
+                              {formData.bio || 'Aucune description disponible'}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Compétences */}
+                        <div className="mb-8">
+                          <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <Briefcase className="w-6 h-6 text-blue-600" />
+                            Compétences
+                          </h2>
+                          <div className="flex flex-wrap gap-3">
+                            {formData.skills ? (
+                              formData.skills.split(',').map((skill, index) => (
+                                <span
+                                  key={index}
+                                  className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-medium border border-blue-200"
+                                >
+                                  {skill.trim()}
+                                </span>
+                              ))
+                            ) : (
+                              <p className="text-gray-500 italic">Compétences non spécifiées</p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Liens */}
+                        <div className="border-t border-gray-200 pt-8">
+                          <h2 className="text-2xl font-bold text-gray-900 mb-6">Liens et portfolio</h2>
+                          <div className="flex flex-wrap gap-4">
+                            {formData.linkedin && (
+                              <a
+                                href={formData.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-3 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-blue-200"
+                              >
+                                <ExternalLink className="w-5 h-5" />
+                                LinkedIn
+                              </a>
+                            )}
+                            {formData.portfolio && (
+                              <a
+                                href={formData.portfolio}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
+                              >
+                                <Globe className="w-5 h-5" />
+                                Portfolio
+                              </a>
+                            )}
+                            {formData.github && (
+                              <a
+                                href={formData.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
+                              >
+                                <ExternalLink className="w-5 h-5" />
+                                GitHub
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Barre latérale droite - Bloc Informations */}
+                    <div className="lg:col-span-1">
+                      <div className="bg-white rounded-2xl shadow-xl p-6 border border-white/20 backdrop-blur-sm sticky top-8">
+                        <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                          <Star className="w-5 h-5 text-blue-600" />
+                          Informations
+                        </h3>
+                        
+                        <div className="space-y-6">
+                          {/* Localisation */}
+                          <div className="space-y-4">
+                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="p-2 bg-blue-100 rounded-lg">
+                                <MapPin className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-gray-500 mb-1">Localisation</p>
+                                <p className="font-semibold text-gray-900">{formData.location || 'Non spécifiée'}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Remote */}
+                          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                              <Globe className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-500 mb-1">Mode de travail</p>
+                              <p className="font-semibold text-gray-900">
+                                {formData.remote === 'remote' ? 'Full remote' :
+                                 formData.remote === 'onsite' ? 'Sur site' :
+                                 formData.remote === 'hybrid' ? 'Hybride' : 'Non spécifié'}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Années d'expérience */}
+                          {formData.yearsOfExperience && (
+                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="p-2 bg-blue-100 rounded-lg">
+                                <Briefcase className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-gray-500 mb-1">Années d'expérience</p>
+                                <p className="font-semibold text-gray-900">
+                                  {formData.yearsOfExperience} {parseInt(formData.yearsOfExperience) === 1 ? 'an XP' : 'ans XP'}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Rémunération */}
+                          {(formData.dailyRate || formData.annualSalary) && (
+                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-700 mb-2">Rémunération souhaitée</p>
+                                <div className="space-y-2">
+                                  {formData.dailyRate && (
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-sm text-gray-600 font-medium">TJM:</span>
+                                      <span className="font-bold text-gray-900">{formData.dailyRate}€</span>
+                                    </div>
+                                  )}
+                                  {formData.annualSalary && (
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-sm text-gray-600 font-medium">Salaire annuel:</span>
+                                      <span className="font-bold text-gray-900">{parseInt(formData.annualSalary).toLocaleString('fr-FR')}€</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Profil créé */}
+                          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                              <Calendar className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-500 mb-1">Profil créé</p>
+                              <p className="font-semibold text-gray-900">
+                                {formData.updatedAt ? new Date(formData.updatedAt).toLocaleDateString('fr-FR') : 'Non spécifiée'}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Statut de vérification */}
+                          <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+                            <CheckCircle className="w-5 h-5 text-emerald-600" />
+                            <div>
+                              <p className="text-sm font-medium text-emerald-800">Profil vérifié</p>
+                              <p className="text-xs text-emerald-600">Candidat validé par notre équipe</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {activeTab === 'profile' && (
             <motion.div
               key="profile"
