@@ -114,7 +114,12 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             >
               <Users className="w-6 h-6 text-white" />
             </motion.div>
-            <span className="text-xl">UX Talents</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">UX Talents</span>
+              <span className="px-2 py-1 text-xs font-semibold text-orange-600 bg-orange-100 rounded-full border border-orange-200">
+                Alpha
+              </span>
+            </div>
           </Link>
           {/* Navigation Desktop */}
           <nav className="ml-8 hidden md:flex items-center gap-6 text-gray-600">
