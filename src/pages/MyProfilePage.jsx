@@ -1076,21 +1076,10 @@ export default function MyProfilePage() {
                               {/* Bouton pour ajouter une compétence */}
                               <button
                                 onClick={() => {
-                                  const predefinedSkills = [
-                                    'Figma', 'Sketch', 'Adobe XD', 'Prototypage', 'Recherche utilisateur',
-                                    'Design System', 'Accessibilité', 'User Testing', 'Wireframing', 'Visual Design',
-                                    'Photoshop', 'Illustrator', 'InVision', 'Principle', 'Framer',
-                                    'HTML/CSS', 'JavaScript', 'React', 'Vue.js', 'Angular',
-                                    'Node.js', 'Python', 'PHP', 'SQL', 'MongoDB',
-                                    'Agile', 'Scrum', 'Design Thinking', 'Lean UX', 'Service Design'
-                                  ];
-                                  
-                                  const currentSkills = formData.skills ? formData.skills.split(',').map(s => s.trim()) : [];
-                                  const availableSkills = predefinedSkills.filter(skill => !currentSkills.includes(skill));
-                                  
-                                  if (availableSkills.length > 0) {
-                                    const randomSkill = availableSkills[Math.floor(Math.random() * Math.min(5, availableSkills.length))];
-                                    const updatedSkills = [...currentSkills, randomSkill];
+                                  const newSkill = prompt('Ajouter une nouvelle compétence:');
+                                  if (newSkill && newSkill.trim()) {
+                                    const currentSkills = formData.skills ? formData.skills.split(',').map(s => s.trim()) : [];
+                                    const updatedSkills = [...currentSkills, newSkill.trim()];
                                     setFormData(prev => ({
                                       ...prev,
                                       skills: updatedSkills.join(', ')
@@ -1099,19 +1088,6 @@ export default function MyProfilePage() {
                                     setTimeout(() => {
                                       saveInlineEdit();
                                     }, 100);
-                                  } else {
-                                    const newSkill = prompt('Ajouter une nouvelle compétence:');
-                                    if (newSkill && newSkill.trim()) {
-                                      const updatedSkills = [...currentSkills, newSkill.trim()];
-                                      setFormData(prev => ({
-                                        ...prev,
-                                        skills: updatedSkills.join(', ')
-                                      }));
-                                      // Sauvegarder automatiquement
-                                      setTimeout(() => {
-                                        saveInlineEdit();
-                                      }, 100);
-                                    }
                                   }
                                 }}
                                 className="px-4 py-2 bg-green-100 text-green-700 rounded-xl font-medium border border-green-200 hover:bg-green-200 transition-colors flex items-center gap-2"
