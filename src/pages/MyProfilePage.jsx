@@ -1063,37 +1063,37 @@ export default function MyProfilePage() {
                           </div>
                           
                           <div className="space-y-4">
-                            {/* Tags interactifs */}
-                            {formData.skills ? (
-                              <div className="flex flex-wrap gap-x-3 gap-y-4">
-                                {formData.skills.split(',').map((skill, index) => (
-                                  <div
-                                    key={index}
-                                    className="group relative"
-                                  >
-                                    <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-medium border border-blue-200 hover:bg-blue-200 transition-colors cursor-pointer">
-                                      {skill.trim()}
-                                    </span>
-                                    <button
-                                      onClick={() => {
-                                        const skillsArray = formData.skills.split(',').map(s => s.trim());
-                                        const newSkills = skillsArray.filter((_, i) => i !== index);
-                                        setFormData(prev => ({
-                                          ...prev,
-                                          skills: newSkills.join(', ')
-                                        }));
-                                        // Sauvegarder automatiquement
-                                        setTimeout(() => {
-                                          saveInlineEdit();
-                                        }, 100);
-                                      }}
-                                      className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100 flex items-center justify-center"
-                                    >
-                                      ×
-                                    </button>
-                                  </div>
-                                ))}
-                              </div>
+           {/* Tags interactifs */}
+           {formData.skills ? (
+             <div className="flex flex-wrap gap-3">
+               {formData.skills.split(',').map((skill, index) => (
+                 <div
+                   key={index}
+                   className="group relative"
+                 >
+                   <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-medium border border-blue-200 hover:bg-blue-200 transition-colors cursor-pointer shadow-sm">
+                     {skill.trim()}
+                   </span>
+                   <button
+                     onClick={() => {
+                       const skillsArray = formData.skills.split(',').map(s => s.trim());
+                       const newSkills = skillsArray.filter((_, i) => i !== index);
+                       setFormData(prev => ({
+                         ...prev,
+                         skills: newSkills.join(', ')
+                       }));
+                       // Sauvegarder automatiquement
+                       setTimeout(() => {
+                         saveInlineEdit();
+                       }, 100);
+                     }}
+                     className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100 flex items-center justify-center"
+                   >
+                     ×
+                   </button>
+                 </div>
+               ))}
+             </div>
                             ) : (
                               <div className="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
                                 <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3" />
