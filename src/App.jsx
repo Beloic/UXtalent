@@ -29,6 +29,7 @@ import PublicRoute from "./components/PublicRoute";
 import CandidateProfileGuard from "./components/CandidateProfileGuard";
 import { RoleGuard } from "./components/RoleGuard";
 import PublishJobPage from "./pages/PublishJobPage";
+import CommunityPage from "./pages/CommunityPage";
 // AdminDashboard supprimé
 
 export default function App() {
@@ -106,6 +107,13 @@ export default function App() {
               <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
                 <PricingPage />
               </div>
+            </Layout>
+          </PublicRoute>
+        } />
+        <Route path="/community" element={
+          <PublicRoute>
+            <Layout hideFooter={true}>
+              <CommunityPage />
             </Layout>
           </PublicRoute>
         } />

@@ -165,6 +165,19 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   Forum
                 </NavLink>
                 <NavLink 
+                  to="/community" 
+                  className={({ isActive }) => 
+                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive 
+                        ? 'text-orange-600 bg-orange-50 font-medium' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`
+                  }
+                >
+                  <Users className="w-4 h-4" />
+                  Communauté
+                </NavLink>
+                <NavLink 
                   to="/pricing" 
                   className={({ isActive }) => 
                     `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
@@ -201,6 +214,13 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 >
                   <MessageSquare className="w-4 h-4" />
                   Forum
+                </Link>
+                <Link 
+                  to="/community" 
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                >
+                  <Users className="w-4 h-4" />
+                  Communauté
                 </Link>
                 <Link 
                   to="/pricing" 
