@@ -397,6 +397,10 @@ export default function RecruiterLandingPage() {
                   </li>
                   <li className="flex items-center gap-2 text-gray-600">
                     <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span>Export des talents en CSV/JSON</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
                     <span>Support par email</span>
                   </li>
                 </ul>
@@ -454,6 +458,10 @@ export default function RecruiterLandingPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-300" />
+                    <span>Export des talents en CSV/JSON</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-300" />
                     <span>Export des données</span>
                   </li>
                 </ul>
@@ -495,6 +503,10 @@ export default function RecruiterLandingPage() {
                   <li className="flex items-center gap-2 text-gray-600">
                     <CheckCircle className="w-4 h-4 text-green-500" />
                     <span>Tableau de bord personnalisé</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span>Export des talents en CSV/JSON</span>
                   </li>
                   <li className="flex items-center gap-2 text-gray-600">
                     <CheckCircle className="w-4 h-4 text-green-500" />

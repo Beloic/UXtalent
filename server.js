@@ -3009,6 +3009,121 @@ app.get('/api/matching/candidates/:jobId', requireRole(['recruiter', 'admin']), 
   }
 });
 
+// ===== ROUTES POUR L'EXPORT DES TALENTS =====
+
+// GET /api/export/candidates/csv - Export des candidats en CSV (recruteurs seulement)
+app.get('/api/export/candidates/csv', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    // Récupérer tous les candidats approuvés
+    const { data: candidates, error } = await supabaseAdmin
+      .from('candidates')
+      .select('*')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      logger.error('Erreur lors de la récupération des candidats pour export CSV', { error: error.message });
+      return res.status(500).json({ error: 'Erreur lors de la récupération des candidats' });
+    }
+
+    // Préparer les données CSV
+    const csvHeaders = [
+      'ID', 'Nom', 'Titre', 'Localisation', 'Remote', 'Expérience', 
+      'Compétences', 'Bio', 'Portfolio', 'LinkedIn', 'Email', 
+      'Disponibilité', 'Salaire', 'Langues', 'Date de création'
+    ];
+
+    const csvRows = candidates.map(candidate => [
+      candidate.id,
+      candidate.name || '',
+      candidate.title || '',
+      candidate.location || '',
+      candidate.remote || '',
+      candidate.experience || '',
+      Array.isArray(candidate.skills) ? candidate.skills.join('; ') : '',
+      candidate.bio || '',
+      candidate.portfolio || '',
+      candidate.linkedin || '',
+      candidate.email || '',
+      candidate.availability || '',
+      candidate.salary || '',
+      Array.isArray(candidate.languages) ? candidate.languages.join('; ') : '',
+      candidate.created_at ? new Date(candidate.created_at).toLocaleDateString('fr-FR') : ''
+    ]);
+
+    // Créer le contenu CSV
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvRows.map(row => row.map(field => `"${field}"`).join(','))
+    ].join('\n');
+
+    // Définir les headers pour le téléchargement
+    const filename = `candidats_ux_${new Date().toISOString().split('T')[0]}.csv`;
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Cache-Control', 'no-cache');
+
+    // Envoyer le fichier CSV
+    res.send('\ufeff' + csvContent); // BOM UTF-8 pour Excel
+  } catch (error) {
+    logger.error('Erreur lors de l\'export CSV des candidats', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de l\'export CSV' });
+  }
+});
+
+// GET /api/export/candidates/json - Export des candidats en JSON (recruteurs seulement)
+app.get('/api/export/candidates/json', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    // Récupérer tous les candidats approuvés
+    const { data: candidates, error } = await supabaseAdmin
+      .from('candidates')
+      .select('*')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      logger.error('Erreur lors de la récupération des candidats pour export JSON', { error: error.message });
+      return res.status(500).json({ error: 'Erreur lors de la récupération des candidats' });
+    }
+
+    // Préparer les données JSON
+    const exportData = {
+      export_date: new Date().toISOString(),
+      total_candidates: candidates.length,
+      candidates: candidates.map(candidate => ({
+        id: candidate.id,
+        name: candidate.name,
+        title: candidate.title,
+        location: candidate.location,
+        remote: candidate.remote,
+        experience: candidate.experience,
+        skills: candidate.skills || [],
+        bio: candidate.bio,
+        portfolio: candidate.portfolio,
+        linkedin: candidate.linkedin,
+        email: candidate.email,
+        availability: candidate.availability,
+        salary: candidate.salary,
+        languages: candidate.languages || [],
+        created_at: candidate.created_at,
+        updated_at: candidate.updated_at
+      }))
+    };
+
+    // Définir les headers pour le téléchargement
+    const filename = `candidats_ux_${new Date().toISOString().split('T')[0]}.json`;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Cache-Control', 'no-cache');
+
+    // Envoyer le fichier JSON
+    res.json(exportData);
+  } catch (error) {
+    logger.error('Erreur lors de l\'export JSON des candidats', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de l\'export JSON' });
+  }
+});
+
 // GET /api/matching/jobs/:candidateId - Trouve les meilleures offres pour un candidat
 app.get('/api/matching/jobs/:candidateId', requireRole(['candidate', 'recruiter', 'admin']), async (req, res) => {
   try {

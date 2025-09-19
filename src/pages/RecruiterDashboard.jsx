@@ -43,6 +43,7 @@ import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';
 import EditJobForm from '../components/EditJobForm';
 import MatchingDashboard from '../components/MatchingDashboard';
+import ExportButton from '../components/ExportButton';
 import { loadAppointments } from '../services/appointmentsApi';
 import { buildApiUrl } from '../config/api';
 
@@ -789,28 +790,8 @@ export default function RecruiterDashboard() {
                       <p className="text-gray-600 mt-2">Gérez vos candidats préférés</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      {/* Boutons d'export pour les favoris */}
-                      {favorites.length > 0 && (
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => exportFavorites('csv')}
-                            disabled={exporting}
-                            className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <FileText className="w-4 h-4" />
-                            {exporting ? 'Export...' : 'Export CSV'}
-                          </button>
-                          
-                          <button
-                            onClick={() => exportFavorites('json')}
-                            disabled={exporting}
-                            className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <Database className="w-4 h-4" />
-                            {exporting ? 'Export...' : 'Export JSON'}
-                          </button>
-                        </div>
-                      )}
+                      {/* Bouton d'export des talents */}
+                      <ExportButton />
                       
                       {favorites.length > 0 && (
                         <div className="flex items-center gap-1 text-sm text-gray-600">
@@ -977,12 +958,17 @@ export default function RecruiterDashboard() {
                       </div>
                       <p className="text-gray-600 mt-2">Organisez vos candidats par statut avec le drag & drop</p>
                     </div>
-                    {candidates.length > 0 && (
-                      <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-xl font-semibold">
-                        <Layout className="w-5 h-5" />
-                        <span>{candidates.length} candidat{candidates.length > 1 ? 's' : ''}</span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-4">
+                      {/* Bouton d'export des talents */}
+                      <ExportButton />
+                      
+                      {candidates.length > 0 && (
+                        <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-xl font-semibold">
+                          <Layout className="w-5 h-5" />
+                          <span>{candidates.length} candidat{candidates.length > 1 ? 's' : ''}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
             
