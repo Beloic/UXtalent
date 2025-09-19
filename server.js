@@ -917,13 +917,11 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
     const candidateDataWithStatus = {
       ...candidateData,
       // approved supprimé - utilise uniquement status
-      // visible supprimé - utilise uniquement status
       status: candidateData.status || 'pending'
     };
     
     console.log('🆕 [SERVER] Création candidat avec statut:', { 
       // approved supprimé - utilise uniquement status 
-      // visible supprimé - utilise uniquement status 
       status: candidateDataWithStatus.status 
     });
     
