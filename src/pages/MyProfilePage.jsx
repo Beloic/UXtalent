@@ -140,11 +140,11 @@ export default function MyProfilePage() {
 
   // Charger les statistiques quand l'onglet stats est sélectionné
   useEffect(() => {
-    if (activeTab === 'stats' && user && !isLoadingStats && !isLoadingChart) {
+    if (activeTab === 'stats' && user) {
       loadProfileStats();
       loadChartData();
     }
-  }, [activeTab, user, loadProfileStats, loadChartData, isLoadingStats, isLoadingChart]);
+  }, [activeTab, user, loadProfileStats, loadChartData]);
 
   const loadExistingProfile = useCallback(async () => {
     try {
