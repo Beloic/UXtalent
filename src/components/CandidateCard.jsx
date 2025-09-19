@@ -114,20 +114,32 @@ export default function CandidateCard({ candidate, compact = false }) {
 
   // Style aligné sur la carte d'offre (JobCard)
   const getCardStyles = () => {
-    const base = "group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300";
+    const base = "group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 transition-all duration-300";
+    
+    // Si ce n'est pas un recruteur, désactiver les interactions
+    if (!isRecruiter) {
+      return `${base} opacity-75 cursor-not-allowed`;
+    }
+    
+    // Styles normaux pour les recruteurs
     if (candidate.planType === 'premium') {
-      return `${base} hover:border-blue-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50`;
+      return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-blue-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 cursor-pointer`;
     }
     if (candidate.planType === 'pro') {
-      return `${base} hover:border-amber-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50`;
+      return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-amber-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 cursor-pointer`;
     }
-    return `${base} hover:border-blue-200/50`;
+    return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-blue-200/50 cursor-pointer`;
   };
 
   return (
     <div className={getCardStyles()}>
       {/* Badges en haut à droite */}
       <div className="absolute top-3 right-3 flex items-center gap-2">
+        {!isRecruiter && (
+          <span className="px-3 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full border border-red-200">
+            Réservé aux recruteurs
+          </span>
+        )}
         {candidate.planType === 'premium' && <PremiumBadge />}
         {candidate.planType === 'pro' && <ProBadge />}
       </div>
@@ -218,13 +230,20 @@ export default function CandidateCard({ candidate, compact = false }) {
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
           {candidate.id ? (
-            <Link
-              to={`/candidates/${candidate.id}`}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm w-full sm:w-auto justify-center"
-            >
-              Voir le profil
-              <Eye className="w-4 h-4" />
-            </Link>
+            isRecruiter ? (
+              <Link
+                to={`/candidates/${candidate.id}`}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm w-full sm:w-auto justify-center"
+              >
+                Voir le profil
+                <Eye className="w-4 h-4" />
+              </Link>
+            ) : (
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-400 rounded-xl font-medium text-sm cursor-not-allowed w-full sm:w-auto justify-center">
+                <Eye className="w-4 h-4" />
+                Réservé aux recruteurs
+              </div>
+            )
           ) : (
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-400 rounded-xl font-medium text-sm cursor-not-allowed w-full sm:w-auto justify-center">
               <User className="w-4 h-4" />
