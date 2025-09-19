@@ -1072,8 +1072,36 @@ export default function MyProfilePage() {
                                      skills: updatedSkills.join(', ')
                                    }));
                                    // Sauvegarder automatiquement
-                                   setTimeout(() => {
-                                     saveInlineEdit();
+                                   setTimeout(async () => {
+                                     try {
+                                       const session = await supabase.auth.getSession();
+                                       const token = session.data.session?.access_token;
+                                       
+                                       if (!token) {
+                                         throw new Error('Token d\'authentification manquant');
+                                       }
+
+                                       const updateData = { skills: updatedSkills.join(', ') };
+                                       
+                                       const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
+                                         method: 'PUT',
+                                         headers: {
+                                           'Content-Type': 'application/json',
+                                           'Authorization': `Bearer ${token}`
+                                         },
+                                         body: JSON.stringify(updateData)
+                                       });
+
+                                       if (response.ok) {
+                                         setMessage('✅ Compétence ajoutée avec succès');
+                                         setTimeout(() => setMessage(''), 3000);
+                                       } else {
+                                         throw new Error('Erreur lors de la sauvegarde');
+                                       }
+                                     } catch (error) {
+                                       setMessage(`❌ Erreur: ${error.message}`);
+                                       setTimeout(() => setMessage(''), 3000);
+                                     }
                                    }, 100);
                                  }
                                }}
@@ -1087,7 +1115,7 @@ export default function MyProfilePage() {
                           <div className="space-y-4">
            {/* Tags interactifs */}
            {formData.skills ? (
-             <div className="flex flex-wrap gap-3">
+             <div className="flex flex-wrap" style={{ gap: '1.4rem' }}>
                {formData.skills.split(',').map((skill, index) => (
                  <div
                    key={index}
@@ -1105,8 +1133,36 @@ export default function MyProfilePage() {
                          skills: newSkills.join(', ')
                        }));
                        // Sauvegarder automatiquement
-                       setTimeout(() => {
-                         saveInlineEdit();
+                       setTimeout(async () => {
+                         try {
+                           const session = await supabase.auth.getSession();
+                           const token = session.data.session?.access_token;
+                           
+                           if (!token) {
+                             throw new Error('Token d\'authentification manquant');
+                           }
+
+                           const updateData = { skills: newSkills.join(', ') };
+                           
+                           const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
+                             method: 'PUT',
+                             headers: {
+                               'Content-Type': 'application/json',
+                               'Authorization': `Bearer ${token}`
+                             },
+                             body: JSON.stringify(updateData)
+                           });
+
+                           if (response.ok) {
+                             setMessage('✅ Compétence supprimée avec succès');
+                             setTimeout(() => setMessage(''), 3000);
+                           } else {
+                             throw new Error('Erreur lors de la sauvegarde');
+                           }
+                         } catch (error) {
+                           setMessage(`❌ Erreur: ${error.message}`);
+                           setTimeout(() => setMessage(''), 3000);
+                         }
                        }, 100);
                      }}
                      className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100 flex items-center justify-center"
