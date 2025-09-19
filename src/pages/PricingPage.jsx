@@ -36,8 +36,7 @@ export default function PricingPage() {
         "Tableau de bord complet",
         "Tableau Kanban avancé pour organiser les candidats",
         "Algorithme de Matching intelligent",
-        "Export des talents en CSV/JSON",
-        "Export des données"
+        "Export des talents en CSV/JSON"
       ],
       popular: true,
       cta: "Commencer"
@@ -56,7 +55,6 @@ export default function PricingPage() {
         "Tableau Kanban personnalisé pour organiser les candidats",
         "Algorithme de Matching intelligent",
         "Export des talents en CSV/JSON",
-        "Export avancé des données",
         "Intégrations personnalisées",
         "Formation équipe",
         "SLA garantis",
