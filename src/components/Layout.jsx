@@ -7,6 +7,7 @@ import { supabase } from "../lib/supabase";
 import { usePermissions } from "../hooks/usePermissions";
 import { buildApiUrl } from "../config/api";
 import { ConditionalRender } from "./RoleGuard";
+import FloatingBugButton from "./FloatingBugButton";
 
 export default function Layout({ children, hideFooter = false, hideTopBar = false }) {
   const { user, signOut, isAuthenticated } = useAuth();
@@ -165,19 +166,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   Forum
                 </NavLink>
                 <NavLink 
-                  to="/report-bug" 
-                  className={({ isActive }) => 
-                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-                      isActive 
-                        ? 'text-red-600 bg-red-50 font-medium' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`
-                  }
-                >
-                  <Bug className="w-4 h-4" />
-                  Signaler un Bug
-                </NavLink>
-                <NavLink 
                   to="/pricing" 
                   className={({ isActive }) => 
                     `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
@@ -214,13 +202,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 >
                   <MessageSquare className="w-4 h-4" />
                   Forum
-                </Link>
-                <Link 
-                  to="/report-bug" 
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                >
-                  <Bug className="w-4 h-4" />
-                  Signaler un Bug
                 </Link>
                 <Link 
                   to="/pricing" 
@@ -521,6 +502,9 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
         </div>
       </footer>
       )}
+      
+      {/* Bouton flottant pour signaler un bug */}
+      <FloatingBugButton />
     </div>
   );
 }
