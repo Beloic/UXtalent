@@ -1252,10 +1252,10 @@ export default function MyProfilePage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">
-                      {candidateStatus === 'approved' ? 'Profil approuvé' : 'Processus de validation'}
+                      {candidateStatus === 'approved' ? 'Profil validé' : 'Processus de validation'}
                     </h3>
                     <p className="text-sm">
-                      Une fois votre profil soumis, notre équipe l'examinera sous 48h. Tant que votre profil n'est pas validé par un administrateur, il reste en attente et n'est pas visible dans la liste des candidats. Vous recevrez une notification une fois la validation effectuée.
+                      Une fois votre profil soumis, notre comité d'experts UX/UI seniors l'examinera sous 7 jours ouvrés. Tant que votre profil n'est pas validé par nos experts, il reste en attente et n'est pas visible dans la liste des candidats. Vous recevrez une notification détaillée une fois la validation effectuée.
                     </p>
                   </div>
                 </div>

@@ -25,11 +25,11 @@ export default function FAQPage() {
         },
         {
           question: "Comment fonctionne la plateforme ?",
-          answer: "Notre processus se déroule en 3 étapes : 1) Candidature en ligne, 2) Évaluation du portfolio, 3) Intégration au pool de talents. Une fois intégré, vous accédez aux opportunités sélectionnées par notre équipe."
+          answer: "Notre processus se déroule en 3 étapes : 1) Candidature en ligne, 2) Validation du portfolio par nos experts, 3) Intégration au pool de talents. Une fois intégré, vous accédez aux opportunités sélectionnées par notre équipe."
         },
         {
           question: "Quelle est la différence avec les autres plateformes ?",
-          answer: "UX Talent se distingue par sa sélectivité. Contrairement aux plateformes généralistes, nous ne retenons que les meilleurs profils après une évaluation rigoureuse par des designers seniors. Cela garantit une qualité élevée pour les entreprises et des opportunités premium pour les candidats."
+          answer: "UX Talent se distingue par sa sélectivité. Contrairement aux plateformes généralistes, nous ne retenons que les meilleurs profils après une validation rigoureuse par notre comité d'experts seniors. Cela garantit une qualité élevée pour les entreprises et des opportunités premium pour les candidats."
         }
       ]
     },
@@ -41,23 +41,31 @@ export default function FAQPage() {
       questions: [
         {
           question: "Comment postuler pour rejoindre le pool de talents ?",
-          answer: "Cliquez sur 'Proposer mon profil' sur la page d'accueil, créez votre compte et remplissez votre profil détaillé. Notre équipe évaluera votre candidature sous 7 jours ouvrés."
+          answer: "Cliquez sur 'Proposer mon profil' sur la page d'accueil, créez votre compte et remplissez votre profil détaillé. Nos experts UX/UI seniors valideront votre profil sous 7 jours ouvrés."
         },
         {
-          question: "Quels sont les critères de sélection ?",
-          answer: "Nous évaluons 4 critères principaux : la qualité de votre portfolio, votre expérience pertinente, votre motivation et passion pour le design, et votre potentiel d'évolution. Nous recherchons des profils avec une expertise solide."
+          question: "Quels sont les critères de validation ?",
+          answer: "Nous validons votre profil selon 4 critères transparents :\n\n🎨 **Portfolio** : Qualité et diversité de vos réalisations\n💼 **Expérience** : Pertinence de votre parcours professionnel\n🔥 **Passion** : Votre engagement et votre vision du design\n🚀 **Potentiel** : Votre capacité d'évolution et d'adaptation\n\nChaque critère est évalué par nos experts selon une grille objective."
         },
         {
-          question: "Combien de temps faut-il pour être sélectionné ?",
-          answer: "Le processus complet prend généralement 1-2 semaines. Vous recevrez une réponse sous 7 jours ouvrés après votre candidature. En cas de sélection, vous serez directement intégré au pool de talents."
+          question: "Combien de temps faut-il pour être validé ?",
+          answer: "⏱️ Processus de validation transparent :\n\n📧 J+1 : Accusé de réception de votre candidature\n📅 J+3 : Première revue par notre équipe\n📅 J+7 : Validation finale et notification\n📅 J+10 : Intégration au pool de talents (si validé)\n\nVous recevrez des notifications à chaque étape."
         },
         {
-          question: "Que se passe-t-il si ma candidature est refusée ?",
-          answer: "Si votre candidature n'est pas retenue, vous recevrez un feedback détaillé expliquant les raisons. Vous pourrez postuler à nouveau après avoir amélioré votre profil, généralement après 6 mois."
+          question: "Que se passe-t-il si ma candidature n'est pas validée ?",
+          answer: "En cas de non-validation, vous recevrez un rapport détaillé incluant :\n\n✅ Vos points forts identifiés\n🔧 Les axes d'amélioration suggérés\n📚 Des ressources pour progresser\n🔄 La possibilité de repostuler après amélioration\n\nVous pourrez repostuler après avoir amélioré votre profil, généralement après 6 mois."
         },
         {
           question: "L'inscription est-elle gratuite ?",
           answer: "Oui, l'inscription et la candidature sont entièrement gratuites. Il n'y a aucun frais d'inscription ou de commission sur les placements réussis."
+        },
+        {
+          question: "Qui sont nos experts évaluateurs ?",
+          answer: "👥 Notre comité de validation est composé de :\n\n• Directeurs artistiques avec 10+ ans d'expérience\n• Designers seniors ayant travaillé dans des entreprises reconnues\n• Spécialistes UX/UI certifiés et formés aux dernières méthodologies\n\nIls partagent tous une expertise reconnue dans l'industrie et comprennent les enjeux du marché actuel."
+        },
+        {
+          question: "Comment garantissez-vous l'objectivité du processus ?",
+          answer: "🎯 Notre approche objective :\n\n• Grille d'évaluation standardisée\n• Avis de plusieurs experts pour chaque profil\n• Critères mesurables et transparents\n• Formation continue de nos évaluateurs\n\nAucun profil n'est évalué par une seule personne."
         }
       ]
     },
@@ -89,11 +97,11 @@ export default function FAQPage() {
       questions: [
         {
           question: "Quel est le délai de réponse ?",
-          answer: "Nous nous engageons à vous répondre sous 7 jours ouvrés maximum après réception de votre candidature. En cas de sélection, vous serez directement intégré au pool de talents."
+          answer: "Nous nous engageons à vous répondre sous 7 jours ouvrés maximum après réception de votre candidature. Vous recevrez des notifications à chaque étape du processus de validation."
         },
         {
-          question: "Comment se déroule l'évaluation du portfolio ?",
-          answer: "Notre équipe de designers seniors examine attentivement votre portfolio, vos projets et votre expérience. Nous évaluons la qualité de vos réalisations, votre processus de design et votre capacité à résoudre des problèmes UX/UI complexes."
+          question: "Comment se déroule la validation du portfolio ?",
+          answer: "Notre comité d'experts UX/UI seniors examine attentivement votre portfolio selon une grille d'évaluation standardisée. Nous analysons la qualité de vos réalisations, votre processus de design, votre capacité à résoudre des problèmes UX/UI complexes, et votre évolution professionnelle."
         },
         {
           question: "Puis-je modifier mon profil après validation ?",

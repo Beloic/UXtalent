@@ -262,15 +262,15 @@ export default function LandingPage() {
               
               <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
                 <h4 className="text-lg font-bold text-blue-900 mb-3">
-                  Notre solution : La sélection par l'expertise
+                  Notre solution : La validation par l'expertise
                 </h4>
                 <p className="text-blue-800 text-sm mb-4">
-                  Nos designers seniors évaluent chaque profil selon des critères professionnels stricts. 
+                  Notre comité d'experts UX/UI seniors valide chaque profil selon des critères transparents et objectifs. 
                   Seuls les meilleurs rejoignent notre pool, garantissant aux recruteurs la qualité qu'ils recherchent.
                 </p>
                 <div className="flex items-center gap-2 text-blue-700">
                   <Shield className="w-5 h-5" />
-                  <span className="text-sm font-semibold">Validation par des experts</span>
+                  <span className="text-sm font-semibold">Validation par notre comité d'experts</span>
                 </div>
               </div>
             </div>
@@ -357,7 +357,7 @@ export default function LandingPage() {
                 <div className="p-3 bg-blue-100 rounded-xl">
                   <UserCheck className="w-8 h-8 text-blue-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Processus de sélection</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Processus de validation</h3>
               </div>
               
               <div className="space-y-4">
@@ -371,8 +371,8 @@ export default function LandingPage() {
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">2</div>
                   <div>
-                    <strong className="text-gray-900">Évaluation par des designers seniors</strong>
-                    <p className="text-gray-600 text-sm">Analyse experte de votre portfolio et compétences</p>
+                    <strong className="text-gray-900">Validation par notre comité d'experts</strong>
+                    <p className="text-gray-600 text-sm">Analyse experte de votre portfolio selon une grille objective</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -503,8 +503,8 @@ export default function LandingPage() {
                 Un processus transparent et équitable
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Nous croyons en la transparence et l'équité. Chaque candidature est évaluée 
-                selon des critères clairs et objectifs.
+                Nous croyons en la transparence et l'équité. Chaque candidature est validée 
+                par notre comité d'experts selon des critères transparents et objectifs.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="text-center">
@@ -522,24 +522,24 @@ export default function LandingPage() {
               </div>
               <div className="bg-white rounded-xl p-6 border border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  Critères d'évaluation
+                  Critères de validation transparents
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
                   <div className="flex items-center justify-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Portfolio de qualité</span>
+                    <span>🎨 Portfolio de qualité et diversité</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Expérience pertinente</span>
+                    <span>💼 Expérience professionnelle pertinente</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Motivation et passion</span>
+                    <span>🔥 Passion et engagement pour le design</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span>Potentiel d'évolution</span>
+                    <span>🚀 Potentiel d'évolution et d'adaptation</span>
                   </div>
                 </div>
               </div>
