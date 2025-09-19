@@ -1039,24 +1039,97 @@ export default function MyProfilePage() {
                             Compétences
                           </h2>
                           <div className="space-y-4">
-                            <EditableField
-                              fieldName="skills"
-                              value={formData.skills}
-                              placeholder="Compétences non spécifiées"
-                              className="text-gray-500 italic"
-                            />
-                            {formData.skills && (
-                              <div className="flex flex-wrap gap-3">
-                                {formData.skills.split(',').map((skill, index) => (
-                                  <span
+                            {/* Tags interactifs */}
+                            <div className="flex flex-wrap gap-3">
+                              {formData.skills ? (
+                                formData.skills.split(',').map((skill, index) => (
+                                  <div
                                     key={index}
-                                    className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-medium border border-blue-200"
+                                    className="group relative"
                                   >
-                                    {skill.trim()}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
+                                    <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-medium border border-blue-200 hover:bg-blue-200 transition-colors cursor-pointer">
+                                      {skill.trim()}
+                                    </span>
+                                    <button
+                                      onClick={() => {
+                                        const skillsArray = formData.skills.split(',').map(s => s.trim());
+                                        const newSkills = skillsArray.filter((_, i) => i !== index);
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          skills: newSkills.join(', ')
+                                        }));
+                                        // Sauvegarder automatiquement
+                                        setTimeout(() => {
+                                          saveInlineEdit();
+                                        }, 100);
+                                      }}
+                                      className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
+                                ))
+                              ) : (
+                                <span className="text-gray-500 italic">Aucune compétence spécifiée</span>
+                              )}
+                              
+                              {/* Bouton pour ajouter une compétence */}
+                              <button
+                                onClick={() => {
+                                  const predefinedSkills = [
+                                    'Figma', 'Sketch', 'Adobe XD', 'Prototypage', 'Recherche utilisateur',
+                                    'Design System', 'Accessibilité', 'User Testing', 'Wireframing', 'Visual Design',
+                                    'Photoshop', 'Illustrator', 'InVision', 'Principle', 'Framer',
+                                    'HTML/CSS', 'JavaScript', 'React', 'Vue.js', 'Angular',
+                                    'Node.js', 'Python', 'PHP', 'SQL', 'MongoDB',
+                                    'Agile', 'Scrum', 'Design Thinking', 'Lean UX', 'Service Design'
+                                  ];
+                                  
+                                  const currentSkills = formData.skills ? formData.skills.split(',').map(s => s.trim()) : [];
+                                  const availableSkills = predefinedSkills.filter(skill => !currentSkills.includes(skill));
+                                  
+                                  if (availableSkills.length > 0) {
+                                    const randomSkill = availableSkills[Math.floor(Math.random() * Math.min(5, availableSkills.length))];
+                                    const updatedSkills = [...currentSkills, randomSkill];
+                                    setFormData(prev => ({
+                                      ...prev,
+                                      skills: updatedSkills.join(', ')
+                                    }));
+                                    // Sauvegarder automatiquement
+                                    setTimeout(() => {
+                                      saveInlineEdit();
+                                    }, 100);
+                                  } else {
+                                    const newSkill = prompt('Ajouter une nouvelle compétence:');
+                                    if (newSkill && newSkill.trim()) {
+                                      const updatedSkills = [...currentSkills, newSkill.trim()];
+                                      setFormData(prev => ({
+                                        ...prev,
+                                        skills: updatedSkills.join(', ')
+                                      }));
+                                      // Sauvegarder automatiquement
+                                      setTimeout(() => {
+                                        saveInlineEdit();
+                                      }, 100);
+                                    }
+                                  }
+                                }}
+                                className="px-4 py-2 bg-green-100 text-green-700 rounded-xl font-medium border border-green-200 hover:bg-green-200 transition-colors flex items-center gap-2"
+                              >
+                                <span className="text-lg">+</span>
+                                Ajouter
+                              </button>
+                            </div>
+                            
+                            {/* Champ d'édition rapide */}
+                            <div className="mt-4">
+                              <EditableField
+                                fieldName="skills"
+                                value={formData.skills}
+                                placeholder="Saisissez vos compétences séparées par des virgules"
+                                className="text-sm text-gray-600"
+                              />
+                            </div>
                           </div>
                         </div>
 
