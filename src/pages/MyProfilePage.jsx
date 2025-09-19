@@ -366,7 +366,7 @@ export default function MyProfilePage() {
             <span className="flex-1">{value || placeholder}</span>
             <button
               onClick={() => startEditing(fieldName, value)}
-              className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
+              className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
             >
               <Pencil className="w-4 h-4" />
             </button>
