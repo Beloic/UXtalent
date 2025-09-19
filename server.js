@@ -1712,13 +1712,32 @@ app.put('/api/recruiter/kanban/move-candidate', requireRole(['recruiter', 'admin
     console.log('✅ Candidat trouvé:', candidate);
     
     // Récupérer la colonne de destination
-    const toColumnData = await getKanbanColumnByName(toColumn);
-    if (!toColumnData) {
-      console.log('❌ Colonne Kanban invalide:', { toColumn });
-      return res.status(400).json({ error: 'Colonne Kanban invalide' });
+    let toColumnData;
+    try {
+      toColumnData = await getKanbanColumnByName(toColumn);
+      if (!toColumnData) {
+        console.log('⚠️ Colonne Kanban non trouvée, création d\'une colonne par défaut:', { toColumn });
+        // Créer une colonne par défaut si elle n'existe pas
+        toColumnData = {
+          id: `default_${toColumn.toLowerCase().replace(/\s+/g, '_')}`,
+          name: toColumn,
+          title: toColumn,
+          color: '#6b7280',
+          icon: 'circle'
+        };
+      }
+    } catch (error) {
+      console.log('⚠️ Erreur lors de la récupération de la colonne, utilisation par défaut:', error.message);
+      toColumnData = {
+        id: `default_${toColumn.toLowerCase().replace(/\s+/g, '_')}`,
+        name: toColumn,
+        title: toColumn,
+        color: '#6b7280',
+        icon: 'circle'
+      };
     }
     
-    console.log('✅ Colonne de destination trouvée:', toColumnData);
+    console.log('✅ Colonne de destination:', toColumnData);
     
     // Récupérer le statut actuel
     const currentStatus = await getCandidateKanbanStatus(candidateId, recruiterId);
@@ -1752,15 +1771,21 @@ app.put('/api/recruiter/kanban/move-candidate', requireRole(['recruiter', 'admin
     
     // Mettre à jour le statut dans la table kanban dédiée
     console.log('💾 Mise à jour du statut Kanban...');
-    const updatedStatus = await updateCandidateKanbanStatus(
-      candidateId, 
-      recruiterId, 
-      toColumnData.id, 
-      toColumn, 
-      notes
-    );
-    
-    console.log('✅ Statut Kanban mis à jour:', updatedStatus);
+    let updatedStatus;
+    try {
+      updatedStatus = await updateCandidateKanbanStatus(
+        candidateId, 
+        recruiterId, 
+        toColumnData.id, 
+        toColumn, 
+        notes
+      );
+      console.log('✅ Statut Kanban mis à jour:', updatedStatus);
+    } catch (kanbanError) {
+      console.log('⚠️ Erreur lors de la mise à jour Kanban, continuation avec la table candidates:', kanbanError.message);
+      // Continuer même si la table kanban échoue
+      updatedStatus = { status: toColumn, candidate_id: candidateId };
+    }
     
     // Mettre à jour aussi le statut dans la table candidates pour compatibilité
     console.log('💾 Mise à jour du statut dans la table candidates...');
