@@ -448,7 +448,12 @@ export default function MyProfilePage() {
 
   // Fonction pour annuler l'abonnement
   const handleCancelSubscription = async () => {
+    console.log('🔄 handleCancelSubscription appelée');
+    console.log('📊 formData:', formData);
+    console.log('👤 user:', user);
+    
     if (!formData.id || !user) {
+      console.error('❌ Données manquantes:', { formDataId: formData.id, user: !!user });
       alert('Erreur: Profil candidat non trouvé');
       return;
     }
@@ -458,19 +463,26 @@ export default function MyProfilePage() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
+      console.log('🔑 Token:', token ? 'Présent' : 'Manquant');
+      
       if (!token) {
         throw new Error('Token d\'authentification manquant');
       }
 
       console.log('🔄 Annulation abonnement pour candidat:', formData.id);
 
-      const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}/cancel-subscription`), {
+      const apiUrl = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}/cancel-subscription`);
+      console.log('🌐 URL API:', apiUrl);
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
+
+      console.log('📡 Réponse API:', { status: response.status, ok: response.ok });
 
       if (response.ok) {
         const result = await response.json();
@@ -2472,6 +2484,7 @@ export default function MyProfilePage() {
                   </button>
                   <button
                     onClick={async () => {
+                      console.log('🖱️ Bouton de confirmation cliqué');
                       setShowCancelConfirm(false);
                       await handleCancelSubscription();
                     }}
