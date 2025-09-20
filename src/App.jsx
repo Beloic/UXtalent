@@ -114,9 +114,7 @@ export default function App() {
         <Route path="/candidates" element={
           <Layout>
             <ProtectedRoute>
-              <CandidateProfileGuard>
-                <CandidatesListPage />
-              </CandidateProfileGuard>
+              <CandidatesListPage />
             </ProtectedRoute>
           </Layout>
         } />
