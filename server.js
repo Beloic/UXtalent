@@ -1067,7 +1067,7 @@ app.post('/api/candidates/:id/cancel-subscription', authenticateUser, async (req
     // Chercher le candidat par ID
     const { data: candidateById, error: idError } = await supabase
       .from('candidates')
-      .select('id, email, plan')
+      .select('id, email, plan_type')
       .eq('id', candidateId)
       .single();
     
@@ -1087,9 +1087,9 @@ app.post('/api/candidates/:id/cancel-subscription', authenticateUser, async (req
     }
     
     const candidate = candidateById;
-    console.log('✅ Candidat trouvé:', { id: candidate.id, email: candidate.email, plan: candidate.plan });
+    console.log('✅ Candidat trouvé:', { id: candidate.id, email: candidate.email, plan_type: candidate.plan_type });
     
-    if (candidate.plan === 'free') {
+    if (candidate.plan_type === 'free') {
       return res.status(400).json({ error: 'Aucun abonnement actif à annuler' });
     }
     
