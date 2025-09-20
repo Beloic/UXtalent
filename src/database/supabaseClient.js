@@ -47,6 +47,7 @@ export const loadCandidates = async () => {
         is_featured,
         featured_until,
         notes,
+        status,
         created_at,
         updated_at
       `)
