@@ -103,11 +103,8 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           </span>
         );
       default:
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full border border-gray-200">
-            Gratuit
-          </span>
-        );
+        // Ne pas afficher de badge pour le plan gratuit
+        return null;
     }
   };
 
