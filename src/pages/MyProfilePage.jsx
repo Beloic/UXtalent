@@ -94,6 +94,7 @@ export default function MyProfilePage() {
   const [isEditingRejected, setIsEditingRejected] = useState(false); // Mode édition pour candidats rejetés
   const [userPlan, setUserPlan] = useState('free');
   const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
+  const [isRefreshingPlan, setIsRefreshingPlan] = useState(false);
   
   // États pour l'édition inline
   const [editingField, setEditingField] = useState(null);
@@ -192,6 +193,43 @@ export default function MyProfilePage() {
       loadChartData();
     }
   }, [activeTab, user, candidatePlan, loadProfileStats, loadChartData]);
+
+  // Rafraîchir le plan périodiquement pour détecter les changements
+  useEffect(() => {
+    if (!isAuthenticated || !user?.email) return;
+
+    const refreshPlan = async () => {
+      try {
+        setIsRefreshingPlan(true);
+        const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`));
+        
+        if (response.ok) {
+          const userProfile = await response.json();
+          if (userProfile && userProfile.planType !== candidatePlan) {
+            console.log('🔄 Plan mis à jour détecté:', userProfile.planType, 'ancien:', candidatePlan);
+            setCandidatePlan(userProfile.planType || 'free');
+            
+            // Déclencher l'événement pour notifier les autres composants
+            window.dispatchEvent(new CustomEvent('planUpdated', {
+              detail: { planType: userProfile.planType }
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Erreur lors du rafraîchissement du plan:', error);
+      } finally {
+        setIsRefreshingPlan(false);
+      }
+    };
+
+    // Rafraîchir immédiatement
+    refreshPlan();
+
+    // Rafraîchir toutes les 30 secondes
+    const interval = setInterval(refreshPlan, 30000);
+
+    return () => clearInterval(interval);
+  }, [isAuthenticated, user, candidatePlan]);
 
   const loadExistingProfile = useCallback(async () => {
     try {
@@ -1940,9 +1978,33 @@ export default function MyProfilePage() {
                         <DollarSign className="w-12 h-12 text-white" />
                       </div>
                       <h2 className="text-3xl font-bold text-gray-900 mb-4">Mon Plan</h2>
-                      <p className="text-gray-600 text-lg">
+                      <p className="text-gray-600 text-lg mb-4">
                         Gérez votre abonnement et accédez à toutes les fonctionnalités premium
                       </p>
+                      <button
+                        onClick={() => {
+                          loadExistingProfile();
+                          console.log('🔄 Plan rafraîchi manuellement');
+                        }}
+                        disabled={isRefreshingPlan}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 mx-auto ${
+                          isRefreshingPlan 
+                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                        }`}
+                      >
+                        {isRefreshingPlan ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></div>
+                            Actualisation...
+                          </>
+                        ) : (
+                          <>
+                            <ArrowRight className="w-4 h-4 rotate-90" />
+                            Actualiser
+                          </>
+                        )}
+                      </button>
                     </div>
 
                     {/* Plan actuel */}
