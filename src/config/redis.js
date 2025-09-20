@@ -21,22 +21,14 @@ if (IS_UPSTASH) {
     url: REDIS_URL,
     socket: {
       connectTimeout: 10000,
-      lazyConnect: true
-    },
-    retry_strategy: (options) => {
-      if (options.error && options.error.code === 'ECONNREFUSED') {
-        logger.error('❌ Redis server refused connection');
-        return new Error('Redis server refused connection');
+      lazyConnect: true,
+      reconnectStrategy: (retries) => {
+        if (retries > 10) {
+          logger.error('❌ Redis max retry attempts reached');
+          return new Error('Max retries reached');
+        }
+        return Math.min(retries * 100, 3000);
       }
-      if (options.total_retry_time > 1000 * 60 * 60) {
-        logger.error('❌ Redis retry time exhausted');
-        return new Error('Retry time exhausted');
-      }
-      if (options.attempt > 10) {
-        logger.error('❌ Redis max retry attempts reached');
-        return undefined;
-      }
-      return Math.min(options.attempt * 100, 3000);
     }
   };
 
@@ -52,6 +44,12 @@ if (IS_UPSTASH) {
 if (!IS_UPSTASH) {
   redisClient.on('error', (err) => {
     logger.error('❌ Redis Client Error:', { error: err.message, isUpstash: false });
+    
+    // Empêcher la reconnexion automatique en cas d'erreur critique
+    if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
+      logger.error('❌ Redis connection failed, stopping reconnection attempts');
+      redisClient.disconnect();
+    }
   });
 
   redisClient.on('connect', () => {

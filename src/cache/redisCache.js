@@ -85,7 +85,7 @@ class RedisCache {
 
     try {
       const serializedData = JSON.stringify(data);
-      await redisClient.setEx(key, ttl, serializedData);
+      await redisClient.set(key, serializedData, { EX: ttl });
       
       logger.debug(`💾 Redis Cache set pour ${key} (TTL: ${ttl}s)`);
       
