@@ -97,6 +97,7 @@ export default function MyProfilePage() {
   const [isRefreshingPlan, setIsRefreshingPlan] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [cancellationInfo, setCancellationInfo] = useState(null);
   
   // États pour l'édition inline
   const [editingField, setEditingField] = useState(null);
@@ -488,12 +489,22 @@ export default function MyProfilePage() {
         const result = await response.json();
         console.log('✅ Abonnement annulé avec succès:', result);
         
-        // Mettre à jour le plan localement
-        setCandidatePlan('free');
+        // Stocker les informations d'annulation
+        setCancellationInfo({
+          access_until: result.access_until,
+          cancellation_scheduled: result.cancellation_scheduled
+        });
+        
+        // Ne pas changer le plan immédiatement - l'utilisateur garde l'accès
+        // setCandidatePlan('free'); // Supprimé car l'utilisateur garde l'accès
         
         // Déclencher l'événement pour mettre à jour l'interface
         window.dispatchEvent(new CustomEvent('planUpdated', {
-          detail: { plan: 'free' }
+          detail: { 
+            plan: candidatePlan, // Garder le plan actuel
+            cancellation_scheduled: true,
+            access_until: result.access_until
+          }
         }));
         
         setMessage('✅ Annulation programmée. Vous gardez l\'accès premium jusqu\'à la fin de votre période.');
@@ -2093,6 +2104,11 @@ export default function MyProfilePage() {
                         <div>
                           <h3 className="text-xl font-bold text-gray-900 mb-2">
                             Plan {candidatePlan === 'free' ? 'Gratuit' : candidatePlan === 'premium' ? 'Premium' : candidatePlan === 'pro' ? 'Pro' : candidatePlan}
+                            {cancellationInfo?.cancellation_scheduled && (
+                              <span className="ml-2 text-sm font-normal text-orange-600">
+                                (Annulé)
+                              </span>
+                            )}
                           </h3>
                           <p className="text-gray-600">
                             {candidatePlan === 'free' 
@@ -2121,22 +2137,59 @@ export default function MyProfilePage() {
                           </div>
                         </div>
                       </div>
+                      
+                      {/* Statut d'annulation */}
+                      {cancellationInfo?.cancellation_scheduled && (
+                        <div className="mt-4 bg-orange-50 border border-orange-200 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertCircle className="w-5 h-5 text-orange-600" />
+                            <span className="text-orange-800 font-semibold">Annulation programmée</span>
+                          </div>
+                          <p className="text-orange-700 text-sm">
+                            Vous perdrez l'accès aux fonctionnalités premium le{' '}
+                            <span className="font-semibold">
+                              {new Date(cancellationInfo.access_until).toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </span>
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     {/* Actions */}
                     <div className="flex justify-center gap-4 mt-6">
-                      <button
-                        onClick={() => setShowCancelConfirm(true)}
-                        className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
-                      >
-                        Annuler mon plan
-                      </button>
-                      <button
-                        onClick={() => window.open('/pricing', '_blank')}
-                        className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
-                      >
-                        Changer de plan
-                      </button>
+                      {!cancellationInfo?.cancellation_scheduled ? (
+                        <>
+                          <button
+                            onClick={() => setShowCancelConfirm(true)}
+                            className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+                          >
+                            Annuler mon plan
+                          </button>
+                          <button
+                            onClick={() => window.open('/pricing', '_blank')}
+                            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                          >
+                            Changer de plan
+                          </button>
+                        </>
+                      ) : (
+                        <div className="text-center">
+                          <p className="text-gray-600 mb-4">
+                            Votre annulation est déjà programmée. Vous pouvez toujours changer d'avis en souscrivant à un nouveau plan.
+                          </p>
+                          <button
+                            onClick={() => window.open('/pricing', '_blank')}
+                            className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                          >
+                            Souscrire à un nouveau plan
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -1141,7 +1141,8 @@ app.post('/api/candidates/:id/cancel-subscription', authenticateUser, async (req
         cancel_at_period_end: updatedSubscription.cancel_at_period_end,
         current_period_end: updatedSubscription.current_period_end
       },
-      access_until: new Date(updatedSubscription.current_period_end * 1000).toISOString()
+      access_until: new Date(updatedSubscription.current_period_end * 1000).toISOString(),
+      cancellation_scheduled: true
     });
     
   } catch (error) {
