@@ -44,7 +44,7 @@ const createCandidateProfileIfNotExists = async (user) => {
         github: '',
         dailyRate: null,
         annualSalary: null,
-        status: 'new' // Statut spécial pour les nouveaux profils
+        status: 'pending' // Statut pour les nouveaux profils (en attente de validation)
       }
       
       const session = await supabase.auth.getSession()
@@ -65,7 +65,7 @@ const createCandidateProfileIfNotExists = async (user) => {
       })
       
       if (createResponse.ok) {
-        console.log('✅ [SIGNUP_CREATE] Profil candidat créé avec succès avec statut "new"')
+        console.log('✅ [SIGNUP_CREATE] Profil candidat créé avec succès avec statut "pending"')
       } else {
         console.error('❌ [SIGNUP_CREATE] Erreur lors de la création:', await createResponse.text())
       }

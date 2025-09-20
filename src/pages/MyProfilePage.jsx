@@ -770,8 +770,8 @@ export default function MyProfilePage() {
         email: formData.email,
         bio: structuredBio,
         // Pour les nouveaux profils : toujours en attente de validation
-        // Pour les profils existants rejetés ou nouveaux : remettre en attente après modification
-        status: formData.id ? (candidateStatus === 'rejected' || candidateStatus === 'new' ? 'pending' : undefined) : 'pending',
+        // Pour les profils existants rejetés : remettre en attente après modification
+        status: formData.id ? (candidateStatus === 'rejected' ? 'pending' : undefined) : 'pending',
         // approved supprimé - utilise uniquement status
         // visible supprimé - utilise uniquement status
         // Tous les champs du formulaire
@@ -826,11 +826,6 @@ export default function MyProfilePage() {
           // Remettre le statut à pending et sortir du mode édition
           setCandidateStatus('pending');
           setIsEditingRejected(false);
-        } else if (candidateStatus === 'new') {
-          // Profil nouveau soumis - informer qu'il est maintenant en attente
-          setMessage(`✅ Profil soumis avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
-          // Remettre le statut à pending
-          setCandidateStatus('pending');
         } else {
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
@@ -2069,15 +2064,15 @@ export default function MyProfilePage() {
                 <p className="text-sm text-yellow-700">
                   candidateStatus: {candidateStatus || 'null'} | 
                   formData.id: {formData.id || 'null'} | 
-                  Should show button: {(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES' : 'NO'}
+                  Should show button: {(!formData.id || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES' : 'NO'}
                 </p>
               </div>
 
               {/* Bouton "Envoyer mon profil" pour les candidats non approuvés */}
               {(() => {
                 // Logique simplifiée : afficher le bouton si l'utilisateur n'a pas encore de profil candidat
-                // ou si son profil est nouveau/en attente/rejeté
-                const shouldShow = !formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
+                // ou si son profil est en attente/rejeté
+                const shouldShow = !formData.id || candidateStatus === 'pending' || candidateStatus === 'rejected';
                 
                 console.log('🔍 Debug bouton:', {
                   candidateStatus,
@@ -2092,7 +2087,6 @@ export default function MyProfilePage() {
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">
                       {!formData.id ? 'Créer votre profil candidat' : 
-                       candidateStatus === 'new' ? 'Finaliser votre profil candidat' :
                        candidateStatus === 'pending' ? 'Modifier votre profil' : 
                        candidateStatus === 'rejected' ? 'Modifier votre profil rejeté' : 
                        'Finaliser votre profil'}
@@ -2100,10 +2094,8 @@ export default function MyProfilePage() {
                     <p className="text-gray-600 mb-6">
                       {!formData.id ? 
                         'Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour créer votre candidature.' :
-                        candidateStatus === 'new' ?
-                          'Votre profil a été créé automatiquement. Remplissez les champs requis et cliquez sur "Envoyer mon profil" pour le soumettre à validation.' :
                         candidateStatus === 'pending' ? 
-                          'Modifiez les champs nécessaires et cliquez sur "Modifier et renvoyer mon profil" pour soumettre à nouveau votre candidature.' :
+                          'Votre profil a été créé automatiquement lors de l\'inscription. Modifiez les champs nécessaires et cliquez sur "Modifier et renvoyer mon profil" pour soumettre à nouveau votre candidature.' :
                         candidateStatus === 'rejected' ?
                           'Modifiez votre profil et cliquez sur "Modifier et renvoyer mon profil" pour le soumettre à nouveau à validation.' :
                           'Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour soumettre votre candidature.'
@@ -2135,7 +2127,6 @@ export default function MyProfilePage() {
                         <>
                           <CheckCircle className="w-5 h-5" />
                           {!formData.id ? 'Envoyer mon profil' : 
-                           candidateStatus === 'new' ? 'Envoyer mon profil' :
                            candidateStatus === 'pending' ? 'Modifier et renvoyer mon profil' : 
                            candidateStatus === 'rejected' ? 'Modifier et renvoyer mon profil' : 
                            'Envoyer mon profil'}
