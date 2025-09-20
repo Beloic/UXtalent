@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { logger } from '../logger/clientLogger.js';
+import { logger } from '../logger/logger.js';
 import UpstashClient from './upstashClient.js';
 
 // Configuration Redis - Support Upstash et Redis classique

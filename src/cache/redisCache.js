@@ -1,4 +1,4 @@
-import { redisClient, connectRedis } from '../config/redis.js';
+import { redisClient, connectRedis } from '../config/clientRedis.js';
 import { logger } from '../logger/clientLogger.js';
 import { metrics } from '../metrics/metrics.js';
 
