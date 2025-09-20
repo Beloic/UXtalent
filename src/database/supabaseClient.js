@@ -266,7 +266,7 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
     const updateData = {
       plan_type: planType,
       plan_start_date: now.toISOString(),
-      plan_end_date: endDate.toISOString(),
+      plan_end_date: planType === 'free' ? null : endDate.toISOString(), // Pas de date de fin pour le plan gratuit
       is_featured: planType !== 'free', // Premium et Pro sont automatiquement mis en avant
       featured_until: planType !== 'free' ? endDate.toISOString() : null
     };
