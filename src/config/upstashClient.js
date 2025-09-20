@@ -1,4 +1,4 @@
-import { logger } from '../logger/logger.js';
+import { logger } from '../logger/clientLogger.js';
 
 // Client Upstash Redis REST API
 class UpstashClient {

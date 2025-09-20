@@ -1,7 +1,7 @@
 // Cache Redis pour les plans des candidats
 // Migration du cache local vers Redis pour la scalabilité
 
-import { logger } from '../logger/logger.js';
+import { logger } from '../logger/clientLogger.js';
 
 const PLAN_CACHE_PREFIX = 'plan:';
 const PLAN_CACHE_TTL = 60 * 60; // 1 heure

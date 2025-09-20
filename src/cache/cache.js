@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { logger } from '../logger/logger.js';
+import { logger } from '../logger/clientLogger.js';
 import { metrics } from '../metrics/metrics.js';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);

@@ -1,5 +1,5 @@
 import { redisClient, connectRedis } from '../config/redis.js';
-import { logger } from '../logger/logger.js';
+import { logger } from '../logger/clientLogger.js';
 import { metrics } from '../metrics/metrics.js';
 
 // Configuration du cache Redis
