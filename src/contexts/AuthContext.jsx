@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { supabaseAdmin } from '../config/supabase'
 import { buildApiUrl } from '../config/api'
 
 const AuthContext = createContext({})
@@ -17,15 +18,20 @@ const createCandidateProfileIfNotExists = async (user) => {
   try {
     console.log('🔄 [SIGNUP_CREATE] Vérification du profil candidat pour:', user.email)
     
-    // Vérifier si le profil existe déjà
-    const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`))
+    // Vérifier si le profil existe déjà en utilisant l'admin client
+    const { data: existingProfile, error: checkError } = await supabaseAdmin
+      .from('candidates')
+      .select('id')
+      .eq('email', user.email)
+      .single()
     
-    if (response.ok) {
+    if (existingProfile) {
       console.log('✅ [SIGNUP_CREATE] Profil candidat existe déjà')
       return
     }
     
-    if (response.status === 404) {
+    if (checkError && checkError.code === 'PGRST116') {
+      // Profil n'existe pas, on peut le créer
       console.log('🆕 [SIGNUP_CREATE] Création automatique du profil candidat...')
       
       // Créer le profil candidat avec statut 'new'
@@ -42,33 +48,24 @@ const createCandidateProfileIfNotExists = async (user) => {
         portfolio: '',
         linkedin: '',
         github: '',
-        dailyRate: null,
-        annualSalary: null,
-                 status: 'new' // Statut pour les nouveaux profils (pas encore envoyé pour validation)
+        daily_rate: null,
+        annual_salary: null,
+        status: 'new' // Statut pour les nouveaux profils (pas encore envoyé pour validation)
       }
       
-      const session = await supabase.auth.getSession()
-      const token = session.data.session?.access_token
+      const { data: newProfile, error: createError } = await supabaseAdmin
+        .from('candidates')
+        .insert([candidateData])
+        .select()
+        .single()
       
-      if (!token) {
-        console.error('❌ [SIGNUP_CREATE] Token d\'authentification manquant')
-        return
+      if (createError) {
+        console.error('❌ [SIGNUP_CREATE] Erreur lors de la création:', createError)
+      } else {
+        console.log('✅ [SIGNUP_CREATE] Profil candidat créé avec succès avec statut "new":', newProfile)
       }
-      
-      const createResponse = await fetch(buildApiUrl('/api/candidates'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(candidateData)
-      })
-      
-               if (createResponse.ok) {
-                 console.log('✅ [SIGNUP_CREATE] Profil candidat créé avec succès avec statut "new"')
-               } else {
-                 console.error('❌ [SIGNUP_CREATE] Erreur lors de la création:', await createResponse.text())
-               }
+    } else if (checkError) {
+      console.error('❌ [SIGNUP_CREATE] Erreur lors de la vérification:', checkError)
     }
   } catch (error) {
     console.error('❌ [SIGNUP_CREATE] Erreur inattendue:', error)
