@@ -2064,24 +2064,29 @@ export default function MyProfilePage() {
                 <p className="text-sm text-yellow-700">
                   candidateStatus: {candidateStatus || 'null'} | 
                   formData.id: {formData.id || 'null'} | 
-                  Should show button: {(candidateStatus === 'new' || !formData.id) ? 'YES' : 'NO'}
+                  Should show button: {(candidateStatus === 'new' || candidateStatus === 'pending' || !formData.id) ? 'YES' : 'NO'}
                 </p>
               </div>
 
-              {/* Bouton "Envoyer mon profil" pour les nouveaux candidats */}
+              {/* Bouton "Envoyer mon profil" pour les candidats non approuvés */}
               {(() => {
                 console.log('🔍 Debug bouton:', {
                   candidateStatus,
                   formDataId: formData.id,
-                  shouldShow: candidateStatus === 'new' || !formData.id
+                  shouldShow: candidateStatus === 'new' || candidateStatus === 'pending' || !formData.id
                 });
-                return candidateStatus === 'new' || !formData.id;
+                return candidateStatus === 'new' || candidateStatus === 'pending' || !formData.id;
               })() && (
                 <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
                   <div className="text-center">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Finaliser votre profil</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                      {candidateStatus === 'pending' ? 'Modifier votre profil' : 'Finaliser votre profil'}
+                    </h3>
                     <p className="text-gray-600 mb-6">
-                      Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour soumettre votre candidature.
+                      {candidateStatus === 'pending' 
+                        ? 'Modifiez les champs nécessaires et cliquez sur "Modifier et renvoyer mon profil" pour soumettre à nouveau votre candidature.'
+                        : 'Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour soumettre votre candidature.'
+                      }
                     </p>
                     
                     {/* Message d'information */}
@@ -2108,7 +2113,7 @@ export default function MyProfilePage() {
                       ) : (
                         <>
                           <CheckCircle className="w-5 h-5" />
-                          Envoyer mon profil
+                          {candidateStatus === 'pending' ? 'Modifier et renvoyer mon profil' : 'Envoyer mon profil'}
                         </>
                       )}
                     </button>
