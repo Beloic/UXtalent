@@ -1061,31 +1061,32 @@ app.post('/api/candidates/:id/cancel-subscription', authenticateUser, async (req
     
     console.log('🔄 Annulation abonnement demandée pour:', userEmail);
     console.log('🆔 ID candidat demandé:', candidateId);
+    console.log('🔍 Recherche du candidat par ID...');
     
     // Vérifier que l'utilisateur peut annuler son propre abonnement
-    // D'abord chercher le candidat par email
-    const { data: candidateByEmail, error: emailError } = await supabase
+    // Chercher le candidat par ID
+    const { data: candidateById, error: idError } = await supabase
       .from('candidates')
       .select('id, email, plan')
-      .eq('email', userEmail)
+      .eq('id', candidateId)
       .single();
     
-    if (emailError || !candidateByEmail) {
-      logger.error('Candidat non trouvé par email:', { userEmail, error: emailError });
+    if (idError || !candidateById) {
+      logger.error('Candidat non trouvé par ID:', { candidateId, error: idError });
       return res.status(404).json({ error: 'Profil candidat non trouvé' });
     }
     
-    // Vérifier que l'ID correspond (sécurité supplémentaire)
-    if (candidateByEmail.id.toString() !== candidateId.toString()) {
-      logger.error('ID candidat ne correspond pas:', { 
-        requestedId: candidateId, 
-        actualId: candidateByEmail.id, 
+    // Vérifier que l'email correspond (sécurité)
+    if (candidateById.email !== userEmail) {
+      logger.error('Email utilisateur ne correspond pas au candidat:', { 
+        candidateId, 
+        candidateEmail: candidateById.email, 
         userEmail 
       });
       return res.status(403).json({ error: 'Accès non autorisé à ce profil' });
     }
     
-    const candidate = candidateByEmail;
+    const candidate = candidateById;
     console.log('✅ Candidat trouvé:', { id: candidate.id, email: candidate.email, plan: candidate.plan });
     
     if (candidate.plan === 'free') {
