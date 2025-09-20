@@ -506,6 +506,13 @@ export default function MyProfilePage() {
         
       } else {
         const errorData = await response.json();
+        console.error('❌ Erreur API:', errorData);
+        
+        // Gestion spéciale pour le service indisponible
+        if (response.status === 503) {
+          throw new Error('Le service d\'annulation est temporairement indisponible. Veuillez contacter le support à contact@ux-jobs-pro.com pour annuler votre abonnement.');
+        }
+        
         throw new Error(errorData.error || `Erreur ${response.status}`);
       }
     } catch (error) {

@@ -1050,7 +1050,10 @@ app.put('/api/candidates/email/:email/plan', async (req, res) => {
 app.post('/api/candidates/:id/cancel-subscription', authenticateUser, async (req, res) => {
   try {
     if (!stripe) {
-      return res.status(500).json({ error: 'Stripe non configuré. Veuillez contacter le support.' });
+      logger.error('❌ Tentative d\'annulation sans Stripe configuré');
+      return res.status(503).json({ 
+        error: 'Service d\'annulation temporairement indisponible. Veuillez contacter le support à contact@ux-jobs-pro.com pour annuler votre abonnement.' 
+      });
     }
     
     const candidateId = req.params.id;
