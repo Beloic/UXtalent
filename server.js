@@ -178,6 +178,9 @@ app.use(requestLogger);
 app.use(metricsMiddleware);
 app.use(redisCacheMiddleware);
 
+// Webhook Stripe - doit être avant express.json() pour les webhooks
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+
 // Middleware de debug pour les routes candidats
 app.use('/api/candidates', (req, res, next) => {
   console.log('📋 [CANDIDATES] Requête:', req.method, req.url);
@@ -1305,6 +1308,232 @@ app.post('/api/metrics/reset', (req, res) => {
     res.status(500).json({ error: 'Erreur lors de la réinitialisation' });
   }
 });
+
+// ===== WEBHOOK STRIPE =====
+
+// POST /api/stripe/webhook - Webhook Stripe
+app.post('/api/stripe/webhook', async (req, res) => {
+  try {
+    console.log('🔔 Webhook Stripe reçu');
+    
+    if (!stripe) {
+      console.error('❌ Stripe non configuré');
+      return res.status(503).json({ error: 'Stripe non configuré' });
+    }
+    
+    const signature = req.headers['stripe-signature'];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    
+    if (!signature || !webhookSecret) {
+      console.error('❌ Signature ou secret webhook manquant');
+      return res.status(400).json({ error: 'Signature manquante' });
+    }
+    
+    let event;
+    
+    try {
+      event = stripe.webhooks.constructEvent(req.body, signature, webhookSecret);
+    } catch (err) {
+      console.error('❌ Erreur de vérification webhook:', err.message);
+      return res.status(400).json({ error: `Erreur webhook: ${err.message}` });
+    }
+    
+    console.log('✅ Webhook vérifié:', event.type);
+    
+    // Traiter les événements
+    switch (event.type) {
+      case 'customer.subscription.deleted':
+        await handleSubscriptionDeleted(event.data.object);
+        break;
+        
+      case 'customer.subscription.created':
+        await handleSubscriptionCreated(event.data.object);
+        break;
+        
+      case 'customer.subscription.updated':
+        await handleSubscriptionUpdated(event.data.object);
+        break;
+        
+      case 'checkout.session.completed':
+        await handleCheckoutSessionCompleted(event.data.object);
+        break;
+        
+      case 'invoice.payment_succeeded':
+        await handleInvoicePaymentSucceeded(event.data.object);
+        break;
+        
+      case 'invoice.payment_failed':
+        await handleInvoicePaymentFailed(event.data.object);
+        break;
+        
+      default:
+        console.log('ℹ️ Événement non géré:', event.type);
+    }
+    
+    res.json({ received: true });
+    
+  } catch (error) {
+    console.error('❌ Erreur webhook:', error);
+    res.status(500).json({ error: 'Erreur interne' });
+  }
+});
+
+// Fonction pour gérer l'annulation d'abonnement
+async function handleSubscriptionDeleted(subscription) {
+  console.log('🗑️ Abonnement supprimé:', subscription.id);
+  
+  try {
+    // Récupérer l'email du customer depuis Stripe
+    const customer = await stripe.customers.retrieve(subscription.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé pour l\'annulation');
+      return;
+    }
+    
+    console.log('📧 Email du customer pour annulation:', userEmail);
+    
+    // Mettre à jour le plan vers 'free' dans la base de données
+    await updateCandidatePlan(userEmail, 'free');
+    
+    console.log('⬇️ Utilisateur rétrogradé vers le plan gratuit:', userEmail);
+    
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'annulation de l\'abonnement:', error);
+  }
+}
+
+// Fonction pour gérer la création d'abonnement
+async function handleSubscriptionCreated(subscription) {
+  console.log('✅ Nouvel abonnement créé:', subscription.id);
+  
+  try {
+    const customer = await stripe.customers.retrieve(subscription.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé pour la création');
+      return;
+    }
+    
+    // Déterminer le type de plan
+    const planType = getPlanTypeFromPriceId(subscription.items.data[0].price.id);
+    
+    if (planType) {
+      await updateCandidatePlan(userEmail, planType);
+      console.log('⬆️ Utilisateur mis à niveau vers le plan:', planType);
+    }
+    
+  } catch (error) {
+    console.error('❌ Erreur lors de la création de l\'abonnement:', error);
+  }
+}
+
+// Fonction pour gérer la mise à jour d'abonnement
+async function handleSubscriptionUpdated(subscription) {
+  console.log('🔄 Abonnement mis à jour:', subscription.id);
+  
+  try {
+    const customer = await stripe.customers.retrieve(subscription.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé pour la mise à jour');
+      return;
+    }
+    
+    // Logique de mise à jour selon le statut
+    if (subscription.status === 'active') {
+      const planType = getPlanTypeFromPriceId(subscription.items.data[0].price.id);
+      if (planType) {
+        await updateCandidatePlan(userEmail, planType);
+        console.log('🔄 Plan mis à jour vers:', planType);
+      }
+    }
+    
+  } catch (error) {
+    console.error('❌ Erreur lors de la mise à jour de l\'abonnement:', error);
+  }
+}
+
+// Fonction pour gérer la session checkout complétée
+async function handleCheckoutSessionCompleted(session) {
+  console.log('💳 Session checkout complétée:', session.id);
+  
+  try {
+    const customer = await stripe.customers.retrieve(session.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé pour checkout');
+      return;
+    }
+    
+    // Déterminer le type de plan depuis la session
+    const planType = getPlanTypeFromPriceId(session.line_items?.data[0]?.price?.id);
+    
+    if (planType) {
+      await updateCandidatePlan(userEmail, planType);
+      console.log('💳 Plan activé après checkout:', planType);
+    }
+    
+  } catch (error) {
+    console.error('❌ Erreur lors du checkout:', error);
+  }
+}
+
+// Fonction pour gérer le paiement réussi
+async function handleInvoicePaymentSucceeded(invoice) {
+  console.log('💰 Paiement réussi:', invoice.id);
+  
+  try {
+    const customer = await stripe.customers.retrieve(invoice.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé pour paiement');
+      return;
+    }
+    
+    console.log('💰 Paiement confirmé pour:', userEmail);
+    
+  } catch (error) {
+    console.error('❌ Erreur lors du paiement:', error);
+  }
+}
+
+// Fonction pour gérer l'échec de paiement
+async function handleInvoicePaymentFailed(invoice) {
+  console.log('❌ Échec de paiement:', invoice.id);
+  
+  try {
+    const customer = await stripe.customers.retrieve(invoice.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé pour échec');
+      return;
+    }
+    
+    console.log('❌ Échec de paiement pour:', userEmail);
+    
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'échec de paiement:', error);
+  }
+}
+
+// Fonction utilitaire pour déterminer le type de plan
+function getPlanTypeFromPriceId(priceId) {
+  const planMapping = {
+    'price_premium_candidat': 'premium',
+    'price_pro_candidat': 'pro',
+    'price_starter': 'starter',
+    'price_max': 'max'
+  };
+  
+  return planMapping[priceId] || null;
+}
 
 // ===== ROUTES FORUM =====
 

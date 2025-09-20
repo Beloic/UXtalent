@@ -2179,6 +2179,14 @@ export default function MyProfilePage() {
                         </>
                       ) : (
                         <div className="text-center">
+                          <div className="mb-4">
+                            <button
+                              disabled
+                              className="px-6 py-3 bg-gray-300 text-gray-500 rounded-xl font-semibold cursor-not-allowed"
+                            >
+                              Plan annulé
+                            </button>
+                          </div>
                           <p className="text-gray-600 mb-4">
                             Votre annulation est déjà programmée. Vous pouvez toujours changer d'avis en souscrivant à un nouveau plan.
                           </p>
