@@ -2401,7 +2401,7 @@ export default function MyProfilePage() {
                 </h3>
                 <p className="text-gray-600 mb-6">
                   Êtes-vous sûr de vouloir annuler votre abonnement {candidatePlan === 'premium' ? 'Premium' : 'Pro'} ? 
-                  Vous perdrez l'accès à toutes les fonctionnalités premium.
+                  Vous perdrez l'accès à toutes les fonctionnalités premium à la fin de votre période de facturation (30 jours).
                 </p>
                 <div className="flex gap-4">
                   <button
