@@ -88,7 +88,7 @@ export default function ProfileStatsPage() {
         >
           <div className="flex items-center gap-4 mb-6">
             <Link 
-              to="/my-profile" 
+              to="/my-profile/profile" 
               className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
             >
               <ArrowLeft className="w-4 h-4" />

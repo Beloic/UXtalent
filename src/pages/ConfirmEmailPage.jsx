@@ -26,7 +26,7 @@ export default function ConfirmEmailPage() {
       navigate('/login')
       return
     }
-    navigate('/my-profile')
+    navigate('/my-profile/profile')
   }, [user, navigate])
 
   const handleResendEmail = async () => {

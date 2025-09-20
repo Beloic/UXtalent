@@ -133,7 +133,30 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
-        <Route path="/my-profile" element={
+        {/* Routes pour le profil candidat avec onglets distincts */}
+        <Route path="/my-profile" element={<Navigate to="/my-profile/profile" replace />} />
+        <Route path="/my-profile/profile" element={
+          <Layout>
+            <ProtectedRoute>
+              <MyProfilePage />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/my-profile/stats" element={
+          <Layout>
+            <ProtectedRoute>
+              <MyProfilePage />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/my-profile/plan" element={
+          <Layout>
+            <ProtectedRoute>
+              <MyProfilePage />
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/my-profile/offer" element={
           <Layout>
             <ProtectedRoute>
               <MyProfilePage />

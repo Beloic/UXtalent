@@ -250,7 +250,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 <ConditionalRender role="candidate">
                   <div className="flex items-center gap-2">
                     <Link 
-                      to="/my-profile" 
+                      to="/my-profile/profile" 
                       className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
                     >
                       <User className="w-4 h-4" />
@@ -428,7 +428,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     <ConditionalRender role="candidate">
                       <div className="space-y-2">
                         <Link 
-                          to="/my-profile" 
+                          to="/my-profile/profile" 
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="flex items-center gap-3 px-4 py-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
                         >

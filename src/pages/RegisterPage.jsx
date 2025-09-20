@@ -128,7 +128,7 @@ export default function RegisterPage() {
         } else if (formData.role === 'candidate') {
           setSuccess('Compte créé ! Vous allez être redirigé vers votre profil pour compléter vos informations.')
           setTimeout(() => {
-            navigate('/my-profile')
+            navigate('/my-profile/profile')
           }, 2000)
         } else {
           setSuccess('Compte créé ! Vérifiez votre email pour confirmer votre inscription.')

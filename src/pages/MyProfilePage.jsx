@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import PlanManager from '../components/PlanManager';
@@ -13,8 +13,42 @@ import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 export default function MyProfilePage() {
   const { user } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  const [activeTab, setActiveTab] = useState('view');
+  
+  // Déterminer l'onglet actif basé sur l'URL
+  const getActiveTabFromPath = () => {
+    const path = location.pathname;
+    if (path.includes('/stats')) return 'stats';
+    if (path.includes('/plan')) return 'plan';
+    if (path.includes('/offer')) return 'offer';
+    return 'view'; // Par défaut pour '/profile' ou autres
+  };
+  
+  const activeTab = getActiveTabFromPath();
+  
+  // Fonction pour naviguer vers un onglet spécifique
+  const navigateToTab = (tabName) => {
+    if (isCandidate) {
+      switch (tabName) {
+        case 'view':
+          navigate('/my-profile/profile');
+          break;
+        case 'stats':
+          navigate('/my-profile/stats');
+          break;
+        case 'plan':
+          navigate('/my-profile/plan');
+          break;
+        default:
+          navigate('/my-profile/profile');
+      }
+    } else if (isRecruiter && tabName === 'offer') {
+      navigate('/my-profile/offer');
+    }
+  };
+  
   const [profileStats, setProfileStats] = useState({
     profileViews: 0,
     profileViewsToday: 0,
@@ -915,7 +949,7 @@ export default function MyProfilePage() {
                   // Permettre la modification du profil même si rejeté
                   setIsEditingRejected(true);
                   setCurrentStep(1);
-                  setActiveTab('profile');
+                  navigateToTab('view');
                 }}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold cursor-pointer"
                 style={{ pointerEvents: 'auto', zIndex: 1000 }}
@@ -955,7 +989,7 @@ export default function MyProfilePage() {
               {isCandidate && (
                 <>
                   <button
-                    onClick={() => setActiveTab('view')}
+                    onClick={() => navigateToTab('view')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'view'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -966,7 +1000,7 @@ export default function MyProfilePage() {
                     Profil
                   </button>
                   <button
-                    onClick={() => setActiveTab('stats')}
+                    onClick={() => navigateToTab('stats')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'stats'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -977,7 +1011,7 @@ export default function MyProfilePage() {
                     Statistiques
                   </button>
                   <button
-                    onClick={() => setActiveTab('plan')}
+                    onClick={() => navigateToTab('plan')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'plan'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -992,7 +1026,7 @@ export default function MyProfilePage() {
               {isRecruiter && (
                 <>
                   <button
-                    onClick={() => setActiveTab('offer')}
+                    onClick={() => navigateToTab('offer')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'offer'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -1571,7 +1605,7 @@ export default function MyProfilePage() {
                         </p>
                         
                         <button
-                          onClick={() => setActiveTab('plan')}
+                          onClick={() => navigateToTab('plan')}
                           className="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
                         >
                           Débloquer les statistiques
@@ -1650,7 +1684,7 @@ export default function MyProfilePage() {
                         </p>
                         
                         <button
-                          onClick={() => setActiveTab('plan')}
+                          onClick={() => navigateToTab('plan')}
                           className="px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
                         >
                           Débloquer les graphiques
