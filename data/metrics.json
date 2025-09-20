@@ -1,13 +1,4 @@
 {
-  "scraping": {
-    "totalRuns": 0,
-    "successfulRuns": 0,
-    "failedRuns": 0,
-    "totalJobsCollected": 0,
-    "averageDuration": 0,
-    "lastRun": null,
-    "bySource": {}
-  },
   "api": {
     "totalRequests": 0,
     "successfulRequests": 0,
@@ -17,17 +8,26 @@
     "lastRequest": null
   },
   "cache": {
-    "hits": 7,
-    "misses": 14,
+    "hits": 6,
+    "misses": 12,
     "hitRatio": 33.33333333333333,
     "totalEntries": 22,
-    "memoryUsage": 148
+    "memoryUsage": 442
   },
   "system": {
-    "uptime": 7980.523080458,
-    "memoryUsage": 21876824,
-    "cpuUsage": 0.633681,
-    "lastUpdate": "2025-09-20T11:18:53.279Z"
+    "uptime": 6240.552276167,
+    "memoryUsage": 19255080,
+    "cpuUsage": 0.489657,
+    "lastUpdate": "2025-09-20T11:21:32.862Z"
+  },
+  "scraping": {
+    "totalRuns": 0,
+    "successfulRuns": 0,
+    "failedRuns": 0,
+    "totalJobsCollected": 0,
+    "averageDuration": 0,
+    "lastRun": null,
+    "bySource": {}
   },
   "requests": {
     "total": 185,
