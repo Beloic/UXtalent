@@ -5,7 +5,6 @@ import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, Chevr
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
-import PlanManager from '../components/PlanManager';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { usePermissions } from '../hooks/usePermissions';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
@@ -21,7 +20,6 @@ export default function MyProfilePage() {
   const getActiveTabFromPath = () => {
     const path = location.pathname;
     if (path.includes('/stats')) return 'stats';
-    if (path.includes('/plan')) return 'plan';
     if (path.includes('/offer')) return 'offer';
     return 'view'; // Par défaut pour '/profile' ou autres
   };
@@ -37,9 +35,6 @@ export default function MyProfilePage() {
           break;
         case 'stats':
           navigate('/my-profile/stats');
-          break;
-        case 'plan':
-          navigate('/my-profile/plan');
           break;
         default:
           navigate('/my-profile/profile');
@@ -1010,17 +1005,6 @@ export default function MyProfilePage() {
                     <BarChart3 className="w-5 h-5" />
                     Statistiques
                   </button>
-                  <button
-                    onClick={() => navigateToTab('plan')}
-                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
-                      activeTab === 'plan'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    <DollarSign className="w-5 h-5" />
-                    Mon plan
-                  </button>
                 </>
               )}
               {isRecruiter && (
@@ -1552,24 +1536,6 @@ export default function MyProfilePage() {
           )}
 
 
-          {activeTab === 'plan' && (
-            <motion.div
-              key="plan"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              <PlanManager 
-                candidate={{
-                  id: formData.id,
-                  name: formData.name,
-                  planType: candidatePlan
-                }} 
-                onPlanUpdate={(newPlanType) => setCandidatePlan(newPlanType)} 
-              />
-            </motion.div>
-          )}
 
           {activeTab === 'stats' && (
             <motion.div
@@ -1605,7 +1571,7 @@ export default function MyProfilePage() {
                         </p>
                         
                         <button
-                          onClick={() => navigateToTab('plan')}
+                          onClick={() => navigate('/pricing')}
                           className="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
                         >
                           Débloquer les statistiques
@@ -1684,7 +1650,7 @@ export default function MyProfilePage() {
                         </p>
                         
                         <button
-                          onClick={() => navigateToTab('plan')}
+                          onClick={() => navigate('/pricing')}
                           className="px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-2xl font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
                         >
                           Débloquer les graphiques

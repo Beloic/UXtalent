@@ -1,57 +1,42 @@
 import React from 'react';
-import { CreditCard, ExternalLink } from 'lucide-react';
 
 /**
- * Composant bouton pour Payment Links Stripe
+ * Bouton pour rediriger vers les Payment Links Stripe
  */
-const PaymentLinkButton = ({ 
+export default function PaymentLinkButton({ 
   planType, 
   price, 
   className = '', 
-  children,
-  disabled = false
-}) => {
-  // Configuration des Payment Links
-  const paymentLinks = {
-    'premium-candidat': import.meta.env.VITE_STRIPE_PREMIUM_CANDIDAT_LINK,
-    'pro-candidat': import.meta.env.VITE_STRIPE_PRO_CANDIDAT_LINK,
-    'starter': import.meta.env.VITE_STRIPE_STARTER_LINK,
-    'max': import.meta.env.VITE_STRIPE_MAX_LINK,
+  children 
+}) {
+  // Mapping des types de plans vers les liens Stripe
+  const getPaymentLink = (planType) => {
+    const links = {
+      'premium-candidat': import.meta.env.VITE_STRIPE_PREMIUM_CANDIDAT_LINK,
+      'pro-candidat': import.meta.env.VITE_STRIPE_PRO_CANDIDAT_LINK,
+      'starter': import.meta.env.VITE_STRIPE_STARTER_LINK,
+      'max': import.meta.env.VITE_STRIPE_MAX_LINK,
+    };
+    
+    return links[planType] || '#';
   };
 
-  const paymentUrl = paymentLinks[planType];
-  
-  if (!paymentUrl) {
-    console.error(`Payment Link non trouvé pour le plan: ${planType}`);
-    return null;
-  }
+  const paymentLink = getPaymentLink(planType);
 
-  const handlePayment = () => {
-    if (disabled) return;
-    
-    // Ouvrir le Payment Link dans un nouvel onglet
-    window.open(paymentUrl, '_blank', 'noopener,noreferrer');
+  const handleClick = () => {
+    if (paymentLink && paymentLink !== '#') {
+      window.open(paymentLink, '_blank');
+    } else {
+      console.error('Lien de paiement non configuré pour le plan:', planType);
+    }
   };
 
   return (
     <button
-      onClick={handlePayment}
-      disabled={disabled}
-      className={`
-        inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium
-        transition-all duration-200
-        ${disabled 
-          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-          : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
-        }
-        ${className}
-      `}
+      onClick={handleClick}
+      className={`inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl ${className}`}
     >
-      <CreditCard className="w-4 h-4" />
-      <span>{children || `Payer ${price}€`}</span>
-      <ExternalLink className="w-3 h-3" />
+      {children}
     </button>
   );
-};
-
-export default PaymentLinkButton;
+}
