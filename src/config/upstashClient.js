@@ -105,6 +105,15 @@ class UpstashClient {
     }
   }
 
+  async info(section = 'memory') {
+    try {
+      return await this.executeCommand(['INFO', section]);
+    } catch (error) {
+      logger.error('❌ Upstash INFO error:', { error: error.message, section });
+      return `# ${section}\n# Upstash Redis REST API\n# Memory managed by Upstash`;
+    }
+  }
+
   async executeCommand(command) {
     try {
       const response = await fetch(this.restUrl, {
