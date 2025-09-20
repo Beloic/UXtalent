@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Check, Users, Briefcase, Star, ArrowRight } from "lucide-react";
+import { Check, Users, Briefcase, Star, ArrowRight, CheckCircle } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { buildApiUrl } from "../config/api";
+import { supabase } from "../lib/supabase";
 
 export default function PricingPage() {
   const [selectedTab, setSelectedTab] = useState('candidates');
+  const { user, isAuthenticated } = useAuth();
+  const [userPlan, setUserPlan] = useState(null);
+  const [isLoadingPlan, setIsLoadingPlan] = useState(false);
 
   const recruiterPlans = [
     {
@@ -121,6 +127,65 @@ export default function PricingPage() {
 
   const currentPlans = selectedTab === 'recruiters' ? recruiterPlans : candidatePlans;
 
+  // Fonction pour récupérer le plan de l'utilisateur
+  const fetchUserPlan = async () => {
+    if (!isAuthenticated || !user?.email) return;
+    
+    setIsLoadingPlan(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`), {
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
+        }
+      });
+      
+      if (response.ok) {
+        const userProfile = await response.json();
+        if (userProfile) {
+          setUserPlan(userProfile.planType || 'free');
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération du plan:', error);
+    } finally {
+      setIsLoadingPlan(false);
+    }
+  };
+
+  // Charger le plan de l'utilisateur au montage du composant
+  useEffect(() => {
+    fetchUserPlan();
+  }, [isAuthenticated, user]);
+
+  // Écouter les changements de plan depuis d'autres composants
+  useEffect(() => {
+    const handlePlanUpdate = (event) => {
+      console.log('🎯 Événement planUpdated reçu dans PricingPage:', event.detail);
+      setUserPlan(event.detail.planType);
+    };
+
+    window.addEventListener('planUpdated', handlePlanUpdate);
+    return () => {
+      window.removeEventListener('planUpdated', handlePlanUpdate);
+    };
+  }, []);
+
+  // Fonction pour vérifier si un plan est le plan actuel de l'utilisateur
+  const isCurrentPlan = (planName) => {
+    if (!userPlan) return false;
+    
+    const planMapping = {
+      'Gratuit': 'free',
+      'Premium': 'premium',
+      'Pro': 'pro',
+      'Starter': 'starter',
+      'Max': 'max'
+    };
+    
+    return planMapping[planName] === userPlan;
+  };
+
   return (
     <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 py-16">
@@ -213,32 +278,39 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              <button
-                onClick={() => {
-                  // Logique pour les différents types de boutons
-                  if (plan.name === "Gratuit") {
-                    window.open('/register?role=candidate', '_blank');
-                  } else if (plan.name === "Premium" && selectedTab === 'candidates') {
-                    window.open(import.meta.env.VITE_STRIPE_PREMIUM_CANDIDAT_LINK, '_blank');
-                  } else if (plan.name === "Pro") {
-                    window.open(import.meta.env.VITE_STRIPE_PRO_CANDIDAT_LINK, '_blank');
-                  } else if (plan.name === "Starter") {
-                    window.open(import.meta.env.VITE_STRIPE_STARTER_LINK, '_blank');
-                  } else if (plan.name === "Max") {
-                    window.open(import.meta.env.VITE_STRIPE_MAX_LINK, '_blank');
-                  } else if (plan.name === "Premium" && selectedTab === 'recruiters') {
-                    window.open('mailto:contact@ux-jobs-pro.com', '_blank');
-                  }
-                }}
-                className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
-                  plan.popular
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                }`}
-              >
-                {plan.cta}
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {isCurrentPlan(plan.name) ? (
+                <div className="w-full py-4 px-6 rounded-xl font-semibold bg-green-100 text-green-800 border-2 border-green-300 flex items-center justify-center gap-2">
+                  <CheckCircle className="w-5 h-5" />
+                  Plan actuel
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    // Logique pour les différents types de boutons
+                    if (plan.name === "Gratuit") {
+                      window.open('/register?role=candidate', '_blank');
+                    } else if (plan.name === "Premium" && selectedTab === 'candidates') {
+                      window.open(import.meta.env.VITE_STRIPE_PREMIUM_CANDIDAT_LINK, '_blank');
+                    } else if (plan.name === "Pro") {
+                      window.open(import.meta.env.VITE_STRIPE_PRO_CANDIDAT_LINK, '_blank');
+                    } else if (plan.name === "Starter") {
+                      window.open(import.meta.env.VITE_STRIPE_STARTER_LINK, '_blank');
+                    } else if (plan.name === "Max") {
+                      window.open(import.meta.env.VITE_STRIPE_MAX_LINK, '_blank');
+                    } else if (plan.name === "Premium" && selectedTab === 'recruiters') {
+                      window.open('mailto:contact@ux-jobs-pro.com', '_blank');
+                    }
+                  }}
+                  className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+                    plan.popular
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl'
+                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                  }`}
+                >
+                  {plan.cta}
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
             </motion.div>
           ))}
         </motion.div>
