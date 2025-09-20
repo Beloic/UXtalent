@@ -17,12 +17,12 @@ class RedisCache {
   // Se connecter à Redis
   async connect() {
     try {
-      await connectRedis();
-      this.isConnected = redisClient.isOpen;
+      const connected = await connectRedis();
+      this.isConnected = connected && redisClient.isOpen;
       if (this.isConnected) {
         logger.info('✅ Redis Cache connected');
       } else {
-        logger.warn('⚠️ Redis Cache connection failed - client not open');
+        logger.warn('⚠️ Redis non disponible, fonctionnement en mode dégradé');
         this.isConnected = false;
       }
     } catch (error) {
@@ -34,6 +34,11 @@ class RedisCache {
   // Vérifier la connexion Redis
   async checkConnection() {
     try {
+      // Si Redis est désactivé, ne pas essayer de se reconnecter
+      if (!this.isConnected && redisClient.isOpen === false) {
+        return false;
+      }
+      
       if (!this.isConnected || !redisClient.isOpen) {
         await this.connect();
       }

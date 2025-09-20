@@ -9,6 +9,11 @@ const UPSTASH_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
 const UPSTASH_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const IS_UPSTASH = !!(UPSTASH_REST_URL && UPSTASH_REST_TOKEN);
 
+// État global de Redis
+let redisConnectionAttempts = 0;
+const MAX_RECONNECTION_ATTEMPTS = 5;
+let redisDisabled = false;
+
 // Configuration pour Upstash vs Redis classique
 let redisClient;
 
@@ -43,17 +48,25 @@ if (IS_UPSTASH) {
 // Gestionnaires d'événements Redis (seulement pour Redis classique)
 if (!IS_UPSTASH) {
   redisClient.on('error', (err) => {
-    logger.error('❌ Redis Client Error:', { error: err.message, isUpstash: false });
+    redisConnectionAttempts++;
+    logger.error('❌ Redis Client Error:', { 
+      error: err.message, 
+      isUpstash: false, 
+      attempts: redisConnectionAttempts 
+    });
     
-    // Empêcher la reconnexion automatique en cas d'erreur critique
-    if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
-      logger.error('❌ Redis connection failed, stopping reconnection attempts');
+    // Désactiver Redis après trop de tentatives
+    if (redisConnectionAttempts >= MAX_RECONNECTION_ATTEMPTS) {
+      logger.warn('⚠️ Redis désactivé après trop de tentatives de connexion');
+      redisDisabled = true;
       redisClient.disconnect();
     }
   });
 
   redisClient.on('connect', () => {
     logger.info('🔗 Redis Client Connected (Local)');
+    redisConnectionAttempts = 0; // Reset counter on successful connection
+    redisDisabled = false;
   });
 
   redisClient.on('ready', () => {
@@ -65,13 +78,21 @@ if (!IS_UPSTASH) {
   });
 
   redisClient.on('reconnecting', () => {
-    logger.info('🔄 Redis Client Reconnecting...');
+    if (!redisDisabled) {
+      logger.info('🔄 Redis Client Reconnecting...');
+    }
   });
 }
 
 // Fonction pour connecter Redis
 export const connectRedis = async () => {
   try {
+    // Si Redis est désactivé, ne pas essayer de se connecter
+    if (redisDisabled) {
+      logger.warn('⚠️ Redis désactivé, fonctionnement en mode dégradé');
+      return false;
+    }
+
     if (IS_UPSTASH) {
       // Upstash REST API
       await redisClient.connect();
@@ -83,9 +104,11 @@ export const connectRedis = async () => {
         logger.info('🚀 Redis connection established');
       }
     }
+    return true;
   } catch (error) {
     logger.error('❌ Failed to connect to Redis:', { error: error.message });
-    throw error;
+    redisDisabled = true;
+    return false;
   }
 };
 
@@ -111,17 +134,26 @@ export const disconnectRedis = async () => {
 // Fonction pour vérifier la santé de Redis
 export const checkRedisHealth = async () => {
   try {
+    // Si Redis est désactivé, retourner false
+    if (redisDisabled) {
+      return false;
+    }
+
     if (IS_UPSTASH) {
       // Upstash REST API
       const pong = await redisClient.ping();
       return pong === 'PONG';
     } else {
       // Redis classique
+      if (!redisClient.isOpen) {
+        return false;
+      }
       const pong = await redisClient.ping();
       return pong === 'PONG';
     }
   } catch (error) {
     logger.error('❌ Redis health check failed:', { error: error.message });
+    redisDisabled = true;
     return false;
   }
 };
@@ -156,6 +188,18 @@ export const getRedisStats = async () => {
       memory: null
     };
   }
+};
+
+// Fonction pour réinitialiser Redis (utile pour les tests ou en cas de problème)
+export const resetRedis = () => {
+  redisConnectionAttempts = 0;
+  redisDisabled = false;
+  logger.info('🔄 Redis réinitialisé');
+};
+
+// Fonction pour vérifier si Redis est disponible
+export const isRedisAvailable = () => {
+  return !redisDisabled && redisClient.isOpen;
 };
 
 export { redisClient };
