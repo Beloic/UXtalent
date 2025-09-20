@@ -2052,8 +2052,25 @@ export default function MyProfilePage() {
                 </div>
               )}
 
+              {/* Bouton de test temporaire - toujours visible */}
+              <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-4">
+                <h4 className="text-lg font-bold text-yellow-800 mb-2">🔍 Debug Info</h4>
+                <p className="text-sm text-yellow-700">
+                  candidateStatus: {candidateStatus || 'null'} | 
+                  formData.id: {formData.id || 'null'} | 
+                  Should show button: {(candidateStatus === 'new' || !formData.id) ? 'YES' : 'NO'}
+                </p>
+              </div>
+
               {/* Bouton "Envoyer mon profil" pour les nouveaux candidats */}
-              {(candidateStatus === 'new' || !formData.id) && (
+              {(() => {
+                console.log('🔍 Debug bouton:', {
+                  candidateStatus,
+                  formDataId: formData.id,
+                  shouldShow: candidateStatus === 'new' || !formData.id
+                });
+                return candidateStatus === 'new' || !formData.id;
+              })() && (
                 <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Finaliser votre profil</h3>
