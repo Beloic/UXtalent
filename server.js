@@ -969,6 +969,43 @@ app.put('/api/candidates/:id/plan', async (req, res) => {
   }
 });
 
+// PUT /api/candidates/email/:email/plan - Mettre à jour le plan d'un candidat par email (pour les webhooks Stripe)
+app.put('/api/candidates/email/:email/plan', async (req, res) => {
+  try {
+    const { planType, durationMonths = 1 } = req.body;
+    const email = decodeURIComponent(req.params.email);
+    
+    // Valider le type de plan
+    if (!['free', 'premium', 'pro'].includes(planType)) {
+      return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, premium, ou pro' });
+    }
+    
+    // Valider la durée
+    if (durationMonths < 1 || durationMonths > 12) {
+      return res.status(400).json({ error: 'Durée invalide. Doit être entre 1 et 12 mois' });
+    }
+    
+    // Trouver le candidat par email
+    const { data: candidate, error: fetchError } = await supabase
+      .from('candidates')
+      .select('id')
+      .eq('email', email)
+      .single();
+    
+    if (fetchError || !candidate) {
+      logger.error('Candidat non trouvé pour l\'email:', email);
+      return res.status(404).json({ error: 'Candidat non trouvé' });
+    }
+    
+    // Mettre à jour le plan
+    const updatedCandidate = await updateCandidatePlan(candidate.id, planType, durationMonths);
+    res.json(updatedCandidate);
+  } catch (error) {
+    logger.error('Erreur lors de la mise à jour du plan candidat par email', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la mise à jour du plan candidat' });
+  }
+});
+
 // PUT /api/candidates/:id/notes - Mettre à jour les notes d'un candidat
 app.put('/api/candidates/:id/notes', authenticateUser, async (req, res) => {
   try {

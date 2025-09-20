@@ -67,16 +67,34 @@ export async function POST(req) {
 async function handleCheckoutSessionCompleted(session) {
   console.log('💳 Paiement réussi:', session.id);
   
-  const { userId, userType } = session.metadata || {};
-  
-  if (userId && userType) {
-    // Mettre à jour le plan de l'utilisateur dans votre base de données
-    try {
-      // Ici vous pouvez appeler votre API pour mettre à jour le plan
-      console.log(`✅ Plan mis à jour pour ${userType} ${userId}`);
-    } catch (error) {
-      console.error('❌ Erreur mise à jour plan:', error);
+  try {
+    // Récupérer l'email du customer depuis Stripe
+    const customer = await stripe.customers.retrieve(session.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé');
+      return;
     }
+    
+    console.log('📧 Email du customer:', userEmail);
+    
+    // Déterminer le type de plan basé sur le priceId
+    const priceId = session.line_items?.data[0]?.price?.id || session.amount_total;
+    const planType = getPlanTypeFromPriceId(priceId);
+    
+    if (!planType) {
+      console.error('❌ Type de plan non déterminé pour:', priceId);
+      return;
+    }
+    
+    console.log('🎯 Plan détecté:', planType);
+    
+    // Mettre à jour le plan dans la base de données
+    await updateUserPlan(userEmail, planType);
+    
+  } catch (error) {
+    console.error('❌ Erreur lors du traitement du paiement:', error);
   }
 }
 
@@ -84,15 +102,26 @@ async function handleCheckoutSessionCompleted(session) {
 async function handleSubscriptionCreated(subscription) {
   console.log('📝 Abonnement créé:', subscription.id);
   
-  const customerId = subscription.customer;
-  const priceId = subscription.items.data[0].price.id;
-  
-  // Déterminer le type de plan basé sur le priceId
-  const planType = getPlanTypeFromPriceId(priceId);
-  
-  if (planType) {
-    // Mettre à jour le plan de l'utilisateur
-    console.log(`✅ Abonnement ${planType} créé pour ${customerId}`);
+  try {
+    // Récupérer l'email du customer depuis Stripe
+    const customer = await stripe.customers.retrieve(subscription.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé');
+      return;
+    }
+    
+    const priceId = subscription.items.data[0].price.id;
+    const planType = getPlanTypeFromPriceId(priceId);
+    
+    if (planType) {
+      // Mettre à jour le plan dans la base de données
+      await updateUserPlan(userEmail, planType);
+      console.log(`✅ Abonnement ${planType} créé pour ${userEmail}`);
+    }
+  } catch (error) {
+    console.error('❌ Erreur lors du traitement de l\'abonnement:', error);
   }
 }
 
@@ -134,13 +163,45 @@ async function handleInvoicePaymentFailed(invoice) {
 
 // Fonction utilitaire pour déterminer le type de plan
 function getPlanTypeFromPriceId(priceId) {
+  // Pour les Payment Links, on peut aussi utiliser le montant
   const planMapping = {
-    // Ajoutez ici vos priceId Stripe
+    // Price IDs Stripe
     'price_premium_candidat': 'premium',
     'price_pro_candidat': 'pro',
     'price_starter': 'starter',
-    'price_max': 'max'
+    'price_max': 'max',
+    // Montants en centimes pour les Payment Links
+    499: 'premium', // 4.99€
+    3900: 'pro',    // 39€
+    1999: 'starter', // 19.99€
+    7900: 'max'     // 79€
   };
   
   return planMapping[priceId] || null;
+}
+
+// Fonction pour mettre à jour le plan d'un utilisateur
+async function updateUserPlan(userEmail, planType) {
+  try {
+    console.log(`🔄 Mise à jour du plan pour ${userEmail} vers ${planType}`);
+    
+    // Appeler l'API pour mettre à jour le plan
+    const response = await fetch(`${process.env.API_BASE_URL || 'http://localhost:3001'}/api/candidates/email/${encodeURIComponent(userEmail)}/plan`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.ADMIN_TOKEN_SECRET || 'admin-token'}`
+      },
+      body: JSON.stringify({ planType, durationMonths: 1 })
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      console.log(`✅ Plan mis à jour avec succès pour ${userEmail}:`, result);
+    } else {
+      console.error(`❌ Erreur API lors de la mise à jour du plan: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('❌ Erreur lors de la mise à jour du plan:', error);
+  }
 }
