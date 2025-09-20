@@ -18,8 +18,13 @@ class RedisCache {
   async connect() {
     try {
       await connectRedis();
-      this.isConnected = true;
-      logger.info('✅ Redis Cache connected');
+      this.isConnected = redisClient.isOpen;
+      if (this.isConnected) {
+        logger.info('✅ Redis Cache connected');
+      } else {
+        logger.warn('⚠️ Redis Cache connection failed - client not open');
+        this.isConnected = false;
+      }
     } catch (error) {
       logger.error('❌ Redis Cache connection failed:', { error: error.message });
       this.isConnected = false;
@@ -29,12 +34,13 @@ class RedisCache {
   // Vérifier la connexion Redis
   async checkConnection() {
     try {
-      if (!this.isConnected) {
+      if (!this.isConnected || !redisClient.isOpen) {
         await this.connect();
       }
-      return this.isConnected;
+      return this.isConnected && redisClient.isOpen;
     } catch (error) {
       logger.error('❌ Redis connection check failed:', { error: error.message });
+      this.isConnected = false;
       return false;
     }
   }

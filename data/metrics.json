@@ -17,17 +17,17 @@
     "lastRequest": null
   },
   "cache": {
-    "hits": 3,
-    "misses": 7,
-    "hitRatio": 30,
-    "totalEntries": 21,
-    "memoryUsage": 80
+    "hits": 5,
+    "misses": 9,
+    "hitRatio": 35.714285714285715,
+    "totalEntries": 20,
+    "memoryUsage": 2
   },
   "system": {
-    "uptime": 300.245295292,
-    "memoryUsage": 20273776,
-    "cpuUsage": 0.430305,
-    "lastUpdate": "2025-09-20T08:42:57.627Z"
+    "uptime": 1020.158346958,
+    "memoryUsage": 11890424,
+    "cpuUsage": 0.220108,
+    "lastUpdate": "2025-09-20T09:02:07.984Z"
   },
   "requests": {
     "total": 185,

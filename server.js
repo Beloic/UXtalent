@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
 import { 
-  loadCandidates, 
+  loadCandidates,
   getCandidateStats, 
   addCandidate, 
   updateCandidate, 

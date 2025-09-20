@@ -363,17 +363,31 @@ export const toggleReplyLike = async (replyId, userId) => {
 // Incrémenter les vues d'un post
 export const incrementPostViews = async (postId) => {
   try {
+    // D'abord récupérer le post actuel
+    const { data: post, error: fetchError } = await supabase
+      .from('forum_posts')
+      .select('views')
+      .eq('id', postId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // Calculer les nouvelles vues
+    const currentViews = post?.views || 0;
+    const newViews = currentViews + 1;
+
+    // Mettre à jour avec la nouvelle valeur
     const { data, error } = await supabase
       .from('forum_posts')
-      .update({ views: supabase.raw('views + 1') })
+      .update({ views: newViews })
       .eq('id', postId)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return { success: true, views: newViews };
   } catch (error) {
     console.error('Erreur lors de l\'incrémentation des vues:', error);
-    throw error;
+    return { success: false, error: error.message };
   }
 };
