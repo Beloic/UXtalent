@@ -143,7 +143,8 @@ export default function PricingPage() {
       if (response.ok) {
         const userProfile = await response.json();
         if (userProfile) {
-          setUserPlan(userProfile.planType || 'free');
+          setUserPlan(userProfile.plan || 'free');
+          console.log('✅ Plan utilisateur récupéré dans PricingPage:', userProfile.plan);
         }
       }
     } catch (error) {
@@ -162,7 +163,7 @@ export default function PricingPage() {
   useEffect(() => {
     const handlePlanUpdate = (event) => {
       console.log('🎯 Événement planUpdated reçu dans PricingPage:', event.detail);
-      setUserPlan(event.detail.planType);
+      setUserPlan(event.detail.plan || event.detail.planType || 'free');
     };
 
     window.addEventListener('planUpdated', handlePlanUpdate);
