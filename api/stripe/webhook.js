@@ -127,12 +127,38 @@ async function handleSubscriptionCreated(subscription) {
 
 // Gestionnaire pour subscription.updated
 async function handleSubscriptionUpdated(subscription) {
-  console.log('🔄 Abonnement modifié:', subscription.id);
+  console.log('🔄 Abonnement modifié:', subscription.id, 'Status:', subscription.status);
   
-  if (subscription.status === 'active') {
-    console.log('✅ Abonnement activé');
-  } else if (subscription.status === 'canceled') {
-    console.log('❌ Abonnement annulé');
+  try {
+    // Récupérer l'email du customer depuis Stripe
+    const customer = await stripe.customers.retrieve(subscription.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé pour la mise à jour');
+      return;
+    }
+    
+    if (subscription.status === 'active') {
+      console.log('✅ Abonnement activé pour:', userEmail);
+      // Déterminer le type de plan basé sur le priceId
+      const priceId = subscription.items.data[0].price.id;
+      const planType = getPlanTypeFromPriceId(priceId);
+      
+      if (planType) {
+        await updateUserPlan(userEmail, planType);
+        console.log(`✅ Plan ${planType} activé pour ${userEmail}`);
+      }
+    } else if (subscription.status === 'canceled') {
+      console.log('❌ Abonnement annulé pour:', userEmail);
+      await updateUserPlan(userEmail, 'free');
+      console.log('⬇️ Utilisateur rétrogradé vers le plan gratuit:', userEmail);
+    } else if (subscription.status === 'past_due') {
+      console.log('⚠️ Abonnement en retard pour:', userEmail);
+      // Optionnel : mettre à jour le statut ou envoyer une notification
+    }
+  } catch (error) {
+    console.error('❌ Erreur lors de la mise à jour de l\'abonnement:', error);
   }
 }
 
@@ -140,8 +166,26 @@ async function handleSubscriptionUpdated(subscription) {
 async function handleSubscriptionDeleted(subscription) {
   console.log('🗑️ Abonnement supprimé:', subscription.id);
   
-  // Rétrograder l'utilisateur vers le plan gratuit
-  console.log('⬇️ Utilisateur rétrogradé vers le plan gratuit');
+  try {
+    // Récupérer l'email du customer depuis Stripe
+    const customer = await stripe.customers.retrieve(subscription.customer);
+    const userEmail = customer.email;
+    
+    if (!userEmail) {
+      console.error('❌ Email du customer non trouvé pour l\'annulation');
+      return;
+    }
+    
+    console.log('📧 Email du customer pour annulation:', userEmail);
+    
+    // Mettre à jour le plan vers 'free' dans la base de données
+    await updateUserPlan(userEmail, 'free');
+    
+    console.log('⬇️ Utilisateur rétrogradé vers le plan gratuit:', userEmail);
+    
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'annulation de l\'abonnement:', error);
+  }
 }
 
 // Gestionnaire pour invoice.payment_succeeded
