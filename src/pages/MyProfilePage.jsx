@@ -95,6 +95,7 @@ export default function MyProfilePage() {
   const [userPlan, setUserPlan] = useState('free');
   const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
   const [isRefreshingPlan, setIsRefreshingPlan] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   
   // États pour l'édition inline
   const [editingField, setEditingField] = useState(null);
@@ -2046,10 +2047,10 @@ export default function MyProfilePage() {
                     {/* Actions */}
                     <div className="flex justify-center gap-4 mt-6">
                       <button
-                        onClick={() => window.open('mailto:contact@ux-jobs-pro.com', '_blank')}
-                        className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                        onClick={() => setShowCancelConfirm(true)}
+                        className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
                       >
-                        Gérer mon plan
+                        Annuler mon plan
                       </button>
                       <button
                         onClick={() => window.open('/pricing', '_blank')}
@@ -2386,6 +2387,43 @@ export default function MyProfilePage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Popup de confirmation d'annulation */}
+        {showCancelConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+              <div className="text-center">
+                <div className="p-4 bg-red-100 rounded-full w-fit mx-auto mb-6">
+                  <AlertCircle className="w-8 h-8 text-red-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Annuler votre abonnement ?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Êtes-vous sûr de vouloir annuler votre abonnement {candidatePlan === 'premium' ? 'Premium' : 'Pro'} ? 
+                  Vous perdrez l'accès à toutes les fonctionnalités premium.
+                </p>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setShowCancelConfirm(false)}
+                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                  >
+                    Garder mon plan
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowCancelConfirm(false);
+                      window.open('mailto:contact@ux-jobs-pro.com?subject=Annulation%20d%27abonnement&body=Bonjour,%0A%0AJe%20souhaite%20annuler%20mon%20abonnement%20' + (candidatePlan === 'premium' ? 'Premium' : 'Pro') + '.%0A%0AMerci.', '_blank');
+                    }}
+                    className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+                  >
+                    Confirmer l'annulation
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
