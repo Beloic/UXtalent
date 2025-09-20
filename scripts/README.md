@@ -22,6 +22,13 @@ Les scripts SQL ont été retirés du dépôt. Utilisez les migrations Supabase 
 - **Usage** : `./scripts/deploy.sh [environment]`
 - **Contenu** : Déploiement complet avec sauvegarde et rollback
 
+### 🧹 **Maintenance**
+
+#### `cleanup-logs.js`
+- **Objectif** : Nettoyage automatique des logs anciens
+- **Usage** : `node scripts/cleanup-logs.js [clean|stats|help]`
+- **Contenu** : Suppression des logs selon les règles de rétention
+
 ## 🛠️ Utilisation
 
 ### Installation Initiale

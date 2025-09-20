@@ -2,9 +2,15 @@ import { redisClient, connectRedis } from '../config/redis.js';
 import { logger } from '../logger/logger.js';
 import { metrics } from '../metrics/metrics.js';
 
-// Configuration du cache Redis
-const CACHE_DURATION = 30 * 60; // 30 minutes en secondes
-const CLEANUP_INTERVAL = 10 * 60 * 1000; // 10 minutes en millisecondes
+// Configuration du cache Redis optimisée
+const CACHE_DURATION = {
+  CANDIDATES: 15 * 60, // 15 minutes pour les candidats
+  JOBS: 10 * 60, // 10 minutes pour les offres
+  FORUM: 5 * 60, // 5 minutes pour le forum
+  METRICS: 2 * 60, // 2 minutes pour les métriques
+  DEFAULT: 5 * 60 // 5 minutes par défaut
+};
+const CLEANUP_INTERVAL = 5 * 60 * 1000; // 5 minutes en millisecondes
 
 // Classe Cache Redis
 class RedisCache {
@@ -88,17 +94,18 @@ class RedisCache {
   }
 
   // Stocker une valeur dans le cache
-  async set(key, data, ttl = CACHE_DURATION) {
+  async set(key, data, cacheType = 'DEFAULT') {
     if (!(await this.checkConnection())) {
       logger.warn('⚠️ Redis not connected, skipping cache set');
       return false;
     }
 
     try {
+      const ttl = CACHE_DURATION[cacheType] || CACHE_DURATION.DEFAULT;
       const serializedData = JSON.stringify(data);
       await redisClient.set(key, serializedData, { EX: ttl });
       
-      logger.debug(`💾 Redis Cache set pour ${key} (TTL: ${ttl}s)`);
+      logger.debug(`💾 Redis Cache set pour ${key} (TTL: ${ttl}s, Type: ${cacheType})`);
       
       // Mettre à jour les statistiques du cache
       const dbSize = await redisClient.dbSize();

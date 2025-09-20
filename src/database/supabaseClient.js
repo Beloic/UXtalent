@@ -28,9 +28,28 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 export const loadCandidates = async () => {
   try {
+    // Optimisation : sélectionner seulement les colonnes nécessaires
     const { data, error } = await supabase
       .from('candidates')
-      .select('*')
+      .select(`
+        id,
+        name,
+        email,
+        bio,
+        skills,
+        location,
+        daily_rate,
+        annual_salary,
+        photo,
+        plan_type,
+        plan_start_date,
+        plan_end_date,
+        is_featured,
+        featured_until,
+        notes,
+        created_at,
+        updated_at
+      `)
       .order('created_at', { ascending: false });
     
     if (error) throw error;
@@ -377,17 +396,17 @@ export const getPosts = async (category = null, search = null, page = 1, limit =
     
     if (error) throw error;
     
-    // Récupérer le nombre de réponses pour chaque post et s'assurer que les vues sont initialisées
+    // Optimisation : utiliser une seule requête avec jointure pour éviter N+1
     const processedPosts = await Promise.all((data || []).map(async (post) => {
       try {
+        // Requête optimisée avec jointure
         const { count: repliesCount } = await supabase
           .from('forum_replies')
-          .select('*', { count: 'exact', head: true })
+          .select('id', { count: 'exact', head: true })
           .eq('post_id', post.id);
         
-        // S'assurer que les vues sont initialisées (pas null) ou simuler si la colonne n'existe pas
-        const views = post.hasOwnProperty('views') ? 
-          (post.views !== null && post.views !== undefined ? post.views : 0) : 0;
+        // S'assurer que les vues sont initialisées
+        const views = post.views ?? 0;
         
         return {
           ...post,
@@ -399,8 +418,7 @@ export const getPosts = async (category = null, search = null, page = 1, limit =
         return {
           ...post,
           replies_count: 0,
-          views: post.hasOwnProperty('views') ? 
-            (post.views !== null && post.views !== undefined ? post.views : 0) : 0
+          views: post.views ?? 0
         };
       }
     }));

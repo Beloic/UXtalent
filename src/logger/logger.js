@@ -70,15 +70,6 @@ const transports = [
     format: customFormat
   }),
 
-  // Fichier spécifique pour le scraping
-  new DailyRotateFile({
-    filename: path.join(LOG_DIR, 'scraping-%DATE%.log'),
-    datePattern: 'YYYY-MM-DD',
-    maxSize: '20m',
-    maxFiles: '7d',
-    level: 'debug',
-    format: customFormat
-  })
 ];
 
 // Créer l'instance logger
@@ -90,28 +81,6 @@ export const logger = winston.createLogger({
 });
 
 // Fonctions utilitaires pour le logging spécialisé
-export const logScrapingStart = (source, url) => {
-  logger.info(`🔍 Début scraping ${source}`, { source, url, type: 'scraping_start' });
-};
-
-export const logScrapingEnd = (source, jobCount, duration) => {
-  logger.info(`✅ Fin scraping ${source}`, {
-    source,
-    jobCount,
-    duration,
-    type: 'scraping_end'
-  });
-};
-
-export const logScrapingError = (source, error, attempt) => {
-  logger.error(`❌ Erreur scraping ${source}`, {
-    source,
-    error: error.message,
-    stack: error.stack,
-    attempt,
-    type: 'scraping_error'
-  });
-};
 
 export const logPerformance = (operation, duration, metadata = {}) => {
   logger.info(`⚡ Performance: ${operation}`, {

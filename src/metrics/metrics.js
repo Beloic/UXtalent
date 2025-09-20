@@ -12,15 +12,6 @@ const MAX_METRICS_HISTORY = 1000;
 class MetricsCollector {
   constructor() {
     this.metrics = {
-      scraping: {
-        totalRuns: 0,
-        successfulRuns: 0,
-        failedRuns: 0,
-        totalJobsCollected: 0,
-        averageDuration: 0,
-        lastRun: null,
-        bySource: {}
-      },
       api: {
         totalRequests: 0,
         successfulRequests: 0,
@@ -76,45 +67,6 @@ class MetricsCollector {
     }
   }
 
-  // Métriques de scraping
-  recordScrapingRun(source, success, jobCount, duration) {
-    const scraping = this.metrics.scraping;
-
-    scraping.totalRuns++;
-    if (success) {
-      scraping.successfulRuns++;
-    } else {
-      scraping.failedRuns++;
-    }
-
-    scraping.totalJobsCollected += jobCount;
-    scraping.averageDuration = ((scraping.averageDuration * (scraping.totalRuns - 1)) + duration) / scraping.totalRuns;
-    scraping.lastRun = new Date().toISOString();
-
-    // Métriques par source
-    if (!scraping.bySource[source]) {
-      scraping.bySource[source] = {
-        totalRuns: 0,
-        successfulRuns: 0,
-        failedRuns: 0,
-        totalJobsCollected: 0,
-        averageDuration: 0
-      };
-    }
-
-    const sourceMetrics = scraping.bySource[source];
-    sourceMetrics.totalRuns++;
-    if (success) {
-      sourceMetrics.successfulRuns++;
-    } else {
-      sourceMetrics.failedRuns++;
-    }
-    sourceMetrics.totalJobsCollected += jobCount;
-    sourceMetrics.averageDuration = ((sourceMetrics.averageDuration * (sourceMetrics.totalRuns - 1)) + duration) / sourceMetrics.totalRuns;
-
-    this.saveMetrics();
-    logger.info(`📊 Métriques scraping mises à jour`, { source, success, jobCount, duration });
-  }
 
   // Métriques API
   recordApiRequest(method, endpoint, statusCode, duration) {
@@ -194,8 +146,6 @@ class MetricsCollector {
     return {
       ...this.metrics,
       summary: {
-        scrapingSuccessRate: this.metrics.scraping.totalRuns > 0 ?
-          (this.metrics.scraping.successfulRuns / this.metrics.scraping.totalRuns) * 100 : 0,
         apiSuccessRate: this.metrics.api.totalRequests > 0 ?
           (this.metrics.api.successfulRequests / this.metrics.api.totalRequests) * 100 : 0,
         cacheEfficiency: this.metrics.cache.hitRatio,
@@ -207,15 +157,6 @@ class MetricsCollector {
   // Réinitialiser les métriques
   resetMetrics() {
     this.metrics = {
-      scraping: {
-        totalRuns: 0,
-        successfulRuns: 0,
-        failedRuns: 0,
-        totalJobsCollected: 0,
-        averageDuration: 0,
-        lastRun: null,
-        bySource: {}
-      },
       api: {
         totalRequests: 0,
         successfulRequests: 0,
