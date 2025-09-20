@@ -299,8 +299,11 @@ export default function MyProfilePage() {
         }
       } else if (response.status === 404) {
         // Candidat non trouvé - c'est normal pour un nouveau profil
+        console.log('✅ Profil non trouvé - nouveau candidat détecté');
         setMessage('ℹ️ Aucun profil existant trouvé. Vous pouvez créer un nouveau profil.');
         setCandidateStatus('new'); // Nouveau statut pour les nouveaux profils
+        // S'assurer que formData.id reste null pour les nouveaux candidats
+        setFormData(prev => ({ ...prev, id: null }));
       } else {
         const errorText = await response.text();
         console.error('❌ Erreur de réponse:', response.status, errorText);
@@ -309,6 +312,9 @@ export default function MyProfilePage() {
     } catch (error) {
       console.error('❌ Erreur lors du chargement du profil existant:', error);
       setMessage(`❌ Erreur: ${error.message}`);
+      // En cas d'erreur réseau, considérer comme nouveau candidat
+      setCandidateStatus('new');
+      setFormData(prev => ({ ...prev, id: null }));
     } finally {
       setIsLoadingProfile(false);
     }
