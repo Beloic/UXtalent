@@ -2053,7 +2053,7 @@ export default function MyProfilePage() {
               )}
 
               {/* Bouton "Envoyer mon profil" pour les nouveaux candidats */}
-              {candidateStatus === 'new' && (
+              {(candidateStatus === 'new' || !formData.id) && (
                 <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Finaliser votre profil</h3>
