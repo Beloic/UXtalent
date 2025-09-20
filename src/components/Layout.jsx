@@ -7,7 +7,6 @@ import { supabase } from "../lib/supabase";
 import { usePermissions } from "../hooks/usePermissions";
 import { buildApiUrl } from "../config/api";
 import { ConditionalRender } from "./RoleGuard";
-import FloatingBugButton from "./FloatingBugButton";
 
 export default function Layout({ children, hideFooter = false, hideTopBar = false }) {
   const { user, signOut, isAuthenticated } = useAuth();
@@ -15,6 +14,26 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   const [hasProfile, setHasProfile] = useState(null);
   const [candidatePlan, setCandidatePlan] = useState('free');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Charger le chatbot Crisp
+  useEffect(() => {
+    // Script Crisp
+    window.$crisp = [];
+    window.CRISP_WEBSITE_ID = "c04f638e-303e-4e79-bcee-e6a013024480";
+    
+    const script = document.createElement("script");
+    script.src = "https://client.crisp.chat/l.js";
+    script.async = true;
+    document.getElementsByTagName("head")[0].appendChild(script);
+
+    // Cleanup function pour supprimer le script si le composant est démonté
+    return () => {
+      const crispScript = document.querySelector('script[src="https://client.crisp.chat/l.js"]');
+      if (crispScript) {
+        crispScript.remove();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const checkProfile = async () => {
@@ -503,8 +522,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
       </footer>
       )}
       
-      {/* Bouton flottant pour signaler un bug */}
-      <FloatingBugButton />
     </div>
   );
 }
