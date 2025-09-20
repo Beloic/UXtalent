@@ -81,6 +81,8 @@ import {
 } from './src/database/jobsDatabase.js';
 import { metricsMiddleware } from './src/middleware/metricsMiddleware.js';
 import { logger, requestLogger } from './src/logger/logger.js';
+import { redisCacheMiddleware, redisCache } from './src/cache/redisCache.js';
+import { connectRedis, checkRedisHealth } from './src/config/redis.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -101,6 +103,21 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Initialiser Redis au démarrage
+(async () => {
+  try {
+    await connectRedis();
+    const isHealthy = await checkRedisHealth();
+    if (isHealthy) {
+      logger.info('✅ Redis initialisé avec succès');
+    } else {
+      logger.warn('⚠️ Redis non disponible, fonctionnement en mode dégradé');
+    }
+  } catch (error) {
+    logger.error('❌ Erreur initialisation Redis:', { error: error.message });
+  }
+})();
 
 // Middleware de sécurité
 import helmet from 'helmet';
@@ -155,6 +172,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(requestLogger);
 app.use(metricsMiddleware);
+app.use(redisCacheMiddleware);
 
 // Middleware de debug pour les routes candidats
 app.use('/api/candidates', (req, res, next) => {
@@ -1041,6 +1059,56 @@ app.get('/api/metrics', (req, res) => {
   } catch (error) {
     logger.error('Erreur lors de la récupération des métriques', { error: error.message });
     res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// GET /api/test - Test simple pour vérifier le déploiement
+app.get('/api/test', (req, res) => {
+  res.json({
+    message: 'Backend UX Jobs Pro fonctionne !',
+    timestamp: new Date().toISOString(),
+    redis: 'Configuré',
+    version: '1.0.0'
+  });
+});
+
+// GET /api/redis/health - Vérifier la santé de Redis
+app.get('/api/redis/health', async (req, res) => {
+  try {
+    const isHealthy = await checkRedisHealth();
+    const stats = await redisCache.getStats();
+    
+    res.json({
+      healthy: isHealthy,
+      connected: stats.connected,
+      totalEntries: stats.totalEntries,
+      memoryUsage: stats.memoryUsage,
+      hitRatio: stats.hitRatio
+    });
+  } catch (error) {
+    logger.error('Erreur lors de la vérification Redis', { error: error.message });
+    res.status(500).json({ 
+      healthy: false, 
+      connected: false, 
+      error: 'Erreur Redis' 
+    });
+  }
+});
+
+// GET /api/redis/stats - Statistiques détaillées Redis
+app.get('/api/redis/stats', async (req, res) => {
+  try {
+    const stats = await redisCache.getStats();
+    const keys = await redisCache.getKeys('cache:*');
+    
+    res.json({
+      ...stats,
+      cacheKeys: keys.length,
+      sampleKeys: keys.slice(0, 10) // Premières 10 clés pour debug
+    });
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des stats Redis', { error: error.message });
+    res.status(500).json({ error: 'Erreur Redis stats' });
   }
 });
 
