@@ -341,8 +341,8 @@ export default function PricingPage() {
                 Comment fonctionne l'annulation ?
               </h3>
               <p className="text-gray-600">
-                Vous pouvez annuler votre abonnement à tout moment en nous envoyant un email. 
-                Aucune pénalité, aucune question posée. La plateforme restera accessible jusqu'à la fin de votre période d'abonnement en cours.
+                Vous pouvez annuler votre abonnement à tout moment directement depuis votre profil. 
+                Aucune pénalité, aucune question posée. Vous gardez l'accès jusqu'à la fin de votre période de facturation.
               </p>
             </div>
           </div>

@@ -1120,24 +1120,28 @@ app.post('/api/candidates/:id/cancel-subscription', authenticateUser, async (req
     
     const subscription = subscriptions.data[0];
     
-    // Annuler l'abonnement immédiatement
-    const canceledSubscription = await stripe.subscriptions.cancel(subscription.id);
+    // Programmer l'annulation à la fin de la période de facturation
+    const updatedSubscription = await stripe.subscriptions.update(subscription.id, {
+      cancel_at_period_end: true
+    });
     
-    console.log('✅ Abonnement annulé avec succès:', canceledSubscription.id);
+    console.log('✅ Annulation programmée à la fin de période:', updatedSubscription.id);
+    console.log('📅 Fin de période:', new Date(updatedSubscription.current_period_end * 1000));
     
-    // Mettre à jour le plan dans la base de données
-    const updatedCandidate = await updateCandidatePlan(candidateId, 'free', 1);
+    // Ne pas mettre à jour le plan immédiatement - l'utilisateur garde l'accès jusqu'à la fin
+    // Le webhook Stripe se chargera de la mise à jour finale
     
     // Déclencher l'événement pour mettre à jour l'interface
     res.json({
       success: true,
-      message: 'Abonnement annulé avec succès',
+      message: 'Annulation programmée à la fin de votre période de facturation',
       subscription: {
-        id: canceledSubscription.id,
-        status: canceledSubscription.status,
-        canceled_at: canceledSubscription.canceled_at
+        id: updatedSubscription.id,
+        status: updatedSubscription.status,
+        cancel_at_period_end: updatedSubscription.cancel_at_period_end,
+        current_period_end: updatedSubscription.current_period_end
       },
-      candidate: updatedCandidate
+      access_until: new Date(updatedSubscription.current_period_end * 1000).toISOString()
     });
     
   } catch (error) {

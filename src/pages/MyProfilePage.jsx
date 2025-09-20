@@ -496,7 +496,7 @@ export default function MyProfilePage() {
           detail: { plan: 'free' }
         }));
         
-        setMessage('✅ Votre abonnement a été annulé avec succès');
+        setMessage('✅ Annulation programmée. Vous gardez l\'accès premium jusqu\'à la fin de votre période.');
         setTimeout(() => setMessage(''), 5000);
         
         // Recharger le profil pour s'assurer que les données sont à jour
@@ -2480,7 +2480,7 @@ export default function MyProfilePage() {
                 </h3>
                 <p className="text-gray-600 mb-6">
                   Êtes-vous sûr de vouloir annuler votre abonnement {candidatePlan === 'premium' ? 'Premium' : 'Pro'} ? 
-                  Vous perdrez l'accès à toutes les fonctionnalités premium à la fin de votre période de facturation (30 jours).
+                  Vous garderez l'accès à toutes les fonctionnalités premium jusqu'à la fin de votre période de facturation.
                 </p>
                 <div className="flex gap-4">
                   <button
