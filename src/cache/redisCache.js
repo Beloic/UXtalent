@@ -24,7 +24,16 @@ class RedisCache {
   async connect() {
     try {
       const connected = await connectRedis();
-      this.isConnected = connected && redisClient.isOpen;
+      
+      // Vérifier si c'est un client Upstash ou Redis classique
+      const isUpstash = redisClient.constructor.name === 'UpstashClient';
+      
+      if (isUpstash) {
+        this.isConnected = connected && redisClient.isConnected;
+      } else {
+        this.isConnected = connected && redisClient.isOpen;
+      }
+      
       if (this.isConnected) {
         logger.info('✅ Redis Cache connected');
       } else {
@@ -40,15 +49,24 @@ class RedisCache {
   // Vérifier la connexion Redis
   async checkConnection() {
     try {
+      // Vérifier si c'est un client Upstash ou Redis classique
+      const isUpstash = redisClient.constructor.name === 'UpstashClient';
+      
       // Si Redis est désactivé, ne pas essayer de se reconnecter
-      if (!this.isConnected && redisClient.isOpen === false) {
+      if (!this.isConnected && !isUpstash && redisClient.isOpen === false) {
         return false;
       }
       
-      if (!this.isConnected || !redisClient.isOpen) {
+      if (!this.isConnected || (!isUpstash && !redisClient.isOpen)) {
         await this.connect();
       }
-      return this.isConnected && redisClient.isOpen;
+      
+      // Vérifier la connexion selon le type de client
+      if (isUpstash) {
+        return this.isConnected && redisClient.isConnected;
+      } else {
+        return this.isConnected && redisClient.isOpen;
+      }
     } catch (error) {
       logger.error('❌ Redis connection check failed:', { error: error.message });
       this.isConnected = false;
@@ -182,16 +200,27 @@ class RedisCache {
 
     try {
       const dbSize = await redisClient.dbSize();
-      const info = await redisClient.info('memory');
       
-      // Parser les informations mémoire Redis
-      const memoryInfo = {};
-      info.split('\r\n').forEach(line => {
-        if (line.includes(':')) {
-          const [key, value] = line.split(':');
-          memoryInfo[key] = value;
-        }
-      });
+      // Vérifier si c'est un client Upstash ou Redis classique
+      const isUpstash = redisClient.constructor.name === 'UpstashClient';
+      
+      let memoryInfo = {};
+      if (!isUpstash && typeof redisClient.info === 'function') {
+        // Redis classique
+        const info = await redisClient.info('memory');
+        
+        // Parser les informations mémoire Redis
+        info.split('\r\n').forEach(line => {
+          if (line.includes(':')) {
+            const [key, value] = line.split(':');
+            memoryInfo[key] = value;
+          }
+        });
+      } else if (isUpstash && typeof redisClient.info === 'function') {
+        // Upstash REST API
+        const info = await redisClient.info('memory');
+        memoryInfo = { used_memory_human: 'Upstash managed' };
+      }
 
       return {
         connected: true,
