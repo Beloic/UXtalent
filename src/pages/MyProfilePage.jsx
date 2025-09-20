@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon } from 'lucide-react';
+import { User, Save, ArrowLeft, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
@@ -20,6 +20,7 @@ export default function MyProfilePage() {
   const getActiveTabFromPath = () => {
     const path = location.pathname;
     if (path.includes('/stats')) return 'stats';
+    if (path.includes('/plan')) return 'plan';
     if (path.includes('/offer')) return 'offer';
     return 'view'; // Par défaut pour '/profile' ou autres
   };
@@ -36,11 +37,23 @@ export default function MyProfilePage() {
         case 'stats':
           navigate('/my-profile/stats');
           break;
+        case 'plan':
+          navigate('/my-profile/plan');
+          break;
         default:
           navigate('/my-profile/profile');
       }
-    } else if (isRecruiter && tabName === 'offer') {
-      navigate('/my-profile/offer');
+    } else if (isRecruiter) {
+      switch (tabName) {
+        case 'offer':
+          navigate('/my-profile/offer');
+          break;
+        case 'plan':
+          navigate('/my-profile/plan');
+          break;
+        default:
+          navigate('/my-profile/offer');
+      }
     }
   };
   
@@ -1005,6 +1018,17 @@ export default function MyProfilePage() {
                     <BarChart3 className="w-5 h-5" />
                     Statistiques
                   </button>
+                  <button
+                    onClick={() => navigateToTab('plan')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'plan'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <DollarSign className="w-5 h-5" />
+                    Mon plan
+                  </button>
                 </>
               )}
               {isRecruiter && (
@@ -1019,6 +1043,17 @@ export default function MyProfilePage() {
                   >
                     <Kanban className="w-5 h-5" />
                     Mon offre
+                  </button>
+                  <button
+                    onClick={() => navigateToTab('plan')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'plan'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <DollarSign className="w-5 h-5" />
+                    Mon plan
                   </button>
                 </>
               )}
@@ -1886,6 +1921,133 @@ export default function MyProfilePage() {
                   </div>
                 </div>
               )}
+            </motion.div>
+          )}
+
+          {activeTab === 'plan' && (
+            <motion.div
+              key="plan"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="min-h-screen bg-gray-50">
+                <div className="max-w-4xl mx-auto px-4 py-8">
+                  <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
+                    <div className="text-center mb-8">
+                      <div className="p-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl shadow-2xl mx-auto mb-6 w-fit">
+                        <DollarSign className="w-12 h-12 text-white" />
+                      </div>
+                      <h2 className="text-3xl font-bold text-gray-900 mb-4">Mon Plan</h2>
+                      <p className="text-gray-600 text-lg">
+                        Gérez votre abonnement et accédez à toutes les fonctionnalités premium
+                      </p>
+                    </div>
+
+                    {/* Plan actuel */}
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            Plan {candidatePlan === 'free' ? 'Gratuit' : candidatePlan === 'premium' ? 'Premium' : candidatePlan === 'pro' ? 'Pro' : candidatePlan}
+                          </h3>
+                          <p className="text-gray-600">
+                            {candidatePlan === 'free' 
+                              ? 'Accès aux fonctionnalités de base'
+                              : candidatePlan === 'premium'
+                              ? 'Accès aux fonctionnalités premium'
+                              : candidatePlan === 'pro'
+                              ? 'Accès aux fonctionnalités professionnelles'
+                              : 'Plan personnalisé'
+                            }
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-blue-600">
+                            {candidatePlan === 'free' 
+                              ? '0€'
+                              : candidatePlan === 'premium'
+                              ? '4,99€'
+                              : candidatePlan === 'pro'
+                              ? '39€'
+                              : 'Sur mesure'
+                            }
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {candidatePlan === 'free' ? '' : '/mois'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {candidatePlan === 'free' ? (
+                        <>
+                          <button
+                            onClick={() => window.open(import.meta.env.VITE_STRIPE_PREMIUM_CANDIDAT_LINK, '_blank')}
+                            className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                          >
+                            <div className="text-center">
+                              <Star className="w-8 h-8 mx-auto mb-3" />
+                              <h4 className="text-lg font-bold mb-2">Passer Premium</h4>
+                              <p className="text-blue-100 text-sm mb-4">4,99€/mois</p>
+                              <p className="text-blue-100 text-sm">Badge Premium, statistiques détaillées, mise en avant</p>
+                            </div>
+                          </button>
+                          <button
+                            onClick={() => window.open(import.meta.env.VITE_STRIPE_PRO_CANDIDAT_LINK, '_blank')}
+                            className="p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                          >
+                            <div className="text-center">
+                              <Crown className="w-8 h-8 mx-auto mb-3" />
+                              <h4 className="text-lg font-bold mb-2">Devenir Pro</h4>
+                              <p className="text-purple-100 text-sm mb-4">39€/mois</p>
+                              <p className="text-purple-100 text-sm">Tout Premium + coaching, offres exclusives</p>
+                            </div>
+                          </button>
+                        </>
+                      ) : (
+                        <div className="col-span-2">
+                          <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center">
+                            <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                            <h4 className="text-xl font-bold text-green-800 mb-2">Plan actif</h4>
+                            <p className="text-green-600 mb-4">
+                              Vous bénéficiez de toutes les fonctionnalités de votre plan {candidatePlan === 'premium' ? 'Premium' : 'Pro'}
+                            </p>
+                            <button
+                              onClick={() => window.open('mailto:contact@ux-jobs-pro.com', '_blank')}
+                              className="px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors"
+                            >
+                              Gérer mon abonnement
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Informations supplémentaires */}
+                    <div className="mt-8 pt-6 border-t border-gray-200">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-4">Informations sur votre abonnement</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                        <div>
+                          <strong>Annulation :</strong> Vous pouvez annuler à tout moment
+                        </div>
+                        <div>
+                          <strong>Support :</strong> contact@ux-jobs-pro.com
+                        </div>
+                        <div>
+                          <strong>Facturation :</strong> Mensuelle
+                        </div>
+                        <div>
+                          <strong>Paiement :</strong> Sécurisé par Stripe
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           )}
 
