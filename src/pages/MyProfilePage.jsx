@@ -1102,6 +1102,7 @@ export default function MyProfilePage() {
   }
 
 
+
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -2050,6 +2051,51 @@ export default function MyProfilePage() {
                   </div>
                 </div>
               )}
+
+              {/* Bouton "Envoyer mon profil" pour les nouveaux candidats */}
+              {candidateStatus === 'new' && (
+                <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Finaliser votre profil</h3>
+                    <p className="text-gray-600 mb-6">
+                      Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour soumettre votre candidature.
+                    </p>
+                    
+                    {/* Message d'information */}
+                    {message && (
+                      <div className={`mb-6 p-4 rounded-2xl ${
+                        message.includes('✅') ? 'bg-green-50 border border-green-200 text-green-800' :
+                        message.includes('❌') ? 'bg-red-50 border border-red-200 text-red-800' :
+                        'bg-blue-50 border border-blue-200 text-blue-800'
+                      }`}>
+                        {message}
+                      </div>
+                    )}
+
+                    <button
+                      onClick={handleSubmit}
+                      disabled={isLoading}
+                      className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto"
+                    >
+                      {isLoading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          Envoi en cours...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="w-5 h-5" />
+                          Envoyer mon profil
+                        </>
+                      )}
+                    </button>
+                    
+                    <p className="text-center text-sm text-gray-500 mt-4">
+                      En envoyant votre profil, vous acceptez qu'il soit soumis à validation par notre équipe.
+                    </p>
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -2164,17 +2210,20 @@ export default function MyProfilePage() {
                     <div className="flex justify-center gap-4 mt-6">
                       {!cancellationInfo?.cancellation_scheduled ? (
                         <>
-                          <button
-                            onClick={() => setShowCancelConfirm(true)}
-                            className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
-                          >
-                            Annuler mon plan
-                          </button>
+                          {/* Afficher le bouton "Annuler mon plan" seulement si l'utilisateur n'est pas au plan gratuit */}
+                          {candidatePlan !== 'free' && (
+                            <button
+                              onClick={() => setShowCancelConfirm(true)}
+                              className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+                            >
+                              Annuler mon plan
+                            </button>
+                          )}
                           <button
                             onClick={() => window.open('/pricing', '_blank')}
                             className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
                           >
-                            Changer de plan
+                            {candidatePlan === 'free' ? 'Passer à Premium' : 'Changer de plan'}
                           </button>
                         </>
                       ) : (

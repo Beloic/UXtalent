@@ -9,7 +9,7 @@ const PLAN_CACHE_TTL = 60 * 60; // 1 heure
 // Cache temporaire en mémoire en attendant la correction Redis
 const planCache = new Map();
 
-export const setCandidatePlan = async (candidateId, planType) => {
+export const setCandidatePlan = (candidateId, planType) => {
   try {
     const planData = {
       planType: planType,
@@ -20,13 +20,13 @@ export const setCandidatePlan = async (candidateId, planType) => {
     // Cache temporaire en mémoire
     planCache.set(candidateId, planData);
     
-    logger.debug('💾 Plan mis en cache temporaire:', { candidateId, planType });
+    console.log('💾 Plan mis en cache temporaire:', { candidateId, planType, planData });
   } catch (error) {
-    logger.error('❌ Erreur cache plan:', { error: error.message, candidateId });
+    console.error('❌ Erreur cache plan:', { error: error.message, candidateId });
   }
 };
 
-export const getCandidatePlan = async (candidateId) => {
+export const getCandidatePlan = (candidateId) => {
   try {
     // Cache temporaire en mémoire
     return planCache.get(candidateId) || null;
@@ -46,13 +46,23 @@ export const getAllPlanCache = async () => {
   }
 };
 
-export const clearPlanCache = async () => {
+export const clearPlanCache = () => {
   try {
     // Cache temporaire en mémoire
     planCache.clear();
-    logger.info('🧹 Cache plans vidé');
+    console.log('🧹 Cache plans vidé');
   } catch (error) {
-    logger.error('❌ Erreur vidage cache plans:', { error: error.message });
+    console.error('❌ Erreur vidage cache plans:', { error: error.message });
+  }
+};
+
+export const clearCandidatePlan = (candidateId) => {
+  try {
+    // Supprimer le cache d'un candidat spécifique
+    planCache.delete(candidateId);
+    console.log('🧹 Cache plan vidé pour candidat:', candidateId);
+  } catch (error) {
+    console.error('❌ Erreur vidage cache plan candidat:', { error: error.message, candidateId });
   }
 };
 

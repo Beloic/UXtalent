@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createClient } from '@supabase/supabase-js';
+import { supabase, supabaseAdmin } from './src/config/supabase.js';
 import Stripe from 'stripe';
 import { 
   loadCandidates,
@@ -88,19 +88,7 @@ import { connectRedis, checkRedisHealth } from './src/config/redis.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuration Supabase
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://ktfdrwpvofxuktnunukv.supabase.co';
-const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Client Supabase Admin pour les opérations côté serveur
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || supabaseAnonKey;
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
+// Configuration Supabase - Les clients sont importés depuis src/config/supabase.js
 
 // Configuration Stripe
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
@@ -172,14 +160,14 @@ app.use(helmet({
   }
 }));
 
+// Webhook Stripe - doit être AVANT express.json() pour les webhooks
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(requestLogger);
 app.use(metricsMiddleware);
 app.use(redisCacheMiddleware);
-
-// Webhook Stripe - doit être avant express.json() pour les webhooks
-app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
 
 // Middleware de debug pour les routes candidats
 app.use('/api/candidates', (req, res, next) => {
@@ -687,14 +675,62 @@ app.get('/api/candidates/:id', async (req, res) => {
 app.get('/api/candidates/profile/:email', async (req, res) => {
   try {
     const { email } = req.params;
-    console.log('🔍 [GET_PROFILE] Récupération profil pour email:', email);
+    const forceRefresh = req.query.force_refresh === 'true';
+    console.log('🔍 [GET_PROFILE] Récupération profil pour email:', email, 'force_refresh:', forceRefresh);
     
     // Récupérer directement depuis Supabase pour avoir les données à jour
-    const { data: candidate, error } = await supabase
-      .from('candidates')
-      .select('*')
-      .eq('email', email)
-      .single();
+    let candidate;
+    let error;
+    
+    if (forceRefresh) {
+      // Utiliser une requête différente pour contourner le cache
+      console.log('🔄 [GET_PROFILE] Force refresh activé, utilisation d\'une requête différente...');
+      const { data: candidates, error: error1 } = await supabaseAdmin
+        .from('candidates')
+        .select('*')
+        .ilike('email', email);
+      
+      candidate = candidates?.[0];
+      error = error1;
+    } else {
+      // Requête normale - utiliser une requête différente pour contourner le cache
+      const { data: candidates, error: error1 } = await supabaseAdmin
+        .from('candidates')
+        .select('*')
+        .eq('email', email)
+        .order('updated_at', { ascending: false })
+        .limit(1);
+      
+      candidate = candidates?.[0];
+      error = error1;
+    }
+    
+    // Si pas de candidat trouvé, essayer une autre approche
+    if (!candidate) {
+      console.log('🔍 [GET_PROFILE] Tentative alternative avec requête différente...');
+      const { data: candidates2, error: error2 } = await supabaseAdmin
+        .from('candidates')
+        .select('*')
+        .ilike('email', email);
+      
+      const candidate2 = candidates2?.[0];
+      if (candidate2) {
+        console.log('✅ [GET_PROFILE] Candidat trouvé avec requête alternative:', candidate2.plan_type);
+        return res.json({
+          ...candidate2,
+          plan: candidate2.plan_type || 'free',
+          planType: candidate2.plan_type || 'free',
+          createdAt: candidate2.created_at,
+          updatedAt: candidate2.updated_at,
+          dailyRate: candidate2.daily_rate,
+          annualSalary: candidate2.annual_salary,
+          isFeatured: candidate2.is_featured || false,
+          featuredUntil: candidate2.featured_until
+        });
+      }
+    }
+    
+    console.log('🔍 [GET_PROFILE] Requête Supabase directe - Plan récupéré:', candidate?.plan_type);
     
     if (error || !candidate) {
       console.log('❌ [GET_PROFILE] Candidat non trouvé pour email:', email);
@@ -715,6 +751,8 @@ app.get('/api/candidates/profile/:email', async (req, res) => {
       isFeatured: candidate.is_featured || false,
       featuredUntil: candidate.featured_until
     };
+    
+    console.log('🔍 [GET_PROFILE] Plan mappé:', mappedCandidate.plan, 'depuis plan_type:', candidate.plan_type);
     
     res.json(mappedCandidate);
   } catch (error) {
@@ -1029,7 +1067,7 @@ app.put('/api/candidates/email/:email/plan', async (req, res) => {
     }
     
     // Trouver le candidat par email
-    const { data: candidate, error: fetchError } = await supabase
+    const { data: candidate, error: fetchError } = await supabaseAdmin
       .from('candidates')
       .select('id')
       .eq('email', email)

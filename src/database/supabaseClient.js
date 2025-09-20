@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { getCandidatePlan, setCandidatePlan } from '../cache/planCache.js';
+import { getCandidatePlan, setCandidatePlan, clearCandidatePlan } from '../cache/planCache.js';
 
 // Configuration Supabase - Détection de l'environnement
 const isServer = typeof window === 'undefined';
@@ -273,7 +273,7 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
     
     console.log('🔄 Mise à jour du plan candidat:', { id, updateData });
     
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('candidates')
       .update(updateData)
       .eq('id', parseInt(id))
@@ -287,8 +287,13 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
     
     console.log('📊 Données retournées par Supabase:', data);
     
+    // Vider le cache existant avant de mettre à jour
+    clearCandidatePlan(id);
+    
     // Mettre en cache le nouveau plan
     setCandidatePlan(id, planType);
+    
+    console.log('🔄 Cache vidé et mis à jour pour candidat:', id);
     
     // Mapper les noms de colonnes de snake_case vers camelCase
     const mappedData = {
