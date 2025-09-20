@@ -2,10 +2,9 @@ import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Configuration du chemin pour Node.js
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // Créer le dossier logs s'il n'existe pas
 const LOG_DIR = path.join(__dirname, '../../logs');

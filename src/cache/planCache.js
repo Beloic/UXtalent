@@ -1,11 +1,13 @@
 // Cache Redis pour les plans des candidats
 // Migration du cache local vers Redis pour la scalabilité
 
-import { redisClient } from '../config/redis.js';
 import { logger } from '../logger/logger.js';
 
 const PLAN_CACHE_PREFIX = 'plan:';
 const PLAN_CACHE_TTL = 60 * 60; // 1 heure
+
+// Cache temporaire en mémoire en attendant la correction Redis
+const planCache = new Map();
 
 export const setCandidatePlan = async (candidateId, planType) => {
   try {
@@ -15,61 +17,42 @@ export const setCandidatePlan = async (candidateId, planType) => {
       updatedAt: new Date().toISOString()
     };
     
-    const key = `${PLAN_CACHE_PREFIX}${candidateId}`;
-    await redisClient.setEx(key, PLAN_CACHE_TTL, JSON.stringify(planData));
+    // Cache temporaire en mémoire
+    planCache.set(candidateId, planData);
     
-    logger.debug('💾 Plan mis en cache Redis:', { candidateId, planType });
+    logger.debug('💾 Plan mis en cache temporaire:', { candidateId, planType });
   } catch (error) {
-    logger.error('❌ Erreur cache Redis plan:', { error: error.message, candidateId });
+    logger.error('❌ Erreur cache plan:', { error: error.message, candidateId });
   }
 };
 
 export const getCandidatePlan = async (candidateId) => {
   try {
-    const key = `${PLAN_CACHE_PREFIX}${candidateId}`;
-    const data = await redisClient.get(key);
-    
-    if (!data) {
-      return null;
-    }
-    
-    return JSON.parse(data);
+    // Cache temporaire en mémoire
+    return planCache.get(candidateId) || null;
   } catch (error) {
-    logger.error('❌ Erreur récupération cache Redis plan:', { error: error.message, candidateId });
+    logger.error('❌ Erreur récupération cache plan:', { error: error.message, candidateId });
     return null;
   }
 };
 
 export const getAllPlanCache = async () => {
   try {
-    const keys = await redisClient.keys(`${PLAN_CACHE_PREFIX}*`);
-    const plans = {};
-    
-    for (const key of keys) {
-      const candidateId = key.replace(PLAN_CACHE_PREFIX, '');
-      const planData = await redisClient.get(key);
-      
-      if (planData) {
-        plans[candidateId] = JSON.parse(planData);
-      }
-    }
-    
-    return plans;
+    // Cache temporaire en mémoire
+    return Object.fromEntries(planCache);
   } catch (error) {
-    logger.error('❌ Erreur récupération tous les plans cache Redis:', { error: error.message });
+    logger.error('❌ Erreur récupération tous les plans cache:', { error: error.message });
     return {};
   }
 };
 
 export const clearPlanCache = async () => {
   try {
-    const keys = await redisClient.keys(`${PLAN_CACHE_PREFIX}*`);
-    if (keys.length > 0) {
-      await redisClient.del(keys);
-      logger.info('🧹 Cache Redis plans vidé:', { count: keys.length });
-    }
+    // Cache temporaire en mémoire
+    planCache.clear();
+    logger.info('🧹 Cache plans vidé');
   } catch (error) {
-    logger.error('❌ Erreur vidage cache Redis plans:', { error: error.message });
+    logger.error('❌ Erreur vidage cache plans:', { error: error.message });
   }
 };
 

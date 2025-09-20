@@ -1,11 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { logger } from '../logger/logger.js';
 import { metrics } from '../metrics/metrics.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // Configuration du cache
 const CACHE_DIR = path.join(__dirname, '../../cache');

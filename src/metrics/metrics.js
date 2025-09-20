@@ -1,10 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { logger } from '../logger/logger.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // Configuration des métriques
 const METRICS_FILE = path.join(__dirname, '../../data/metrics.json');

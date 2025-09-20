@@ -1,4 +1,34 @@
 {
+  "scraping": {
+    "totalRuns": 0,
+    "successfulRuns": 0,
+    "failedRuns": 0,
+    "totalJobsCollected": 0,
+    "averageDuration": 0,
+    "lastRun": null,
+    "bySource": {}
+  },
+  "api": {
+    "totalRequests": 0,
+    "successfulRequests": 0,
+    "failedRequests": 0,
+    "averageResponseTime": 0,
+    "endpoints": {},
+    "lastRequest": null
+  },
+  "cache": {
+    "hits": 3,
+    "misses": 5,
+    "hitRatio": 37.5,
+    "totalEntries": 21,
+    "memoryUsage": 80
+  },
+  "system": {
+    "uptime": 300.308793583,
+    "memoryUsage": 19476408,
+    "cpuUsage": 0.418591,
+    "lastUpdate": "2025-09-20T08:26:38.428Z"
+  },
   "requests": {
     "total": 185,
     "byMethod": {

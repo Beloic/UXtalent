@@ -160,4 +160,5 @@ export const getRedisStats = async () => {
   }
 };
 
+export { redisClient };
 export default redisClient;
