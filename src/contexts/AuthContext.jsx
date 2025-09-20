@@ -12,21 +12,21 @@ export const useAuth = () => {
   return context
 }
 
-// Fonction pour créer automatiquement un profil candidat
+// Fonction pour créer automatiquement un profil candidat lors de l'inscription
 const createCandidateProfileIfNotExists = async (user) => {
   try {
-    console.log('🔄 [AUTO_CREATE] Vérification du profil candidat pour:', user.email)
+    console.log('🔄 [SIGNUP_CREATE] Vérification du profil candidat pour:', user.email)
     
     // Vérifier si le profil existe déjà
     const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`))
     
     if (response.ok) {
-      console.log('✅ [AUTO_CREATE] Profil candidat existe déjà')
+      console.log('✅ [SIGNUP_CREATE] Profil candidat existe déjà')
       return
     }
     
     if (response.status === 404) {
-      console.log('🆕 [AUTO_CREATE] Création automatique du profil candidat...')
+      console.log('🆕 [SIGNUP_CREATE] Création automatique du profil candidat...')
       
       // Créer le profil candidat avec statut 'new'
       const candidateData = {
@@ -34,7 +34,7 @@ const createCandidateProfileIfNotExists = async (user) => {
           ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
           : user.email?.split('@')[0] || 'Nouveau Candidat',
         email: user.email,
-        bio: 'Profil créé automatiquement lors de la validation de l\'email.',
+        bio: 'Profil créé automatiquement lors de l\'inscription.',
         title: '',
         location: '',
         remote: 'hybrid',
@@ -51,7 +51,7 @@ const createCandidateProfileIfNotExists = async (user) => {
       const token = session.data.session?.access_token
       
       if (!token) {
-        console.error('❌ [AUTO_CREATE] Token d\'authentification manquant')
+        console.error('❌ [SIGNUP_CREATE] Token d\'authentification manquant')
         return
       }
       
@@ -65,13 +65,13 @@ const createCandidateProfileIfNotExists = async (user) => {
       })
       
       if (createResponse.ok) {
-        console.log('✅ [AUTO_CREATE] Profil candidat créé avec succès avec statut "new"')
+        console.log('✅ [SIGNUP_CREATE] Profil candidat créé avec succès avec statut "new"')
       } else {
-        console.error('❌ [AUTO_CREATE] Erreur lors de la création:', await createResponse.text())
+        console.error('❌ [SIGNUP_CREATE] Erreur lors de la création:', await createResponse.text())
       }
     }
   } catch (error) {
-    console.error('❌ [AUTO_CREATE] Erreur inattendue:', error)
+    console.error('❌ [SIGNUP_CREATE] Erreur inattendue:', error)
   }
 }
 
@@ -97,15 +97,10 @@ export const AuthProvider = ({ children }) => {
     // Écouter les changements d'authentification
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
-      
-      // Créer automatiquement un profil candidat quand l'email est confirmé
-      if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at && session?.user?.user_metadata?.role === 'candidate') {
-        await createCandidateProfileIfNotExists(session.user)
-      }
     })
 
     return () => subscription.unsubscribe()
@@ -123,6 +118,13 @@ export const AuthProvider = ({ children }) => {
       })
       
       if (error) throw error
+      
+      // Si l'inscription est réussie et que c'est un candidat, créer automatiquement le profil
+      if (data?.user && userData?.role === 'candidate') {
+        console.log('🆕 [SIGNUP] Création automatique du profil candidat après inscription réussie')
+        await createCandidateProfileIfNotExists(data.user)
+      }
+      
       return { data, error: null }
     } catch (error) {
       return { data: null, error }
