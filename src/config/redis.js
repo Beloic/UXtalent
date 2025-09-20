@@ -1,16 +1,18 @@
 import { createClient } from 'redis';
 import { logger } from '../logger/logger.js';
 
-// Configuration Redis
-const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD || null;
+// Configuration Redis - Support Upstash et Redis classique
+const REDIS_URL = process.env.REDIS_URL || process.env.UPSTASH_REDIS_REST_URL || 'redis://localhost:6379';
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD || process.env.UPSTASH_REDIS_REST_TOKEN || null;
+const IS_UPSTASH = !!process.env.UPSTASH_REDIS_REST_URL;
 
-// Options de configuration Redis
+// Options de configuration Redis - Adapté pour Upstash
 const redisOptions = {
   url: REDIS_URL,
   socket: {
     connectTimeout: 10000,
-    lazyConnect: true
+    lazyConnect: true,
+    tls: IS_UPSTASH ? {} : undefined // TLS pour Upstash
   },
   retry_strategy: (options) => {
     if (options.error && options.error.code === 'ECONNREFUSED') {
@@ -39,15 +41,15 @@ export const redisClient = createClient(redisOptions);
 
 // Gestionnaires d'événements Redis
 redisClient.on('error', (err) => {
-  logger.error('❌ Redis Client Error:', { error: err.message });
+  logger.error('❌ Redis Client Error:', { error: err.message, isUpstash: IS_UPSTASH });
 });
 
 redisClient.on('connect', () => {
-  logger.info('🔗 Redis Client Connected');
+  logger.info(`🔗 Redis Client Connected ${IS_UPSTASH ? '(Upstash)' : '(Local)'}`);
 });
 
 redisClient.on('ready', () => {
-  logger.info('✅ Redis Client Ready');
+  logger.info(`✅ Redis Client Ready ${IS_UPSTASH ? '(Upstash)' : '(Local)'}`);
 });
 
 redisClient.on('end', () => {
