@@ -3,6 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+import Stripe from 'stripe';
 import { 
   loadCandidates,
   getCandidateStats, 
@@ -100,6 +101,9 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
     persistSession: false
   }
 });
+
+// Configuration Stripe
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -1039,6 +1043,88 @@ app.put('/api/candidates/email/:email/plan', async (req, res) => {
   } catch (error) {
     logger.error('Erreur lors de la mise à jour du plan candidat par email', { error: error.message });
     res.status(500).json({ error: 'Erreur lors de la mise à jour du plan candidat' });
+  }
+});
+
+// POST /api/candidates/:id/cancel-subscription - Annuler l'abonnement Stripe d'un candidat
+app.post('/api/candidates/:id/cancel-subscription', authenticateUser, async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(500).json({ error: 'Stripe non configuré. Veuillez contacter le support.' });
+    }
+    
+    const candidateId = req.params.id;
+    const userEmail = req.user.email;
+    
+    console.log('🔄 Annulation abonnement demandée pour:', userEmail);
+    
+    // Vérifier que l'utilisateur peut annuler son propre abonnement
+    const { data: candidate, error: fetchError } = await supabase
+      .from('candidates')
+      .select('id, email, plan')
+      .eq('id', candidateId)
+      .eq('email', userEmail)
+      .single();
+    
+    if (fetchError || !candidate) {
+      logger.error('Candidat non trouvé ou accès non autorisé:', { candidateId, userEmail });
+      return res.status(404).json({ error: 'Candidat non trouvé ou accès non autorisé' });
+    }
+    
+    if (candidate.plan === 'free') {
+      return res.status(400).json({ error: 'Aucun abonnement actif à annuler' });
+    }
+    
+    // Chercher le customer Stripe par email
+    const customers = await stripe.customers.list({
+      email: userEmail,
+      limit: 1
+    });
+    
+    if (customers.data.length === 0) {
+      logger.error('Customer Stripe non trouvé pour:', userEmail);
+      return res.status(404).json({ error: 'Abonnement Stripe non trouvé' });
+    }
+    
+    const customer = customers.data[0];
+    
+    // Chercher les abonnements actifs du customer
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customer.id,
+      status: 'active',
+      limit: 1
+    });
+    
+    if (subscriptions.data.length === 0) {
+      logger.error('Abonnement actif non trouvé pour:', userEmail);
+      return res.status(404).json({ error: 'Aucun abonnement actif trouvé' });
+    }
+    
+    const subscription = subscriptions.data[0];
+    
+    // Annuler l'abonnement immédiatement
+    const canceledSubscription = await stripe.subscriptions.cancel(subscription.id);
+    
+    console.log('✅ Abonnement annulé avec succès:', canceledSubscription.id);
+    
+    // Mettre à jour le plan dans la base de données
+    const updatedCandidate = await updateCandidatePlan(candidateId, 'free', 1);
+    
+    // Déclencher l'événement pour mettre à jour l'interface
+    res.json({
+      success: true,
+      message: 'Abonnement annulé avec succès',
+      subscription: {
+        id: canceledSubscription.id,
+        status: canceledSubscription.status,
+        canceled_at: canceledSubscription.canceled_at
+      },
+      candidate: updatedCandidate
+    });
+    
+  } catch (error) {
+    logger.error('Erreur lors de l\'annulation de l\'abonnement', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de l\'annulation de l\'abonnement' });
   }
 });
 

@@ -96,6 +96,7 @@ export default function MyProfilePage() {
   const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
   const [isRefreshingPlan, setIsRefreshingPlan] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
   
   // États pour l'édition inline
   const [editingField, setEditingField] = useState(null);
@@ -442,6 +443,65 @@ export default function MyProfilePage() {
       setIsSavingInline(false);
       setEditingField(null);
       setTempValue('');
+    }
+  };
+
+  // Fonction pour annuler l'abonnement
+  const handleCancelSubscription = async () => {
+    if (!formData.id || !user) {
+      alert('Erreur: Profil candidat non trouvé');
+      return;
+    }
+
+    setIsCancelling(true);
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        throw new Error('Token d\'authentification manquant');
+      }
+
+      console.log('🔄 Annulation abonnement pour candidat:', formData.id);
+
+      const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}/cancel-subscription`), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Abonnement annulé avec succès:', result);
+        
+        // Mettre à jour le plan localement
+        setCandidatePlan('free');
+        
+        // Déclencher l'événement pour mettre à jour l'interface
+        window.dispatchEvent(new CustomEvent('planUpdated', {
+          detail: { plan: 'free' }
+        }));
+        
+        setMessage('✅ Votre abonnement a été annulé avec succès');
+        setTimeout(() => setMessage(''), 5000);
+        
+        // Recharger le profil pour s'assurer que les données sont à jour
+        setTimeout(() => {
+          loadExistingProfile();
+        }, 1000);
+        
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Erreur ${response.status}`);
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'annulation:', error);
+      setMessage(`❌ Erreur lors de l'annulation: ${error.message}`);
+      setTimeout(() => setMessage(''), 5000);
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -2411,13 +2471,14 @@ export default function MyProfilePage() {
                     Garder mon plan
                   </button>
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       setShowCancelConfirm(false);
-                      window.open('mailto:contact@ux-jobs-pro.com?subject=Annulation%20d%27abonnement&body=Bonjour,%0A%0AJe%20souhaite%20annuler%20mon%20abonnement%20' + (candidatePlan === 'premium' ? 'Premium' : 'Pro') + '.%0A%0AMerci.', '_blank');
+                      await handleCancelSubscription();
                     }}
-                    className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+                    className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isCancelling}
                   >
-                    Confirmer l'annulation
+                    {isCancelling ? 'Annulation en cours...' : 'Confirmer l\'annulation'}
                   </button>
                 </div>
               </div>
