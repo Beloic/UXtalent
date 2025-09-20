@@ -206,13 +206,13 @@ export default function MyProfilePage() {
         
         if (response.ok) {
           const userProfile = await response.json();
-          if (userProfile && userProfile.planType !== candidatePlan) {
-            console.log('🔄 Plan mis à jour détecté:', userProfile.planType, 'ancien:', candidatePlan);
-            setCandidatePlan(userProfile.planType || 'free');
+          if (userProfile && userProfile.plan !== candidatePlan) {
+            console.log('🔄 Plan mis à jour détecté:', userProfile.plan, 'ancien:', candidatePlan);
+            setCandidatePlan(userProfile.plan || 'free');
             
             // Déclencher l'événement pour notifier les autres composants
             window.dispatchEvent(new CustomEvent('planUpdated', {
-              detail: { planType: userProfile.planType }
+              detail: { plan: userProfile.plan }
             }));
           }
         }
@@ -249,7 +249,7 @@ export default function MyProfilePage() {
           setCandidateStatus(status);
           
           // Charger le plan du candidat
-          setCandidatePlan(existingCandidate.planType || 'free');
+          setCandidatePlan(existingCandidate.plan || 'free');
           
           // Charger toutes les données depuis la base de données
           const newFormData = {

@@ -631,18 +631,21 @@ app.get('/api/candidates/:id', async (req, res) => {
   try {
     console.log('🔍 [GET_CANDIDATE] Récupération candidat:', req.params.id);
     
-    // Charger les données depuis la DB (stateless)
-    const CANDIDATES = await loadCandidates();
+    // Récupérer directement depuis Supabase pour avoir les données à jour
+    const { data: candidate, error } = await supabase
+      .from('candidates')
+      .select('*')
+      .eq('id', req.params.id)
+      .single();
 
-    const candidate = CANDIDATES.find(c => c.id == req.params.id);
-
-    if (!candidate) {
+    if (error || !candidate) {
       console.log('❌ [GET_CANDIDATE] Candidat non trouvé:', req.params.id);
       return res.status(404).json({ error: 'Candidat non trouvé' });
     }
 
     console.log('✅ [GET_CANDIDATE] Candidat trouvé:', candidate.name);
     console.log('📝 [GET_CANDIDATE] Notes actuelles:', candidate.notes || 'Aucune note');
+    console.log('💎 [GET_CANDIDATE] Plan actuel:', candidate.plan);
 
     const authHeader = req.headers.authorization;
     const hasAuth = !!authHeader && authHeader.startsWith('Bearer ');
@@ -664,18 +667,24 @@ app.get('/api/candidates/:id', async (req, res) => {
 app.get('/api/candidates/profile/:email', async (req, res) => {
   try {
     const { email } = req.params;
-    // Charger les données depuis la DB (stateless)
-    const CANDIDATES = await loadCandidates();
+    console.log('🔍 [GET_PROFILE] Récupération profil pour email:', email);
     
-    const candidate = CANDIDATES.find(c => c.email === email);
+    // Récupérer directement depuis Supabase pour avoir les données à jour
+    const { data: candidate, error } = await supabase
+      .from('candidates')
+      .select('*')
+      .eq('email', email)
+      .single();
     
-    if (!candidate) {
+    if (error || !candidate) {
+      console.log('❌ [GET_PROFILE] Candidat non trouvé pour email:', email);
       return res.status(404).json({ error: 'Candidat non trouvé' });
     }
     
+    console.log('✅ [GET_PROFILE] Candidat trouvé:', candidate.name, 'Plan:', candidate.plan);
     res.json(candidate);
   } catch (error) {
-    console.error('Erreur lors de la récupération du profil:', error);
+    console.error('❌ [GET_PROFILE] Erreur lors de la récupération du profil:', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
@@ -1347,13 +1356,19 @@ app.get('/api/profile-stats/:userId', authenticateUser, async (req, res) => {
       return res.status(403).json({ error: 'Accès non autorisé' });
     }
 
-    // Récupérer les données du candidat en utilisant l'email de l'utilisateur authentifié
-    const candidates = await loadCandidates();
-    const candidate = candidates.find(c => c.email === req.user.email);
+    // Récupérer les données du candidat directement depuis Supabase
+    const { data: candidate, error: candidateError } = await supabase
+      .from('candidates')
+      .select('*')
+      .eq('email', req.user.email)
+      .single();
     
-    if (!candidate) {
+    if (candidateError || !candidate) {
+      console.log('❌ [PROFILE_STATS] Candidat non trouvé pour email:', req.user.email);
       return res.status(404).json({ error: 'Profil candidat non trouvé' });
     }
+    
+    console.log('✅ [PROFILE_STATS] Candidat trouvé:', candidate.name, 'Plan:', candidate.plan);
 
     // Plus besoin des données du forum - simplifié
 
@@ -1407,13 +1422,19 @@ app.get('/api/profile-stats/:userId/chart', authenticateUser, async (req, res) =
       return res.status(403).json({ error: 'Accès non autorisé' });
     }
 
-    // Récupérer les données du candidat
-    const candidates = await loadCandidates();
-    const candidate = candidates.find(c => c.email === req.user.email);
+    // Récupérer les données du candidat directement depuis Supabase
+    const { data: candidate, error: candidateError } = await supabase
+      .from('candidates')
+      .select('*')
+      .eq('email', req.user.email)
+      .single();
     
-    if (!candidate) {
+    if (candidateError || !candidate) {
+      console.log('❌ [PROFILE_CHART] Candidat non trouvé pour email:', req.user.email);
       return res.status(404).json({ error: 'Profil candidat non trouvé' });
     }
+    
+    console.log('✅ [PROFILE_CHART] Candidat trouvé:', candidate.name, 'Plan:', candidate.plan);
 
     // Récupérer les données selon la période
     const chartData = await getProfileViewsByPeriod(candidate.id, period, parseInt(offset));

@@ -55,8 +55,8 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           setHasProfile(!!userProfile);
           // Charger le plan du candidat
           if (userProfile) {
-            console.log('🎯 Profil candidat chargé dans Layout:', { planType: userProfile.planType, isFeatured: userProfile.isFeatured });
-            setCandidatePlan(userProfile.planType || 'free');
+            console.log('🎯 Profil candidat chargé dans Layout:', { plan: userProfile.plan, isFeatured: userProfile.isFeatured });
+            setCandidatePlan(userProfile.plan || 'free');
           }
         } else if (response.status === 404) {
           // Si 404, cela signifie qu'il n'y a pas encore de profils dans la base
@@ -75,7 +75,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
     // Écouter les changements de plan depuis d'autres composants
     const handlePlanUpdate = (event) => {
       console.log('🎯 Événement planUpdated reçu:', event.detail);
-      setCandidatePlan(event.detail.planType);
+      setCandidatePlan(event.detail.plan || event.detail.planType || 'free');
     };
 
     window.addEventListener('planUpdated', handlePlanUpdate);
