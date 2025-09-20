@@ -179,11 +179,11 @@ export default function MyProfilePage() {
 
   // Charger les statistiques quand l'onglet stats est sélectionné
   useEffect(() => {
-    if (activeTab === 'stats' && user) {
+    if (activeTab === 'stats' && user && candidatePlan !== 'free') {
       loadProfileStats();
       loadChartData();
     }
-  }, [activeTab, user, loadProfileStats, loadChartData]);
+  }, [activeTab, user, candidatePlan, loadProfileStats, loadChartData]);
 
   const loadExistingProfile = useCallback(async () => {
     try {

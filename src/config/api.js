@@ -1,7 +1,11 @@
 // Configuration des URLs de l'API
-// Forcer l'utilisation de la prod pour éviter tout appel localhost en dev ou prod
+// Utiliser localhost en développement, production en prod
 const DEFAULT_API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com';
-const API_BASE_URL = DEFAULT_API_BASE_URL;
+const LOCAL_API_BASE_URL = 'http://localhost:3001';
+
+// Détecter si on est en développement (localhost)
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = isDevelopment ? LOCAL_API_BASE_URL : DEFAULT_API_BASE_URL;
 
 
 // Fonction pour construire une URL complète

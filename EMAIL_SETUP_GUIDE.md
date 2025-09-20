@@ -15,6 +15,7 @@ Pour que les emails de validation fonctionnent correctement, vous devez configur
 
 Dans la section **Site URL**, ajoutez :
 ```
+https://uxtalent.vercel.app
 https://u-xtalent.vercel.app
 https://ux-jobs-pro.netlify.app
 http://localhost:5173
@@ -22,6 +23,7 @@ http://localhost:5173
 
 Dans la section **Redirect URLs**, ajoutez :
 ```
+https://uxtalent.vercel.app/confirm-email
 https://u-xtalent.vercel.app/confirm-email
 https://ux-jobs-pro.netlify.app/confirm-email
 http://localhost:5173/confirm-email
@@ -60,7 +62,7 @@ http://localhost:5173/confirm-email
 
 1. Dans **Authentication** → **Settings**
 2. Activez **Enable email confirmations**
-3. Définissez **Email confirmation URL** : `https://u-xtalent.vercel.app/confirm-email`
+3. Définissez **Email confirmation URL** : `https://uxtalent.vercel.app/confirm-email`
 
 ### 5. Tester la Configuration
 

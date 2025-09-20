@@ -135,7 +135,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               <Users className="w-6 h-6 text-white" />
             </motion.div>
             <div className="flex items-center gap-2">
-              <span className="text-xl">UX Talents</span>
+              <span className="text-xl">UX Talent</span>
               <span className="px-2 py-1 text-xs font-semibold text-orange-600 bg-orange-100 rounded-full border border-orange-200">
                 Alpha
               </span>
@@ -509,7 +509,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 <Users className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-gray-900">© {new Date().getFullYear()} UX Talents</p>
+                <p className="font-semibold text-gray-900">© {new Date().getFullYear()} UX Talent</p>
                 <p className="text-sm text-gray-500">Fait avec ❤️ pour connecter les talents</p>
               </div>
             </div>
