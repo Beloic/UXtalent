@@ -645,7 +645,7 @@ app.get('/api/candidates/:id', async (req, res) => {
 
     console.log('✅ [GET_CANDIDATE] Candidat trouvé:', candidate.name);
     console.log('📝 [GET_CANDIDATE] Notes actuelles:', candidate.notes || 'Aucune note');
-    console.log('💎 [GET_CANDIDATE] Plan actuel:', candidate.plan);
+    console.log('💎 [GET_CANDIDATE] Plan actuel:', candidate.plan_type);
 
     const authHeader = req.headers.authorization;
     const hasAuth = !!authHeader && authHeader.startsWith('Bearer ');
@@ -656,7 +656,20 @@ app.get('/api/candidates/:id', async (req, res) => {
       return res.status(404).json({ error: 'Candidat non trouvé' });
     }
 
-    res.json(candidate);
+    // Mapper les données pour correspondre au format attendu par le frontend
+    const mappedCandidate = {
+      ...candidate,
+      plan: candidate.plan_type || 'free', // Mapper plan_type vers plan
+      planType: candidate.plan_type || 'free', // Garder aussi planType pour compatibilité
+      createdAt: candidate.created_at,
+      updatedAt: candidate.updated_at,
+      dailyRate: candidate.daily_rate,
+      annualSalary: candidate.annual_salary,
+      isFeatured: candidate.is_featured || false,
+      featuredUntil: candidate.featured_until
+    };
+
+    res.json(mappedCandidate);
   } catch (error) {
     console.error('❌ [GET_CANDIDATE] Erreur lors de la récupération du candidat:', error);
     res.status(500).json({ error: 'Erreur interne du serveur' });
@@ -681,8 +694,22 @@ app.get('/api/candidates/profile/:email', async (req, res) => {
       return res.status(404).json({ error: 'Candidat non trouvé' });
     }
     
-    console.log('✅ [GET_PROFILE] Candidat trouvé:', candidate.name, 'Plan:', candidate.plan);
-    res.json(candidate);
+    console.log('✅ [GET_PROFILE] Candidat trouvé:', candidate.name, 'Plan:', candidate.plan_type);
+    
+    // Mapper les données pour correspondre au format attendu par le frontend
+    const mappedCandidate = {
+      ...candidate,
+      plan: candidate.plan_type || 'free', // Mapper plan_type vers plan
+      planType: candidate.plan_type || 'free', // Garder aussi planType pour compatibilité
+      createdAt: candidate.created_at,
+      updatedAt: candidate.updated_at,
+      dailyRate: candidate.daily_rate,
+      annualSalary: candidate.annual_salary,
+      isFeatured: candidate.is_featured || false,
+      featuredUntil: candidate.featured_until
+    };
+    
+    res.json(mappedCandidate);
   } catch (error) {
     console.error('❌ [GET_PROFILE] Erreur lors de la récupération du profil:', error);
     res.status(500).json({ error: 'Erreur serveur' });
