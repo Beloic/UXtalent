@@ -10,7 +10,7 @@ import { usePermissions } from '../hooks/usePermissions';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 
 export default function MyProfilePage() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
   const location = useLocation();
   const navigate = useNavigate();
@@ -2044,68 +2044,19 @@ export default function MyProfilePage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {candidatePlan === 'free' ? (
-                        <>
-                          <button
-                            onClick={() => window.open(import.meta.env.VITE_STRIPE_PREMIUM_CANDIDAT_LINK, '_blank')}
-                            className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-                          >
-                            <div className="text-center">
-                              <Star className="w-8 h-8 mx-auto mb-3" />
-                              <h4 className="text-lg font-bold mb-2">Passer Premium</h4>
-                              <p className="text-blue-100 text-sm mb-4">4,99€/mois</p>
-                              <p className="text-blue-100 text-sm">Badge Premium, statistiques détaillées, mise en avant</p>
-                            </div>
-                          </button>
-                          <button
-                            onClick={() => window.open(import.meta.env.VITE_STRIPE_PRO_CANDIDAT_LINK, '_blank')}
-                            className="p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-                          >
-                            <div className="text-center">
-                              <Crown className="w-8 h-8 mx-auto mb-3" />
-                              <h4 className="text-lg font-bold mb-2">Devenir Pro</h4>
-                              <p className="text-purple-100 text-sm mb-4">39€/mois</p>
-                              <p className="text-purple-100 text-sm">Tout Premium + coaching, offres exclusives</p>
-                            </div>
-                          </button>
-                        </>
-                      ) : (
-                        <div className="col-span-2">
-                          <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center">
-                            <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                            <h4 className="text-xl font-bold text-green-800 mb-2">Plan actif</h4>
-                            <p className="text-green-600 mb-4">
-                              Vous bénéficiez de toutes les fonctionnalités de votre plan {candidatePlan === 'premium' ? 'Premium' : 'Pro'}
-                            </p>
-                            <button
-                              onClick={() => window.open('mailto:contact@ux-jobs-pro.com', '_blank')}
-                              className="px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors"
-                            >
-                              Gérer mon abonnement
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Informations supplémentaires */}
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-4">Informations sur votre abonnement</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
-                        <div>
-                          <strong>Annulation :</strong> Vous pouvez annuler à tout moment
-                        </div>
-                        <div>
-                          <strong>Support :</strong> contact@ux-jobs-pro.com
-                        </div>
-                        <div>
-                          <strong>Facturation :</strong> Mensuelle
-                        </div>
-                        <div>
-                          <strong>Paiement :</strong> Sécurisé par Stripe
-                        </div>
-                      </div>
+                    <div className="flex justify-center gap-4 mt-6">
+                      <button
+                        onClick={() => window.open('mailto:contact@ux-jobs-pro.com', '_blank')}
+                        className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                      >
+                        Gérer mon plan
+                      </button>
+                      <button
+                        onClick={() => window.open('/pricing', '_blank')}
+                        className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                      >
+                        Changer de plan
+                      </button>
                     </div>
                   </div>
                 </div>
