@@ -2064,28 +2064,41 @@ export default function MyProfilePage() {
                 <p className="text-sm text-yellow-700">
                   candidateStatus: {candidateStatus || 'null'} | 
                   formData.id: {formData.id || 'null'} | 
-                  Should show button: {(candidateStatus === 'new' || candidateStatus === 'pending' || !formData.id) ? 'YES' : 'NO'}
+                  Should show button: {(!formData.id || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES' : 'NO'}
                 </p>
               </div>
 
               {/* Bouton "Envoyer mon profil" pour les candidats non approuvés */}
               {(() => {
+                // Logique simplifiée : afficher le bouton si l'utilisateur n'a pas encore de profil candidat
+                // ou si son profil est en attente/rejeté
+                const shouldShow = !formData.id || candidateStatus === 'pending' || candidateStatus === 'rejected';
+                
                 console.log('🔍 Debug bouton:', {
                   candidateStatus,
                   formDataId: formData.id,
-                  shouldShow: candidateStatus === 'new' || candidateStatus === 'pending' || !formData.id
+                  shouldShow,
+                  userEmail: user?.email
                 });
-                return candidateStatus === 'new' || candidateStatus === 'pending' || !formData.id;
+                
+                return shouldShow;
               })() && (
                 <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                      {candidateStatus === 'pending' ? 'Modifier votre profil' : 'Finaliser votre profil'}
+                      {!formData.id ? 'Créer votre profil candidat' : 
+                       candidateStatus === 'pending' ? 'Modifier votre profil' : 
+                       candidateStatus === 'rejected' ? 'Modifier votre profil rejeté' : 
+                       'Finaliser votre profil'}
                     </h3>
                     <p className="text-gray-600 mb-6">
-                      {candidateStatus === 'pending' 
-                        ? 'Modifiez les champs nécessaires et cliquez sur "Modifier et renvoyer mon profil" pour soumettre à nouveau votre candidature.'
-                        : 'Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour soumettre votre candidature.'
+                      {!formData.id ? 
+                        'Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour créer votre candidature.' :
+                        candidateStatus === 'pending' ? 
+                          'Modifiez les champs nécessaires et cliquez sur "Modifier et renvoyer mon profil" pour soumettre à nouveau votre candidature.' :
+                        candidateStatus === 'rejected' ?
+                          'Modifiez votre profil et cliquez sur "Modifier et renvoyer mon profil" pour le soumettre à nouveau à validation.' :
+                          'Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour soumettre votre candidature.'
                       }
                     </p>
                     
@@ -2113,7 +2126,10 @@ export default function MyProfilePage() {
                       ) : (
                         <>
                           <CheckCircle className="w-5 h-5" />
-                          {candidateStatus === 'pending' ? 'Modifier et renvoyer mon profil' : 'Envoyer mon profil'}
+                          {!formData.id ? 'Envoyer mon profil' : 
+                           candidateStatus === 'pending' ? 'Modifier et renvoyer mon profil' : 
+                           candidateStatus === 'rejected' ? 'Modifier et renvoyer mon profil' : 
+                           'Envoyer mon profil'}
                         </>
                       )}
                     </button>
