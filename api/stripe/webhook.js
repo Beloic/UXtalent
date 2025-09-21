@@ -1,25 +1,42 @@
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+console.log('🔧 [VERCEL WEBHOOK] Initialisation du module webhook');
+console.log('🔧 [VERCEL WEBHOOK] Stripe key présent:', !!process.env.STRIPE_SECRET_KEY);
+console.log('🔧 [VERCEL WEBHOOK] Webhook secret présent:', !!process.env.STRIPE_WEBHOOK_SECRET);
+
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+console.log('🔧 [VERCEL WEBHOOK] Stripe initialisé:', !!stripe);
 
 export async function POST(req) {
   try {
     console.log('🔔 [VERCEL WEBHOOK] Webhook Stripe reçu sur Vercel');
     console.log('🔍 [VERCEL WEBHOOK] Headers:', Object.fromEntries(req.headers.entries()));
     
+    if (!stripe) {
+      console.error('❌ [VERCEL WEBHOOK] Stripe non initialisé');
+      return new Response('Stripe non configuré', { status: 500 });
+    }
+    
     const body = await req.text();
+    console.log('🔍 [VERCEL WEBHOOK] Body récupéré, taille:', body?.length || 'undefined');
+    
     const signature = headers().get('stripe-signature');
+    console.log('🔍 [VERCEL WEBHOOK] Signature récupérée:', !!signature);
 
-    console.log('🔍 [VERCEL WEBHOOK] Body size:', body?.length || 'undefined');
-    console.log('🔍 [VERCEL WEBHOOK] Signature présente:', !!signature);
     console.log('🔍 [VERCEL WEBHOOK] Stripe configuré:', !!process.env.STRIPE_SECRET_KEY);
     console.log('🔍 [VERCEL WEBHOOK] Webhook secret configuré:', !!process.env.STRIPE_WEBHOOK_SECRET);
 
     if (!signature) {
       console.error('❌ [VERCEL WEBHOOK] Signature Stripe manquante');
       return new Response('Signature manquante', { status: 400 });
+    }
+    
+    if (!webhookSecret) {
+      console.error('❌ [VERCEL WEBHOOK] Secret webhook manquant');
+      return new Response('Secret webhook manquant', { status: 500 });
     }
 
     let event;
@@ -255,11 +272,14 @@ async function updateUserPlan(userEmail, planType) {
   try {
     console.log(`🔄 [WEBHOOK] Mise à jour du plan pour ${userEmail} vers ${planType}`);
     
-    const apiUrl = `${process.env.API_BASE_URL || 'http://localhost:3001'}/api/candidates/email/${encodeURIComponent(userEmail)}/plan`;
+    // Utiliser l'API Render directement
+    const apiUrl = `https://ux-jobs-pro-backend.onrender.com/api/candidates/email/${encodeURIComponent(userEmail)}/plan`;
     console.log(`🔍 [WEBHOOK] URL API appelée:`, apiUrl);
     
     const requestBody = { planType, durationMonths: 1 };
     console.log(`🔍 [WEBHOOK] Corps de la requête:`, JSON.stringify(requestBody, null, 2));
+    
+    console.log(`🔍 [WEBHOOK] Début appel fetch...`);
     
     // Appeler l'API pour mettre à jour le plan
     const response = await fetch(apiUrl, {
