@@ -985,6 +985,8 @@ export default function MyProfilePage() {
 
   const handleSubmit = async (e) => {
     console.log('🚀 handleSubmit appelé !', { e, user: user?.email, candidateStatus, formDataId: formData.id });
+    console.log('🚀 formData actuel:', formData);
+    console.log('🚀 areRequiredFieldsFilled():', areRequiredFieldsFilled());
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
@@ -1004,9 +1006,7 @@ export default function MyProfilePage() {
         title: 'Métier',
         location: 'Localisation',
         bio: 'Présentation',
-        skills: 'Compétences',
-        portfolio: 'Portfolio',
-        linkedin: 'LinkedIn'
+        skills: 'Compétences'
       };
 
       const missingFields = [];
