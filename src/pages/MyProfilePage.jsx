@@ -2059,10 +2059,10 @@ export default function MyProfilePage() {
                               <Clock className="w-5 h-5 text-yellow-600" />
                               <div>
                                 <p className="text-sm font-medium text-yellow-800">
-                                  {candidateStatus === 'new' ? 'Profil en attente de validation' : 'Profil en attente de validation'}
+                                  {candidateStatus === 'pending' ? 'Profil en attente de validation' : 'Complétez votre profil'}
                                 </p>
                                 <p className="text-xs text-yellow-600">
-                                  {candidateStatus === 'new' ? 'Complétez votre profil et envoyez-le pour examen' : 'Votre profil est en cours d\'examen par notre équipe'}
+                                  {candidateStatus === 'pending' ? 'Votre profil est en cours d\'examen par notre équipe' : 'Remplissez les champs requis et envoyez votre profil pour examen'}
                                 </p>
                               </div>
                             </div>
