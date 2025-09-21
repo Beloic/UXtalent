@@ -1179,26 +1179,26 @@ export default function RecruiterDashboard() {
                                 <>
                                   <button
                                     onClick={() => handleEditJob(job)}
-                                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"
+                                    className="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                                    title="Modifier"
                                   >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
-                                    Modifier
                                   </button>
                                   <button
                                     onClick={() => handleDeleteJob(job.id)}
-                                    className="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-2"
+                                    className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                                    title="Supprimer"
                                   >
                                     <Trash2 className="w-4 h-4" />
-                                    Supprimer
                                   </button>
                                   <button
                                     onClick={() => handlePauseJob(job.id)}
-                                    className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition-colors flex items-center gap-2"
+                                    className="p-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors"
+                                    title="Mettre en pause"
                                   >
                                     <Pause className="w-4 h-4" />
-                                    Mettre en pause
                                   </button>
                                   <button
                                     onClick={() => navigate(`/jobs/${job.id}`)}
@@ -1213,26 +1213,26 @@ export default function RecruiterDashboard() {
                                 <>
                                   <button
                                     onClick={() => handleEditJob(job)}
-                                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"
+                                    className="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                                    title="Modifier"
                                   >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
-                                    Modifier
                                   </button>
                                   <button
                                     onClick={() => handleDeleteJob(job.id)}
-                                    className="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-2"
+                                    className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                                    title="Supprimer"
                                   >
                                     <Trash2 className="w-4 h-4" />
-                                    Supprimer
                                   </button>
                                   <button
                                     onClick={() => handleResumeJob(job.id)}
-                                    className="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors flex items-center gap-2"
+                                    className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                                    title="Reprendre"
                                   >
                                     <Play className="w-4 h-4" />
-                                    Reprendre
                                   </button>
                                   <button
                                     onClick={() => navigate(`/jobs/${job.id}`)}
