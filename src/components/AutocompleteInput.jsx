@@ -100,14 +100,16 @@ export default function AutocompleteInput({
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className={`w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all pr-20 ${className}`}
+          className={`w-full py-2 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+            Icon ? 'pl-10 pr-16' : 'px-3 sm:px-4 pr-16'
+          } ${className}`}
           required={required}
           autoComplete="off"
         />
         
         {/* Icône */}
         {Icon && (
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
             <Icon className="w-4 h-4" />
           </div>
         )}
