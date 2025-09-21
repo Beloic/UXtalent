@@ -1248,14 +1248,16 @@ export default function MyProfilePage() {
     );
   }
 
-  // Interface pour les candidats avec statut "new" (nouveaux profils) - redirection automatique vers l'édition
-  if (candidateStatus === 'new' && !isEditingNew) {
-    // Redirection automatique vers le mode édition pour éviter la page d'accueil redondante
-    useEffect(() => {
+  // Redirection automatique pour les nouveaux profils
+  useEffect(() => {
+    if (candidateStatus === 'new' && !isEditingNew) {
       setIsEditingNew(true);
       navigateToTab('view');
-    }, []);
-    
+    }
+  }, [candidateStatus, isEditingNew]);
+
+  // Interface pour les candidats avec statut "new" (nouveaux profils) - redirection automatique vers l'édition
+  if (candidateStatus === 'new' && !isEditingNew) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
