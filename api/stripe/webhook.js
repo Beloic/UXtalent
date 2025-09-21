@@ -6,11 +6,19 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(req) {
   try {
+    console.log('🔔 [VERCEL WEBHOOK] Webhook Stripe reçu sur Vercel');
+    console.log('🔍 [VERCEL WEBHOOK] Headers:', Object.fromEntries(req.headers.entries()));
+    
     const body = await req.text();
     const signature = headers().get('stripe-signature');
 
+    console.log('🔍 [VERCEL WEBHOOK] Body size:', body?.length || 'undefined');
+    console.log('🔍 [VERCEL WEBHOOK] Signature présente:', !!signature);
+    console.log('🔍 [VERCEL WEBHOOK] Stripe configuré:', !!process.env.STRIPE_SECRET_KEY);
+    console.log('🔍 [VERCEL WEBHOOK] Webhook secret configuré:', !!process.env.STRIPE_WEBHOOK_SECRET);
+
     if (!signature) {
-      console.error('❌ Signature Stripe manquante');
+      console.error('❌ [VERCEL WEBHOOK] Signature Stripe manquante');
       return new Response('Signature manquante', { status: 400 });
     }
 
@@ -58,7 +66,14 @@ export async function POST(req) {
     return new Response('Webhook traité avec succès', { status: 200 });
 
   } catch (error) {
-    console.error('❌ Erreur webhook:', error);
+    console.error('❌ [VERCEL WEBHOOK] Erreur webhook:', error);
+    console.error('🔍 [VERCEL WEBHOOK] Stack trace:', error.stack);
+    console.error('🔍 [VERCEL WEBHOOK] Variables env:', {
+      hasStripeKey: !!process.env.STRIPE_SECRET_KEY,
+      hasWebhookSecret: !!process.env.STRIPE_WEBHOOK_SECRET,
+      stripeKeyPrefix: process.env.STRIPE_SECRET_KEY?.substring(0, 10) + '...',
+      webhookSecretPrefix: process.env.STRIPE_WEBHOOK_SECRET?.substring(0, 10) + '...'
+    });
     return new Response('Erreur serveur', { status: 500 });
   }
 }
