@@ -101,10 +101,9 @@ export default function MyProfilePage() {
   const [chartOffset, setChartOffset] = useState(0);
   const [isLoadingChart, setIsLoadingChart] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
-  const [formData, setFormData] = useState({
-    id: null,
-    name: '',
-    email: '',
+
+  // Valeurs par défaut réalistes pour les nouveaux candidats
+  const DEFAULT_VALUES = {
     title: 'Product Designer',
     location: 'Paris, France',
     remote: 'hybrid',
@@ -114,9 +113,16 @@ export default function MyProfilePage() {
     portfolio: 'https://mon-portfolio-design.com',
     linkedin: 'https://linkedin.com/in/mon-profil-design',
     github: 'https://github.com/mon-profil-design',
-    photo: null,
     dailyRate: '500',
-    annualSalary: '65000',
+    annualSalary: '65000'
+  };
+
+  const [formData, setFormData] = useState({
+    id: null,
+    name: '',
+    email: '',
+    ...DEFAULT_VALUES,
+    photo: null,
     updatedAt: null
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -623,17 +629,7 @@ export default function MyProfilePage() {
     console.log('🎯 Assignation des valeurs par défaut réalistes pour nouveau candidat');
     setFormData(prev => ({
       ...prev,
-      title: 'Product Designer',
-      location: 'Paris, France',
-      remote: 'hybrid',
-      yearsOfExperience: '3',
-      bio: 'Designer UX/UI passionné par la création d\'expériences utilisateur exceptionnelles. Spécialisé dans la recherche utilisateur, le design d\'interface et la création de design systems cohérents.',
-      skills: 'Design System, Recherche utilisateur, Prototypage, Figma, Adobe Creative Suite',
-      portfolio: 'https://mon-portfolio-design.com',
-      linkedin: 'https://linkedin.com/in/mon-profil-design',
-      github: 'https://github.com/mon-profil-design',
-      dailyRate: '500',
-      annualSalary: '65000'
+      ...DEFAULT_VALUES
     }));
   };
 
@@ -643,6 +639,21 @@ export default function MyProfilePage() {
       ...prev,
       [name]: value
     }));
+  };
+
+  // Fonction pour gérer les changements de photo
+  const handlePhotoChange = (photoData) => {
+    console.log('📸 Photo changée:', photoData);
+    setFormData(prev => ({
+      ...prev,
+      photo: photoData
+    }));
+  };
+
+  // Fonction pour gérer les erreurs d'upload de photo
+  const handlePhotoError = (error) => {
+    console.error('❌ Erreur photo:', error);
+    setMessage(`❌ ${error}`);
   };
 
   // Fonctions pour l'édition inline
@@ -1118,17 +1129,17 @@ export default function MyProfilePage() {
         // approved supprimé - utilise uniquement status
         // visible supprimé - utilise uniquement status
         // Tous les champs du formulaire
-        title: formData.title || 'Product Designer',
-        location: formData.location || 'Paris, France',
-        remote: formData.remote || 'hybrid',
-        yearsOfExperience: formData.yearsOfExperience || '3',
+        title: formData.title || DEFAULT_VALUES.title,
+        location: formData.location || DEFAULT_VALUES.location,
+        remote: formData.remote || DEFAULT_VALUES.remote,
+        yearsOfExperience: formData.yearsOfExperience || DEFAULT_VALUES.yearsOfExperience,
         skills: getSkillsArray(formData.skills),
-        portfolio: formData.portfolio || 'https://mon-portfolio-design.com',
-        linkedin: formData.linkedin || 'https://linkedin.com/in/mon-profil-design',
-        github: formData.github || 'https://github.com/mon-profil-design',
+        portfolio: formData.portfolio || DEFAULT_VALUES.portfolio,
+        linkedin: formData.linkedin || DEFAULT_VALUES.linkedin,
+        github: formData.github || DEFAULT_VALUES.github,
         photo: photoUrl,
-        dailyRate: formData.dailyRate || '500',
-        annualSalary: formData.annualSalary || '65000'
+        dailyRate: formData.dailyRate || DEFAULT_VALUES.dailyRate,
+        annualSalary: formData.annualSalary || DEFAULT_VALUES.annualSalary
       };
       
       
@@ -1615,6 +1626,16 @@ export default function MyProfilePage() {
                                 className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
                               />
                             )}
+                            
+                            {/* Composant d'upload de photo */}
+                            <div className="mt-4">
+                              <ProfilePhotoUpload
+                                userId={user?.id}
+                                currentPhoto={formData.photo?.existing || formData.photo?.preview}
+                                onPhotoChange={handlePhotoChange}
+                                onError={handlePhotoError}
+                              />
+                            </div>
                           </div>
                           
                           <div className="flex-1">
