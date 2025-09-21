@@ -11,8 +11,8 @@ const API_BASE_URL = isDevelopment ? LOCAL_API_BASE_URL : DEFAULT_API_BASE_URL;
 
 // Fonction pour construire une URL complète
 export const buildApiUrl = (endpoint) => {
-  // Ajouter un slash final si l'endpoint commence par /api/
-  const normalizedEndpoint = endpoint.startsWith('/api/') && !endpoint.endsWith('/')
+  // Ajouter un slash final si l'endpoint commence par /api/ et ne contient pas de paramètres de requête
+  const normalizedEndpoint = endpoint.startsWith('/api/') && !endpoint.endsWith('/') && !endpoint.includes('?')
     ? `${endpoint}/`
     : endpoint;
   return `${API_BASE_URL}${normalizedEndpoint}`;

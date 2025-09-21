@@ -1233,28 +1233,6 @@ export default function MyProfilePage() {
               Votre profil a été soumis avec succès ! Notre équipe examine actuellement votre candidature 
               et vous contactera sous peu pour vous informer de la suite du processus.
             </p>
-            <div className="bg-white rounded-xl p-4 border border-yellow-200">
-              <h3 className="font-semibold text-gray-900 mb-2">Informations de votre profil :</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium text-gray-600">Nom :</span>
-                  <span className="ml-2 text-gray-900">{formData.name}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Email :</span>
-                  <span className="ml-2 text-gray-900">{formData.email}</span>
-                </div>
-                
-                <div>
-                  <span className="font-medium text-gray-600">Métier :</span>
-                  <span className="ml-2 text-gray-900">{formData.title}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Localisation :</span>
-                  <span className="ml-2 text-gray-900">{formData.location}</span>
-                </div>
-              </div>
-            </div>
           </motion.div>
 
           {/* Actions désactivées pour l'état en attente */}
@@ -1377,28 +1355,6 @@ export default function MyProfilePage() {
               Nous avons examiné votre candidature avec attention. Malheureusement, votre profil ne correspond 
               pas actuellement aux critères recherchés par nos recruteurs partenaires.
             </p>
-            <div className="bg-white rounded-xl p-4 border border-red-200">
-              <h3 className="font-semibold text-gray-900 mb-2">Informations de votre profil :</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium text-gray-600">Nom :</span>
-                  <span className="ml-2 text-gray-900">{formData.name}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Email :</span>
-                  <span className="ml-2 text-gray-900">{formData.email}</span>
-                </div>
-                
-                <div>
-                  <span className="font-medium text-gray-600">Métier :</span>
-                  <span className="ml-2 text-gray-900">{formData.title}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Localisation :</span>
-                  <span className="ml-2 text-gray-900">{formData.location}</span>
-                </div>
-              </div>
-            </div>
           </motion.div>
 
           {/* Message d'encouragement et possibilité de révision */}
