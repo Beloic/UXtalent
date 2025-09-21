@@ -1384,18 +1384,26 @@ app.post('/api/metrics/reset', (req, res) => {
 // POST /api/stripe/webhook - Webhook Stripe
 app.post('/api/stripe/webhook', async (req, res) => {
   try {
-    console.log('🔔 Webhook Stripe reçu');
+    console.log('🔔 [WEBHOOK] Webhook Stripe reçu');
+    console.log('🔍 [WEBHOOK] Headers reçus:', JSON.stringify(req.headers, null, 2));
+    console.log('🔍 [WEBHOOK] Body size:', req.body?.length || 'undefined');
     
     if (!stripe) {
-      console.error('❌ Stripe non configuré');
+      console.error('❌ [WEBHOOK] Stripe non configuré');
       return res.status(503).json({ error: 'Stripe non configuré' });
     }
     
     const signature = req.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     
+    console.log('🔍 [WEBHOOK] Signature présente:', !!signature);
+    console.log('🔍 [WEBHOOK] Secret webhook configuré:', !!webhookSecret);
+    console.log('🔍 [WEBHOOK] Secret webhook valeur:', webhookSecret?.substring(0, 10) + '...');
+    
     if (!signature || !webhookSecret) {
-      console.error('❌ Signature ou secret webhook manquant');
+      console.error('❌ [WEBHOOK] Signature ou secret webhook manquant');
+      console.error('❌ [WEBHOOK] Signature:', signature);
+      console.error('❌ [WEBHOOK] Secret:', webhookSecret);
       return res.status(400).json({ error: 'Signature manquante' });
     }
     
