@@ -542,6 +542,19 @@ export default function JobDetailPage() {
               </h3>
               
               <div className="space-y-4">
+                {/* Candidats en premier */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                    <Users className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500">Candidats</div>
+                    <div className="font-semibold text-gray-900">
+                      {job.applicationsCount || job.applications_count || 0} candidat{(job.applicationsCount || job.applications_count || 0) > 1 ? 's' : ''}
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                     <Clock className="w-5 h-5 text-blue-600" />
@@ -559,18 +572,6 @@ export default function JobDetailPage() {
                   <div>
                     <div className="text-sm text-gray-500">Niveau</div>
                     <div className="font-semibold text-gray-900">{job.seniority}</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                    <Users className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Candidats</div>
-                    <div className="font-semibold text-gray-900">
-                      {job.applicationsCount || job.applications_count || 0} candidat{(job.applicationsCount || job.applications_count || 0) > 1 ? 's' : ''}
-                    </div>
                   </div>
                 </div>
 
