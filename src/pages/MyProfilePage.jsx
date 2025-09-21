@@ -238,16 +238,23 @@ export default function MyProfilePage() {
     try {
       setIsLoadingProfile(true);
       
+      console.log('🔍 CHARGEMENT PROFIL pour:', user.email);
+      
       // Utiliser la nouvelle route spécifique pour récupérer le profil par email
       const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`));
+      
+      console.log('🔍 RÉPONSE API:', {
+        status: response.status,
+        ok: response.ok,
+        url: response.url
+      });
       
       if (response.ok) {
         const existingCandidate = await response.json();
         
-        console.log('🔍 PROFIL CHARGÉ:', {
-          existingCandidate,
-          status: existingCandidate?.status,
+        console.log('✅ PROFIL CHARGÉ:', {
           id: existingCandidate?.id,
+          status: existingCandidate?.status,
           email: existingCandidate?.email,
           name: existingCandidate?.name
         });
@@ -256,15 +263,7 @@ export default function MyProfilePage() {
           // Logique simplifiée : utiliser directement le statut
           const status = existingCandidate.status || 'pending';
           
-          console.log('🔍 STATUT DÉFINI:', {
-            originalStatus: existingCandidate.status,
-            finalStatus: status,
-            candidateId: existingCandidate.id
-          });
-          
           setCandidateStatus(status);
-          
-          // Charger le plan du candidat
           setCandidatePlan(existingCandidate.plan || 'free');
           
           // Charger toutes les données depuis la base de données
@@ -727,30 +726,25 @@ export default function MyProfilePage() {
       return;
     }
 
-    // Validation des champs obligatoires pour les profils 'new' ou nouveaux
-    if (!formData.id || candidateStatus === 'new') {
-      const requiredFields = {
-        name: 'Nom complet',
-        title: 'Titre du poste',
-        location: 'Localisation',
-        bio: 'Présentation',
-        skills: 'Compétences',
-        portfolio: 'Portfolio',
-        linkedin: 'LinkedIn'
-      };
+    // Validation simplifiée : vérifier les champs essentiels
+    const requiredFields = {
+      name: 'Nom complet',
+      title: 'Titre du poste',
+      location: 'Localisation',
+      bio: 'Présentation'
+    };
 
-      const missingFields = [];
-      for (const [field, label] of Object.entries(requiredFields)) {
-        if (!formData[field] || formData[field].toString().trim() === '') {
-          missingFields.push(label);
-        }
+    const missingFields = [];
+    for (const [field, label] of Object.entries(requiredFields)) {
+      if (!formData[field] || formData[field].toString().trim() === '') {
+        missingFields.push(label);
       }
+    }
 
-      if (missingFields.length > 0) {
-        setMessage(`❌ Veuillez remplir tous les champs obligatoires : ${missingFields.join(', ')}`);
-        setIsLoading(false);
-        return;
-      }
+    if (missingFields.length > 0) {
+      setMessage(`❌ Veuillez remplir les champs obligatoires : ${missingFields.join(', ')}`);
+      setIsLoading(false);
+      return;
     }
 
     try {
@@ -825,9 +819,8 @@ export default function MyProfilePage() {
         name: formData.name,
         email: formData.email,
         bio: structuredBio,
-        // Pour les nouveaux profils : toujours en attente de validation
-        // Pour les profils existants rejetés : remettre en attente après modification
-        status: formData.id ? (candidateStatus === 'rejected' || candidateStatus === 'new' ? 'pending' : undefined) : 'pending',
+        // Logique simplifiée : toujours mettre en 'pending' pour validation
+        status: 'pending',
         // approved supprimé - utilise uniquement status
         // visible supprimé - utilise uniquement status
         // Tous les champs du formulaire
@@ -873,24 +866,16 @@ export default function MyProfilePage() {
         // L'API PUT retourne souvent une réponse vide, donc on recharge directement le profil
         const isUpdate = formData.id ? 'mis à jour' : 'créé';
         
+        // Message simplifié
         if (!formData.id) {
-          // Nouveau profil créé - informer qu'il est en attente
-          setMessage(`✅ Profil créé avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
-        } else if (candidateStatus === 'rejected') {
-          // Profil rejeté mis à jour - informer qu'il est remis en attente
-          setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
-          // Remettre le statut à pending et sortir du mode édition
-          setCandidateStatus('pending');
-          setIsEditingRejected(false);
-        } else if (candidateStatus === 'new') {
-          // Profil nouveau envoyé pour validation - message spécial
-          setMessage(`✅ Profil envoyé avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
-          // Changer le statut à pending
-          setCandidateStatus('pending');
+          setMessage(`✅ Profil créé avec succès ! Votre profil est maintenant en attente de validation.`);
         } else {
-          // Profil mis à jour normalement
-          setMessage(`✅ Profil mis à jour avec succès !`);
+          setMessage(`✅ Profil mis à jour avec succès ! Votre profil est maintenant en attente de validation.`);
         }
+        
+        // Mettre à jour le statut
+        setCandidateStatus('pending');
+        setIsEditingRejected(false);
         
         // Faire disparaître le message après 5 secondes pour les nouveaux profils
         setTimeout(() => {
@@ -2161,7 +2146,8 @@ export default function MyProfilePage() {
               {(() => {
                 // Logique simplifiée : afficher le bouton si l'utilisateur n'a pas encore de profil candidat
                 // ou si son profil est en attente/rejeté
-                const shouldShow = !formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
+                // Logique simplifiée : montrer le bouton si pas de profil OU si profil en attente/rejeté
+                const shouldShow = !formData.id || candidateStatus === 'pending' || candidateStatus === 'rejected';
                 
                 console.log('🔍 Debug bouton DÉTAILLÉ:', {
                   candidateStatus: candidateStatus,
