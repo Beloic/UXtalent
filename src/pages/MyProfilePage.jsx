@@ -110,7 +110,7 @@ export default function MyProfilePage() {
     remote: 'hybrid',
     yearsOfExperience: '', // Nouveau champ
     bio: '',
-    skills: '',
+    skills: 'UX Design, Figma',
     portfolio: '',
     linkedin: '',
     github: '',
@@ -512,7 +512,7 @@ export default function MyProfilePage() {
             })(),
             skills: Array.isArray(existingCandidate.skills)
               ? existingCandidate.skills.join(', ')
-              : existingCandidate.skills || '',
+              : existingCandidate.skills || 'UX Design, Figma',
             portfolio: existingCandidate.portfolio || '',
             linkedin: existingCandidate.linkedin || '',
             github: existingCandidate.github || '',
