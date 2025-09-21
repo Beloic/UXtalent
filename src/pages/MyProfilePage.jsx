@@ -8,6 +8,7 @@ import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { usePermissions } from '../hooks/usePermissions';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
+import { supabaseAdmin } from '../config/supabase';
 
 export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();
@@ -238,13 +239,21 @@ export default function MyProfilePage() {
     try {
       setIsLoadingProfile(true);
       
-      // Utiliser la nouvelle route spécifique pour récupérer le profil par email
+      // Essayer d'abord l'API Vercel, puis fallback vers Supabase direct
       const apiUrl = buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`);
-      console.log('🌐 BACKEND RENDER - URL API COMPLÈTE:', apiUrl);
-      console.log('🌐 BACKEND RENDER - USER EMAIL:', user.email);
-      console.log('🌐 BACKEND RENDER - Appel API en cours...');
+      console.log('🌐 API VERCEL - URL API COMPLÈTE:', apiUrl);
+      console.log('🌐 API VERCEL - USER EMAIL:', user.email);
+      console.log('🌐 API VERCEL - Appel API en cours...');
       
-      const response = await fetch(apiUrl);
+      let response;
+      let useDirectSupabase = false;
+      
+      try {
+        response = await fetch(apiUrl);
+      } catch (fetchError) {
+        console.log('🌐 API VERCEL - Erreur fetch, utilisation de Supabase direct:', fetchError);
+        useDirectSupabase = true;
+      }
       
       console.log('🌐 API VERCEL - RÉPONSE:', {
         status: response.status,
@@ -253,7 +262,7 @@ export default function MyProfilePage() {
         url: response.url
       });
       
-      // Si erreur 500, essayer de lire le contenu de l'erreur
+      // Si erreur 500, essayer de lire le contenu de l'erreur et utiliser Supabase direct
       if (!response.ok) {
         try {
           const errorText = await response.text();
@@ -261,6 +270,61 @@ export default function MyProfilePage() {
         } catch (e) {
           console.log('🌐 API VERCEL - Impossible de lire l\'erreur:', e);
         }
+        console.log('🌐 API VERCEL - Erreur détectée, utilisation de Supabase direct');
+        useDirectSupabase = true;
+      }
+      
+      // Fallback vers Supabase direct si nécessaire
+      if (useDirectSupabase) {
+        console.log('🔄 SUPABASE DIRECT - Recherche du profil pour email:', user.email);
+        const { data: candidate, error } = await supabaseAdmin
+          .from('candidates')
+          .select('*')
+          .eq('email', user.email)
+          .single();
+          
+        if (error) {
+          if (error.code === 'PGRST116') {
+            console.log('🔄 SUPABASE DIRECT - Profil non trouvé (404) pour email:', user.email);
+            setMessage('ℹ️ Aucun profil existant trouvé. Vous pouvez créer un nouveau profil.');
+            setCandidateStatus('new');
+            setFormData(prev => ({ ...prev, id: null }));
+            return;
+          }
+          console.error('🔄 SUPABASE DIRECT - Erreur:', error);
+          setMessage(`❌ Erreur: ${error.message}`);
+          return;
+        }
+        
+        console.log('🔄 SUPABASE DIRECT - Profil trouvé:', candidate);
+        
+        // Traiter le candidat trouvé
+        const status = candidate.status || 'pending';
+        setCandidateStatus(status);
+        setCandidatePlan(candidate.plan || 'free');
+        
+        const newFormData = {
+          id: candidate.id || null,
+          name: candidate.name || '',
+          email: candidate.email || '',
+          title: candidate.title || '',
+          location: candidate.location || '',
+          remote: candidate.remote || 'hybrid',
+          experience: candidate.experience || '',
+          skills: candidate.skills || '',
+          bio: candidate.bio || '',
+          portfolio: candidate.portfolio || '',
+          linkedin: candidate.linkedin || '',
+          github: candidate.github || '',
+          salary: candidate.salary || '',
+          languages: candidate.languages || [],
+          photo: candidate.photo || '',
+          updatedAt: candidate.updated_at || candidate.updatedAt || null
+        };
+        
+        setFormData(newFormData);
+        setMessage('✅ Profil chargé avec succès (via Supabase direct)');
+        return;
       }
       
       if (response.ok) {
