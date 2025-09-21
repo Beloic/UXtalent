@@ -287,15 +287,15 @@ function extractCity(location) {
  */
 function isSameRegion(city1, city2) {
   const regions = {
-    'paris': ['paris', 'versailles', 'boulogne-billancourt', 'saint-denis'],
-    'lyon': ['lyon', 'villeurbanne', 'vénissieux'],
-    'marseille': ['marseille', 'aix-en-provence'],
-    'toulouse': ['toulouse'],
-    'nice': ['nice', 'cannes'],
-    'nantes': ['nantes'],
-    'montpellier': ['montpellier'],
-    'strasbourg': ['strasbourg'],
-    'bordeaux': ['bordeaux']
+    'paris': ['paris', 'versailles', 'boulogne-billancourt', 'saint-denis', 'créteil', 'nanterre', 'argenteuil', 'montreuil', 'saint-denis', 'aubervilliers', 'asnières-sur-seine', 'colombes', 'courbevoie', 'rueil-malmaison', 'levallois-perret', 'neuilly-sur-seine', 'clichy', 'pantin', 'issy-les-moulineaux', 'antony', 'sèvres', 'meudon', 'fontenay-aux-roses', 'bourges', 'orléans', 'chartres', 'melun', 'evry', 'corbeil-essonnes', 'palaiseau', 'massy', 'saint-germain-en-laye', 'mantes-la-jolie', 'rambouillet', 'poissy', 'sartrouville', 'conflans-sainte-honorine', 'houilles', 'carrières-sur-seine', 'bezons', 'herblay', 'taverny', 'montmorency', 'sannois', 'ermont', 'franconville', 'cergy', 'pontoise', 'saint-ouen-l\'aumône', 'osny', 'menucourt', 'vaudherland', 'domont', 'bouffémont', 'saint-prix', 'taverny', 'bessancourt', 'frépillon', 'mériel', 'méry-sur-oise', 'nerville-la-forêt', 'presles', 'saint-leu-la-forêt', 'chauvry', 'margency', 'andilly', 'montlignon', 'saint-gratien', 'soisy-sous-montmorency', 'deuil-la-barre', 'groslay', 'sarcelles', 'garges-lès-gonesse', 'villiers-le-bel', 'arneville', 'gonesse', 'bonneuil-en-france', 'roissy-en-france', 'le-bourget', 'drancy', 'aulnay-sous-bois', 'le-raincy', 'livry-gargan', 'sevran', 'villetaneuse', 'epinay-sur-seine', 'saint-ouen', 'l\'ile-saint-denis', 'stains', 'pierrefitte-sur-seine', 'sarcelles', 'garges-lès-gonesse', 'villiers-le-bel', 'arneville', 'gonesse', 'bonneuil-en-france', 'roissy-en-france', 'le-bourget', 'drancy', 'aulnay-sous-bois', 'le-raincy', 'livry-gargan', 'sevran', 'villetaneuse', 'epinay-sur-seine', 'saint-ouen', 'l\'ile-saint-denis', 'stains', 'pierrefitte-sur-seine'],
+    'lyon': ['lyon', 'villeurbanne', 'vénissieux', 'saint-priest', 'bron', 'vaulx-en-velin', 'caluire-et-cuire', 'décines-charpieu', 'meyzieu', 'oullins', 'saint-fons', 'tassin-la-demi-lune', 'écully', 'charbonnières-les-bains', 'francheville', 'sainte-foy-lès-lyon', 'la-mulatière', 'oullins', 'saint-genis-laval', 'saint-genis-les-ollières', 'chassieu', 'genas', 'mions', 'corbas', 'solaize', 'feyzin', 'saint-symphorien-d\'ozon', 'grigny', 'irigny', 'vernaison', 'millery', 'montagny', 'charly', 'saint-pierre-de-chandieu', 'toussieu', 'marennes', 'saint-laurent-de-mure', 'tignieu-jameyzieu', 'janieu', 'chamagnieu', 'diémoz', 'heyrieux', 'mions', 'corbas', 'solaize', 'feyzin', 'saint-symphorien-d\'ozon', 'grigny', 'irigny', 'vernaison', 'millery', 'montagny', 'charly', 'saint-pierre-de-chandieu', 'toussieu', 'marennes', 'saint-laurent-de-mure', 'tignieu-jameyzieu', 'janieu', 'chamagnieu', 'diémoz', 'heyrieux'],
+    'marseille': ['marseille', 'aix-en-provence', 'aubagne', 'cassis', 'la-ciotat', 'marignane', 'vitrolles', 'les-pennes-mirabeau', 'plan-de-cuques', 'allauh', 'septèmes-les-vallons', 'gignac-la-nerthe', 'marignane', 'vitrolles', 'les-pennes-mirabeau', 'plan-de-cuques', 'allauh', 'septèmes-les-vallons', 'gignac-la-nerthe'],
+    'toulouse': ['toulouse', 'colomiers', 'tournefeuille', 'blagnac', 'muret', 'ramonville-saint-agne', 'auzeville-tolosane', 'castanet-tolosan', 'escouloubre', 'l\'union', 'saint-jean', 'balma', 'l\'union', 'saint-jean', 'balma'],
+    'nice': ['nice', 'cannes', 'antibes', 'grasse', 'menton', 'monaco', 'monte-carlo', 'cap-d\'ail', 'beaulieu-sur-mer', 'saint-jean-cap-ferrat', 'villefranche-sur-mer', 'eze', 'la-turbie', 'peille', 'lucéram', 'contes', 'berre-les-alpes', 'aspremont', 'carros', 'gattières', 'le-broc', 'saint-jeannet', 'vence', 'saint-paul-de-vence', 'tourrettes-sur-loup', 'le-rouret', 'valbonne', 'mougins', 'le-cannet', 'vallauris', 'golfe-juan', 'juan-les-pins', 'biot', 'valbonne', 'mougins', 'le-cannet', 'vallauris', 'golfe-juan', 'juan-les-pins', 'biot'],
+    'nantes': ['nantes', 'saint-nazaire', 'saint-herblain', 'reze', 'orvault', 'vertou', 'couëron', 'bouguenais', 'carquefou', 'saint-sebastien-sur-loire', 'la-chapelle-sur-erdre', 'treillieres', 'sucé-sur-erdre', 'thouaré-sur-loire', 'sainte-luce-sur-loire', 'saint-julien-de-concelles', 'haute-goulaine', 'le-loroux-bottereau', 'la-regrippiere', 'vallet', 'le-landreau', 'la-chapelle-heulin', 'le-palais', 'saint-fiacre-sur-maine', 'maisdon-sur-sevre', 'aigrefeuille-sur-maine', 'remouillé', 'vieillevigne', 'saint-philbert-de-grand-lieu', 'bouaye', 'brains', 'indre', 'le-pellerin', 'cheix-en-retz', 'porte-saint-père', 'rouans', 'saint-mars-de-coutais', 'saint-léger-les-vignes', 'saint-aignan-grandlieu', 'saint-philbert-de-grand-lieu', 'bouaye', 'brains', 'indre', 'le-pellerin', 'cheix-en-retz', 'porte-saint-père', 'rouans', 'saint-mars-de-coutais', 'saint-léger-les-vignes', 'saint-aignan-grandlieu'],
+    'montpellier': ['montpellier', 'lattes', 'castelnau-le-lez', 'le-cres', 'jacou', 'clapiers', 'grabels', 'saint-jean-de-vedas', 'lavérune', 'villeneuve-lès-maguelone', 'fabrègues', 'pignan', 'saint-georges-d\'orques', 'murviel-lès-montpellier', 'saint-jean-de-cuculles', 'saint-bauzille-de-montmel', 'saint-gély-du-fesc', 'combaillaux', 'saint-hilaire-de-beauvoir', 'saint-jean-de-cornies', 'saint-jean-de-cuculles', 'saint-mathieu-de-tréviers', 'saint-vincent-de-barbeyrargues', 'saturargues', 'saussan', 'saussines', 'sauteyrargues', 'sauve', 'sauviac', 'savignargues', 'sérignan', 'sérignan-du-comtat', 'sérignan-le-comtat', 'sérignan-du-comtat', 'sérignan-le-comtat'],
+    'strasbourg': ['strasbourg', 'schiltigheim', 'bischheim', 'hoenheim', 'oberhausbergen', 'obernai', 'sélestat', 'colmar', 'mulhouse', 'saint-louis', 'huningue', 'saint-louis', 'huningue'],
+    'bordeaux': ['bordeaux', 'mérignac', 'pessac', 'talence', 'villenave-d\'ornon', 'bègles', 'gradignan', 'le-bouscat', 'cestas', 'eysines', 'bruges', 'le-haillan', 'mérignac', 'pessac', 'talence', 'villenave-d\'ornon', 'bègles', 'gradignan', 'le-bouscat', 'cestas', 'eysines', 'bruges', 'le-haillan']
   };
 
   for (const [region, cities] of Object.entries(regions)) {
@@ -321,6 +321,48 @@ function isSameCountry(city1, city2) {
   ];
   
   return frenchCities.includes(city1) && frenchCities.includes(city2);
+}
+
+/**
+ * Vérifie si un candidat est géographiquement compatible avec une offre
+ * Logique stricte pour éviter les suggestions inappropriées
+ */
+function isGeographicallyCompatible(candidateLocation, candidateRemote, jobLocation, jobRemote) {
+  // Si l'offre est 100% remote, tous les candidats sont compatibles
+  if (jobRemote === 'remote') {
+    return true;
+  }
+  
+  // Si le candidat accepte le remote et l'offre est hybrid/remote, c'est compatible
+  if (candidateRemote === 'remote' && (jobRemote === 'hybrid' || jobRemote === 'remote')) {
+    return true;
+  }
+  
+  // Si l'offre est onsite ou hybrid, vérifier la proximité géographique
+  if (jobRemote === 'onsite' || jobRemote === 'hybrid') {
+    if (!candidateLocation || !jobLocation) {
+      return false; // Données manquantes = incompatible
+    }
+    
+    const candidateCity = extractCity(candidateLocation);
+    const jobCity = extractCity(jobLocation);
+    
+    // Même ville = toujours compatible
+    if (candidateCity === jobCity) {
+      return true;
+    }
+    
+    // Même région = compatible pour hybrid, pas pour onsite
+    if (isSameRegion(candidateCity, jobCity)) {
+      return jobRemote === 'hybrid'; // Compatible seulement si l'offre est hybrid
+    }
+    
+    // Villes très éloignées = incompatible pour onsite/hybrid
+    return false;
+  }
+  
+  // Par défaut, considérer comme incompatible
+  return false;
 }
 
 /**
@@ -366,6 +408,10 @@ function extractSalaryMax(salaryRange, annualSalary) {
 export function findBestCandidatesForJob(candidates, job, limit = 10) {
   const candidatesWithScores = candidates
     .filter(candidate => candidate.status === 'approved')
+    .filter(candidate => {
+      // Filtrage géographique strict : rejeter les candidats géographiquement incompatibles
+      return isGeographicallyCompatible(candidate.location, candidate.remote, job.location, job.remote);
+    })
     .map(candidate => {
       const compatibilityScore = calculateCompatibilityScore(candidate, job);
       
