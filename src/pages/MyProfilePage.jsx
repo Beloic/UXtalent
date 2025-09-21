@@ -7,12 +7,14 @@ import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { usePermissions } from '../hooks/usePermissions';
+import { useRecruiter } from '../hooks/useRecruiter';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 import { supabaseAdmin } from '../config/supabase';
 
 export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
+  const { recruiter, stats, permissions, loading: recruiterLoading, getPlanInfo, canPostJob, canContactCandidate, getRemainingJobPosts, getRemainingCandidateContacts } = useRecruiter();
   const location = useLocation();
 
   // Helper function pour gérer les compétences de manière sécurisée
@@ -2581,6 +2583,144 @@ export default function MyProfilePage() {
                   </button>
                 </div>
               </div>
+            </motion.div>
+          )}
+
+          {/* Section Statistiques pour les Recruteurs */}
+          {activeTab === 'stats' && isRecruiter && (
+            <motion.div
+              key="recruiter-stats"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              {recruiterLoading ? (
+                <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-2">Chargement des données...</h2>
+                  <p className="text-gray-600">Récupération de vos informations de recruteur</p>
+                </div>
+              ) : recruiter ? (
+                <div className="space-y-8">
+                  {/* Informations du plan */}
+                  <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-3xl p-8 shadow-xl border border-blue-100/50">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-2xl font-bold text-gray-900">Votre Plan</h3>
+                      <div className="px-4 py-2 bg-blue-100 text-blue-800 rounded-xl font-semibold">
+                        {getPlanInfo().name}
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-blue-600 mb-2">
+                          {getRemainingJobPosts()}
+                        </div>
+                        <div className="text-gray-600">Offres restantes</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-green-600 mb-2">
+                          {getRemainingCandidateContacts()}
+                        </div>
+                        <div className="text-gray-600">Contacts restants</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-purple-600 mb-2">
+                          {stats?.activeJobs || 0}
+                        </div>
+                        <div className="text-gray-600">Offres actives</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Statistiques détaillées */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <Briefcase className="w-5 h-5 text-blue-600" />
+                        Activité des Offres
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Total publiées</span>
+                          <span className="font-semibold">{recruiter.total_jobs_posted || 0}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Actuellement actives</span>
+                          <span className="font-semibold">{stats?.activeJobs || 0}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Candidatures reçues</span>
+                          <span className="font-semibold">{recruiter.total_applications_received || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <User className="w-5 h-5 text-green-600" />
+                        Interactions Candidats
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Candidats contactés</span>
+                          <span className="font-semibold">{recruiter.total_candidates_contacted || 0}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">En favoris</span>
+                          <span className="font-semibold">{stats?.favoriteCandidates || 0}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Contacts restants</span>
+                          <span className="font-semibold text-green-600">{getRemainingCandidateContacts()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Statut de l'abonnement */}
+                  <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 shadow-lg border border-green-100">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900 mb-2">Statut de l'abonnement</h4>
+                        <p className="text-gray-600">
+                          {recruiter.subscription_status === 'active' ? (
+                            <span className="text-green-600 font-semibold">✓ Actif</span>
+                          ) : (
+                            <span className="text-red-600 font-semibold">✗ Inactif</span>
+                          )}
+                        </p>
+                        {recruiter.subscription_end_date && (
+                          <p className="text-sm text-gray-500 mt-1">
+                            Expire le {new Date(recruiter.subscription_end_date).toLocaleDateString('fr-FR')}
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-gray-900">{getPlanInfo().name}</div>
+                        <div className="text-sm text-gray-600">Plan actuel</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+                  <div className="p-6 bg-gradient-to-br from-red-500 to-red-600 rounded-3xl shadow-2xl mx-auto mb-6 w-fit">
+                    <AlertCircle className="w-12 h-12 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Profil Recruteur Non Trouvé</h3>
+                  <p className="text-gray-600 mb-8 max-w-lg mx-auto text-lg leading-relaxed">
+                    Votre profil recruteur n'a pas été trouvé. Veuillez contacter le support.
+                  </p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+                  >
+                    Recharger la page
+                  </button>
+                </div>
+              )}
             </motion.div>
           )}
 

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { supabaseAdmin } from '../config/supabase'
 import { buildApiUrl } from '../config/api'
+import { createRecruiter, getRecruiterByEmail } from '../database/recruitersDatabase.js'
 
 const AuthContext = createContext({})
 
@@ -11,6 +12,50 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
+}
+
+// Fonction pour créer automatiquement un profil recruteur lors de l'inscription
+const createRecruiterProfileIfNotExists = async (user) => {
+  try {
+    console.log('🔄 [SIGNUP_CREATE] Vérification du profil recruteur pour:', user.email)
+    
+    // Vérifier si le profil existe déjà
+    const existingProfile = await getRecruiterByEmail(user.email)
+    
+    if (existingProfile) {
+      console.log('✅ [SIGNUP_CREATE] Profil recruteur existe déjà')
+      return
+    }
+    
+    console.log('🆕 [SIGNUP_CREATE] Création automatique du profil recruteur...')
+    
+    // Créer le profil recruteur avec les données par défaut
+    const recruiterData = {
+      email: user.email,
+      name: user.user_metadata?.first_name && user.user_metadata?.last_name 
+        ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+        : user.email?.split('@')[0] || 'Nouveau Recruteur',
+      company: user.user_metadata?.company || '',
+      phone: user.user_metadata?.phone || '',
+      website: user.user_metadata?.website || '',
+      planType: 'starter', // Plan par défaut
+      subscriptionStatus: 'active',
+      subscriptionStartDate: new Date().toISOString(),
+      subscriptionEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // +30 jours
+      maxJobPosts: 5,
+      maxCandidateContacts: 100,
+      maxFeaturedJobs: 1,
+      status: 'active',
+      notes: 'Profil créé automatiquement lors de l\'inscription.'
+    }
+    
+    const newRecruiter = await createRecruiter(recruiterData)
+    console.log('✅ [SIGNUP_CREATE] Profil recruteur créé avec succès:', newRecruiter.id)
+    
+  } catch (error) {
+    console.error('❌ [SIGNUP_CREATE] Erreur lors de la création du profil recruteur:', error)
+    // Ne pas faire échouer l'inscription si la création du profil échoue
+  }
 }
 
 // Fonction pour créer automatiquement un profil candidat lors de l'inscription
@@ -116,10 +161,15 @@ export const AuthProvider = ({ children }) => {
       
       if (error) throw error
       
-      // Si l'inscription est réussie et que c'est un candidat, créer automatiquement le profil
-      if (data?.user && userData?.role === 'candidate') {
-        console.log('🆕 [SIGNUP] Création automatique du profil candidat après inscription réussie')
-        await createCandidateProfileIfNotExists(data.user)
+      // Si l'inscription est réussie, créer automatiquement le profil selon le rôle
+      if (data?.user) {
+        if (userData?.role === 'candidate') {
+          console.log('🆕 [SIGNUP] Création automatique du profil candidat après inscription réussie')
+          await createCandidateProfileIfNotExists(data.user)
+        } else if (userData?.role === 'recruiter') {
+          console.log('🆕 [SIGNUP] Création automatique du profil recruteur après inscription réussie')
+          await createRecruiterProfileIfNotExists(data.user)
+        }
       }
       
       return { data, error: null }

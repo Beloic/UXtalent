@@ -64,6 +64,21 @@ import {
   searchCandidatesByCriteria,
 } from './src/database/recruiterDatabase.js';
 import {
+  getRecruiterByEmail,
+  getRecruiterById,
+  createRecruiter,
+  updateRecruiter,
+  deleteRecruiter,
+  getAllRecruiters,
+  canRecruiterPostJob,
+  canRecruiterContactCandidate,
+  incrementJobPosts,
+  incrementCandidateContacts,
+  updateRecruiterPlan,
+  getRecruiterStats,
+  upsertRecruiter,
+} from './src/database/recruitersDatabase.js';
+import {
   loadJobs,
   getJobById,
   createJob,
@@ -3109,6 +3124,217 @@ app.get('/api/recruiter/searches/stats', requireRole(['recruiter', 'admin']), as
   }
 });
 
+// ===== ROUTES POUR LA GESTION DES RECRUTEURS =====
+
+// GET /api/recruiters - Récupérer tous les recruteurs (admin seulement)
+app.get('/api/recruiters', requireRole(['admin']), async (req, res) => {
+  try {
+    const recruiters = await getAllRecruiters();
+    res.json(recruiters);
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des recruteurs', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération des recruteurs' });
+  }
+});
+
+// GET /api/recruiters/:id - Récupérer un recruteur par ID
+app.get('/api/recruiters/:id', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const recruiter = await getRecruiterById(id);
+    
+    if (!recruiter) {
+      return res.status(404).json({ error: 'Recruteur non trouvé' });
+    }
+    
+    // Vérifier que l'utilisateur peut accéder à ce recruteur
+    if (req.user.role !== 'admin' && req.user.id !== id) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+    
+    res.json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de la récupération du recruteur', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération du recruteur' });
+  }
+});
+
+// GET /api/recruiters/email/:email - Récupérer un recruteur par email
+app.get('/api/recruiters/email/:email', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { email } = req.params;
+    const recruiter = await getRecruiterByEmail(email);
+    
+    if (!recruiter) {
+      return res.status(404).json({ error: 'Recruteur non trouvé' });
+    }
+    
+    // Vérifier que l'utilisateur peut accéder à ce recruteur
+    if (req.user.role !== 'admin' && req.user.email !== email) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+    
+    res.json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de la récupération du recruteur', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération du recruteur' });
+  }
+});
+
+// GET /api/recruiters/me - Récupérer le profil du recruteur connecté
+app.get('/api/recruiters/me', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const recruiter = await getRecruiterByEmail(req.user.email);
+    
+    if (!recruiter) {
+      return res.status(404).json({ error: 'Profil recruteur non trouvé' });
+    }
+    
+    res.json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de la récupération du profil recruteur', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération du profil recruteur' });
+  }
+});
+
+// POST /api/recruiters - Créer un nouveau recruteur
+app.post('/api/recruiters', requireRole(['admin']), async (req, res) => {
+  try {
+    const recruiterData = req.body;
+    const recruiter = await createRecruiter(recruiterData);
+    res.status(201).json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de la création du recruteur', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la création du recruteur' });
+  }
+});
+
+// PUT /api/recruiters/:id - Mettre à jour un recruteur
+app.put('/api/recruiters/:id', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const recruiterData = req.body;
+    
+    // Vérifier que l'utilisateur peut modifier ce recruteur
+    if (req.user.role !== 'admin' && req.user.id !== id) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+    
+    const recruiter = await updateRecruiter(id, recruiterData);
+    res.json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de la mise à jour du recruteur', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la mise à jour du recruteur' });
+  }
+});
+
+// DELETE /api/recruiters/:id - Supprimer un recruteur
+app.delete('/api/recruiters/:id', requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    await deleteRecruiter(id);
+    res.json({ message: 'Recruteur supprimé avec succès' });
+  } catch (error) {
+    logger.error('Erreur lors de la suppression du recruteur', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la suppression du recruteur' });
+  }
+});
+
+// GET /api/recruiters/:id/stats - Récupérer les statistiques d'un recruteur
+app.get('/api/recruiters/:id/stats', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Vérifier que l'utilisateur peut accéder à ces statistiques
+    if (req.user.role !== 'admin' && req.user.id !== id) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+    
+    const stats = await getRecruiterStats(id);
+    
+    if (!stats) {
+      return res.status(404).json({ error: 'Recruteur non trouvé' });
+    }
+    
+    res.json(stats);
+  } catch (error) {
+    logger.error('Erreur lors de la récupération des statistiques', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération des statistiques' });
+  }
+});
+
+// PUT /api/recruiters/:id/plan - Mettre à jour le plan d'un recruteur
+app.put('/api/recruiters/:id/plan', requireRole(['admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { planType, subscriptionData } = req.body;
+    
+    const recruiter = await updateRecruiterPlan(id, planType, subscriptionData);
+    res.json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de la mise à jour du plan', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la mise à jour du plan' });
+  }
+});
+
+// GET /api/recruiters/:id/permissions - Vérifier les permissions d'un recruteur
+app.get('/api/recruiters/:id/permissions', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Vérifier que l'utilisateur peut accéder à ces permissions
+    if (req.user.role !== 'admin' && req.user.id !== id) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+    
+    const canPostJob = await canRecruiterPostJob(id);
+    const canContactCandidate = await canRecruiterContactCandidate(id);
+    
+    res.json({
+      canPostJob,
+      canContactCandidate
+    });
+  } catch (error) {
+    logger.error('Erreur lors de la vérification des permissions', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la vérification des permissions' });
+  }
+});
+
+// POST /api/recruiters/:id/increment-job-posts - Incrémenter le compteur d'offres
+app.post('/api/recruiters/:id/increment-job-posts', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Vérifier que l'utilisateur peut modifier ce recruteur
+    if (req.user.role !== 'admin' && req.user.id !== id) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+    
+    const recruiter = await incrementJobPosts(id);
+    res.json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de l\'incrémentation des offres', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de l\'incrémentation des offres' });
+  }
+});
+
+// POST /api/recruiters/:id/increment-candidate-contacts - Incrémenter le compteur de contacts
+app.post('/api/recruiters/:id/increment-candidate-contacts', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Vérifier que l'utilisateur peut modifier ce recruteur
+    if (req.user.role !== 'admin' && req.user.id !== id) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+    
+    const recruiter = await incrementCandidateContacts(id);
+    res.json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de l\'incrémentation des contacts', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de l\'incrémentation des contacts' });
+  }
+});
 
 // ===== ROUTES POUR LE MATCHING INTELLIGENT =====
 
