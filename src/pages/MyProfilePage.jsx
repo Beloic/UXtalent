@@ -1013,9 +1013,16 @@ export default function MyProfilePage() {
         name: formData.name,
         email: formData.email,
         bio: structuredBio,
-        // Pour les nouveaux profils : toujours en attente de validation
-        // Pour les profils existants rejetés : remettre en attente après modification
-        status: formData.id ? (candidateStatus === 'rejected' || candidateStatus === 'new' ? 'pending' : undefined) : 'pending',
+        // Logique de statut :
+        // - Nouveaux profils : toujours en attente de validation
+        // - Profils rejetés : remettre en attente après modification
+        // - Profils approuvés : garder le statut approved après modification
+        // - Profils pending : garder le statut pending après modification
+        status: formData.id
+          ? (candidateStatus === 'rejected' ? 'pending'
+             : candidateStatus === 'new' ? 'pending'
+             : candidateStatus) // Garder le statut actuel pour approved et pending
+          : 'pending', // Nouveau profil
         // approved supprimé - utilise uniquement status
         // visible supprimé - utilise uniquement status
         // Tous les champs du formulaire
@@ -1469,7 +1476,7 @@ export default function MyProfilePage() {
         <p>Email: {user?.email || 'null'}</p>
         <p>Loading: {isLoadingProfile ? 'true' : 'false'}</p>
         <p>Tab: {activeTab}</p>
-        <p>Button should show: {(candidateStatus === 'new' || candidateStatus === null) ? 'YES' : 'NO'}</p>
+        <p>Button should show: {(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES' : 'NO'}</p>
       </div>
 
       <div className="max-w-4xl mx-auto px-4">
@@ -2471,8 +2478,8 @@ export default function MyProfilePage() {
 
               {/* Bouton "Envoyer mon profil" pour les candidats non approuvés */}
               {(() => {
-                // Logique ultra-simplifiée : afficher le bouton SEULEMENT si l'utilisateur a le statut "new"
-                const shouldShow = candidateStatus === 'new';
+                // Logique : afficher le bouton pour les profils qui peuvent envoyer/modifier
+                const shouldShow = candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
                 
                 console.log('🔍 Debug bouton DÉTAILLÉ:', {
                   candidateStatus: candidateStatus,
@@ -2489,7 +2496,7 @@ export default function MyProfilePage() {
                   condition3Result: candidateStatus === 'pending',
                   condition4: 'candidateStatus === "rejected"',
                   condition4Result: candidateStatus === 'rejected',
-                  fullCondition: '!formData.id || candidateStatus === "new" || candidateStatus === "pending" || candidateStatus === "rejected"'
+                  fullCondition: '!formData.id || candidateStatus === "new" || candidateStatus === "pending" || candidateStatus === "rejected" (BUTTON)'
                 });
                 
                 // Logs supplémentaires pour debug
@@ -2551,7 +2558,7 @@ export default function MyProfilePage() {
                 </div>
               </div>
 
-              {(candidateStatus === 'new' || candidateStatus === null) && (
+              {(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') && (
                 <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">
