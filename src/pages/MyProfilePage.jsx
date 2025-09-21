@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown } from 'lucide-react';
+import { User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown, Clock, XCircle } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
@@ -1720,14 +1720,42 @@ export default function MyProfilePage() {
                             </div>
                           </div>
 
-                          {/* Statut de vérification */}
-                          <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-                            <CheckCircle className="w-5 h-5 text-emerald-600" />
-                            <div>
-                              <p className="text-sm font-medium text-emerald-800">Profil vérifié</p>
-                              <p className="text-xs text-emerald-600">Candidat validé par notre équipe</p>
+                          {/* Statut de vérification - seulement pour les profils approuvés */}
+                          {candidateStatus === 'approved' && (
+                            <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+                              <CheckCircle className="w-5 h-5 text-emerald-600" />
+                              <div>
+                                <p className="text-sm font-medium text-emerald-800">Profil vérifié</p>
+                                <p className="text-xs text-emerald-600">Candidat validé par notre équipe</p>
+                              </div>
                             </div>
-                          </div>
+                          )}
+                          
+                          {/* Statut en attente - pour les profils 'new' et 'pending' */}
+                          {(candidateStatus === 'new' || candidateStatus === 'pending') && (
+                            <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+                              <Clock className="w-5 h-5 text-yellow-600" />
+                              <div>
+                                <p className="text-sm font-medium text-yellow-800">
+                                  {candidateStatus === 'new' ? 'Profil en cours de finalisation' : 'Profil en attente de validation'}
+                                </p>
+                                <p className="text-xs text-yellow-600">
+                                  {candidateStatus === 'new' ? 'Complétez votre profil et envoyez-le pour validation' : 'Votre profil est en cours d\'examen par notre équipe'}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Statut rejeté - pour les profils 'rejected' */}
+                          {candidateStatus === 'rejected' && (
+                            <div className="flex items-center gap-3 p-4 bg-red-50 rounded-xl border border-red-200">
+                              <XCircle className="w-5 h-5 text-red-600" />
+                              <div>
+                                <p className="text-sm font-medium text-red-800">Profil rejeté</p>
+                                <p className="text-xs text-red-600">Votre profil nécessite des modifications avant validation</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
