@@ -304,6 +304,8 @@ export default function PricingPage() {
                       window.open(import.meta.env.VITE_STRIPE_MAX_LINK, '_blank');
                     } else if (plan.name === "Premium" && selectedTab === 'recruiters') {
                       window.open('mailto:hello@loicbernard.com', '_blank');
+                    } else if (plan.name === "Sur-mesure" && selectedTab === 'recruiters') {
+                      window.open('mailto:hello@loicbernard.com?subject=Demande d\'information - Plan Premium sur-mesure&body=Bonjour,%0D%0A%0D%0AJe souhaite obtenir des informations sur le plan Premium sur-mesure.%0D%0A%0D%0AMerci de me recontacter.%0D%0A%0D%0ACordialement', '_blank');
                     }
                   }}
                   className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
