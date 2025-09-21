@@ -20,6 +20,8 @@ import {
   Star
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import AutocompleteInput from './AutocompleteInput';
+import { jobTitleSuggestions, locationSuggestions } from '../data/suggestions';
 
 export default function PublishJobForm({ onJobPublished }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -216,13 +218,13 @@ export default function PublishJobForm({ onJobPublished }) {
                   <Briefcase className="w-4 h-4 inline mr-2" />
                   Titre du poste *
                 </label>
-                <input
-                  type="text"
+                <AutocompleteInput
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="ex: UX Designer Senior"
-                  className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  suggestions={jobTitleSuggestions}
+                  icon={Briefcase}
                   required
                 />
               </div>
@@ -248,13 +250,13 @@ export default function PublishJobForm({ onJobPublished }) {
                   <MapPin className="w-4 h-4 inline mr-2" />
                   Localisation *
                 </label>
-                <input
-                  type="text"
+                <AutocompleteInput
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
                   placeholder="ex: Paris, France"
-                  className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  suggestions={locationSuggestions}
+                  icon={MapPin}
                   required
                 />
               </div>
