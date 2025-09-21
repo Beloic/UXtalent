@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '../../../../src/config/supabase.js';
+import { supabaseAdmin } from '../../../src/config/supabase.js';
 
 export default async function handler(req, res) {
   // Enable CORS
