@@ -1384,26 +1384,18 @@ app.post('/api/metrics/reset', (req, res) => {
 // POST /api/stripe/webhook - Webhook Stripe
 app.post('/api/stripe/webhook', async (req, res) => {
   try {
-    console.log('🔔 [WEBHOOK] Webhook Stripe reçu');
-    console.log('🔍 [WEBHOOK] Headers reçus:', JSON.stringify(req.headers, null, 2));
-    console.log('🔍 [WEBHOOK] Body size:', req.body?.length || 'undefined');
+    console.log('🔔 Webhook Stripe reçu');
     
     if (!stripe) {
-      console.error('❌ [WEBHOOK] Stripe non configuré');
+      console.error('❌ Stripe non configuré');
       return res.status(503).json({ error: 'Stripe non configuré' });
     }
     
     const signature = req.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     
-    console.log('🔍 [WEBHOOK] Signature présente:', !!signature);
-    console.log('🔍 [WEBHOOK] Secret webhook configuré:', !!webhookSecret);
-    console.log('🔍 [WEBHOOK] Secret webhook valeur:', webhookSecret?.substring(0, 10) + '...');
-    
     if (!signature || !webhookSecret) {
-      console.error('❌ [WEBHOOK] Signature ou secret webhook manquant');
-      console.error('❌ [WEBHOOK] Signature:', signature);
-      console.error('❌ [WEBHOOK] Secret:', webhookSecret);
+      console.error('❌ Signature ou secret webhook manquant');
       return res.status(400).json({ error: 'Signature manquante' });
     }
     
@@ -1419,42 +1411,33 @@ app.post('/api/stripe/webhook', async (req, res) => {
     console.log('✅ Webhook vérifié:', event.type);
     
     // Traiter les événements
-    console.log('🔍 [WEBHOOK] Traitement événement:', event.type);
-    console.log('🔍 [WEBHOOK] Données événement:', JSON.stringify(event.data.object, null, 2));
-    
     switch (event.type) {
       case 'customer.subscription.deleted':
-        console.log('🗑️ [WEBHOOK] Traitement subscription.deleted');
         await handleSubscriptionDeleted(event.data.object);
         break;
         
       case 'customer.subscription.created':
-        console.log('📝 [WEBHOOK] Traitement subscription.created');
         await handleSubscriptionCreated(event.data.object);
         break;
         
       case 'customer.subscription.updated':
-        console.log('🔄 [WEBHOOK] Traitement subscription.updated');
         await handleSubscriptionUpdated(event.data.object);
         break;
         
       case 'checkout.session.completed':
-        console.log('💳 [WEBHOOK] Traitement checkout.session.completed');
         await handleCheckoutSessionCompleted(event.data.object);
         break;
         
       case 'invoice.payment_succeeded':
-        console.log('💰 [WEBHOOK] Traitement invoice.payment_succeeded');
         await handleInvoicePaymentSucceeded(event.data.object);
         break;
         
       case 'invoice.payment_failed':
-        console.log('❌ [WEBHOOK] Traitement invoice.payment_failed');
         await handleInvoicePaymentFailed(event.data.object);
         break;
         
       default:
-        console.log('ℹ️ [WEBHOOK] Événement non géré:', event.type);
+        console.log('ℹ️ Événement non géré:', event.type);
     }
     
     res.json({ received: true });
