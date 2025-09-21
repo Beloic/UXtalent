@@ -283,7 +283,7 @@ export default function PricingPage() {
                 })}
               </ul>
 
-              {isCurrentPlan(plan.name) ? (
+              {isCurrentPlan(plan.name) && selectedTab === 'recruiters' ? (
                 <div className="w-full py-4 px-6 rounded-xl font-semibold bg-green-100 text-green-800 border-2 border-green-300 flex items-center justify-center gap-2">
                   <CheckCircle className="w-5 h-5" />
                   Plan actuel
