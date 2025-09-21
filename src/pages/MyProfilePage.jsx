@@ -697,6 +697,32 @@ export default function MyProfilePage() {
       return;
     }
 
+    // Validation des champs obligatoires pour les profils 'new' ou nouveaux
+    if (!formData.id || candidateStatus === 'new') {
+      const requiredFields = {
+        name: 'Nom complet',
+        title: 'Titre du poste',
+        location: 'Localisation',
+        bio: 'Présentation',
+        skills: 'Compétences',
+        portfolio: 'Portfolio',
+        linkedin: 'LinkedIn'
+      };
+
+      const missingFields = [];
+      for (const [field, label] of Object.entries(requiredFields)) {
+        if (!formData[field] || formData[field].toString().trim() === '') {
+          missingFields.push(label);
+        }
+      }
+
+      if (missingFields.length > 0) {
+        setMessage(`❌ Veuillez remplir tous les champs obligatoires : ${missingFields.join(', ')}`);
+        setIsLoading(false);
+        return;
+      }
+    }
+
     try {
       let photoUrl = null;
       
@@ -2110,6 +2136,24 @@ export default function MyProfilePage() {
                           'Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour soumettre votre candidature.'
                       }
                     </p>
+                    
+                    {/* Information sur les champs obligatoires pour le statut 'new' */}
+                    {candidateStatus === 'new' && (
+                      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                        <h4 className="text-sm font-semibold text-blue-800 mb-2">
+                          📋 Champs obligatoires à remplir :
+                        </h4>
+                        <div className="text-sm text-blue-700 grid grid-cols-2 gap-1">
+                          <div>• Nom complet</div>
+                          <div>• Titre du poste</div>
+                          <div>• Localisation</div>
+                          <div>• Présentation</div>
+                          <div>• Compétences</div>
+                          <div>• Portfolio</div>
+                          <div>• LinkedIn</div>
+                        </div>
+                      </div>
+                    )}
                     
                     {/* Message d'information */}
                     {message && (
