@@ -107,7 +107,7 @@ export default function AddProfilePage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(buildApiUrl('/api/candidates'), {
+      const response = await fetch(buildApiUrl('/api/candidates/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -64,7 +64,7 @@ export default function SearchAnalysisPage() {
       }
 
       // Charger tous les candidats
-      const candidatesResponse = await fetch(buildApiUrl('/api/candidates'), {
+      const candidatesResponse = await fetch(buildApiUrl('/api/candidates/'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

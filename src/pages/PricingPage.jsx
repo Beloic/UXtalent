@@ -134,7 +134,7 @@ export default function PricingPage() {
     setIsLoadingPlan(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const response = await fetch(buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`), {
+      const response = await fetch(buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`), {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }

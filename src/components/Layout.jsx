@@ -44,7 +44,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
       try {
         // Récupérer directement le profil du candidat par email
-        const response = await fetch(buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`), {
+        const response = await fetch(buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`), {
           headers: {
             'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
           }

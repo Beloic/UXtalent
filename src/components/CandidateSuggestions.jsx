@@ -48,7 +48,7 @@ const CandidateSuggestions = ({ candidateId }) => {
         includeDetails: 'true'
       });
       
-      const apiUrl = buildApiUrl(`${API_ENDPOINTS.MATCHING_JOBS}/${candidateId}?${params}`);
+      const apiUrl = buildApiUrl(`${API_ENDPOINTS.MATCHING_JOBS}${candidateId}/?${params}`);
       const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

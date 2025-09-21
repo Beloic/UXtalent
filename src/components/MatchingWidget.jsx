@@ -32,8 +32,8 @@ const MatchingWidget = ({
     
     try {
       const endpoint = type === 'candidates' 
-        ? `${API_ENDPOINTS.MATCHING_CANDIDATES}/${jobId}`
-        : `${API_ENDPOINTS.MATCHING_JOBS}/${candidateId}`;
+        ? `${API_ENDPOINTS.MATCHING_CANDIDATES}${jobId}/`
+        : `${API_ENDPOINTS.MATCHING_JOBS}${candidateId}/`;
       
       const params = new URLSearchParams({
         limit: limit.toString(),

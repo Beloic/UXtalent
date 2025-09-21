@@ -102,7 +102,7 @@ const MatchingDashboard = ({ recruiterId }) => {
         includeDetails: 'true'
       });
       
-      const apiUrl = buildApiUrl(`${API_ENDPOINTS.MATCHING_CANDIDATES}/${jobId}?${params}`);
+      const apiUrl = buildApiUrl(`${API_ENDPOINTS.MATCHING_CANDIDATES}${jobId}/?${params}`);
       const response = await authenticatedFetch(apiUrl);
       
       if (response.ok) {

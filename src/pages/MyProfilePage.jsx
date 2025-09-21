@@ -268,7 +268,7 @@ export default function MyProfilePage() {
           return;
         }
         
-        const response = await fetch(buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`), {
+        const response = await fetch(buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`), {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -324,7 +324,7 @@ export default function MyProfilePage() {
       setIsLoadingProfile(true);
       
       // Essayer d'abord l'API Vercel, puis fallback vers Supabase direct
-      const apiUrl = buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`);
+      const apiUrl = buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`);
       console.log('🌐 API VERCEL - URL API COMPLÈTE:', apiUrl);
       console.log('🌐 API VERCEL - USER EMAIL:', user.email);
       console.log('🌐 API VERCEL - Appel API en cours...');
@@ -547,7 +547,7 @@ export default function MyProfilePage() {
           statusText: response.statusText,
           errorText: errorText,
           userEmail: user.email,
-          url: buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`)
+          url: buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`)
         });
         console.error('❌ Erreur de réponse:', response.status, errorText);
         setMessage(`❌ Erreur lors du chargement: ${response.status}`);
@@ -671,7 +671,7 @@ export default function MyProfilePage() {
         updateData 
       });
       
-      const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
+      const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -734,7 +734,7 @@ export default function MyProfilePage() {
 
       console.log('🔄 Annulation abonnement pour candidat:', formData.id);
 
-      const apiUrl = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}/cancel-subscription`);
+      const apiUrl = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/cancel-subscription/`);
       console.log('🌐 URL API:', apiUrl);
 
       const response = await fetch(apiUrl, {
@@ -1026,8 +1026,8 @@ export default function MyProfilePage() {
       
       // Déterminer l'URL et la méthode selon si le profil existe déjà
       const url = formData.id 
-        ? buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`)
-        : buildApiUrl(API_ENDPOINTS.CANDIDATES);
+        ? buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`)
+        : buildApiUrl(`${API_ENDPOINTS.CANDIDATES}`);
       const method = formData.id ? 'PUT' : 'POST';
       
       // Obtenir le token une seule fois
@@ -1695,7 +1695,7 @@ export default function MyProfilePage() {
 
                                        const updateData = { skills: updatedSkills };
                                        
-                                       const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`), {
+                                       const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`), {
                                          method: 'PUT',
                                          headers: {
                                            'Content-Type': 'application/json',
@@ -1765,7 +1765,7 @@ export default function MyProfilePage() {
                            }
 
                            const updateData = { skills: newSkills };
-                           const url = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}/${formData.id}`);
+                           const url = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`);
                            
                            console.log('📡 Appel API:', { url, updateData });
                            

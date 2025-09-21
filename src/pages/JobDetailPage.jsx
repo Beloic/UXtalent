@@ -70,7 +70,7 @@ export default function JobDetailPage() {
       
       console.log('📤 [CLIENT] Données envoyées:', requestData);
       
-      const response = await fetch(buildApiUrl('/api/candidates'), {
+      const response = await fetch(buildApiUrl('/api/candidates/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ export default function JobDetailPage() {
       if (!token) return;
 
       // Vérifier dans la table applications
-      const response = await fetch(buildApiUrl(`/api/candidates?action=check_application&jobId=${job.id}`), {
+      const response = await fetch(buildApiUrl(`/api/candidates/?action=check_application&jobId=${job.id}`), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

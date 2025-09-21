@@ -165,7 +165,7 @@ export default function RecruiterDashboard() {
       
       for (const job of jobs) {
         try {
-          const response = await fetch(buildApiUrl(`/api/candidates?action=get_job_applications&jobId=${job.id}`), {
+          const response = await fetch(buildApiUrl(`/api/candidates/?action=get_job_applications&jobId=${job.id}`), {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -397,7 +397,7 @@ export default function RecruiterDashboard() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      const response = await fetch(buildApiUrl('/api/candidates?sortBy=recent'), {
+      const response = await fetch(buildApiUrl('/api/candidates/?sortBy=recent'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

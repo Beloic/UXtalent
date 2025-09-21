@@ -30,16 +30,16 @@ export const buildRenderApiUrl = (endpoint) => {
 
 // URLs spécifiques
 export const API_ENDPOINTS = {
-  CANDIDATES: '/api/candidates',
-  JOBS: '/api/jobs',
-  FORUM_POSTS: '/api/forum/posts',
-  FORUM_STATS: '/api/forum/stats',
-  METRICS: '/api/metrics',
-  STATS: '/api/stats',
+  CANDIDATES: '/api/candidates/',
+  JOBS: '/api/jobs/',
+  FORUM_POSTS: '/api/forum/posts/',
+  FORUM_STATS: '/api/forum/stats/',
+  METRICS: '/api/metrics/',
+  STATS: '/api/stats/',
   // Endpoints de matching
-  MATCHING_CANDIDATES: '/api/matching/candidates',
-  MATCHING_JOBS: '/api/matching/jobs',
-  MATCHING_SCORE: '/api/matching/score',
-  MATCHING_STATS: '/api/matching/stats',
-  MATCHING_FEEDBACK: '/api/matching/feedback'
+  MATCHING_CANDIDATES: '/api/matching/candidates/',
+  MATCHING_JOBS: '/api/matching/jobs/',
+  MATCHING_SCORE: '/api/matching/score/',
+  MATCHING_STATS: '/api/matching/stats/',
+  MATCHING_FEEDBACK: '/api/matching/feedback/'
 };
