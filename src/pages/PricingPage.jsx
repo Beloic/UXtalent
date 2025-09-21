@@ -35,7 +35,7 @@ export default function PricingPage() {
       period: "/mois",
       description: "Pour les entreprises en croissance",
       features: [
-        "Sélection de profil sur-mesure par notre équipe",
+        "🎯 Sélection de profil sur-mesure par notre équipe",
         "Accès illimité aux profils",
         "Contact direct avec tous les candidats",
         "Support prioritaire",
@@ -53,6 +53,7 @@ export default function PricingPage() {
       period: "",
       description: "Solutions personnalisées",
       features: [
+        "🎯 Sélection de profil sur-mesure par notre équipe",
         "Accès illimité aux profils",
         "Recherche ultra-avancée",
         "Contact direct illimité",
@@ -63,8 +64,7 @@ export default function PricingPage() {
         "Export des talents en CSV/JSON",
         "Intégrations personnalisées",
         "Formation équipe",
-        "SLA garantis",
-        "Sélection de profil sur-mesure par notre équipe"
+        "SLA garantis"
       ],
       popular: false,
       cta: "Nous contacter"
