@@ -141,7 +141,9 @@ export default function PricingPage() {
       });
       
       if (response.ok) {
-        const userProfile = await response.json();
+        const responseData = await response.json();
+        // Gérer les deux formats de réponse possibles
+        const userProfile = responseData.candidates?.[0] || responseData;
         if (userProfile) {
           setUserPlan(userProfile.plan || 'free');
           console.log('✅ Plan utilisateur récupéré dans PricingPage:', userProfile.plan);

@@ -287,11 +287,13 @@ export default function MyProfilePage() {
             return;
           }
           
-          const userProfile = await response.json();
+          const responseData = await response.json();
+          // Gérer les deux formats de réponse possibles
+          const userProfile = responseData.candidates?.[0] || responseData;
           if (userProfile && userProfile.plan !== candidatePlan) {
             console.log('🔄 Plan mis à jour détecté:', userProfile.plan, 'ancien:', candidatePlan);
             setCandidatePlan(userProfile.plan || 'free');
-            
+
             // Déclencher l'événement pour notifier les autres composants
             window.dispatchEvent(new CustomEvent('planUpdated', {
               detail: { plan: userProfile.plan }
@@ -442,10 +444,16 @@ export default function MyProfilePage() {
           throw new Error('Réponse non-JSON reçue de l\'API');
         }
         
-        const existingCandidate = await response.json();
-        
-        console.log('🌐 BACKEND RENDER - RÉPONSE SUCCÈS - Données reçues:', existingCandidate);
-        
+        const responseData = await response.json();
+
+        // Gérer les deux formats de réponse possibles :
+        // 1. Format direct : {id, status, email, ...}
+        // 2. Format avec array : {candidates: [{id, status, email, ...}], ...}
+        const existingCandidate = responseData.candidates?.[0] || responseData;
+
+        console.log('🌐 BACKEND RENDER - RÉPONSE SUCCÈS - Données reçues:', responseData);
+        console.log('🌐 BACKEND RENDER - CANDIDAT EXTRAIT:', existingCandidate);
+
         console.log('🔍 PROFIL CHARGÉ:', {
           existingCandidate,
           status: existingCandidate?.status,
