@@ -235,7 +235,23 @@ export default function MyProfilePage() {
     const refreshPlan = async () => {
       try {
         setIsRefreshingPlan(true);
-        const response = await fetch(buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`));
+        
+        // Obtenir le token d'authentification
+        const session = await supabase.auth.getSession();
+        const token = session.data.session?.access_token;
+        
+        if (!token) {
+          console.log('🔄 refreshPlan - Token manquant, utilisation du plan par défaut');
+          setCandidatePlan('free');
+          return;
+        }
+        
+        const response = await fetch(buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`), {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
         
         if (response.ok) {
           const userProfile = await response.json();
