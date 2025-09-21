@@ -3,6 +3,26 @@ import { MapPin, Globe, Briefcase, DollarSign, Clock, ExternalLink, Building2, C
 import { Link } from "react-router-dom";
 
 export default function JobCard({ job }) {
+  // Fonction pour nettoyer le texte markdown et le convertir en texte simple
+  const cleanMarkdownText = (text) => {
+    if (!text) return '';
+    
+    return text
+      // Supprimer les puces markdown
+      .replace(/^•\s*/gm, '')
+      // Supprimer le formatage gras
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      // Supprimer les titres markdown
+      .replace(/^#+\s*/gm, '')
+      // Supprimer les liens markdown
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      // Supprimer les listes à puces
+      .replace(/^[-*+]\s*/gm, '')
+      // Nettoyer les espaces multiples
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -116,7 +136,7 @@ export default function JobCard({ job }) {
 
       {/* Description */}
       <p className="text-gray-600 mb-4 line-clamp-4 leading-relaxed">
-        {job.description}
+        {cleanMarkdownText(job.description)}
       </p>
 
       {/* Footer avec date, vues, candidats et bouton */}

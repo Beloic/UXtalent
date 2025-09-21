@@ -60,9 +60,6 @@ import {
   updateRecruiterSearch,
   deleteRecruiterSearch,
   getRecruiterSearchById,
-  getRecruiterCompany,
-  upsertRecruiterCompany,
-  deleteRecruiterCompany,
   getRecruiterSearchStats,
   searchCandidatesByCriteria,
 } from './src/database/recruiterDatabase.js';
@@ -3112,63 +3109,6 @@ app.get('/api/recruiter/searches/stats', requireRole(['recruiter', 'admin']), as
   }
 });
 
-// ===== ROUTES POUR LES ENTREPRISES DE RECRUTEURS =====
-
-// GET /api/recruiter/company - Récupérer l'entreprise d'un recruteur
-app.get('/api/recruiter/company', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const recruiterId = req.user.id;
-    const company = await getRecruiterCompany(recruiterId);
-    res.json(company);
-  } catch (error) {
-    logger.error('Erreur lors de la récupération de l\'entreprise', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la récupération de l\'entreprise' });
-  }
-});
-
-// POST /api/recruiter/company - Créer ou mettre à jour l'entreprise d'un recruteur
-app.post('/api/recruiter/company', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const companyData = {
-      ...req.body,
-      recruiter_id: req.user.id
-    };
-    
-    const company = await upsertRecruiterCompany(companyData, req.user.id);
-    res.status(201).json(company);
-  } catch (error) {
-    logger.error('Erreur lors de la création/mise à jour de l\'entreprise', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la création/mise à jour de l\'entreprise' });
-  }
-});
-
-// PUT /api/recruiter/company - Mettre à jour l'entreprise d'un recruteur
-app.put('/api/recruiter/company', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const companyData = {
-      ...req.body,
-      recruiter_id: req.user.id
-    };
-    
-    const company = await upsertRecruiterCompany(companyData, req.user.id);
-    res.json(company);
-  } catch (error) {
-    logger.error('Erreur lors de la mise à jour de l\'entreprise', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'entreprise' });
-  }
-});
-
-// DELETE /api/recruiter/company - Supprimer l'entreprise d'un recruteur
-app.delete('/api/recruiter/company', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const recruiterId = req.user.id;
-    await deleteRecruiterCompany(recruiterId);
-    res.json({ success: true });
-  } catch (error) {
-    logger.error('Erreur lors de la suppression de l\'entreprise', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la suppression de l\'entreprise' });
-  }
-});
 
 // ===== ROUTES POUR LE MATCHING INTELLIGENT =====
 
