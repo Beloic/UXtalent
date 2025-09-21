@@ -343,8 +343,109 @@ function isSameCountry(city1, city2) {
 }
 
 /**
+ * Calcule la distance approximative entre deux villes françaises en kilomètres
+ * Utilise une matrice de distances pré-calculée pour les principales villes
+ */
+function calculateDistance(city1, city2) {
+  // Si les villes sont identiques, distance = 0
+  if (city1 === city2) {
+    return 0;
+  }
+
+  // Matrice de distances entre les principales villes françaises (en km)
+  const distances = {
+    'paris': {
+      'lyon': 463, 'marseille': 775, 'toulouse': 678, 'nice': 932, 'nantes': 385,
+      'montpellier': 750, 'strasbourg': 491, 'bordeaux': 584, 'lille': 225,
+      'rennes': 348, 'reims': 144, 'saint-étienne': 520, 'le havre': 200,
+      'toulon': 835, 'grenoble': 573, 'dijon': 315, 'angers': 300, 'nîmes': 720,
+      'villeurbanne': 463, 'saint-denis': 9, 'le mans': 200, 'aix-en-provence': 775,
+      'clermont-ferrand': 420, 'brest': 590, 'tours': 237, 'limoges': 400,
+      'amiens': 130, 'annecy': 540, 'perpignan': 850, 'boulogne-billancourt': 8,
+      'orléans': 130, 'mulhouse': 520, 'rouen': 130, 'caen': 230, 'besançon': 400,
+      'metz': 320, 'dunkerque': 280
+    },
+    'lyon': {
+      'paris': 463, 'marseille': 314, 'toulouse': 358, 'nice': 470, 'nantes': 580,
+      'montpellier': 300, 'strasbourg': 520, 'bordeaux': 550, 'lille': 680,
+      'rennes': 650, 'reims': 400, 'saint-étienne': 60, 'le havre': 650,
+      'toulon': 320, 'grenoble': 100, 'dijon': 200, 'angers': 500, 'nîmes': 280,
+      'villeurbanne': 8, 'saint-denis': 463, 'le mans': 400, 'aix-en-provence': 314,
+      'clermont-ferrand': 150, 'brest': 850, 'tours': 400, 'limoges': 300,
+      'amiens': 500, 'annecy': 150, 'perpignan': 400, 'boulogne-billancourt': 463,
+      'orléans': 350, 'mulhouse': 450, 'rouen': 500, 'caen': 600, 'besançon': 200,
+      'metz': 450, 'dunkerque': 700
+    },
+    'marseille': {
+      'paris': 775, 'lyon': 314, 'toulouse': 400, 'nice': 200, 'nantes': 850,
+      'montpellier': 150, 'strasbourg': 800, 'bordeaux': 650, 'lille': 1000,
+      'rennes': 950, 'reims': 750, 'saint-étienne': 350, 'le havre': 950,
+      'toulon': 60, 'grenoble': 300, 'dijon': 500, 'angers': 800, 'nîmes': 100,
+      'villeurbanne': 314, 'saint-denis': 775, 'le mans': 700, 'aix-en-provence': 30,
+      'clermont-ferrand': 400, 'brest': 1200, 'tours': 700, 'limoges': 500,
+      'amiens': 800, 'annecy': 400, 'perpignan': 300, 'boulogne-billancourt': 775,
+      'orléans': 650, 'mulhouse': 750, 'rouen': 800, 'caen': 900, 'besançon': 500,
+      'metz': 750, 'dunkerque': 1000
+    },
+    'toulouse': {
+      'paris': 678, 'lyon': 358, 'marseille': 400, 'nice': 600, 'nantes': 500,
+      'montpellier': 250, 'strasbourg': 800, 'bordeaux': 250, 'lille': 850,
+      'rennes': 600, 'reims': 700, 'saint-étienne': 400, 'le havre': 800,
+      'toulon': 450, 'grenoble': 450, 'dijon': 600, 'angers': 500, 'nîmes': 300,
+      'villeurbanne': 358, 'saint-denis': 678, 'le mans': 500, 'aix-en-provence': 400,
+      'clermont-ferrand': 300, 'brest': 800, 'tours': 500, 'limoges': 300,
+      'amiens': 700, 'annecy': 500, 'perpignan': 200, 'boulogne-billancourt': 678,
+      'orléans': 500, 'mulhouse': 750, 'rouen': 700, 'caen': 800, 'besançon': 600,
+      'metz': 750, 'dunkerque': 900
+    },
+    'nice': {
+      'paris': 932, 'lyon': 470, 'marseille': 200, 'toulouse': 600, 'nantes': 1000,
+      'montpellier': 350, 'strasbourg': 950, 'bordeaux': 800, 'lille': 1150,
+      'rennes': 1100, 'reims': 900, 'saint-étienne': 500, 'le havre': 1100,
+      'toulon': 150, 'grenoble': 400, 'dijon': 600, 'angers': 950, 'nîmes': 250,
+      'villeurbanne': 470, 'saint-denis': 932, 'le mans': 850, 'aix-en-provence': 200,
+      'clermont-ferrand': 500, 'brest': 1350, 'tours': 850, 'limoges': 650,
+      'amiens': 950, 'annecy': 500, 'perpignan': 400, 'boulogne-billancourt': 932,
+      'orléans': 800, 'mulhouse': 900, 'rouen': 950, 'caen': 1050, 'besançon': 600,
+      'metz': 900, 'dunkerque': 1150
+    },
+    'nantes': {
+      'paris': 385, 'lyon': 580, 'marseille': 850, 'toulouse': 500, 'nice': 1000,
+      'montpellier': 700, 'strasbourg': 750, 'bordeaux': 350, 'lille': 550,
+      'rennes': 110, 'reims': 450, 'saint-étienne': 650, 'le havre': 200,
+      'toulon': 900, 'grenoble': 700, 'dijon': 500, 'angers': 90, 'nîmes': 750,
+      'villeurbanne': 580, 'saint-denis': 385, 'le mans': 200, 'aix-en-provence': 850,
+      'clermont-ferrand': 400, 'brest': 250, 'tours': 200, 'limoges': 300,
+      'amiens': 400, 'annecy': 700, 'perpignan': 700, 'boulogne-billancourt': 385,
+      'orléans': 250, 'mulhouse': 700, 'rouen': 300, 'caen': 200, 'besançon': 500,
+      'metz': 700, 'dunkerque': 500
+    }
+  };
+
+  // Recherche directe dans la matrice
+  if (distances[city1] && distances[city1][city2]) {
+    return distances[city1][city2];
+  }
+  if (distances[city2] && distances[city2][city1]) {
+    return distances[city2][city1];
+  }
+
+  // Si les villes ne sont pas dans la matrice, estimation basée sur la région
+  // Distance moyenne entre régions différentes : 500 km
+  // Distance moyenne dans la même région : 100 km
+  if (isSameRegion(city1, city2)) {
+    return 100; // Distance moyenne dans la même région
+  } else if (isSameCountry(city1, city2)) {
+    return 500; // Distance moyenne entre régions différentes
+  } else {
+    return 1000; // Distance très élevée pour les villes hors France
+  }
+}
+
+/**
  * Vérifie si un candidat est géographiquement compatible avec une offre
  * Logique stricte pour éviter les suggestions inappropriées
+ * NOUVEAU: Pour les emplois hybrides, limite de distance de 300 km
  */
 function isGeographicallyCompatible(candidateLocation, candidateRemote, jobLocation, jobRemote) {
   // Si l'offre est 100% remote, tous les candidats sont compatibles
@@ -376,9 +477,10 @@ function isGeographicallyCompatible(candidateLocation, candidateRemote, jobLocat
       return false; // Pas de flexibilité pour les offres onsite
     }
     
-    // Pour les offres hybrid : même région acceptée
+    // Pour les offres hybrid : vérifier la distance (limite de 300 km)
     if (jobRemote === 'hybrid') {
-      return isSameRegion(candidateCity, jobCity);
+      const distance = calculateDistance(candidateCity, jobCity);
+      return distance <= 300; // Limite de 300 km pour les emplois hybrides
     }
     
     // Villes très éloignées = incompatible
