@@ -32,7 +32,7 @@ export class RecruitersApiService {
   }
   
   // Récupérer les statistiques du recruteur connecté
-  static async getMyStats() {
+  static async getMyStats(recruiterId) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -40,7 +40,7 @@ export class RecruitersApiService {
         throw new Error('Non authentifié');
       }
       
-      const response = await fetch(buildApiUrl('/api/recruiters/me/stats'), {
+      const response = await fetch(buildApiUrl(`/api/recruiters/${recruiterId}/stats`), {
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ export class RecruitersApiService {
   }
   
   // Vérifier les permissions du recruteur connecté
-  static async getMyPermissions() {
+  static async getMyPermissions(recruiterId) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -96,7 +96,7 @@ export class RecruitersApiService {
         throw new Error('Non authentifié');
       }
       
-      const response = await fetch(buildApiUrl('/api/recruiters/me/permissions'), {
+      const response = await fetch(buildApiUrl(`/api/recruiters/${recruiterId}/permissions`), {
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
@@ -342,6 +342,27 @@ export class RecruitersApiService {
     }
   }
 }
+
+// Fonctions simplifiées pour le hook useRecruiter
+export const fetchRecruiterProfile = async () => {
+  return await RecruitersApiService.getMyProfile();
+};
+
+export const fetchRecruiterStats = async (recruiterId) => {
+  return await RecruitersApiService.getMyStats(recruiterId);
+};
+
+export const fetchRecruiterPermissions = async (recruiterId) => {
+  return await RecruitersApiService.getMyPermissions(recruiterId);
+};
+
+export const incrementRecruiterJobPosts = async (recruiterId) => {
+  return await RecruitersApiService.incrementJobPosts();
+};
+
+export const incrementRecruiterCandidateContacts = async (recruiterId) => {
+  return await RecruitersApiService.incrementCandidateContacts();
+};
 
 // Export des fonctions individuelles pour faciliter l'utilisation
 export const {
