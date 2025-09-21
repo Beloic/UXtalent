@@ -268,7 +268,7 @@ export default function MyProfilePage() {
           return;
         }
         
-        const response = await fetch(buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`), {
+        const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`), {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -326,7 +326,7 @@ export default function MyProfilePage() {
       setIsLoadingProfile(true);
       
       // Essayer d'abord l'API Vercel, puis fallback vers Supabase direct
-      const apiUrl = buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`);
+      const apiUrl = buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`);
       console.log('🌐 API VERCEL - URL API COMPLÈTE:', apiUrl);
       console.log('🌐 API VERCEL - USER EMAIL:', user.email);
       console.log('🌐 API VERCEL - Appel API en cours...');
@@ -446,10 +446,8 @@ export default function MyProfilePage() {
         
         const responseData = await response.json();
 
-        // Gérer les deux formats de réponse possibles :
-        // 1. Format direct : {id, status, email, ...}
-        // 2. Format avec array : {candidates: [{id, status, email, ...}], ...}
-        const existingCandidate = responseData.candidates?.[0] || responseData;
+        // La route /api/candidates/profile/:email retourne directement le candidat
+        const existingCandidate = responseData;
 
         console.log('🌐 BACKEND RENDER - RÉPONSE SUCCÈS - Données reçues:', responseData);
         console.log('🌐 BACKEND RENDER - CANDIDAT EXTRAIT:', existingCandidate);
@@ -555,7 +553,7 @@ export default function MyProfilePage() {
           statusText: response.statusText,
           errorText: errorText,
           userEmail: user.email,
-          url: buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`)
+          url: buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`)
         });
         console.error('❌ Erreur de réponse:', response.status, errorText);
         setMessage(`❌ Erreur lors du chargement: ${response.status}`);
@@ -2463,7 +2461,7 @@ export default function MyProfilePage() {
                   <p><strong>user.email:</strong> {user?.email || 'null'}</p>
                   <p><strong>isLoadingProfile:</strong> {isLoadingProfile ? 'true' : 'false'}</p>
                   <p><strong>isEditingNew:</strong> {isEditingNew ? 'true' : 'false'}</p>
-                  <p><strong>Backend URL:</strong> {user?.email ? buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`) : 'N/A'}</p>
+                  <p><strong>Backend URL:</strong> {user?.email ? buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`) : 'N/A'}</p>
                   <hr className="my-2" />
                   <p><strong>Conditions:</strong></p>
                   <p>• !formData.id: {!formData.id ? 'TRUE ✅' : 'FALSE ❌'}</p>
