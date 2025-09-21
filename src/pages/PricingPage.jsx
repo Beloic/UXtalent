@@ -62,7 +62,6 @@ export default function PricingPage() {
         "Algorithme de Matching intelligent",
         "Export des talents en CSV/JSON",
         "Intégrations personnalisées",
-        "Formation équipe",
         "SLA garantis",
         "Sélection de profil sur-mesure par notre équipe"
       ],
