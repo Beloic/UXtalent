@@ -417,11 +417,11 @@ export default function MyProfilePage() {
           id: candidate.id || null,
           name: candidate.name || '',
           email: candidate.email || '',
-          title: candidate.title && candidate.title.trim() !== '' ? candidate.title : 'UX Designer',
+          title: candidate.title && candidate.title.trim() !== '' ? candidate.title : DEFAULT_VALUES.title,
           location: candidate.location || '',
           remote: candidate.remote || 'hybrid',
           experience: candidate.experience || '',
-          skills: candidate.skills && candidate.skills.trim() !== '' ? candidate.skills : 'UX Design, Figma',
+          skills: candidate.skills && candidate.skills.trim() !== '' ? candidate.skills : DEFAULT_VALUES.skills,
           bio: candidate.bio || '',
           portfolio: candidate.portfolio || '',
           linkedin: candidate.linkedin || '',
@@ -504,7 +504,7 @@ export default function MyProfilePage() {
             id: existingCandidate.id || null,
             name: existingCandidate.name || '',
             email: existingCandidate.email || '',
-            title: existingCandidate.title && existingCandidate.title.trim() !== '' ? existingCandidate.title : 'UX Designer',
+            title: existingCandidate.title && existingCandidate.title.trim() !== '' ? existingCandidate.title : DEFAULT_VALUES.title,
             location: existingCandidate.location || '',
             remote: existingCandidate.remote || 'hybrid',
             yearsOfExperience: (() => {
@@ -523,7 +523,7 @@ export default function MyProfilePage() {
                 ? existingCandidate.skills.join(', ')
                 : existingCandidate.skills || '';
               // Si aucune compétence n'est définie, utiliser les compétences par défaut
-              return skills.trim() === '' ? 'UX Design, Figma' : skills;
+              return skills.trim() === '' ? DEFAULT_VALUES.skills : skills;
             })(),
             portfolio: existingCandidate.portfolio || '',
             linkedin: existingCandidate.linkedin || '',
@@ -639,21 +639,6 @@ export default function MyProfilePage() {
       ...prev,
       [name]: value
     }));
-  };
-
-  // Fonction pour gérer les changements de photo
-  const handlePhotoChange = (photoData) => {
-    console.log('📸 Photo changée:', photoData);
-    setFormData(prev => ({
-      ...prev,
-      photo: photoData
-    }));
-  };
-
-  // Fonction pour gérer les erreurs d'upload de photo
-  const handlePhotoError = (error) => {
-    console.error('❌ Erreur photo:', error);
-    setMessage(`❌ ${error}`);
   };
 
   // Fonctions pour l'édition inline
@@ -961,11 +946,11 @@ export default function MyProfilePage() {
 
     // Valeurs par défaut acceptées comme valides
     const defaultValues = {
-      title: 'Product Designer',
-      skills: 'Design System, Recherche utilisateur, Prototypage',
-      portfolio: 'https://mon-portfolio-design.com',
-      linkedin: 'https://linkedin.com/in/mon-profil-design',
-      github: 'https://github.com/mon-profil-design'
+      title: DEFAULT_VALUES.title,
+      skills: DEFAULT_VALUES.skills,
+      portfolio: DEFAULT_VALUES.portfolio,
+      linkedin: DEFAULT_VALUES.linkedin,
+      github: DEFAULT_VALUES.github
     };
 
     console.log('🔍 Validation des champs obligatoires:', formData);
@@ -1626,16 +1611,6 @@ export default function MyProfilePage() {
                                 className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
                               />
                             )}
-                            
-                            {/* Composant d'upload de photo */}
-                            <div className="mt-4">
-                              <ProfilePhotoUpload
-                                userId={user?.id}
-                                currentPhoto={formData.photo?.existing || formData.photo?.preview}
-                                onPhotoChange={handlePhotoChange}
-                                onError={handlePhotoError}
-                              />
-                            </div>
                           </div>
                           
                           <div className="flex-1">
@@ -1851,7 +1826,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="skills"
                                   value={formData.skills}
-                                  placeholder="Ex: Design System, Recherche utilisateur, Figma, Prototypage"
+                                  placeholder="Ex: Design System, Recherche utilisateur, Prototypage, Figma, Adobe Creative Suite"
                                   className="text-sm text-gray-600"
                                 />
                               </div>
