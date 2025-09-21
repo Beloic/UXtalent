@@ -900,7 +900,7 @@ export default function MyProfilePage() {
   const areRequiredFieldsFilled = () => {
     const requiredFields = {
       name: 'Nom complet',
-      title: 'Titre du poste',
+      title: 'Métier',
       location: 'Localisation',
       bio: 'Présentation',
       skills: 'Compétences',
@@ -934,7 +934,7 @@ export default function MyProfilePage() {
       console.log('🔍 Validation des champs obligatoires...', { formDataId: formData.id, candidateStatus });
       const requiredFields = {
         name: 'Nom complet',
-        title: 'Titre du poste',
+        title: 'Métier',
         location: 'Localisation',
         bio: 'Présentation',
         skills: 'Compétences',
@@ -1222,7 +1222,7 @@ export default function MyProfilePage() {
                 </div>
                 
                 <div>
-                  <span className="font-medium text-gray-600">Titre :</span>
+                  <span className="font-medium text-gray-600">Métier :</span>
                   <span className="ml-2 text-gray-900">{formData.title}</span>
                 </div>
                 <div>
@@ -1301,7 +1301,7 @@ export default function MyProfilePage() {
                 </div>
                 
                 <div>
-                  <span className="font-medium text-gray-600">Titre :</span>
+                  <span className="font-medium text-gray-600">Métier :</span>
                   <span className="ml-2 text-gray-900">{formData.title}</span>
                 </div>
                 <div>
@@ -1403,7 +1403,7 @@ export default function MyProfilePage() {
                 </div>
                 
                 <div>
-                  <span className="font-medium text-gray-600">Titre :</span>
+                  <span className="font-medium text-gray-600">Métier :</span>
                   <span className="ml-2 text-gray-900">{formData.title}</span>
                 </div>
                 <div>
@@ -1649,8 +1649,8 @@ export default function MyProfilePage() {
                             <div className="mb-4">
                               <EditableField
                                 fieldName="title"
-                                value={formData.title}
-                                placeholder="Titre non spécifié"
+                                value={formData.title || 'Métier non spécifié'}
+                                placeholder="Métier non spécifié"
                                 className="text-xl text-gray-600"
                               />
                             </div>
@@ -1976,7 +1976,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="location"
                                   value={formData.location}
-                                  placeholder="Ajouter une localisation"
+                                  placeholder=""
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
@@ -1994,8 +1994,8 @@ export default function MyProfilePage() {
                                 fieldName="remote"
                                 value={formData.remote === 'remote' ? 'Full remote' :
                                        formData.remote === 'onsite' ? 'Sur site' :
-                                       formData.remote === 'hybrid' ? 'Hybride' : ''}
-                                placeholder="Sélectionner un mode"
+                                       formData.remote === 'hybrid' ? 'Hybride' : 'Hybride'}
+                                placeholder="Hybride"
                                 className="font-semibold text-gray-900"
                                 options={[
                                   { value: 'remote', label: 'Full remote' },
@@ -2015,8 +2015,8 @@ export default function MyProfilePage() {
                               <p className="text-sm font-medium text-gray-500 mb-1">Années d'expérience</p>
                                 <EditableField
                                   fieldName="yearsOfExperience"
-                                  value={formData.yearsOfExperience}
-                                  placeholder="Ajouter une expérience"
+                                  value={formData.yearsOfExperience || '0'}
+                                  placeholder="0"
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -2033,8 +2033,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">TJM</p>
                                 <EditableField
                                   fieldName="dailyRate"
-                                  value={formData.dailyRate ? `${formData.dailyRate} €` : ''}
-                                  placeholder="Ajouter un TJM"
+                                  value={formData.dailyRate ? `${formData.dailyRate} €` : 'Non renseigné'}
+                                  placeholder="Non renseigné"
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -2049,8 +2049,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">Salaire annuel</p>
                                 <EditableField
                                   fieldName="annualSalary"
-                                  value={formData.annualSalary ? `${formData.annualSalary} €` : ''}
-                                  placeholder="Ajouter un salaire"
+                                  value={formData.annualSalary ? `${formData.annualSalary} €` : 'Non renseigné'}
+                                  placeholder="Non renseigné"
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -2603,7 +2603,7 @@ export default function MyProfilePage() {
                         </h4>
                         <div className="text-sm text-blue-700 grid grid-cols-2 gap-1">
                           <div>• Nom complet</div>
-                          <div>• Titre du poste</div>
+                          <div>• Métier</div>
                           <div>• Localisation</div>
                           <div>• Présentation</div>
                           <div>• Compétences</div>
