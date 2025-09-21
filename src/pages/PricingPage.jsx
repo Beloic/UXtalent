@@ -35,13 +35,13 @@ export default function PricingPage() {
       period: "/mois",
       description: "Pour les entreprises en croissance",
       features: [
+        "Sélection de profil sur-mesure par notre équipe",
         "Accès illimité aux profils",
         "Contact direct avec tous les candidats",
         "Support prioritaire",
         "Tableau de bord complet",
         "Algorithme de Matching intelligent",
-        "Export des talents en CSV/JSON",
-        "Sélection de profil sur-mesure par notre équipe"
+        "Export des talents en CSV/JSON"
       ],
       popular: true,
       cta: "Commencer"
