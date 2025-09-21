@@ -320,35 +320,6 @@ export default function PricingPage() {
           ))}
         </motion.div>
 
-        {/* Mise en avant Section */}
-        {selectedTab === 'candidates' && (
-          <motion.div 
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-16 text-center"
-          >
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-3xl p-8 border-2 border-yellow-200">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                🎯 Comment fonctionne la mise en avant ?
-              </h2>
-              <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 text-left">
-                <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <h3 className="font-semibold text-gray-900 mb-2">Plan Gratuit</h3>
-                  <p className="text-gray-600 text-sm">Apparaît normalement dans les résultats de recherche</p>
-                </div>
-                <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-blue-200">
-                  <h3 className="font-semibold text-blue-600 mb-2">Plan Premium</h3>
-                  <p className="text-gray-600 text-sm">Apparaît en premier dans les recherches, avant les profils gratuits</p>
-                </div>
-                <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-purple-200">
-                  <h3 className="font-semibold text-purple-600 mb-2">Plan Pro</h3>
-                  <p className="text-gray-600 text-sm">Mise en avant maximale - toujours en tête de liste des résultats</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
 
         {/* FAQ Section */}
         <motion.div 
