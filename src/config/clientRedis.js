@@ -4,14 +4,14 @@
 import { logger } from '../logger/clientLogger.js';
 import UpstashClient from './upstashClient.js';
 
-// Configuration Redis côté client
+// Configuration Redis côté client - DÉSACTIVÉ
 // Les variables d'environnement ne sont pas disponibles côté client
 // On utilise des valeurs par défaut ou des configurations statiques
 const REDIS_URL = 'redis://localhost:6379';
 const REDIS_PASSWORD = null;
 const UPSTASH_REST_URL = null; // À configurer si nécessaire
 const UPSTASH_REST_TOKEN = null; // À configurer si nécessaire
-const IS_UPSTASH = !!(UPSTASH_REST_URL && UPSTASH_REST_TOKEN);
+const IS_UPSTASH = false; // FORCÉ À FALSE POUR DÉSACTIVER
 
 // Configuration pour Upstash vs Redis classique
 let redisClient = null;

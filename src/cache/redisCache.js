@@ -86,54 +86,17 @@ class RedisCache {
     return `cache:${endpoint}:${JSON.stringify(sortedParams)}`;
   }
 
-  // Obtenir une valeur du cache
+  // Obtenir une valeur du cache - DÉSACTIVÉ
   async get(key) {
-    if (!(await this.checkConnection())) {
-      metrics.recordCacheMiss();
-      return null;
-    }
-
-    try {
-      const data = await redisClient.get(key);
-      
-      if (!data) {
-        metrics.recordCacheMiss();
-        return null;
-      }
-
-      logger.debug(`🔄 Redis Cache hit pour ${key}`);
-      metrics.recordCacheHit();
-      return JSON.parse(data);
-    } catch (error) {
-      logger.error('❌ Redis Cache get error:', { error: error.message, key });
-      metrics.recordCacheMiss();
-      return null;
-    }
+    logger.debug(`🚫 Redis désactivé - pas de cache pour ${key}`);
+    metrics.recordCacheMiss();
+    return null;
   }
 
-  // Stocker une valeur dans le cache
+  // Stocker une valeur dans le cache - DÉSACTIVÉ
   async set(key, data, cacheType = 'DEFAULT') {
-    if (!(await this.checkConnection())) {
-      logger.warn('⚠️ Redis not connected, skipping cache set');
-      return false;
-    }
-
-    try {
-      const ttl = CACHE_DURATION[cacheType] || CACHE_DURATION.DEFAULT;
-      const serializedData = JSON.stringify(data);
-      await redisClient.set(key, serializedData, { EX: ttl });
-      
-      logger.debug(`💾 Redis Cache set pour ${key} (TTL: ${ttl}s, Type: ${cacheType})`);
-      
-      // Mettre à jour les statistiques du cache
-      const dbSize = await redisClient.dbSize();
-      metrics.setCacheStats(dbSize, serializedData.length);
-      
-      return true;
-    } catch (error) {
-      logger.error('❌ Redis Cache set error:', { error: error.message, key });
-      return false;
-    }
+    logger.debug(`🚫 Redis désactivé - pas de cache set pour ${key}`);
+    return false;
   }
 
   // Supprimer une entrée du cache
@@ -326,40 +289,11 @@ class RedisCache {
 // Instance singleton du cache Redis
 export const redisCache = new RedisCache();
 
-// Middleware pour le cache Redis
+// Middleware pour le cache Redis - DÉSACTIVÉ
 export const redisCacheMiddleware = (req, res, next) => {
-  // Ne pas utiliser le cache si un header Authorization est présent
-  const hasAuthHeader = !!req.headers.authorization;
-  const key = redisCache.generateKey(req.originalUrl, req.query);
-
-  // Vérifier le cache pour les requêtes GET
-  if (req.method === 'GET' && !hasAuthHeader) {
-    redisCache.get(key).then(cachedData => {
-      if (cachedData) {
-        logger.debug(`🔄 Réponse depuis Redis cache pour ${req.originalUrl}`);
-        return res.json(cachedData);
-      }
-      next();
-    }).catch(error => {
-      logger.error('❌ Redis cache middleware error:', { error: error.message });
-      next();
-    });
-  } else {
-    next();
-  }
-
-  // Intercepter la réponse pour la mettre en cache
-  const originalJson = res.json;
-  res.json = function(data) {
-    // Mettre en cache uniquement les réponses réussies
-    if (res.statusCode >= 200 && res.statusCode < 300 && req.method === 'GET' && !hasAuthHeader) {
-      redisCache.set(key, data).catch(error => {
-        logger.error('❌ Redis cache set error in middleware:', { error: error.message });
-      });
-    }
-
-    return originalJson.call(this, data);
-  };
+  // Redis complètement désactivé - passer directement à next()
+  logger.debug(`🚫 Redis désactivé - pas de cache pour ${req.originalUrl}`);
+  next();
 };
 
 export default redisCache;

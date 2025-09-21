@@ -12,7 +12,7 @@ const IS_UPSTASH = !!(UPSTASH_REST_URL && UPSTASH_REST_TOKEN);
 // État global de Redis
 let redisConnectionAttempts = 0;
 const MAX_RECONNECTION_ATTEMPTS = 5;
-let redisDisabled = false;
+let redisDisabled = true; // DÉSACTIVÉ PAR DÉFAUT
 
 // Configuration pour Upstash vs Redis classique
 let redisClient;
