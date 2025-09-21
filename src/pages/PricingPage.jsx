@@ -303,7 +303,7 @@ export default function PricingPage() {
                     } else if (plan.name === "Max") {
                       window.open(import.meta.env.VITE_STRIPE_MAX_LINK, '_blank');
                     } else if (plan.name === "Premium" && selectedTab === 'recruiters') {
-                      window.open('mailto:contact@ux-jobs-pro.com', '_blank');
+                      window.open('mailto:hello@loicbernard.com', '_blank');
                     }
                   }}
                   className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
@@ -404,7 +404,7 @@ export default function PricingPage() {
                 Commencer gratuitement
               </button>
               <button 
-                onClick={() => window.open('mailto:contact@ux-jobs-pro.com', '_blank')}
+                onClick={() => window.open('mailto:hello@loicbernard.com', '_blank')}
                 className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-colors"
               >
                 Nous contacter

@@ -1125,7 +1125,7 @@ app.post('/api/candidates/:id/cancel-subscription', authenticateUser, async (req
     if (!stripe) {
       logger.error('❌ Tentative d\'annulation sans Stripe configuré');
       return res.status(503).json({ 
-        error: 'Service d\'annulation temporairement indisponible. Veuillez contacter le support à contact@ux-jobs-pro.com pour annuler votre abonnement.' 
+        error: 'Service d\'annulation temporairement indisponible. Veuillez contacter le support à hello@loicbernard.com pour annuler votre abonnement.' 
       });
     }
     
