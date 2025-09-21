@@ -32,19 +32,36 @@ const formatJobText = (text) => {
   
   // Diviser le texte en lignes
   const lines = text.split('\n');
-  const formattedLines = lines.map(line => {
+  const formattedLines = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    // Ignorer les lignes vides
+    if (!line) {
+      formattedLines.push('<br>');
+      continue;
+    }
+    
     // Si la ligne commence par •, créer une puce stylisée
-    if (line.trim().startsWith('•')) {
-      const content = line.trim().substring(1).trim();
-      return `<div class="flex items-start gap-2 mb-2"><span class="text-blue-600 font-bold mt-1">•</span><span>${content}</span></div>`;
+    if (line.startsWith('•')) {
+      const content = line.substring(1).trim();
+      formattedLines.push(`<div class="flex items-start gap-3 mb-3"><span class="text-blue-600 font-bold text-lg leading-6">•</span><span class="leading-6">${content}</span></div>`);
     }
-    // Si la ligne contient **texte**, formater en gras
-    if (line.includes('**')) {
-      return line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>');
+    // Si la ligne contient **texte**, formater en gras avec espacement
+    else if (line.includes('**')) {
+      const formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>');
+      formattedLines.push(`<div class="mb-4 mt-6"><span class="text-lg leading-6">${formattedLine}</span></div>`);
     }
-    // Sinon, retourner la ligne avec un <br> si elle n'est pas vide
-    return line.trim() ? `${line}<br>` : '';
-  });
+    // Si la ligne se termine par :, c'est probablement un titre
+    else if (line.endsWith(':')) {
+      formattedLines.push(`<div class="mb-3 mt-4"><span class="font-semibold text-gray-900 text-lg leading-6">${line}</span></div>`);
+    }
+    // Sinon, retourner la ligne normale
+    else {
+      formattedLines.push(`<div class="mb-2"><span class="leading-6">${line}</span></div>`);
+    }
+  }
   
   return formattedLines.join('');
 };
