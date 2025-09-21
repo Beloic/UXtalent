@@ -55,7 +55,6 @@ export default function PricingPage() {
       features: [
         "Accès illimité aux profils",
         "Recherche ultra-avancée",
-        "Contact direct illimité",
         "Support dédié 24/7",
         "Tableau de bord personnalisé",
         "Tableau Kanban personnalisé pour organiser les candidats",
