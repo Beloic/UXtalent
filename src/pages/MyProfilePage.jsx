@@ -413,7 +413,12 @@ export default function MyProfilePage() {
           location: candidate.location || '',
           remote: candidate.remote || 'hybrid',
           experience: candidate.experience || '',
-          skills: candidate.skills && candidate.skills.trim() !== '' ? candidate.skills : 'UX Design, Figma',
+          skills: (() => {
+            const skills = Array.isArray(candidate.skills)
+              ? candidate.skills.join(', ')
+              : candidate.skills || '';
+            return skills.trim() === '' ? 'UX Design, Figma' : skills;
+          })(),
           bio: candidate.bio || '',
           portfolio: candidate.portfolio || '',
           linkedin: candidate.linkedin || '',
