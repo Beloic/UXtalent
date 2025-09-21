@@ -89,7 +89,7 @@ export default function PricingPage() {
       period: "/mois",
       description: "Pour booster votre visibilité",
       features: [
-        "🎯 Apparaît en premier dans les recherches",
+        "🎯 Apparaît en premier dans les recherches - mise en avant dans les résultats de recherche",
         "Profil candidat complet",
         "Badge Premium visible",
         "Statistiques de profil détaillées",
