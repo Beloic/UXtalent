@@ -1264,21 +1264,14 @@ export default function MyProfilePage() {
             transition={{ delay: 0.1 }}
             className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8"
           >
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">Profil créé automatiquement</h2>
-            <p className="text-blue-700">
+            <h2 className="text-xl font-semibold text-blue-800 mb-4">Bienvenue !</h2>
+            <p className="text-blue-700 mb-6">
               Votre profil candidat a été créé automatiquement lors de votre inscription. 
               Complétez-le maintenant et envoyez-le pour examen par notre équipe.
             </p>
-          </motion.div>
-
-          {/* Bouton pour compléter le profil */}
-          <div className="text-center">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-center"
-            >
+            
+            {/* Bouton pour compléter le profil */}
+            <div className="text-center">
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -1293,8 +1286,8 @@ export default function MyProfilePage() {
                 <Edit className="w-5 h-5" />
                 Compléter mon profil
               </button>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     );
