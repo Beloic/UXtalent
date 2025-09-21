@@ -32,7 +32,7 @@ export default function PublishJobForm({ onJobPublished }) {
     remote: 'onsite',
     type: 'CDI',
     seniority: 'Mid',
-    salary: 'Non spécifié',
+    salary: '',
     description: '',
     requirements: '',
     benefits: '',
@@ -120,11 +120,11 @@ export default function PublishJobForm({ onJobPublished }) {
       case 1:
         return formData.title && formData.company && formData.location;
       case 2:
-        return formData.type && formData.seniority;
+        return formData.type && formData.seniority && formData.salary;
       case 3:
-        return formData.description;
+        return formData.description && formData.requirements;
       case 4:
-        return true; // Les avantages sont optionnels
+        return formData.benefits && formData.tags.length > 0;
       default:
         return false;
     }
@@ -175,7 +175,7 @@ export default function PublishJobForm({ onJobPublished }) {
             remote: 'onsite',
             type: 'CDI',
             seniority: 'Mid',
-            salary: 'Non spécifié',
+            salary: '',
             description: '',
             requirements: '',
             benefits: '',
@@ -199,7 +199,7 @@ export default function PublishJobForm({ onJobPublished }) {
     }
   };
 
-  const isFormValid = formData.title && formData.company && formData.location && formData.description;
+  const isFormValid = formData.title && formData.company && formData.location && formData.description && formData.requirements && formData.benefits && formData.tags.length > 0 && formData.salary;
 
   // Composant pour rendre le contenu de chaque étape
   const renderStepContent = () => {
@@ -329,13 +329,14 @@ export default function PublishJobForm({ onJobPublished }) {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   <DollarSign className="w-4 h-4 inline mr-2" />
-                  Salaire (optionnel)
+                  Salaire *
                 </label>
                 <select
                   name="salary"
                   value={formData.salary}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  required
                 >
                   {salaryRanges.map((range) => (
                     <option key={range} value={range}>
@@ -375,7 +376,7 @@ export default function PublishJobForm({ onJobPublished }) {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 <Briefcase className="w-4 h-4 inline mr-2" />
-                Compétences requises
+                Compétences requises *
               </label>
               <textarea
                 name="requirements"
@@ -384,6 +385,7 @@ export default function PublishJobForm({ onJobPublished }) {
                 placeholder="Listez les compétences techniques et soft skills requises..."
                 rows={4}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                required
               />
             </div>
           </div>
@@ -400,7 +402,7 @@ export default function PublishJobForm({ onJobPublished }) {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 <CheckCircle className="w-4 h-4 inline mr-2" />
-                Avantages et bénéfices
+                Avantages et bénéfices *
               </label>
               <textarea
                 name="benefits"
@@ -409,13 +411,14 @@ export default function PublishJobForm({ onJobPublished }) {
                 placeholder="Télétravail, mutuelle, tickets restaurant, formation..."
                 rows={4}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                required
               />
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 <Tag className="w-4 h-4 inline mr-2" />
-                Tags (optionnel)
+                Tags *
               </label>
               <div className="flex flex-wrap gap-2 mb-3">
                 {formData.tags.map((tag, index) => (
