@@ -899,6 +899,26 @@ export default function MyProfilePage() {
 
 
 
+  // Fonction pour vérifier si tous les champs obligatoires sont remplis
+  const areRequiredFieldsFilled = () => {
+    const requiredFields = {
+      name: 'Nom complet',
+      title: 'Titre du poste',
+      location: 'Localisation',
+      bio: 'Présentation',
+      skills: 'Compétences',
+      portfolio: 'Portfolio',
+      linkedin: 'LinkedIn'
+    };
+
+    for (const [field, label] of Object.entries(requiredFields)) {
+      if (!formData[field] || safeTrim(formData[field]) === '') {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     console.log('🚀 handleSubmit appelé !', { e, user: user?.email, candidateStatus, formDataId: formData.id });
     e.preventDefault();
@@ -1681,6 +1701,7 @@ export default function MyProfilePage() {
                             <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                               <Briefcase className="w-6 h-6 text-blue-600" />
                               Compétences
+                              <span className="text-red-500 text-lg font-bold">*</span>
                             </h2>
                              <button
                                onClick={() => {
@@ -1816,10 +1837,10 @@ export default function MyProfilePage() {
                ))}
              </div>
                             ) : (
-                              <div className="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-                                <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                                <p className="text-gray-500 mb-2">Aucune compétence spécifiée</p>
-                                <p className="text-sm text-gray-400">Cliquez sur "Ajouter" pour commencer</p>
+                              <div className="text-center py-8 bg-red-50 rounded-xl border-2 border-dashed border-red-300">
+                                <Briefcase className="w-12 h-12 text-red-400 mx-auto mb-3" />
+                                <p className="text-red-600 mb-2 font-medium">Aucune compétence spécifiée *</p>
+                                <p className="text-sm text-red-500">Ce champ est obligatoire - Cliquez sur "Ajouter" pour commencer</p>
                               </div>
                             )}
                             
@@ -2674,25 +2695,37 @@ export default function MyProfilePage() {
                     Prêt à soumettre votre profil ?
                   </h3>
                   <p className="text-blue-100 mb-4">
-                    Envoyez votre profil pour qu'il soit examiné par notre équipe
+                    {areRequiredFieldsFilled() 
+                      ? 'Envoyez votre profil pour qu\'il soit examiné par notre équipe'
+                      : 'Remplissez tous les champs obligatoires pour pouvoir envoyer votre profil'
+                    }
                   </p>
                   <button
                     onClick={(e) => {
                       console.log('🖱️ Bouton cliqué !', { activeTab, candidateStatus, formDataId: formData.id });
                       handleSubmit(e);
                     }}
-                    disabled={isLoading}
-                    className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto hover:bg-blue-50 relative z-10 cursor-pointer"
+                    disabled={isLoading || !areRequiredFieldsFilled()}
+                    className={`font-bold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto relative z-10 ${
+                      areRequiredFieldsFilled() 
+                        ? 'bg-white text-blue-600 hover:bg-blue-50 cursor-pointer' 
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
                   >
                     {isLoading ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
                         Envoi en cours...
                       </>
-                    ) : (
+                    ) : areRequiredFieldsFilled() ? (
                       <>
                         <CheckCircle className="w-5 h-5" />
                         Envoyer mon profil pour examen
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="w-5 h-5" />
+                        Remplissez tous les champs obligatoires
                       </>
                     )}
                   </button>
