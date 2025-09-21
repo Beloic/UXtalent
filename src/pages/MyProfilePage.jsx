@@ -106,17 +106,17 @@ export default function MyProfilePage() {
     name: '',
     email: '',
     title: 'Product Designer',
-    location: '',
+    location: 'Paris, France',
     remote: 'hybrid',
-    yearsOfExperience: '', // Nouveau champ
-    bio: '',
-    skills: 'Design System, Recherche utilisateur, Prototypage',
-    portfolio: '',
-    linkedin: '',
-    github: '',
+    yearsOfExperience: '3',
+    bio: 'Designer UX/UI passionné par la création d\'expériences utilisateur exceptionnelles. Spécialisé dans la recherche utilisateur, le design d\'interface et la création de design systems cohérents.',
+    skills: 'Design System, Recherche utilisateur, Prototypage, Figma, Adobe Creative Suite',
+    portfolio: 'https://mon-portfolio-design.com',
+    linkedin: 'https://linkedin.com/in/mon-profil-design',
+    github: 'https://github.com/mon-profil-design',
     photo: null,
-    dailyRate: '',
-    annualSalary: '',
+    dailyRate: '500',
+    annualSalary: '65000',
     updatedAt: null
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -391,6 +391,8 @@ export default function MyProfilePage() {
             setMessage('ℹ️ Aucun profil existant trouvé. Vous pouvez créer un nouveau profil.');
             setCandidateStatus('new');
             setFormData(prev => ({ ...prev, id: null }));
+            // Assigner les valeurs par défaut réalistes pour le nouveau candidat
+            assignDefaultValues();
             return;
           }
           console.error('🔄 SUPABASE DIRECT - Erreur:', error);
@@ -550,6 +552,8 @@ export default function MyProfilePage() {
         setCandidateStatus('new'); // Nouveau statut pour les nouveaux profils
         // S'assurer que formData.id reste null pour les nouveaux candidats
         setFormData(prev => ({ ...prev, id: null }));
+        // Assigner les valeurs par défaut réalistes pour le nouveau candidat
+        assignDefaultValues();
       } else if (response) {
         const errorText = await response.text();
         console.log('🔍 ERREUR DE RÉPONSE:', {
@@ -581,6 +585,8 @@ export default function MyProfilePage() {
       // En cas d'erreur réseau, considérer comme nouveau candidat
       setCandidateStatus('new');
       setFormData(prev => ({ ...prev, id: null }));
+      // Assigner les valeurs par défaut réalistes pour le nouveau candidat
+      assignDefaultValues();
     } finally {
       setIsLoadingProfile(false);
     }
@@ -600,6 +606,25 @@ export default function MyProfilePage() {
       loadExistingProfile();
     }
   }, [user, loadExistingProfile]);
+
+  // Fonction pour assigner les valeurs par défaut réalistes lors de la première connexion
+  const assignDefaultValues = () => {
+    console.log('🎯 Assignation des valeurs par défaut réalistes pour nouveau candidat');
+    setFormData(prev => ({
+      ...prev,
+      title: 'Product Designer',
+      location: 'Paris, France',
+      remote: 'hybrid',
+      yearsOfExperience: '3',
+      bio: 'Designer UX/UI passionné par la création d\'expériences utilisateur exceptionnelles. Spécialisé dans la recherche utilisateur, le design d\'interface et la création de design systems cohérents.',
+      skills: 'Design System, Recherche utilisateur, Prototypage, Figma, Adobe Creative Suite',
+      portfolio: 'https://mon-portfolio-design.com',
+      linkedin: 'https://linkedin.com/in/mon-profil-design',
+      github: 'https://github.com/mon-profil-design',
+      dailyRate: '500',
+      annualSalary: '65000'
+    }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
