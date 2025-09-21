@@ -155,7 +155,6 @@ export default function MyProfilePage() {
       const token = session.data.session?.access_token;
       
       if (!token) {
-        console.error('Token d\'authentification manquant');
         return;
       }
       
@@ -170,22 +169,15 @@ export default function MyProfilePage() {
         // Vérifier que la réponse est bien du JSON avant de l'analyser
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
-          console.error('❌ loadProfileStats - Réponse non-JSON reçue:', {
-            contentType,
-            status: response.status,
-            url: response.url
-          });
           return;
         }
         
         const stats = await response.json();
         setProfileStats(stats);
       } else {
-        console.error('Erreur lors du chargement des statistiques:', response.status);
-      }
+        }
     } catch (error) {
-      console.error('Erreur lors du chargement des statistiques:', error);
-    } finally {
+      } finally {
       setIsLoadingStats(false);
     }
   }, [user]);
@@ -201,7 +193,6 @@ export default function MyProfilePage() {
       const token = session.data.session?.access_token;
       
       if (!token) {
-        console.error('Token d\'authentification manquant');
         return;
       }
       
@@ -216,22 +207,15 @@ export default function MyProfilePage() {
         // Vérifier que la réponse est bien du JSON avant de l'analyser
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
-          console.error('❌ loadChartData - Réponse non-JSON reçue:', {
-            contentType,
-            status: response.status,
-            url: response.url
-          });
           return;
         }
         
         const result = await response.json();
         setChartData(result.data);
       } else {
-        console.error('Erreur lors du chargement des données du graphique');
-      }
+        }
     } catch (error) {
-      console.error('Erreur lors du chargement des données du graphique:', error);
-    } finally {
+      } finally {
       setIsLoadingChart(false);
     }
   }, [user, chartPeriod, chartOffset]);
@@ -269,7 +253,6 @@ export default function MyProfilePage() {
         const token = session.data.session?.access_token;
         
         if (!token) {
-          console.log('🔄 refreshPlan - Token manquant, utilisation du plan par défaut');
           setCandidatePlan('free');
           return;
         }
@@ -285,11 +268,6 @@ export default function MyProfilePage() {
           // Vérifier que la réponse est bien du JSON avant de l'analyser
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
-            console.error('❌ refreshPlan - Réponse non-JSON reçue:', {
-              contentType,
-              status: response.status,
-              url: response.url
-            });
             return;
           }
           
@@ -297,7 +275,6 @@ export default function MyProfilePage() {
           // Gérer les deux formats de réponse possibles
           const userProfile = responseData.candidates?.[0] || responseData;
           if (userProfile && userProfile.plan !== candidatePlan) {
-            console.log('🔄 Plan mis à jour détecté:', userProfile.plan, 'ancien:', candidatePlan);
             setCandidatePlan(userProfile.plan || 'free');
 
             // Déclencher l'événement pour notifier les autres composants
@@ -307,12 +284,9 @@ export default function MyProfilePage() {
           }
         }
       } catch (error) {
-        console.error('Erreur lors du rafraîchissement du plan:', error);
-        
         // Gestion spéciale pour les erreurs de parsing JSON
         if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
-          console.error('❌ refreshPlan - Erreur de parsing JSON détectée - probablement une réponse HTML');
-        }
+          }
       } finally {
         setIsRefreshingPlan(false);
       }
@@ -333,10 +307,6 @@ export default function MyProfilePage() {
       
       // Essayer d'abord l'API Vercel, puis fallback vers Supabase direct
       const apiUrl = buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`);
-      console.log('🌐 API VERCEL - URL API COMPLÈTE:', apiUrl);
-      console.log('🌐 API VERCEL - USER EMAIL:', user.email);
-      console.log('🌐 API VERCEL - Appel API en cours...');
-      
       let response;
       let useDirectSupabase = false;
       
@@ -346,7 +316,6 @@ export default function MyProfilePage() {
         const token = session.data.session?.access_token;
         
         if (!token) {
-          console.log('🌐 API VERCEL - Token manquant, utilisation de Supabase direct');
           useDirectSupabase = true;
         } else {
           response = await fetch(apiUrl, {
@@ -357,34 +326,22 @@ export default function MyProfilePage() {
           });
         }
       } catch (fetchError) {
-        console.log('🌐 API VERCEL - Erreur fetch, utilisation de Supabase direct:', fetchError);
         useDirectSupabase = true;
       }
       
       if (response) {
-        console.log('🌐 API VERCEL - RÉPONSE:', {
-          status: response.status,
-          statusText: response.statusText,
-          ok: response.ok,
-          url: response.url
-        });
-        
         // Si erreur 500, essayer de lire le contenu de l'erreur et utiliser Supabase direct
         if (!response.ok) {
         try {
           const errorText = await response.text();
-          console.log('🌐 API VERCEL - ERREUR DÉTAILLÉE:', errorText);
-        } catch (e) {
-          console.log('🌐 API VERCEL - Impossible de lire l\'erreur:', e);
-        }
-        console.log('🌐 API VERCEL - Erreur détectée, utilisation de Supabase direct');
+          } catch (e) {
+          }
         useDirectSupabase = true;
         }
       }
       
       // Fallback vers Supabase direct si nécessaire
       if (useDirectSupabase) {
-        console.log('🔄 SUPABASE DIRECT - Recherche du profil pour email:', user.email);
         const { data: candidate, error } = await supabaseAdmin
           .from('candidates')
           .select('*')
@@ -393,7 +350,6 @@ export default function MyProfilePage() {
           
         if (error) {
           if (error.code === 'PGRST116') {
-            console.log('🔄 SUPABASE DIRECT - Profil non trouvé (404) pour email:', user.email);
             setMessage('ℹ️ Aucun profil existant trouvé. Vous pouvez créer un nouveau profil.');
             setCandidateStatus('new');
             setFormData(prev => ({ ...prev, id: null }));
@@ -401,12 +357,9 @@ export default function MyProfilePage() {
             assignDefaultValues();
             return;
           }
-          console.error('🔄 SUPABASE DIRECT - Erreur:', error);
           setMessage(`❌ Erreur: ${error.message}`);
           return;
         }
-        
-        console.log('🔄 SUPABASE DIRECT - Profil trouvé:', candidate);
         
         // Traiter le candidat trouvé
         const status = candidate.status || 'pending';
@@ -441,14 +394,8 @@ export default function MyProfilePage() {
         // Vérifier que la réponse est bien du JSON avant de l'analyser
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
-          console.error('❌ Réponse non-JSON reçue:', {
-            contentType,
-            status: response.status,
-            url: response.url
-          });
           // Essayer de lire le contenu pour debug
           const textContent = await response.text();
-          console.error('❌ Contenu de la réponse:', textContent.substring(0, 200));
           throw new Error('Réponse non-JSON reçue de l\'API');
         }
         
@@ -457,45 +404,13 @@ export default function MyProfilePage() {
         // La route /api/candidates/profile/:email retourne directement le candidat
         const existingCandidate = responseData;
 
-        console.log('🌐 BACKEND RENDER - RÉPONSE SUCCÈS - Données reçues:', responseData);
-        console.log('🌐 BACKEND RENDER - CANDIDAT EXTRAIT:', existingCandidate);
-
-        console.log('🔍 PROFIL CHARGÉ:', {
-          existingCandidate,
-          status: existingCandidate?.status,
-          id: existingCandidate?.id,
-          email: existingCandidate?.email,
-          name: existingCandidate?.name
-        });
-        
-        console.log('🔍 PROFIL CHARGÉ - DÉTAILS STATUT:', {
-          rawStatus: existingCandidate?.status,
-          statusType: typeof existingCandidate?.status,
-          statusLength: existingCandidate?.status?.length,
-          statusIsNew: existingCandidate?.status === 'new',
-          statusIsPending: existingCandidate?.status === 'pending',
-          statusIsApproved: existingCandidate?.status === 'approved',
-          statusIsRejected: existingCandidate?.status === 'rejected'
-        });
-        
         if (existingCandidate) {
           // Logique simplifiée : utiliser directement le statut
           const status = existingCandidate.status || 'pending';
           
-          console.log('🔍 STATUT DÉFINI:', {
-            originalStatus: existingCandidate.status,
-            finalStatus: status,
-            candidateId: existingCandidate.id
-          });
-          
           setCandidateStatus(status);
           
           // Log après setCandidateStatus
-          console.log('🔍 CANDIDATESTATUS DÉFINI DANS STATE:', {
-            statusSetTo: status,
-            willTriggerRerender: true
-          });
-          
           // Charger le plan du candidat
           setCandidatePlan(existingCandidate.plan || 'free');
           
@@ -549,11 +464,6 @@ export default function MyProfilePage() {
         }
       } else if (response && response.status === 404) {
         // Candidat non trouvé - c'est normal pour un nouveau profil
-        console.log('🔍 PROFIL NON TROUVÉ (404):', {
-          userEmail: user.email,
-          responseStatus: response.status,
-          action: 'Setting candidateStatus to "new"'
-        });
         setMessage('ℹ️ Aucun profil existant trouvé. Vous pouvez créer un nouveau profil.');
         setCandidateStatus('new'); // Nouveau statut pour les nouveaux profils
         // S'assurer que formData.id reste null pour les nouveaux candidats
@@ -562,27 +472,11 @@ export default function MyProfilePage() {
         assignDefaultValues();
       } else if (response) {
         const errorText = await response.text();
-        console.log('🔍 ERREUR DE RÉPONSE:', {
-          status: response.status,
-          statusText: response.statusText,
-          errorText: errorText,
-          userEmail: user.email,
-          url: buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`)
-        });
-        console.error('❌ Erreur de réponse:', response.status, errorText);
         setMessage(`❌ Erreur lors du chargement: ${response.status}`);
       }
     } catch (error) {
-      console.log('🔍 ERREUR CATCH:', {
-        error: error.message,
-        userEmail: user.email,
-        action: 'Setting candidateStatus to "new" due to error'
-      });
-      console.error('❌ Erreur lors du chargement du profil existant:', error);
-      
       // Gestion spéciale pour les erreurs de parsing JSON
       if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
-        console.error('❌ Erreur de parsing JSON détectée - probablement une réponse HTML');
         setMessage('❌ Erreur de communication avec le serveur. Veuillez réessayer.');
       } else {
         setMessage(`❌ Erreur: ${error.message}`);
@@ -619,21 +513,17 @@ export default function MyProfilePage() {
   // Assigner les valeurs par défaut dès que l'utilisateur est connecté et qu'aucun profil n'existe
   useEffect(() => {
     if (user && !isLoadingProfile && candidateStatus === 'new') {
-      console.log('🎯 Nouveau candidat détecté, assignation des valeurs par défaut');
       assignDefaultValues();
     }
   }, [user, isLoadingProfile, candidateStatus]);
 
   // Fonction pour assigner les valeurs par défaut réalistes lors de la première connexion
   const assignDefaultValues = () => {
-    console.log('🎯 Assignation des valeurs par défaut réalistes pour nouveau candidat');
-    console.log('🎯 DEFAULT_VALUES:', DEFAULT_VALUES);
     setFormData(prev => {
       const newData = {
         ...prev,
         ...DEFAULT_VALUES
       };
-      console.log('🎯 Nouveau formData avec valeurs par défaut:', newData);
       return newData;
     });
   };
@@ -711,13 +601,6 @@ export default function MyProfilePage() {
         }
       }
       
-      console.log('💾 Sauvegarde champ:', { 
-        field: editingField, 
-        value: tempValue, 
-        formDataId: formData.id,
-        updateData 
-      });
-      
       const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`), {
         method: 'PUT',
         headers: {
@@ -727,12 +610,6 @@ export default function MyProfilePage() {
         body: JSON.stringify(updateData)
       });
 
-      console.log('📡 Réponse sauvegarde:', { 
-        status: response.status, 
-        ok: response.ok,
-        statusText: response.statusText 
-      });
-
       if (response.ok) {
         setMessage('✅ Champ mis à jour avec succès');
         setTimeout(() => setMessage(''), 3000);
@@ -740,7 +617,6 @@ export default function MyProfilePage() {
         // Ne pas recharger automatiquement la page - les données sont déjà mises à jour localement
       } else {
         const errorText = await response.text();
-        console.error('❌ Erreur sauvegarde:', errorText);
         throw new Error(`Erreur ${response.status}: ${errorText}`);
       }
     } catch (error) {
@@ -755,12 +631,7 @@ export default function MyProfilePage() {
 
   // Fonction pour annuler l'abonnement
   const handleCancelSubscription = async () => {
-    console.log('🔄 handleCancelSubscription appelée');
-    console.log('📊 formData:', formData);
-    console.log('👤 user:', user);
-    
     if (!formData.id || !user) {
-      console.error('❌ Données manquantes:', { formDataId: formData.id, user: !!user });
       alert('Erreur: Profil candidat non trouvé');
       return;
     }
@@ -770,17 +641,11 @@ export default function MyProfilePage() {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
-      console.log('🔑 Token:', token ? 'Présent' : 'Manquant');
-      
       if (!token) {
         throw new Error('Token d\'authentification manquant');
       }
 
-      console.log('🔄 Annulation abonnement pour candidat:', formData.id);
-
       const apiUrl = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/cancel-subscription/`);
-      console.log('🌐 URL API:', apiUrl);
-
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -789,12 +654,8 @@ export default function MyProfilePage() {
         }
       });
 
-      console.log('📡 Réponse API:', { status: response.status, ok: response.ok });
-
       if (response.ok) {
         const result = await response.json();
-        console.log('✅ Abonnement annulé avec succès:', result);
-        
         // Stocker les informations d'annulation
         setCancellationInfo({
           access_until: result.access_until,
@@ -823,8 +684,6 @@ export default function MyProfilePage() {
         
       } else {
         const errorData = await response.json();
-        console.error('❌ Erreur API:', errorData);
-        
         // Gestion spéciale pour le service indisponible
         if (response.status === 503) {
           throw new Error('Le service d\'annulation est temporairement indisponible. Veuillez contacter le support à contact@ux-jobs-pro.com pour annuler votre abonnement.');
@@ -833,7 +692,6 @@ export default function MyProfilePage() {
         throw new Error(errorData.error || `Erreur ${response.status}`);
       }
     } catch (error) {
-      console.error('❌ Erreur lors de l\'annulation:', error);
       setMessage(`❌ Erreur lors de l'annulation: ${error.message}`);
       setTimeout(() => setMessage(''), 5000);
     } finally {
@@ -933,10 +791,6 @@ export default function MyProfilePage() {
     );
   };
 
-
-
-
-
   // Fonction pour vérifier si tous les champs obligatoires sont remplis
   const areRequiredFieldsFilled = () => {
     const requiredFields = {
@@ -955,44 +809,27 @@ export default function MyProfilePage() {
       skills: DEFAULT_VALUES.skills
     };
 
-    console.log('🔍 Validation des champs obligatoires:', formData);
-    
     for (const [field, label] of Object.entries(requiredFields)) {
       const value = formData[field];
       const defaultValue = defaultValues[field];
       const isEmpty = !value || safeTrim(value) === '';
       const isDefaultValue = defaultValue && safeTrim(value) === defaultValue;
       
-      console.log(`🔍 Champ ${field} (${label}):`, { 
-        value, 
-        isEmpty, 
-        trimmed: safeTrim(value),
-        defaultValue,
-        isDefaultValue,
-        isValid: !isEmpty || isDefaultValue
-      });
-      
       // Un champ est valide s'il n'est pas vide OU s'il a une valeur par défaut
       if (isEmpty && !isDefaultValue) {
-        console.log(`❌ Champ manquant: ${field} (${label})`);
         return false;
       }
     }
     
-    console.log('✅ Tous les champs obligatoires sont remplis');
     return true;
   };
 
   const handleSubmit = async (e) => {
-    console.log('🚀 handleSubmit appelé !', { e, user: user?.email, candidateStatus, formDataId: formData.id });
-    console.log('🚀 formData actuel:', formData);
-    console.log('🚀 areRequiredFieldsFilled():', areRequiredFieldsFilled());
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
 
     if (!user) {
-      console.log('❌ Pas d\'utilisateur connecté');
       setMessage('Vous devez être connecté pour créer un profil');
       setIsLoading(false);
       return;
@@ -1000,7 +837,6 @@ export default function MyProfilePage() {
 
     // Validation des champs obligatoires pour les profils 'new' ou nouveaux
     if (!formData.id || candidateStatus === 'new') {
-      console.log('🔍 Validation des champs obligatoires...', { formDataId: formData.id, candidateStatus });
       const requiredFields = {
         name: 'Nom complet',
         title: 'Métier',
@@ -1013,25 +849,20 @@ export default function MyProfilePage() {
       for (const [field, label] of Object.entries(requiredFields)) {
         const value = formData[field];
         const isEmpty = !value || safeTrim(value) === '';
-        console.log(`🔍 Champ ${field}:`, { value, isEmpty });
         if (isEmpty) {
           missingFields.push(label);
         }
       }
 
-      console.log('🔍 Champs manquants:', missingFields);
       if (missingFields.length > 0) {
         const errorMsg = `❌ Veuillez remplir tous les champs obligatoires : ${missingFields.join(', ')}`;
-        console.log('❌ Validation échouée:', errorMsg);
         setMessage(errorMsg);
         setIsLoading(false);
         return;
       }
-      console.log('✅ Validation réussie !');
-    }
+      }
 
     try {
-      console.log('🚀 Début du traitement de l\'envoi...');
       let photoUrl = null;
       
       // Gestion de la photo
@@ -1137,8 +968,7 @@ export default function MyProfilePage() {
         dailyRate: formData.dailyRate || DEFAULT_VALUES.dailyRate,
         annualSalary: formData.annualSalary || DEFAULT_VALUES.annualSalary
       };
-      
-      
+
       // Déterminer l'URL et la méthode selon si le profil existe déjà
       const url = formData.id 
         ? buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`)
@@ -1150,7 +980,6 @@ export default function MyProfilePage() {
       const token = session.data.session?.access_token;
       
       if (!token) {
-        console.error('Token d\'authentification manquant');
         setMessage('❌ Erreur d\'authentification. Veuillez vous reconnecter.');
         return;
       }
@@ -1201,8 +1030,7 @@ export default function MyProfilePage() {
       }
     } catch (error) {
       setMessage(`Erreur lors de la création du profil: ${error.message}`);
-      console.error('Erreur détaillée:', error);
-    } finally {
+      } finally {
       setIsLoading(false);
     }
   };
@@ -1235,7 +1063,6 @@ export default function MyProfilePage() {
       </div>
     );
   }
-
 
   // Interface pour les candidats en attente
   if (candidateStatus === 'pending') {
@@ -1471,8 +1298,6 @@ export default function MyProfilePage() {
       </div>
     );
   }
-
-
 
   return (
     <div className="min-h-screen py-8">
@@ -1792,12 +1617,6 @@ export default function MyProfilePage() {
                        // Sauvegarder automatiquement
                        setTimeout(async () => {
                          try {
-                           console.log('🗑️ Suppression de compétence:', { 
-                             formDataId: formData.id, 
-                             newSkills: newSkills.join(', '),
-                             originalSkills: formData.skills 
-                           });
-                           
                            if (!formData.id) {
                              throw new Error('ID du profil manquant');
                            }
@@ -1812,8 +1631,6 @@ export default function MyProfilePage() {
                            const updateData = { skills: newSkills };
                            const url = buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`);
                            
-                           console.log('📡 Appel API:', { url, updateData });
-                           
                            const response = await fetch(url, {
                              method: 'PUT',
                              headers: {
@@ -1823,22 +1640,14 @@ export default function MyProfilePage() {
                              body: JSON.stringify(updateData)
                            });
 
-                           console.log('📡 Réponse API:', { 
-                             status: response.status, 
-                             ok: response.ok,
-                             statusText: response.statusText 
-                           });
-
                            if (response.ok) {
                              setMessage('✅ Compétence supprimée avec succès');
                              setTimeout(() => setMessage(''), 3000);
                            } else {
                              const errorText = await response.text();
-                             console.error('❌ Erreur API:', errorText);
                              throw new Error(`Erreur ${response.status}: ${errorText}`);
                            }
                          } catch (error) {
-                           console.error('❌ Erreur complète:', error);
                            setMessage(`❌ Erreur: ${error.message}`);
                            setTimeout(() => setMessage(''), 3000);
                          }
@@ -2131,8 +1940,6 @@ export default function MyProfilePage() {
               </div>
             </motion.div>
           )}
-
-
 
           {activeTab === 'stats' && (
             <motion.div
@@ -2511,38 +2318,7 @@ export default function MyProfilePage() {
                 // Logique : afficher le bouton pour les profils qui peuvent envoyer/modifier
                 const shouldShow = candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
                 
-                console.log('🔍 Debug bouton DÉTAILLÉ:', {
-                  candidateStatus: candidateStatus,
-                  candidateStatusType: typeof candidateStatus,
-                  formDataId: formData.id,
-                  formDataIdType: typeof formData.id,
-                  shouldShow: shouldShow,
-                  userEmail: user?.email,
-                  condition1: '!formData.id',
-                  condition1Result: !formData.id,
-                  condition2: 'candidateStatus === "new"',
-                  condition2Result: candidateStatus === 'new',
-                  condition3: 'candidateStatus === "pending"',
-                  condition3Result: candidateStatus === 'pending',
-                  condition4: 'candidateStatus === "rejected"',
-                  condition4Result: candidateStatus === 'rejected',
-                  fullCondition: '!formData.id || candidateStatus === "new" || candidateStatus === "pending" || candidateStatus === "rejected" (BUTTON)'
-                });
-                
                 // Logs supplémentaires pour debug
-                console.log('🔍 État complet du composant:', {
-                  isLoadingProfile,
-                  isAuthenticated,
-                  user: user ? { id: user.id, email: user.email } : null,
-                  formData: {
-                    id: formData.id,
-                    name: formData.name,
-                    email: formData.email
-                  },
-                  candidateStatus,
-                  message
-                });
-                
                 return shouldShow;
               })()}
               
@@ -2695,7 +2471,6 @@ export default function MyProfilePage() {
 
           {/* Bouton permanent pour envoyer le profil en examen */}
           {(() => {
-            console.log('🔍 Vérification affichage bouton:', { activeTab, candidateStatus, formDataId: formData.id });
             return activeTab === 'view' && candidateStatus !== 'approved';
           })() && (
             <motion.div
@@ -2717,7 +2492,6 @@ export default function MyProfilePage() {
                   </p>
                   <button
                     onClick={(e) => {
-                      console.log('🖱️ Bouton cliqué !', { activeTab, candidateStatus, formDataId: formData.id });
                       handleSubmit(e);
                     }}
                     disabled={isLoading || !areRequiredFieldsFilled()}
@@ -2771,8 +2545,7 @@ export default function MyProfilePage() {
                       <button
                         onClick={() => {
                           loadExistingProfile();
-                          console.log('🔄 Plan rafraîchi manuellement');
-                        }}
+                          }}
                         disabled={isRefreshingPlan}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 mx-auto ${
                           isRefreshingPlan 
@@ -3251,7 +3024,6 @@ export default function MyProfilePage() {
                   </button>
                   <button
                     onClick={async () => {
-                      console.log('🖱️ Bouton de confirmation cliqué');
                       setShowCancelConfirm(false);
                       await handleCancelSubscription();
                     }}
