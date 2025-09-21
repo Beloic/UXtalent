@@ -413,12 +413,7 @@ export default function MyProfilePage() {
           location: candidate.location || '',
           remote: candidate.remote || 'hybrid',
           experience: candidate.experience || '',
-          skills: (() => {
-            const skills = Array.isArray(candidate.skills)
-              ? candidate.skills.join(', ')
-              : candidate.skills || '';
-            return skills.trim() === '' ? 'UX Design, Figma' : skills;
-          })(),
+          skills: candidate.skills && candidate.skills.trim() !== '' ? candidate.skills : 'UX Design, Figma',
           bio: candidate.bio || '',
           portfolio: candidate.portfolio || '',
           linkedin: candidate.linkedin || '',
@@ -1248,22 +1243,100 @@ export default function MyProfilePage() {
     );
   }
 
-  // Redirection automatique pour les nouveaux profils
-  useEffect(() => {
-    if (candidateStatus === 'new' && !isEditingNew) {
-      setIsEditingNew(true);
-      navigateToTab('view');
-    }
-  }, [candidateStatus, isEditingNew]);
-
-  // Interface pour les candidats avec statut "new" (nouveaux profils) - redirection automatique vers l'édition
+  // Interface pour les candidats avec statut "new" (nouveaux profils) - sauf s'ils sont en mode édition
   if (candidateStatus === 'new' && !isEditingNew) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Préparation de votre profil...</h1>
-          <p className="text-gray-600">Redirection vers l'éditeur de profil</p>
+      <div className="min-h-screen py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          {/* Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <Link 
+                to="/candidates" 
+                className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Retour
+              </Link>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="p-4 rounded-2xl bg-blue-600 shadow-lg">
+                <User className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon Profil</h1>
+                <p className="text-gray-600">Votre profil candidat</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Message pour nouveau profil */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <AlertCircle className="w-5 h-5 text-blue-600" />
+              <h2 className="text-xl font-semibold text-blue-800">Profil créé automatiquement</h2>
+            </div>
+            <p className="text-blue-700 mb-4">
+              Votre profil candidat a été créé automatiquement lors de votre inscription. 
+              Complétez-le maintenant et envoyez-le pour examen par notre équipe.
+            </p>
+            <div className="bg-white rounded-lg p-4 border border-blue-200">
+              <h3 className="font-semibold text-gray-900 mb-3">Informations de votre profil :</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="font-medium text-gray-600">Nom :</span>
+                  <span className="ml-2 text-gray-900">{formData.name || 'Non renseigné'}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Email :</span>
+                  <span className="ml-2 text-gray-900">{formData.email}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Métier :</span>
+                  <span className="ml-2 text-gray-900">{formData.title || 'Non renseigné'}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Localisation :</span>
+                  <span className="ml-2 text-gray-900">{formData.location || 'Non renseignée'}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Bouton pour compléter le profil */}
+          <div className="text-center">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-center"
+            >
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Ouvrir l'éditeur de profil in-line pour les utilisateurs avec statut "new"
+                  setIsEditingNew(true);
+                  navigateToTab('view');
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl font-semibold cursor-pointer"
+                style={{ pointerEvents: 'auto', zIndex: 1000 }}
+              >
+                <Edit className="w-5 h-5" />
+                Compléter mon profil
+              </button>
+            </motion.div>
+          </div>
         </div>
       </div>
     );
