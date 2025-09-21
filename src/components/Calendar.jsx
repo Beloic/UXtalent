@@ -311,10 +311,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
       {/* Header du calendrier */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <CalendarIcon className="w-6 h-6 text-blue-600" />
-            Calendrier des entretiens
-          </h2>
           <span className="text-gray-600">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
           </span>

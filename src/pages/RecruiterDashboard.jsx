@@ -694,6 +694,7 @@ export default function RecruiterDashboard() {
                   ) : (
                     <CalendarIcon className="w-4 h-4" />
                   )}
+                  Mes rendez-vous
                   {candidates.length > 0 && !refreshing && (
                     <span className="bg-purple-100 text-purple-800 text-xs font-medium px-1.5 py-0.5 rounded-full">
                       {candidates.length}
@@ -982,7 +983,6 @@ export default function RecruiterDashboard() {
                   <div className="bg-white rounded-xl shadow-md border border-gray-100 p-8 hover:shadow-lg hover:border-gray-200 transition-all duration-200 my-4">
                     <div className="flex items-center justify-between mb-8">
                       <div>
-                        <h2 className="text-2xl font-bold text-gray-900">Mes Rendez-vous</h2>
                       </div>
                       {refreshing && (
                         <div className="flex items-center gap-2 text-blue-600">

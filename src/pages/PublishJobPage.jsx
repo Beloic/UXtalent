@@ -19,11 +19,9 @@ export default function PublishJobPage() {
           </Link>
           {/* Titre et sous-texte supprimés selon demande */}
         </div>
-        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
-          <PublishJobForm onJobPublished={() => {
-            navigate('/recruiter-dashboard?tab=myjobs');
-          }} />
-        </div>
+        <PublishJobForm onJobPublished={() => {
+          navigate('/recruiter-dashboard?tab=myjobs');
+        }} />
     </div>
   );
 }

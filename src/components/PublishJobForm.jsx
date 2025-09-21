@@ -458,7 +458,6 @@ export default function PublishJobForm({ onJobPublished }) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-3xl shadow-xl border border-gray-100"
     >
         {/* Header */}
         <div className="p-8 border-b border-gray-200">
