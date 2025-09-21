@@ -1871,7 +1871,7 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">LinkedIn</p>
                                 <EditableField
                                   fieldName="linkedin"
-                                  value={formData.linkedin}
+                                  value={formData.linkedin || 'https://linkedin.com/in/votre-profil'}
                                   placeholder="https://linkedin.com/in/votre-profil"
                                   className="font-semibold text-gray-900"
                                 />
@@ -1887,7 +1887,7 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">Portfolio</p>
                                 <EditableField
                                   fieldName="portfolio"
-                                  value={formData.portfolio}
+                                  value={formData.portfolio || 'https://votre-portfolio.com'}
                                   placeholder="https://votre-portfolio.com"
                                   className="font-semibold text-gray-900"
                                 />
@@ -1903,7 +1903,7 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">GitHub</p>
                                 <EditableField
                                   fieldName="github"
-                                  value={formData.github}
+                                  value={formData.github || 'https://github.com/votre-profil'}
                                   placeholder="https://github.com/votre-profil"
                                   className="font-semibold text-gray-900"
                                 />
