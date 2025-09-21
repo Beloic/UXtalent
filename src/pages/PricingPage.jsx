@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Check, Users, Briefcase, Star, ArrowRight, CheckCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
+import { useRecruiter } from "../hooks/useRecruiter";
 import { buildApiUrl } from "../config/api";
 import { supabase } from "../lib/supabase";
 
@@ -10,6 +11,7 @@ export default function PricingPage() {
   const [selectedTab, setSelectedTab] = useState('candidates');
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter } = usePermissions();
+  const { recruiter, getPlanInfo } = useRecruiter();
   const [userPlan, setUserPlan] = useState(null);
   const [isLoadingPlan, setIsLoadingPlan] = useState(false);
 
@@ -177,14 +179,24 @@ export default function PricingPage() {
 
   // Fonction pour vérifier si un plan est le plan actuel de l'utilisateur
   const isCurrentPlan = (planName) => {
+    // Pour les recruteurs, utiliser les données du hook useRecruiter
+    if (isRecruiter && recruiter) {
+      const recruiterPlanType = recruiter.plan_type;
+      const planMapping = {
+        'Starter': 'starter',
+        'Max': 'max',
+        'Sur-mesure': 'premium'
+      };
+      return planMapping[planName] === recruiterPlanType;
+    }
+    
+    // Pour les candidats, utiliser l'ancienne logique
     if (!userPlan) return false;
     
     const planMapping = {
       'Gratuit': 'free',
       'Premium': 'premium',
-      'Pro': 'pro',
-      'Starter': 'starter',
-      'Max': 'max'
+      'Pro': 'pro'
     };
     
     return planMapping[planName] === userPlan;
@@ -287,6 +299,11 @@ export default function PricingPage() {
 
               {isCurrentPlan(plan.name) && selectedTab === 'recruiters' && isRecruiter ? (
                 <div className="w-full py-4 px-6 rounded-xl font-semibold bg-green-100 text-green-800 border-2 border-green-300 flex items-center justify-center gap-2">
+                  <CheckCircle className="w-5 h-5" />
+                  Plan actuel
+                </div>
+              ) : isCurrentPlan(plan.name) && selectedTab === 'candidates' ? (
+                <div className="w-full py-4 px-6 rounded-xl font-semibold bg-blue-100 text-blue-800 border-2 border-blue-300 flex items-center justify-center gap-2">
                   <CheckCircle className="w-5 h-5" />
                   Plan actuel
                 </div>

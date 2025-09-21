@@ -5,12 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import { usePermissions } from "../hooks/usePermissions";
+import { useRecruiter } from "../hooks/useRecruiter";
 import { buildApiUrl } from "../config/api";
 import { ConditionalRender } from "./RoleGuard";
 
 export default function Layout({ children, hideFooter = false, hideTopBar = false }) {
   const { user, signOut, isAuthenticated } = useAuth();
   const { isCandidate, isRecruiter, isAdmin, userRole } = usePermissions();
+  const { recruiter, getPlanInfo } = useRecruiter();
   const [hasProfile, setHasProfile] = useState(null);
   const [candidatePlan, setCandidatePlan] = useState('free');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -94,7 +96,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
     };
   }, [isAuthenticated, user]);
 
-  // Fonction pour obtenir le badge de plan
+  // Fonction pour obtenir le badge de plan candidat
   const getPlanBadge = (plan) => {
     switch (plan) {
       case 'premium':
@@ -113,6 +115,40 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
         );
       default:
         // Ne pas afficher de badge pour le plan gratuit
+        return null;
+    }
+  };
+
+  // Fonction pour obtenir le badge de plan recruteur
+  const getRecruiterPlanBadge = () => {
+    if (!recruiter) return null;
+    
+    const planInfo = getPlanInfo();
+    const planType = recruiter.plan_type;
+    
+    switch (planType) {
+      case 'starter':
+        return (
+          <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-green-600 text-white rounded-full shadow-lg">
+            <span className="text-green-200">🚀</span>
+            Starter
+          </span>
+        );
+      case 'max':
+        return (
+          <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-lg">
+            <span className="text-purple-100">⭐</span>
+            Max
+          </span>
+        );
+      case 'premium':
+        return (
+          <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full shadow-lg">
+            <span className="text-yellow-100">👑</span>
+            Premium
+          </span>
+        );
+      default:
         return null;
     }
   };
@@ -268,13 +304,16 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 
                 {/* Bouton pour les recruteurs */}
                 <ConditionalRender role="recruiter">
-                  <Link 
-                    to="/recruiter-dashboard" 
-                    className="inline-flex items-center gap-2 px-4 py-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
-                  >
-                    <Users className="w-4 h-4" />
-                    Dashboard
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link 
+                      to="/recruiter-dashboard" 
+                      className="inline-flex items-center gap-2 px-4 py-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
+                    >
+                      <Users className="w-4 h-4" />
+                      Dashboard
+                    </Link>
+                    {getRecruiterPlanBadge()}
+                  </div>
                 </ConditionalRender>
                 
                 
@@ -449,14 +488,19 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     
                     {/* Bouton pour les recruteurs */}
                     <ConditionalRender role="recruiter">
-                      <Link 
-                        to="/recruiter-dashboard" 
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
-                      >
-                        <Users className="w-5 h-5" />
-                        Dashboard
-                      </Link>
+                      <div className="space-y-2">
+                        <Link 
+                          to="/recruiter-dashboard" 
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
+                        >
+                          <Users className="w-5 h-5" />
+                          Dashboard
+                        </Link>
+                        <div className="px-4">
+                          {getRecruiterPlanBadge()}
+                        </div>
+                      </div>
                     </ConditionalRender>
                     
                     <button
