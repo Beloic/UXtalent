@@ -121,13 +121,28 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
   // Fonction pour obtenir le badge de plan recruteur
   const getRecruiterPlanBadge = () => {
-    if (!recruiter) return null;
+    console.log('🎯 [Layout] getRecruiterPlanBadge appelé');
+    console.log('   - recruiter:', recruiter);
+    console.log('   - isRecruiter:', isRecruiter);
+    console.log('   - user:', user);
+    
+    if (!recruiter) {
+      console.log('❌ [Layout] Aucun recruteur, badge non affiché');
+      return null;
+    }
     
     const planInfo = getPlanInfo();
     const planType = recruiter.plan_type;
     
+    console.log('✅ [Layout] Recruteur trouvé:', {
+      planType,
+      planInfo,
+      recruiterData: recruiter
+    });
+    
     switch (planType) {
       case 'starter':
+        console.log('🚀 [Layout] Affichage badge Starter');
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-green-600 text-white rounded-full shadow-lg">
             <span className="text-green-200">🚀</span>
@@ -135,6 +150,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           </span>
         );
       case 'max':
+        console.log('⭐ [Layout] Affichage badge Max');
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-lg">
             <span className="text-purple-100">⭐</span>
@@ -142,6 +158,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           </span>
         );
       case 'premium':
+        console.log('👑 [Layout] Affichage badge Premium');
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full shadow-lg">
             <span className="text-yellow-100">👑</span>
@@ -149,6 +166,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           </span>
         );
       default:
+        console.log('❓ [Layout] Plan inconnu:', planType);
         return null;
     }
   };

@@ -13,25 +13,40 @@ export const useRecruiter = () => {
   const [error, setError] = useState(null);
 
   const loadRecruiterData = useCallback(async () => {
+    console.log('🔍 [useRecruiter] loadRecruiterData appelé');
+    console.log('   - isAuthenticated:', isAuthenticated);
+    console.log('   - isRecruiter:', isRecruiter);
+    console.log('   - user?.id:', user?.id);
+    console.log('   - user?.email:', user?.email);
+    console.log('   - user?.user_metadata:', user?.user_metadata);
+
     if (!isAuthenticated || !isRecruiter || !user?.id) {
+      console.log('❌ [useRecruiter] Conditions non remplies, arrêt du chargement');
       setLoading(false);
       return;
     }
 
+    console.log('✅ [useRecruiter] Conditions remplies, démarrage du chargement');
     setLoading(true);
     setError(null);
     try {
+      console.log('📡 [useRecruiter] Récupération du profil...');
       const profile = await fetchRecruiterProfile();
+      console.log('✅ [useRecruiter] Profil récupéré:', profile);
       setRecruiter(profile);
 
+      console.log('📊 [useRecruiter] Récupération des stats...');
       const recruiterStats = await fetchRecruiterStats(profile.id);
+      console.log('✅ [useRecruiter] Stats récupérées:', recruiterStats);
       setStats(recruiterStats);
 
+      console.log('🔐 [useRecruiter] Récupération des permissions...');
       const recruiterPermissions = await fetchRecruiterPermissions(profile.id);
+      console.log('✅ [useRecruiter] Permissions récupérées:', recruiterPermissions);
       setPermissions(recruiterPermissions);
 
     } catch (err) {
-      console.error("Failed to load recruiter data:", err);
+      console.error("❌ [useRecruiter] Erreur lors du chargement:", err);
       setError(err);
     } finally {
       setLoading(false);
