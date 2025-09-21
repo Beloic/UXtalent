@@ -604,8 +604,19 @@ export default function MyProfilePage() {
 
       // Charger le profil depuis la base de données
       loadExistingProfile();
+    } else {
+      // Si pas d'utilisateur, assigner les valeurs par défaut pour l'affichage
+      assignDefaultValues();
     }
   }, [user, loadExistingProfile]);
+
+  // Assigner les valeurs par défaut dès que l'utilisateur est connecté et qu'aucun profil n'existe
+  useEffect(() => {
+    if (user && !isLoadingProfile && candidateStatus === 'new') {
+      console.log('🎯 Nouveau candidat détecté, assignation des valeurs par défaut');
+      assignDefaultValues();
+    }
+  }, [user, isLoadingProfile, candidateStatus]);
 
   // Fonction pour assigner les valeurs par défaut réalistes lors de la première connexion
   const assignDefaultValues = () => {
@@ -1107,16 +1118,17 @@ export default function MyProfilePage() {
         // approved supprimé - utilise uniquement status
         // visible supprimé - utilise uniquement status
         // Tous les champs du formulaire
-        title: formData.title || '',
-        location: formData.location || '',
+        title: formData.title || 'Product Designer',
+        location: formData.location || 'Paris, France',
         remote: formData.remote || 'hybrid',
+        yearsOfExperience: formData.yearsOfExperience || '3',
         skills: getSkillsArray(formData.skills),
-        portfolio: formData.portfolio || '',
-        linkedin: formData.linkedin || '',
-        github: formData.github || '',
+        portfolio: formData.portfolio || 'https://mon-portfolio-design.com',
+        linkedin: formData.linkedin || 'https://linkedin.com/in/mon-profil-design',
+        github: formData.github || 'https://github.com/mon-profil-design',
         photo: photoUrl,
-        dailyRate: formData.dailyRate || null,
-        annualSalary: formData.annualSalary || null
+        dailyRate: formData.dailyRate || '500',
+        annualSalary: formData.annualSalary || '65000'
       };
       
       
