@@ -345,94 +345,13 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
         </div>
       </div>
 
-      {/* Section Mes rendez-vous - affichée au-dessus du mois en cours */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <CalendarIcon className="w-6 h-6 text-blue-600" />
-          <h3 className="text-xl font-semibold text-gray-900">Mes rendez-vous</h3>
-        </div>
-          
-          {appointments.length === 0 ? (
-            <div className="text-center py-8">
-              <CalendarIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">Aucun rendez-vous planifié</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {appointments
-                .sort((a, b) => {
-                  const dateA = new Date(`${a.appointment_date}T${a.appointment_time}`);
-                  const dateB = new Date(`${b.appointment_date}T${b.appointment_time}`);
-                  return dateA - dateB;
-                })
-                .map((appointment) => {
-                  const appointmentDate = new Date(`${appointment.appointment_date}T${appointment.appointment_time}`);
-                  const isPast = appointmentDate < new Date();
-                  
-                  return (
-                    <div
-                      key={appointment.id}
-                      className={`p-4 rounded-lg border transition-colors cursor-pointer ${
-                        isPast 
-                          ? 'bg-gray-50 border-gray-200 hover:bg-gray-100' 
-                          : 'bg-blue-50 border-blue-200 hover:bg-blue-100'
-                      }`}
-                      onClick={() => {
-                        setSelectedAppointment(appointment);
-                        setShowDetailsModal(true);
-                      }}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className={`font-medium ${isPast ? 'text-gray-700' : 'text-blue-900'}`}>
-                            {appointment.title || 'Rendez-vous'}
-                          </h4>
-                          <p className={`text-sm ${isPast ? 'text-gray-500' : 'text-blue-700'}`}>
-                            {getCandidateNameFromAppointment(appointment)}
-                          </p>
-                          <div className="flex items-center gap-4 mt-2 text-xs">
-                            <div className={`flex items-center gap-1 ${isPast ? 'text-gray-500' : 'text-blue-600'}`}>
-                              <CalendarIcon className="w-3 h-3" />
-                              {appointmentDate.toLocaleDateString('fr-FR', {
-                                weekday: 'short',
-                                day: 'numeric',
-                                month: 'short'
-                              })}
-                            </div>
-                            <div className={`flex items-center gap-1 ${isPast ? 'text-gray-500' : 'text-blue-600'}`}>
-                              <Clock className="w-3 h-3" />
-                              {appointment.appointment_time} ({appointment.duration}min)
-                            </div>
-                            {appointment.type && (
-                              <div className={`flex items-center gap-1 ${isPast ? 'text-gray-500' : 'text-blue-600'}`}>
-                                {appointment.type === 'video' ? (
-                                  <Video className="w-3 h-3" />
-                                ) : appointment.type === 'phone' ? (
-                                  <Phone className="w-3 h-3" />
-                                ) : (
-                                  <MapPin className="w-3 h-3" />
-                                )}
-                                {appointment.type === 'video' ? 'Vidéo' : 
-                                 appointment.type === 'phone' ? 'Téléphone' : 'Présentiel'}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        {!isPast && (
-                          <div className="ml-4">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-          )}
-        </div>
-
       {/* Grille du calendrier */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        {/* Titre Mes rendez-vous en haut à gauche du calendrier */}
+        <div className="flex items-center gap-3 p-4 border-b border-gray-200 bg-gray-50">
+          <CalendarIcon className="w-5 h-5 text-blue-600" />
+          <h3 className="text-lg font-semibold text-gray-900">Mes rendez-vous</h3>
+        </div>
         {/* En-têtes des jours */}
         <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
           {dayNames.map(day => (
