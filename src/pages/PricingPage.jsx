@@ -275,12 +275,15 @@ export default function PricingPage() {
               </div>
 
               <ul className="space-y-4 mb-8">
-                {plan.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
+                {plan.features.map((feature, featureIndex) => {
+                  const hasEmoji = /^[🎯🚀⭐🌟💎🔥]/u.test(feature);
+                  return (
+                    <li key={featureIndex} className="flex items-start gap-3">
+                      {!hasEmoji && <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />}
+                      <span className={`text-gray-700 ${hasEmoji ? 'font-semibold' : ''}`}>{feature}</span>
+                    </li>
+                  );
+                })}
               </ul>
 
               {isCurrentPlan(plan.name) ? (
