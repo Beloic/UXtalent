@@ -880,9 +880,6 @@ export default function MyProfilePage() {
             <span className={`flex-1 ${isRequired && isEmpty ? 'text-red-500 italic' : ''}`}>
               {value || (isRequired ? `${placeholder} *` : placeholder)}
             </span>
-            {isRequired && isEmpty && (
-              <span className="text-red-500 text-xs font-medium">Requis</span>
-            )}
             <button
               onClick={() => startEditing(fieldName, value)}
               className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
@@ -1701,7 +1698,9 @@ export default function MyProfilePage() {
                             <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                               <Briefcase className="w-6 h-6 text-blue-600" />
                               Compétences
-                              <span className="text-red-500 text-lg font-bold">*</span>
+                              {getSkillsArray(formData.skills).length === 0 && (
+                                <span className="text-red-500 text-lg font-bold">*</span>
+                              )}
                             </h2>
                              <button
                                onClick={() => {
@@ -1837,10 +1836,10 @@ export default function MyProfilePage() {
                ))}
              </div>
                             ) : (
-                              <div className="text-center py-8 bg-red-50 rounded-xl border-2 border-dashed border-red-300">
-                                <Briefcase className="w-12 h-12 text-red-400 mx-auto mb-3" />
-                                <p className="text-red-600 mb-2 font-medium">Aucune compétence spécifiée *</p>
-                                <p className="text-sm text-red-500">Ce champ est obligatoire - Cliquez sur "Ajouter" pour commencer</p>
+                              <div className="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                                <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                                <p className="text-gray-500 mb-2">Aucune compétence spécifiée</p>
+                                <p className="text-sm text-gray-400">Cliquez sur "Ajouter" pour commencer</p>
                               </div>
                             )}
                             
@@ -1977,7 +1976,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="location"
                                   value={formData.location}
-                                  placeholder="Non spécifiée"
+                                  placeholder="Ajouter une localisation"
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
@@ -1995,8 +1994,8 @@ export default function MyProfilePage() {
                                 fieldName="remote"
                                 value={formData.remote === 'remote' ? 'Full remote' :
                                        formData.remote === 'onsite' ? 'Sur site' :
-                                       formData.remote === 'hybrid' ? 'Hybride' : 'Non spécifié'}
-                                placeholder="Non spécifié"
+                                       formData.remote === 'hybrid' ? 'Hybride' : ''}
+                                placeholder="Sélectionner un mode"
                                 className="font-semibold text-gray-900"
                                 options={[
                                   { value: 'remote', label: 'Full remote' },
@@ -2014,13 +2013,13 @@ export default function MyProfilePage() {
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-medium text-gray-500 mb-1">Années d'expérience</p>
-                              <EditableField
-                                fieldName="yearsOfExperience"
-                                value={formData.yearsOfExperience}
-                                placeholder="Non spécifiée"
-                                type="number"
-                                className="font-semibold text-gray-900"
-                              />
+                                <EditableField
+                                  fieldName="yearsOfExperience"
+                                  value={formData.yearsOfExperience}
+                                  placeholder="Ajouter une expérience"
+                                  type="number"
+                                  className="font-semibold text-gray-900"
+                                />
                             </div>
                           </div>
 
@@ -2035,7 +2034,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="dailyRate"
                                   value={formData.dailyRate ? `${formData.dailyRate} €` : ''}
-                                  placeholder="Non spécifié"
+                                  placeholder="Ajouter un TJM"
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -2051,7 +2050,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="annualSalary"
                                   value={formData.annualSalary ? `${formData.annualSalary} €` : ''}
-                                  placeholder="Non spécifié"
+                                  placeholder="Ajouter un salaire"
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -2067,7 +2066,7 @@ export default function MyProfilePage() {
                             <div>
                               <p className="text-sm font-medium text-gray-500 mb-1">Profil créé</p>
                               <p className="font-semibold text-gray-900">
-                                {formData.updatedAt ? new Date(formData.updatedAt).toLocaleDateString('fr-FR') : 'Non spécifiée'}
+                                {formData.updatedAt ? new Date(formData.updatedAt).toLocaleDateString('fr-FR') : 'Non disponible'}
                               </p>
                             </div>
                           </div>
@@ -2681,7 +2680,7 @@ export default function MyProfilePage() {
           {/* Bouton permanent pour envoyer le profil en examen */}
           {(() => {
             console.log('🔍 Vérification affichage bouton:', { activeTab, candidateStatus, formDataId: formData.id });
-            return activeTab === 'view';
+            return activeTab === 'view' && candidateStatus !== 'approved';
           })() && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
