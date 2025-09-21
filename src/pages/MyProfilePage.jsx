@@ -110,9 +110,9 @@ export default function MyProfilePage() {
     yearsOfExperience: '3',
     bio: 'Designer UX/UI passionné par la création d\'expériences utilisateur exceptionnelles. Spécialisé dans la recherche utilisateur, le design d\'interface et la création de design systems cohérents.',
     skills: 'Design System, Recherche utilisateur, Prototypage, Figma, Adobe Creative Suite',
-    portfolio: 'https://mon-portfolio-design.com',
-    linkedin: 'https://linkedin.com/in/mon-profil-design',
-    github: 'https://github.com/mon-profil-design',
+    portfolio: '',
+    linkedin: '',
+    github: '',
     dailyRate: '500',
     annualSalary: '65000'
   };
@@ -627,10 +627,15 @@ export default function MyProfilePage() {
   // Fonction pour assigner les valeurs par défaut réalistes lors de la première connexion
   const assignDefaultValues = () => {
     console.log('🎯 Assignation des valeurs par défaut réalistes pour nouveau candidat');
-    setFormData(prev => ({
-      ...prev,
-      ...DEFAULT_VALUES
-    }));
+    console.log('🎯 DEFAULT_VALUES:', DEFAULT_VALUES);
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        ...DEFAULT_VALUES
+      };
+      console.log('🎯 Nouveau formData avec valeurs par défaut:', newData);
+      return newData;
+    });
   };
 
   const handleInputChange = (e) => {
@@ -939,18 +944,15 @@ export default function MyProfilePage() {
       title: 'Métier',
       location: 'Localisation',
       bio: 'Présentation',
-      skills: 'Compétences',
-      portfolio: 'Portfolio',
-      linkedin: 'LinkedIn'
+      skills: 'Compétences'
     };
 
     // Valeurs par défaut acceptées comme valides
     const defaultValues = {
       title: DEFAULT_VALUES.title,
-      skills: DEFAULT_VALUES.skills,
-      portfolio: DEFAULT_VALUES.portfolio,
-      linkedin: DEFAULT_VALUES.linkedin,
-      github: DEFAULT_VALUES.github
+      location: DEFAULT_VALUES.location,
+      bio: DEFAULT_VALUES.bio,
+      skills: DEFAULT_VALUES.skills
     };
 
     console.log('🔍 Validation des champs obligatoires:', formData);
@@ -1119,9 +1121,9 @@ export default function MyProfilePage() {
         remote: formData.remote || DEFAULT_VALUES.remote,
         yearsOfExperience: formData.yearsOfExperience || DEFAULT_VALUES.yearsOfExperience,
         skills: getSkillsArray(formData.skills),
-        portfolio: formData.portfolio || DEFAULT_VALUES.portfolio,
-        linkedin: formData.linkedin || DEFAULT_VALUES.linkedin,
-        github: formData.github || DEFAULT_VALUES.github,
+        portfolio: formData.portfolio || '',
+        linkedin: formData.linkedin || '',
+        github: formData.github || '',
         photo: photoUrl,
         dailyRate: formData.dailyRate || DEFAULT_VALUES.dailyRate,
         annualSalary: formData.annualSalary || DEFAULT_VALUES.annualSalary
