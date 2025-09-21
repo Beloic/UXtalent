@@ -1,6 +1,6 @@
 // Configuration des URLs de l'API
-// Utiliser l'API Vercel en production, localhost en développement
-const DEFAULT_API_BASE_URL = ''; // API Vercel (même domaine)
+// Utiliser l'API Render en production, localhost en développement
+const DEFAULT_API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com'; // API Render
 const LOCAL_API_BASE_URL = 'http://localhost:3001';
 const RENDER_API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com';
 
@@ -11,7 +11,11 @@ const API_BASE_URL = isDevelopment ? LOCAL_API_BASE_URL : DEFAULT_API_BASE_URL;
 
 // Fonction pour construire une URL complète
 export const buildApiUrl = (endpoint) => {
-  return `${API_BASE_URL}${endpoint}`;
+  // Ajouter un slash final si l'endpoint commence par /api/
+  const normalizedEndpoint = endpoint.startsWith('/api/') && !endpoint.endsWith('/')
+    ? `${endpoint}/`
+    : endpoint;
+  return `${API_BASE_URL}${normalizedEndpoint}`;
 };
 
 // Fonction synchrone pour les cas où on ne peut pas attendre

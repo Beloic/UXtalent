@@ -161,6 +161,17 @@ export default function MyProfilePage() {
       });
       
       if (response.ok) {
+        // Vérifier que la réponse est bien du JSON avant de l'analyser
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          console.error('❌ loadProfileStats - Réponse non-JSON reçue:', {
+            contentType,
+            status: response.status,
+            url: response.url
+          });
+          return;
+        }
+        
         const stats = await response.json();
         setProfileStats(stats);
       } else {
@@ -196,6 +207,17 @@ export default function MyProfilePage() {
       });
       
       if (response.ok) {
+        // Vérifier que la réponse est bien du JSON avant de l'analyser
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          console.error('❌ loadChartData - Réponse non-JSON reçue:', {
+            contentType,
+            status: response.status,
+            url: response.url
+          });
+          return;
+        }
+        
         const result = await response.json();
         setChartData(result.data);
       } else {
@@ -254,6 +276,17 @@ export default function MyProfilePage() {
         });
         
         if (response.ok) {
+          // Vérifier que la réponse est bien du JSON avant de l'analyser
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            console.error('❌ refreshPlan - Réponse non-JSON reçue:', {
+              contentType,
+              status: response.status,
+              url: response.url
+            });
+            return;
+          }
+          
           const userProfile = await response.json();
           if (userProfile && userProfile.plan !== candidatePlan) {
             console.log('🔄 Plan mis à jour détecté:', userProfile.plan, 'ancien:', candidatePlan);
@@ -267,6 +300,11 @@ export default function MyProfilePage() {
         }
       } catch (error) {
         console.error('Erreur lors du rafraîchissement du plan:', error);
+        
+        // Gestion spéciale pour les erreurs de parsing JSON
+        if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
+          console.error('❌ refreshPlan - Erreur de parsing JSON détectée - probablement une réponse HTML');
+        }
       } finally {
         setIsRefreshingPlan(false);
       }
@@ -390,6 +428,20 @@ export default function MyProfilePage() {
       }
       
       if (response && response.ok) {
+        // Vérifier que la réponse est bien du JSON avant de l'analyser
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          console.error('❌ Réponse non-JSON reçue:', {
+            contentType,
+            status: response.status,
+            url: response.url
+          });
+          // Essayer de lire le contenu pour debug
+          const textContent = await response.text();
+          console.error('❌ Contenu de la réponse:', textContent.substring(0, 200));
+          throw new Error('Réponse non-JSON reçue de l\'API');
+        }
+        
         const existingCandidate = await response.json();
         
         console.log('🌐 BACKEND RENDER - RÉPONSE SUCCÈS - Données reçues:', existingCandidate);
@@ -507,7 +559,15 @@ export default function MyProfilePage() {
         action: 'Setting candidateStatus to "new" due to error'
       });
       console.error('❌ Erreur lors du chargement du profil existant:', error);
-      setMessage(`❌ Erreur: ${error.message}`);
+      
+      // Gestion spéciale pour les erreurs de parsing JSON
+      if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
+        console.error('❌ Erreur de parsing JSON détectée - probablement une réponse HTML');
+        setMessage('❌ Erreur de communication avec le serveur. Veuillez réessayer.');
+      } else {
+        setMessage(`❌ Erreur: ${error.message}`);
+      }
+      
       // En cas d'erreur réseau, considérer comme nouveau candidat
       setCandidateStatus('new');
       setFormData(prev => ({ ...prev, id: null }));
