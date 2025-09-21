@@ -22,7 +22,7 @@ export default defineConfig({
           // Séparer les bibliothèques de données
           'data-vendor': ['@supabase/supabase-js', 'recharts'],
           // Séparer les bibliothèques de drag & drop
-          'dnd-vendor': ['@hello-pangea/dnd', '@caldwell619/react-kanban']
+          'dnd-vendor': ['@hello-pangea/dnd']
         }
       }
     },
