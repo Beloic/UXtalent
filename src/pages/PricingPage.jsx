@@ -16,12 +16,11 @@ export default function PricingPage() {
       name: "Starter",
       price: "19,99€",
       period: "/mois",
-      description: "Parfait pour les petites entreprises",
+      description: "Pour planifier un recrutement",
       features: [
         "Accès à tous les profils de talents",
         "Filtres de recherche avancés",
         "Contact direct avec les candidats",
-        "Tableau Kanban pour organiser les candidats",
         "Algorithme de Matching intelligent",
         "Export des talents en CSV/JSON",
         "Support par email"
@@ -33,7 +32,7 @@ export default function PricingPage() {
       name: "Max",
       price: "79€",
       period: "/mois",
-      description: "Pour les entreprises en croissance",
+      description: "Pour un besoin de recrutement imminent",
       features: [
         "Sélection de profil sur-mesure par notre équipe",
         "Accès illimité aux profils",
