@@ -3206,6 +3206,20 @@ app.get('/api/export/candidates/csv', requireRole(['recruiter', 'admin']), async
       .select('*')
       .eq('status', 'approved')
       .order('created_at', { ascending: false });
+    
+    // Trier par plan : Pro en premier, puis Premium, puis Free
+    const sortedCandidates = (candidates || []).sort((a, b) => {
+      const planPriority = { 'pro': 3, 'premium': 2, 'free': 1 };
+      const aPriority = planPriority[a.plan_type] || 1;
+      const bPriority = planPriority[b.plan_type] || 1;
+      
+      // Si même plan, trier par date de création (plus récent en premier)
+      if (aPriority === bPriority) {
+        return new Date(b.created_at) - new Date(a.created_at);
+      }
+      
+      return bPriority - aPriority;
+    });
 
     if (error) {
       logger.error('Erreur lors de la récupération des candidats pour export CSV', { error: error.message });

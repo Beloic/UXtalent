@@ -102,7 +102,21 @@ export const loadCandidates = async () => {
       };
     });
     
-    return mappedData;
+    // Trier par plan : Pro en premier, puis Premium, puis Free
+    const sortedCandidates = mappedData.sort((a, b) => {
+      const planPriority = { 'pro': 3, 'premium': 2, 'free': 1 };
+      const aPriority = planPriority[a.planType] || 1;
+      const bPriority = planPriority[b.planType] || 1;
+      
+      // Si même plan, trier par date de création (plus récent en premier)
+      if (aPriority === bPriority) {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+      
+      return bPriority - aPriority;
+    });
+    
+    return sortedCandidates;
   } catch (error) {
     console.error('Erreur lors du chargement des candidats:', error);
     return [];

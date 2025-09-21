@@ -241,7 +241,22 @@ export const searchCandidatesByCriteria = async (searchCriteria) => {
     const { data, error } = await query.order('created_at', { ascending: false });
     
     if (error) throw error;
-    return data || [];
+    
+    // Trier par plan : Pro en premier, puis Premium, puis Free
+    const sortedCandidates = (data || []).sort((a, b) => {
+      const planPriority = { 'pro': 3, 'premium': 2, 'free': 1 };
+      const aPriority = planPriority[a.plan_type] || 1;
+      const bPriority = planPriority[b.plan_type] || 1;
+      
+      // Si même plan, trier par date de création (plus récent en premier)
+      if (aPriority === bPriority) {
+        return new Date(b.created_at) - new Date(a.created_at);
+      }
+      
+      return bPriority - aPriority;
+    });
+    
+    return sortedCandidates;
   } catch (error) {
     console.error('Erreur lors de la recherche de candidats:', error);
     return [];

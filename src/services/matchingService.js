@@ -366,10 +366,23 @@ function extractSalaryMax(salaryRange, annualSalary) {
 export function findBestCandidatesForJob(candidates, job, limit = 10) {
   const candidatesWithScores = candidates
     .filter(candidate => candidate.status === 'approved')
-    .map(candidate => ({
-      candidate,
-      ...calculateCompatibilityScore(candidate, job)
-    }))
+    .map(candidate => {
+      const compatibilityScore = calculateCompatibilityScore(candidate, job);
+      
+      // Bonus pour les plans premium/pro
+      let planBonus = 0;
+      if (candidate.planType === 'pro') {
+        planBonus = 0.2; // +20% pour Pro
+      } else if (candidate.planType === 'premium') {
+        planBonus = 0.1; // +10% pour Premium
+      }
+      
+      return {
+        candidate,
+        ...compatibilityScore,
+        globalScore: compatibilityScore.globalScore + planBonus
+      };
+    })
     .filter(result => result.globalScore >= 0.3) // Seuil minimum de compatibilité
     .sort((a, b) => b.globalScore - a.globalScore);
 
