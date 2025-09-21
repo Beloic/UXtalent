@@ -1,4 +1,16 @@
-import { supabaseAdmin } from '../../src/config/supabase.js';
+import { createClient } from '@supabase/supabase-js';
+
+// Configuration Supabase directement dans l'API pour éviter les problèmes d'import
+const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://ktfdrwpvofxuktnunukv.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzU5NTg0MCwiZXhwIjoyMDczMTcxODQwfQ.Epv9_DhrTR6uzM2vf0LqTzgUkIDy5HGfw9FjHUFDf4c';
+
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+console.log('🔧 [API] Configuration Supabase:', {
+  url: supabaseUrl,
+  hasServiceKey: !!supabaseServiceKey,
+  serviceKeyLength: supabaseServiceKey?.length
+});
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -21,13 +33,22 @@ export default async function handler(req, res) {
       }
 
       console.log('🔍 [API] Recherche du profil pour email:', email);
+      console.log('🔧 [API] Test de connexion Supabase avant requête...');
 
       // Rechercher le candidat par email
+      console.log('🔧 [API] Exécution de la requête Supabase...');
       const { data: candidate, error } = await supabaseAdmin
         .from('candidates')
         .select('*')
         .eq('email', email)
         .single();
+      
+      console.log('🔧 [API] Résultat Supabase:', { 
+        hasData: !!candidate, 
+        hasError: !!error,
+        errorCode: error?.code,
+        errorMessage: error?.message 
+      });
 
       if (error) {
         if (error.code === 'PGRST116') {
