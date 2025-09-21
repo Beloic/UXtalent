@@ -32,7 +32,7 @@ export default function PricingPage() {
       name: "Max",
       price: "79€",
       period: "/mois",
-      description: "Pour un besoin de recrutement imminent",
+          description: "Pour un recrutement imminent",
       features: [
         "🎯 Sélection de profil sur-mesure par notre équipe",
         "Accès illimité aux profils",

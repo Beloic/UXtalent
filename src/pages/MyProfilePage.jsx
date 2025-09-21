@@ -2826,7 +2826,7 @@ export default function MyProfilePage() {
 
                       <div className="text-center mb-8">
                         <h3 className="text-2xl font-bold text-gray-900 mb-2">Max</h3>
-                        <p className="text-gray-600 mb-4">Pour un besoin de recrutement imminent</p>
+                        <p className="text-gray-600 mb-4">Pour un recrutement imminent</p>
                         <div className="flex items-baseline justify-center">
                           <span className="text-5xl font-bold text-gray-900">79€</span>
                           <span className="text-xl text-gray-600 ml-2">/mois</span>

@@ -431,7 +431,7 @@ export default function RecruiterLandingPage() {
                   </span>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Max</h3>
-                <p className="text-green-100 mb-4">Pour un besoin de recrutement imminent</p>
+                <p className="text-green-100 mb-4">Pour un recrutement imminent</p>
                 <div className="text-3xl font-bold mb-4">79€<span className="text-lg">/mois</span></div>
                 <ul className="space-y-3 mb-8 text-left">
                   <li className="flex items-center gap-2">
