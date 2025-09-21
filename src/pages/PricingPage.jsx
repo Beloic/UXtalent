@@ -145,8 +145,10 @@ export default function PricingPage() {
         // Gérer les deux formats de réponse possibles
         const userProfile = responseData.candidates?.[0] || responseData;
         if (userProfile) {
-          setUserPlan(userProfile.plan || 'free');
-          console.log('✅ Plan utilisateur récupéré dans PricingPage:', userProfile.plan);
+          const plan = userProfile.plan || userProfile.planType || userProfile.plan_type || 'free';
+          setUserPlan(plan);
+          console.log('✅ Plan utilisateur récupéré dans PricingPage:', plan);
+          console.log('🔍 [PRICING] Données complètes utilisateur:', userProfile);
         }
       }
     } catch (error) {

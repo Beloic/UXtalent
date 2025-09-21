@@ -57,8 +57,15 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           setHasProfile(!!userProfile);
           // Charger le plan du candidat
           if (userProfile) {
-            console.log('🎯 Profil candidat chargé dans Layout:', { plan: userProfile.plan, isFeatured: userProfile.isFeatured });
-            setCandidatePlan(userProfile.plan || 'free');
+            const plan = userProfile.plan || userProfile.planType || userProfile.plan_type || 'free';
+            console.log('🎯 Profil candidat chargé dans Layout:', { 
+              plan: plan, 
+              isFeatured: userProfile.isFeatured,
+              planType: userProfile.planType,
+              plan_type: userProfile.plan_type,
+              rawData: userProfile
+            });
+            setCandidatePlan(plan);
           }
         } else if (response.status === 404) {
           // Si 404, cela signifie qu'il n'y a pas encore de profils dans la base

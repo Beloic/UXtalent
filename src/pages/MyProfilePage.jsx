@@ -296,25 +296,29 @@ export default function MyProfilePage() {
           
           // Gérer les deux formats de réponse possibles
           const userProfile = responseData.candidates?.[0] || responseData;
+          const newPlan = userProfile?.plan || userProfile?.planType || userProfile?.plan_type || 'free';
+          
           console.log('🔍 [POLLING] Profil utilisateur extrait:', {
             userProfile: userProfile,
             currentPlan: candidatePlan,
-            newPlan: userProfile?.plan,
-            hasChanged: userProfile && userProfile.plan !== candidatePlan
+            newPlan: newPlan,
+            planType: userProfile?.planType,
+            plan_type: userProfile?.plan_type,
+            hasChanged: userProfile && newPlan !== candidatePlan
           });
           
-          if (userProfile && userProfile.plan !== candidatePlan) {
+          if (userProfile && newPlan !== candidatePlan) {
             console.log('🎯 [POLLING] Changement de plan détecté!', {
               ancienPlan: candidatePlan,
-              nouveauPlan: userProfile.plan
+              nouveauPlan: newPlan
             });
             
-            setCandidatePlan(userProfile.plan || 'free');
+            setCandidatePlan(newPlan);
 
             // Déclencher l'événement pour notifier les autres composants
             console.log('📡 [POLLING] Déclenchement événement planUpdated');
             window.dispatchEvent(new CustomEvent('planUpdated', {
-              detail: { plan: userProfile.plan }
+              detail: { plan: newPlan }
             }));
           } else {
             console.log('✅ [POLLING] Aucun changement de plan détecté');
@@ -411,8 +415,17 @@ export default function MyProfilePage() {
         
         // Traiter le candidat trouvé
         const status = candidate.status || 'pending';
+        const plan = candidate.plan || candidate.planType || candidate.plan_type || 'free';
         setCandidateStatus(status);
-        setCandidatePlan(candidate.plan || 'free');
+        setCandidatePlan(plan);
+        
+        console.log('🔍 [PROFILE] Candidat chargé:', {
+          status: status,
+          plan: plan,
+          planType: candidate.planType,
+          plan_type: candidate.plan_type,
+          rawData: candidate
+        });
         
         const newFormData = {
           id: candidate.id || null,

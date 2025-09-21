@@ -81,7 +81,9 @@ export default async function handler(req, res) {
         hasData: !!candidate, 
         hasError: !!error,
         errorCode: error?.code,
-        errorMessage: error?.message 
+        errorMessage: error?.message,
+        planType: candidate?.plan_type,
+        isFeatured: candidate?.is_featured
       });
 
       if (error) {
@@ -104,7 +106,23 @@ export default async function handler(req, res) {
       }
 
       console.log('✅ [API] Profil trouvé:', { id: candidate.id, status: candidate.status });
-      return res.status(200).json(candidate);
+      console.log('🔍 [API] Plan actuel dans DB:', candidate.plan_type);
+      
+      // Mapper les données pour correspondre au format attendu par le frontend
+      const mappedCandidate = {
+        ...candidate,
+        plan: candidate.plan_type || 'free', // Mapper plan_type vers plan
+        planType: candidate.plan_type || 'free', // Garder aussi planType pour compatibilité
+        createdAt: candidate.created_at,
+        updatedAt: candidate.updated_at,
+        dailyRate: candidate.daily_rate,
+        annualSalary: candidate.annual_salary,
+        isFeatured: candidate.is_featured || false,
+        featuredUntil: candidate.featured_until
+      };
+      
+      console.log('🔍 [API] Plan mappé:', mappedCandidate.plan);
+      return res.status(200).json(mappedCandidate);
 
     } else if (req.method === 'POST') {
       // Créer un nouveau candidat
