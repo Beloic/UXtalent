@@ -204,7 +204,7 @@ export default function MyProfilePage() {
     const refreshPlan = async () => {
       try {
         setIsRefreshingPlan(true);
-        const response = await fetch(buildApiUrl(`/api/candidates/profile?email=${encodeURIComponent(user.email)}`));
+        const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`));
         
         if (response.ok) {
           const userProfile = await response.json();
@@ -329,7 +329,7 @@ export default function MyProfilePage() {
           statusText: response.statusText,
           errorText: errorText,
           userEmail: user.email,
-          url: buildApiUrl(`/api/candidates/profile?email=${encodeURIComponent(user.email)}`)
+          url: buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`)
         });
         console.error('❌ Erreur de réponse:', response.status, errorText);
         setMessage(`❌ Erreur lors du chargement: ${response.status}`);
