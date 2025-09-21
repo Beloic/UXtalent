@@ -527,6 +527,47 @@ export default function RecruiterDashboard() {
     setTimeout(() => setMessage(''), 3000);
   };
 
+  // Fonction pour supprimer une offre
+  const handleDeleteJob = async (jobId) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette offre ? Cette action est irréversible.')) {
+      return;
+    }
+
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        console.error('Token d\'authentification manquant');
+        setMessage('❌ Erreur d\'authentification');
+        setTimeout(() => setMessage(''), 3000);
+        return;
+      }
+
+      const response = await fetch(buildApiUrl(`/api/jobs/${jobId}`), {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        // Supprimer l'offre de la liste locale
+        setMyJobs(prevJobs => prevJobs.filter(job => job.id !== jobId));
+        setMessage('✅ Offre supprimée avec succès !');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        const errorData = await response.json();
+        setMessage(`❌ Erreur lors de la suppression: ${errorData.error || 'Erreur inconnue'}`);
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'offre:', error);
+      setMessage('❌ Erreur lors de la suppression de l\'offre');
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
   // Fonction pour mettre en pause une offre
   const handlePauseJob = async (jobId) => {
     try {
@@ -1146,6 +1187,13 @@ export default function RecruiterDashboard() {
                                     Modifier
                                   </button>
                                   <button
+                                    onClick={() => handleDeleteJob(job.id)}
+                                    className="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-2"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                    Supprimer
+                                  </button>
+                                  <button
                                     onClick={() => handlePauseJob(job.id)}
                                     className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition-colors flex items-center gap-2"
                                   >
@@ -1171,6 +1219,13 @@ export default function RecruiterDashboard() {
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                     Modifier
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteJob(job.id)}
+                                    className="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors flex items-center gap-2"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                    Supprimer
                                   </button>
                                   <button
                                     onClick={() => handleResumeJob(job.id)}
