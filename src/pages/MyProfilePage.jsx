@@ -14,6 +14,23 @@ export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
   const location = useLocation();
+
+  // Helper function pour gérer les compétences de manière sécurisée
+  const getSkillsArray = (skills) => {
+    if (!skills) return [];
+    if (Array.isArray(skills)) return skills;
+    if (typeof skills === 'string') {
+      return skills.split(',').map(s => s.trim()).filter(s => s);
+    }
+    return [];
+  };
+
+  const getSkillsString = (skills) => {
+    if (!skills) return '';
+    if (Array.isArray(skills)) return skills.join(', ');
+    if (typeof skills === 'string') return skills;
+    return '';
+  };
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   
@@ -938,7 +955,7 @@ export default function MyProfilePage() {
         title: formData.title || '',
         location: formData.location || '',
         remote: formData.remote || 'hybrid',
-        skills: formData.skills ? formData.skills.split(',').map(skill => skill.trim()).filter(skill => skill) : [],
+        skills: getSkillsArray(formData.skills),
         portfolio: formData.portfolio || '',
         linkedin: formData.linkedin || '',
         github: formData.github || '',
@@ -1489,7 +1506,7 @@ export default function MyProfilePage() {
                                onClick={() => {
                                  const newSkill = prompt('Ajouter une nouvelle compétence:');
                                  if (newSkill && newSkill.trim()) {
-                                   const currentSkills = formData.skills ? formData.skills.split(',').map(s => s.trim()) : [];
+                                   const currentSkills = getSkillsArray(formData.skills);
                                    const updatedSkills = [...currentSkills, newSkill.trim()];
                                    setFormData(prev => ({
                                      ...prev,
@@ -1538,9 +1555,9 @@ export default function MyProfilePage() {
                           
                           <div className="space-y-4">
            {/* Tags interactifs */}
-           {formData.skills ? (
+           {getSkillsArray(formData.skills).length > 0 ? (
              <div className="flex flex-wrap" style={{ gap: '1.4rem' }}>
-               {formData.skills.split(',').map((skill, index) => (
+               {getSkillsArray(formData.skills).map((skill, index) => (
                  <div
                    key={index}
                    className="group relative"
@@ -1550,7 +1567,7 @@ export default function MyProfilePage() {
                    </span>
                    <button
                      onClick={() => {
-                       const skillsArray = formData.skills.split(',').map(s => s.trim());
+                       const skillsArray = getSkillsArray(formData.skills);
                        const newSkills = skillsArray.filter((_, i) => i !== index);
                        setFormData(prev => ({
                          ...prev,
