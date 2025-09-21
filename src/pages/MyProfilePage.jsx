@@ -122,8 +122,9 @@ export default function MyProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [message, setMessage] = useState('');
-  const [candidateStatus, setCandidateStatus] = useState(null); // 'approved', 'rejected', 'pending', null
+  const [candidateStatus, setCandidateStatus] = useState(null); // 'approved', 'rejected', 'pending', 'new', null
   const [isEditingRejected, setIsEditingRejected] = useState(false); // Mode édition pour candidats rejetés
+  const [isEditingNew, setIsEditingNew] = useState(false); // Mode édition pour candidats nouveaux
   const [userPlan, setUserPlan] = useState('free');
   const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
   const [isRefreshingPlan, setIsRefreshingPlan] = useState(false);
@@ -972,8 +973,9 @@ export default function MyProfilePage() {
         } else if (candidateStatus === 'new') {
           // Profil nouveau envoyé pour validation - message spécial
           setMessage(`✅ Profil en attente pour examen. Votre profil a été envoyé avec succès et est maintenant en cours d'examen par notre équipe.`);
-          // Changer le statut à pending
+          // Changer le statut à pending et sortir du mode édition
           setCandidateStatus('pending');
+          setIsEditingNew(false);
         } else {
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
@@ -1105,6 +1107,108 @@ export default function MyProfilePage() {
           </motion.div>
 
           {/* Actions désactivées pour l'état en attente */}
+        </div>
+      </div>
+    );
+  }
+
+  // Interface pour les candidats avec statut "new" (nouveaux profils) - sauf s'ils sont en mode édition
+  if (candidateStatus === 'new' && !isEditingNew) {
+    return (
+      <div className="min-h-screen py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          {/* Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <Link 
+                to="/candidates" 
+                className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Retour
+              </Link>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="p-4 rounded-2xl bg-blue-600 shadow-lg">
+                <User className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon Profil</h1>
+                <p className="text-gray-600">Votre profil candidat</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Message pour nouveau profil */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-blue-100 rounded-full">
+                <AlertCircle className="w-5 h-5 text-blue-600" />
+              </div>
+              <h2 className="text-xl font-semibold text-blue-800">Profil créé automatiquement</h2>
+            </div>
+            <p className="text-blue-700 mb-4">
+              Votre profil candidat a été créé automatiquement lors de votre inscription. 
+              Complétez-le maintenant et envoyez-le pour examen par notre équipe.
+            </p>
+            <div className="bg-white rounded-xl p-4 border border-blue-200">
+              <h3 className="font-semibold text-gray-900 mb-2">Informations de votre profil :</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-gray-600">Nom :</span>
+                  <span className="ml-2 text-gray-900">{formData.name}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Email :</span>
+                  <span className="ml-2 text-gray-900">{formData.email}</span>
+                </div>
+                
+                <div>
+                  <span className="font-medium text-gray-600">Titre :</span>
+                  <span className="ml-2 text-gray-900">{formData.title}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Localisation :</span>
+                  <span className="ml-2 text-gray-900">{formData.location}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Bouton pour compléter le profil */}
+          <div className="text-center">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-center"
+            >
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Ouvrir l'éditeur de profil in-line pour les utilisateurs avec statut "new"
+                  setIsEditingNew(true);
+                  navigateToTab('view');
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold cursor-pointer"
+                style={{ pointerEvents: 'auto', zIndex: 1000 }}
+              >
+                <Edit className="w-5 h-5" />
+                Compléter mon profil
+              </button>
+            </motion.div>
+          </div>
         </div>
       </div>
     );
@@ -1258,6 +1362,16 @@ export default function MyProfilePage() {
 
   return (
     <div className="min-h-screen py-8">
+      {/* BOUTON DEBUG TEMPORAIRE - TOUJOURS VISIBLE */}
+      <div className="fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg z-50">
+        <h3 className="font-bold">🚨 DEBUG TEMPORAIRE</h3>
+        <p>Status: {candidateStatus || 'null'}</p>
+        <p>Email: {user?.email || 'null'}</p>
+        <p>Loading: {isLoadingProfile ? 'true' : 'false'}</p>
+        <p>Tab: {activeTab}</p>
+        <p>Button should show: {(candidateStatus === 'new' || candidateStatus === null) ? 'YES' : 'NO'}</p>
+      </div>
+
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         {/* Header avec bouton retour et onglets */}
@@ -2241,6 +2355,7 @@ export default function MyProfilePage() {
                   <p><strong>formData.id:</strong> "{formData.id || 'null'}" (type: {typeof formData.id})</p>
                   <p><strong>user.email:</strong> {user?.email || 'null'}</p>
                   <p><strong>isLoadingProfile:</strong> {isLoadingProfile ? 'true' : 'false'}</p>
+                  <p><strong>isEditingNew:</strong> {isEditingNew ? 'true' : 'false'}</p>
                   <p><strong>Backend URL:</strong> {user?.email ? buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`) : 'N/A'}</p>
                   <hr className="my-2" />
                   <p><strong>Conditions:</strong></p>
@@ -2248,16 +2363,16 @@ export default function MyProfilePage() {
                   <p>• candidateStatus === 'new': {candidateStatus === 'new' ? 'TRUE ✅' : 'FALSE ❌'}</p>
                   <p>• candidateStatus === 'pending': {candidateStatus === 'pending' ? 'TRUE ✅' : 'FALSE ❌'}</p>
                   <p>• candidateStatus === 'rejected': {candidateStatus === 'rejected' ? 'TRUE ✅' : 'FALSE ❌'}</p>
+                  <p>• isEditingNew: {isEditingNew ? 'TRUE ✅' : 'FALSE ❌'}</p>
                   <hr className="my-2" />
-                  <p><strong>RÉSULTAT FINAL - Should show button:</strong> <span className="font-bold text-lg">{(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES ✅' : 'NO ❌'}</span></p>
+                  <p><strong>RÉSULTAT FINAL - Should show button:</strong> <span className="font-bold text-lg">{(candidateStatus === 'new' || candidateStatus === null) ? 'YES ✅' : 'NO ❌'}</span></p>
                 </div>
               </div>
 
               {/* Bouton "Envoyer mon profil" pour les candidats non approuvés */}
               {(() => {
-                // Logique simplifiée : afficher le bouton si l'utilisateur n'a pas encore de profil candidat
-                // ou si son profil est en attente/rejeté
-                const shouldShow = !formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
+                // Logique ultra-simplifiée : afficher le bouton SEULEMENT si l'utilisateur a le statut "new"
+                const shouldShow = candidateStatus === 'new';
                 
                 console.log('🔍 Debug bouton DÉTAILLÉ:', {
                   candidateStatus: candidateStatus,
@@ -2296,7 +2411,7 @@ export default function MyProfilePage() {
               
               {/* Message si le bouton ne s'affiche pas */}
               {(() => {
-                const shouldShow = !formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
+                const shouldShow = candidateStatus === 'new';
                 if (!shouldShow) {
                   return (
                     <div className="mt-8 bg-red-50 border border-red-200 rounded-2xl p-4 mb-4">
@@ -2311,10 +2426,32 @@ export default function MyProfilePage() {
                 return null;
               })()}
               
-              {(() => {
-                const shouldShow = !formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
-                return shouldShow;
-              })() && (
+              {/* BOUTON TEST TEMPORAIRE - TOUJOURS VISIBLE */}
+              <div className="mt-8 bg-red-500 text-white rounded-2xl p-8 border border-red-600">
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold mb-4">🚨 BOUTON TEST TEMPORAIRE</h3>
+                  <p className="mb-4">Ce bouton devrait TOUJOURS être visible pour debug</p>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isLoading}
+                    className="bg-white text-red-500 font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto"
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
+                        Envoi en cours...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        TEST - Envoyer mon profil pour examen
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {(candidateStatus === 'new' || candidateStatus === null) && (
                 <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">
@@ -2394,6 +2531,28 @@ export default function MyProfilePage() {
                   </div>
                 </div>
               )}
+
+              {/* BOUTON SIMPLE SANS CONDITION - TOUJOURS VISIBLE */}
+              <div className="mt-8 bg-blue-600 text-white rounded-2xl p-8 text-center">
+                <h3 className="text-2xl font-bold mb-4">Envoyer mon profil pour examen</h3>
+                <button
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className="bg-white text-blue-600 font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                      Envoi en cours...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-5 h-5" />
+                      Envoyer mon profil pour examen
+                    </>
+                  )}
+                </button>
+              </div>
             </motion.div>
           )}
 

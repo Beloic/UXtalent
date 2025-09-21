@@ -1,10 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Configuration Supabase directement dans l'API pour éviter les problèmes d'import
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://ktfdrwpvofxuktnunukv.supabase.co';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzU5NTg0MCwiZXhwIjoyMDczMTcxODQwfQ.Epv9_DhrTR6uzM2vf0LqTzgUkIDy5HGfw9FjHUFDf4c';
+// Utiliser les vraies valeurs hardcodées pour éviter les problèmes de variables d'environnement
+const supabaseUrl = 'https://ktfdrwpvofxuktnunukv.supabase.co';
+const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzU5NTg0MCwiZXhwIjoyMDczMTcxODQwfQ.Epv9_DhrTR6uzM2vf0LqTzgUkIDy5HGfw9FjHUFDf4c';
 
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  },
+  global: {
+    fetch: (url, options = {}) => {
+      // Ajouter un timeout de 10 secondes pour éviter les blocages
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
+      return fetch(url, {
+        ...options,
+        signal: controller.signal
+      }).finally(() => {
+        clearTimeout(timeoutId);
+      });
+    }
+  }
+});
 
 console.log('🔧 [API] Configuration Supabase:', {
   url: supabaseUrl,
@@ -37,11 +57,25 @@ export default async function handler(req, res) {
 
       // Rechercher le candidat par email
       console.log('🔧 [API] Exécution de la requête Supabase...');
-      const { data: candidate, error } = await supabaseAdmin
-        .from('candidates')
-        .select('*')
-        .eq('email', email)
-        .single();
+      
+      let candidate, error;
+      try {
+        const result = await supabaseAdmin
+          .from('candidates')
+          .select('*')
+          .eq('email', email)
+          .single();
+        
+        candidate = result.data;
+        error = result.error;
+      } catch (fetchError) {
+        console.error('❌ [API] Erreur de fetch:', fetchError);
+        return res.status(500).json({ 
+          error: 'Network error',
+          details: fetchError.message,
+          type: 'fetch_failed'
+        });
+      }
       
       console.log('🔧 [API] Résultat Supabase:', { 
         hasData: !!candidate, 
