@@ -92,9 +92,9 @@ export default function PricingPage() {
       period: "/mois",
       description: "Pour booster votre visibilité",
       features: [
+        "🎯 Apparaît en premier dans les recherches",
         "Profil candidat complet",
         "Badge Premium visible",
-        "🎯 Apparaît en premier dans les recherches",
         "Statistiques de profil détaillées",
         "Accès au forum communautaire",
         "Accès exclusif au Slack communautaire",
@@ -109,9 +109,9 @@ export default function PricingPage() {
       period: "/mois",
       description: "Pour un maximum de réussite",
       features: [
+        "🚀 Mise en avant maximale - toujours en tête de liste",
         "Tout du Premium",
         "Badge Pro exclusif",
-        "🚀 Mise en avant maximale - toujours en tête de liste",
         "Statistiques avancées",
         "Accès aux offres exclusives",
         "Coaching carrière 1-à-1",
