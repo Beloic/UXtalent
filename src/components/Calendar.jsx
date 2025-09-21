@@ -309,11 +309,15 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
   return (
     <div className="space-y-4">
       {/* Header du calendrier */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <span className="text-gray-600">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
           </span>
+          <div className="flex items-center gap-3">
+            <CalendarIcon className="w-5 h-5 text-blue-600" />
+            <h3 className="text-lg font-semibold text-gray-900">Mes rendez-vous</h3>
+          </div>
         </div>
         
         <div className="flex items-center gap-2">
@@ -347,11 +351,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
 
       {/* Grille du calendrier */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        {/* Titre Mes rendez-vous en haut à gauche du calendrier */}
-        <div className="flex items-center gap-3 p-4 border-b border-gray-200 bg-gray-50">
-          <CalendarIcon className="w-5 h-5 text-blue-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Mes rendez-vous</h3>
-        </div>
         {/* En-têtes des jours */}
         <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
           {dayNames.map(day => (
