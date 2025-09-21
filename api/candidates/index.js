@@ -12,7 +12,36 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (req.method === 'POST') {
+    if (req.method === 'GET') {
+      // Récupérer un profil par email
+      const { email } = req.query;
+      
+      if (!email) {
+        return res.status(400).json({ error: 'Email parameter is required' });
+      }
+
+      console.log('🔍 [API] Recherche du profil pour email:', email);
+
+      // Rechercher le candidat par email
+      const { data: candidate, error } = await supabaseAdmin
+        .from('candidates')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          console.log('🔍 [API] Profil non trouvé (404) pour email:', email);
+          return res.status(404).json({ error: 'Profile not found' });
+        }
+        console.error('❌ [API] Erreur lors de la recherche:', error);
+        return res.status(500).json({ error: 'Database error' });
+      }
+
+      console.log('✅ [API] Profil trouvé:', { id: candidate.id, status: candidate.status });
+      return res.status(200).json(candidate);
+
+    } else if (req.method === 'POST') {
       // Créer un nouveau candidat
       const candidateData = req.body;
       
