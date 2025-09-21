@@ -26,19 +26,23 @@ export default defineConfig({
         }
       }
     },
-    // Compression et optimisation
-    minify: 'terser',
-    terserOptions: {
+    // Compression et optimisation - SEULEMENT en production
+    minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
+    terserOptions: process.env.NODE_ENV === 'production' ? {
       compress: {
-        drop_console: true,
+        drop_console: false,  // ← GARDER les console.log même en production
         drop_debugger: true
       }
-    },
+    } : {},
     // Limiter la taille des chunks
     chunkSizeWarningLimit: 1000
   },
   define: {
-    // Force l'utilisation de l'URL de production
-    'process.env.VITE_API_URL': JSON.stringify('https://ux-jobs-pro-backend.onrender.com')
+    // Utiliser l'URL locale en développement, production en build
+    'process.env.VITE_API_URL': JSON.stringify(
+      process.env.NODE_ENV === 'production' 
+        ? 'https://ux-jobs-pro-backend.onrender.com'
+        : 'http://localhost:3001'
+    )
   }
 })

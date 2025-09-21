@@ -279,21 +279,36 @@ export default function MyProfilePage() {
       let useDirectSupabase = false;
       
       try {
-        response = await fetch(apiUrl);
+        // Obtenir le token d'authentification
+        const session = await supabase.auth.getSession();
+        const token = session.data.session?.access_token;
+        
+        if (!token) {
+          console.log('🌐 API VERCEL - Token manquant, utilisation de Supabase direct');
+          useDirectSupabase = true;
+        } else {
+          response = await fetch(apiUrl, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+        }
       } catch (fetchError) {
         console.log('🌐 API VERCEL - Erreur fetch, utilisation de Supabase direct:', fetchError);
         useDirectSupabase = true;
       }
       
-      console.log('🌐 API VERCEL - RÉPONSE:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        url: response.url
-      });
-      
-      // Si erreur 500, essayer de lire le contenu de l'erreur et utiliser Supabase direct
-      if (!response.ok) {
+      if (response) {
+        console.log('🌐 API VERCEL - RÉPONSE:', {
+          status: response.status,
+          statusText: response.statusText,
+          ok: response.ok,
+          url: response.url
+        });
+        
+        // Si erreur 500, essayer de lire le contenu de l'erreur et utiliser Supabase direct
+        if (!response.ok) {
         try {
           const errorText = await response.text();
           console.log('🌐 API VERCEL - ERREUR DÉTAILLÉE:', errorText);
@@ -302,6 +317,7 @@ export default function MyProfilePage() {
         }
         console.log('🌐 API VERCEL - Erreur détectée, utilisation de Supabase direct');
         useDirectSupabase = true;
+        }
       }
       
       // Fallback vers Supabase direct si nécessaire
@@ -357,7 +373,7 @@ export default function MyProfilePage() {
         return;
       }
       
-      if (response.ok) {
+      if (response && response.ok) {
         const existingCandidate = await response.json();
         
         console.log('🌐 BACKEND RENDER - RÉPONSE SUCCÈS - Données reçues:', existingCandidate);
@@ -445,7 +461,7 @@ export default function MyProfilePage() {
         } else {
           setMessage('ℹ️ Aucun profil existant trouvé. Vous pouvez créer un nouveau profil.');
         }
-      } else if (response.status === 404) {
+      } else if (response && response.status === 404) {
         // Candidat non trouvé - c'est normal pour un nouveau profil
         console.log('🔍 PROFIL NON TROUVÉ (404):', {
           userEmail: user.email,
@@ -456,7 +472,7 @@ export default function MyProfilePage() {
         setCandidateStatus('new'); // Nouveau statut pour les nouveaux profils
         // S'assurer que formData.id reste null pour les nouveaux candidats
         setFormData(prev => ({ ...prev, id: null }));
-      } else {
+      } else if (response) {
         const errorText = await response.text();
         console.log('🔍 ERREUR DE RÉPONSE:', {
           status: response.status,
