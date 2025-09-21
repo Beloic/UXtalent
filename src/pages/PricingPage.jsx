@@ -107,7 +107,7 @@ export default function PricingPage() {
     },
     {
       name: "Pro",
-      price: "39€",
+      price: "69€",
       period: "/mois",
       description: "Pour un maximum de réussite",
       features: [
