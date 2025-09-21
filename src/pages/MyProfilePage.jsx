@@ -1185,15 +1185,6 @@ export default function MyProfilePage() {
               </Link>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-yellow-600 shadow-lg">
-                <User className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon Profil</h1>
-                <p className="text-gray-600">Votre profil candidat</p>
-              </div>
-            </div>
           </motion.div>
 
           {/* Message d'attente */}
@@ -1264,15 +1255,6 @@ export default function MyProfilePage() {
               </Link>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="p-4 rounded-2xl bg-blue-600 shadow-lg">
-                <User className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon Profil</h1>
-                <p className="text-gray-600">Votre profil candidat</p>
-              </div>
-            </div>
           </motion.div>
 
           {/* Message pour nouveau profil */}
@@ -1282,35 +1264,11 @@ export default function MyProfilePage() {
             transition={{ delay: 0.1 }}
             className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8"
           >
-            <div className="flex items-center gap-3 mb-4">
-              <AlertCircle className="w-5 h-5 text-blue-600" />
-              <h2 className="text-xl font-semibold text-blue-800">Profil créé automatiquement</h2>
-            </div>
-            <p className="text-blue-700 mb-4">
+            <h2 className="text-xl font-semibold text-blue-800 mb-4">Profil créé automatiquement</h2>
+            <p className="text-blue-700">
               Votre profil candidat a été créé automatiquement lors de votre inscription. 
               Complétez-le maintenant et envoyez-le pour examen par notre équipe.
             </p>
-            <div className="bg-white rounded-lg p-4 border border-blue-200">
-              <h3 className="font-semibold text-gray-900 mb-3">Informations de votre profil :</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                <div>
-                  <span className="font-medium text-gray-600">Nom :</span>
-                  <span className="ml-2 text-gray-900">{formData.name || 'Non renseigné'}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Email :</span>
-                  <span className="ml-2 text-gray-900">{formData.email}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Métier :</span>
-                  <span className="ml-2 text-gray-900">{formData.title || 'Non renseigné'}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-gray-600">Localisation :</span>
-                  <span className="ml-2 text-gray-900">{formData.location || 'Non renseignée'}</span>
-                </div>
-              </div>
-            </div>
           </motion.div>
 
           {/* Bouton pour compléter le profil */}
