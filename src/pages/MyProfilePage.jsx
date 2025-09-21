@@ -105,12 +105,12 @@ export default function MyProfilePage() {
     id: null,
     name: '',
     email: '',
-    title: 'UX Designer',
+    title: 'Product Designer',
     location: '',
     remote: 'hybrid',
     yearsOfExperience: '', // Nouveau champ
     bio: '',
-    skills: 'UX Design, Figma',
+    skills: 'Design System, Recherche utilisateur, Prototypage',
     portfolio: '',
     linkedin: '',
     github: '',
@@ -914,11 +914,11 @@ export default function MyProfilePage() {
 
     // Valeurs par défaut acceptées comme valides
     const defaultValues = {
-      title: 'UX Designer',
-      skills: 'UX Design, Figma',
-      portfolio: 'https://votre-portfolio.com',
-      linkedin: 'https://linkedin.com/in/votre-profil',
-      github: 'https://github.com/votre-profil'
+      title: 'Product Designer',
+      skills: 'Design System, Recherche utilisateur, Prototypage',
+      portfolio: 'https://mon-portfolio-design.com',
+      linkedin: 'https://linkedin.com/in/mon-profil-design',
+      github: 'https://github.com/mon-profil-design'
     };
 
     console.log('🔍 Validation des champs obligatoires:', formData);
@@ -1273,7 +1273,7 @@ export default function MyProfilePage() {
           >
             <h2 className="text-xl font-semibold text-blue-800 mb-4">Parlez-nous un peu de vous !</h2>
             <p className="text-blue-700">
-              Profil créé automatiquement lors de l'inscription.
+              C'est le moment de créer votre profil, soyez le plus précis et honnête possible.
             </p>
           </motion.div>
 
@@ -1585,15 +1585,15 @@ export default function MyProfilePage() {
                               <EditableField
                                 fieldName="name"
                                 value={formData.name}
-                                placeholder="Votre nom complet"
+                                placeholder="Ex: Marie Dubois"
                                 className="text-4xl font-bold text-gray-900"
                               />
                             </div>
                             <div className="mb-4">
                               <EditableField
                                 fieldName="title"
-                                value={formData.title || 'Métier non spécifié'}
-                                placeholder="Métier non spécifié"
+                                value={formData.title || 'Product Designer'}
+                                placeholder="Ex: Product Designer, UX Researcher"
                                 className="text-xl text-gray-600"
                               />
                             </div>
@@ -1629,7 +1629,7 @@ export default function MyProfilePage() {
                             <EditableField
                               fieldName="bio"
                               value={formData.bio}
-                              placeholder="Aucune description disponible"
+                              placeholder="Décrivez votre parcours et vos spécialités en design..."
                               className="text-gray-700 leading-relaxed text-lg"
                             />
                           </div>
@@ -1793,7 +1793,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="skills"
                                   value={formData.skills}
-                                  placeholder="Saisissez vos compétences séparées par des virgules"
+                                  placeholder="Ex: Design System, Recherche utilisateur, Figma, Prototypage"
                                   className="text-sm text-gray-600"
                                 />
                               </div>
@@ -1814,8 +1814,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">LinkedIn</p>
                                 <EditableField
                                   fieldName="linkedin"
-                                  value={formData.linkedin || 'https://linkedin.com/in/votre-profil'}
-                                  placeholder="https://linkedin.com/in/votre-profil"
+                                  value={formData.linkedin || 'https://linkedin.com/in/mon-profil-design'}
+                                  placeholder="https://linkedin.com/in/mon-profil-design"
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
@@ -1830,8 +1830,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">Portfolio</p>
                                 <EditableField
                                   fieldName="portfolio"
-                                  value={formData.portfolio || 'https://votre-portfolio.com'}
-                                  placeholder="https://votre-portfolio.com"
+                                  value={formData.portfolio || 'https://mon-portfolio-design.com'}
+                                  placeholder="https://mon-portfolio-design.com"
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
@@ -1846,8 +1846,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">GitHub</p>
                                 <EditableField
                                   fieldName="github"
-                                  value={formData.github || 'https://github.com/votre-profil'}
-                                  placeholder="https://github.com/votre-profil"
+                                  value={formData.github || 'https://github.com/mon-profil-design'}
+                                  placeholder="https://github.com/mon-profil-design"
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
@@ -1938,7 +1938,7 @@ export default function MyProfilePage() {
                                 value={formData.remote === 'remote' ? 'Full remote' :
                                        formData.remote === 'onsite' ? 'Sur site' :
                                        formData.remote === 'hybrid' ? 'Hybride' : 'Hybride'}
-                                placeholder="Hybride"
+                                placeholder="Ex: Paris, France"
                                 className="font-semibold text-gray-900"
                                 options={[
                                   { value: 'remote', label: 'Full remote' },
@@ -1959,7 +1959,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="yearsOfExperience"
                                   value={formData.yearsOfExperience || '0'}
-                                  placeholder="0"
+                                  placeholder="Ex: 3"
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -1977,7 +1977,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="dailyRate"
                                   value={formData.dailyRate ? `${formData.dailyRate} €` : 'Non renseigné'}
-                                  placeholder="Non renseigné"
+                                  placeholder="Ex: 500"
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -1993,7 +1993,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="annualSalary"
                                   value={formData.annualSalary ? `${formData.annualSalary} €` : 'Non renseigné'}
-                                  placeholder="Non renseigné"
+                                  placeholder="Ex: 45000"
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
