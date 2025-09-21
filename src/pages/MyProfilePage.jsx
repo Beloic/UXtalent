@@ -31,6 +31,21 @@ export default function MyProfilePage() {
     if (typeof skills === 'string') return skills;
     return '';
   };
+
+  // Helper function pour gérer les valeurs de manière sécurisée
+  const safeTrim = (value) => {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'string') return value.trim();
+    if (typeof value === 'number') return value.toString().trim();
+    return String(value).trim();
+  };
+
+  const safeStringValue = (value) => {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number') return value.toString();
+    return String(value);
+  };
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   
@@ -413,7 +428,7 @@ export default function MyProfilePage() {
             portfolio: existingCandidate.portfolio || '',
             linkedin: existingCandidate.linkedin || '',
             github: existingCandidate.github || '',
-            photo: existingCandidate.photo && existingCandidate.photo.trim() !== '' ? {
+            photo: existingCandidate.photo && safeTrim(existingCandidate.photo) !== '' ? {
               existing: existingCandidate.photo,
               preview: existingCandidate.photo
             } : null,
@@ -534,7 +549,7 @@ export default function MyProfilePage() {
       
       // Si on sauvegarde la bio, préserver les années d'expérience existantes
       if (editingField === 'bio' && formData.yearsOfExperience) {
-        const years = parseInt(formData.yearsOfExperience.trim());
+        const years = parseInt(safeTrim(formData.yearsOfExperience));
         let experienceLevel = 'Mid';
         if (years <= 2) {
           experienceLevel = 'Junior';
@@ -695,7 +710,7 @@ export default function MyProfilePage() {
   // Composant pour les champs éditables
   const EditableField = ({ fieldName, value, placeholder, type = 'text', className = '', options = null, required = true }) => {
     const isEditing = editingField === fieldName;
-    const isEmpty = !value || value.trim() === '';
+    const isEmpty = !value || safeTrim(value) === '';
     const isRequired = required && fieldName !== 'github';
     
     return (
@@ -750,7 +765,7 @@ export default function MyProfilePage() {
             )}
             <button
               onClick={saveInlineEdit}
-              disabled={isSavingInline || (isRequired && !tempValue.trim())}
+              disabled={isSavingInline || (isRequired && !safeTrim(tempValue))}
               className="p-2 bg-green-500 text-white hover:bg-green-600 rounded-full transition-colors disabled:opacity-50 shadow-md hover:shadow-lg"
             >
               {isSavingInline ? (
@@ -795,29 +810,29 @@ export default function MyProfilePage() {
         return true;
       case 2: // Informations personnelles
         return (
-          formData.name.trim() &&
-          formData.email.trim()
+          safeTrim(formData.name) &&
+          safeTrim(formData.email)
         );
       case 3: // Informations professionnelles
         return (
-          formData.title.trim() &&
-          formData.location.trim() &&
+          safeTrim(formData.title) &&
+          safeTrim(formData.location) &&
           formData.remote
         );
       case 4: // Présentation et compétences
         return (
-          formData.bio.trim() &&
-          formData.skills.trim()
+          safeTrim(formData.bio) &&
+          safeTrim(formData.skills)
         );
       case 5: // Rémunération (obligatoire)
         return (
-          formData.dailyRate && formData.dailyRate.toString().trim() &&
-          formData.annualSalary && formData.annualSalary.toString().trim()
+          safeTrim(formData.dailyRate) &&
+          safeTrim(formData.annualSalary)
         );
       case 6: // Liens et portfolio
         return (
-          formData.portfolio.trim() &&
-          formData.linkedin.trim()
+          safeTrim(formData.portfolio) &&
+          safeTrim(formData.linkedin)
         );
       default:
         return true;
@@ -862,7 +877,7 @@ export default function MyProfilePage() {
 
       const missingFields = [];
       for (const [field, label] of Object.entries(requiredFields)) {
-        if (!formData[field] || formData[field].toString().trim() === '') {
+        if (!formData[field] || safeTrim(formData[field]) === '') {
           missingFields.push(label);
         }
       }
@@ -913,8 +928,8 @@ export default function MyProfilePage() {
       let structuredBio = formData.bio || '';
       
       // Si des années d'expérience sont spécifiées, les intégrer dans la bio
-      if (formData.yearsOfExperience && formData.yearsOfExperience.trim()) {
-        const years = parseInt(formData.yearsOfExperience.trim());
+      if (formData.yearsOfExperience && safeTrim(formData.yearsOfExperience)) {
+        const years = parseInt(safeTrim(formData.yearsOfExperience));
         
         // Déterminer automatiquement le niveau d'expérience basé sur les années
         let experienceLevel = 'Mid'; // Valeur par défaut
@@ -1505,9 +1520,9 @@ export default function MyProfilePage() {
                              <button
                                onClick={() => {
                                  const newSkill = prompt('Ajouter une nouvelle compétence:');
-                                 if (newSkill && newSkill.trim()) {
+                                 if (newSkill && safeTrim(newSkill)) {
                                    const currentSkills = getSkillsArray(formData.skills);
-                                   const updatedSkills = [...currentSkills, newSkill.trim()];
+                                   const updatedSkills = [...currentSkills, safeTrim(newSkill)];
                                    setFormData(prev => ({
                                      ...prev,
                                      skills: updatedSkills.join(', ')
@@ -1563,7 +1578,7 @@ export default function MyProfilePage() {
                    className="group relative"
                  >
                    <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-medium border border-blue-200 hover:bg-blue-200 transition-colors cursor-pointer shadow-sm">
-                     {skill.trim()}
+                     {safeTrim(skill)}
                    </span>
                    <button
                      onClick={() => {
