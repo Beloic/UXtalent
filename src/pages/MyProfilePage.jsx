@@ -900,11 +900,13 @@ export default function MyProfilePage() {
 
 
   const handleSubmit = async (e) => {
+    console.log('🚀 handleSubmit appelé !', { e, user: user?.email, candidateStatus, formDataId: formData.id });
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
 
     if (!user) {
+      console.log('❌ Pas d\'utilisateur connecté');
       setMessage('Vous devez être connecté pour créer un profil');
       setIsLoading(false);
       return;
@@ -912,6 +914,7 @@ export default function MyProfilePage() {
 
     // Validation des champs obligatoires pour les profils 'new' ou nouveaux
     if (!formData.id || candidateStatus === 'new') {
+      console.log('🔍 Validation des champs obligatoires...', { formDataId: formData.id, candidateStatus });
       const requiredFields = {
         name: 'Nom complet',
         title: 'Titre du poste',
@@ -924,19 +927,27 @@ export default function MyProfilePage() {
 
       const missingFields = [];
       for (const [field, label] of Object.entries(requiredFields)) {
-        if (!formData[field] || safeTrim(formData[field]) === '') {
+        const value = formData[field];
+        const isEmpty = !value || safeTrim(value) === '';
+        console.log(`🔍 Champ ${field}:`, { value, isEmpty });
+        if (isEmpty) {
           missingFields.push(label);
         }
       }
 
+      console.log('🔍 Champs manquants:', missingFields);
       if (missingFields.length > 0) {
-        setMessage(`❌ Veuillez remplir tous les champs obligatoires : ${missingFields.join(', ')}`);
+        const errorMsg = `❌ Veuillez remplir tous les champs obligatoires : ${missingFields.join(', ')}`;
+        console.log('❌ Validation échouée:', errorMsg);
+        setMessage(errorMsg);
         setIsLoading(false);
         return;
       }
+      console.log('✅ Validation réussie !');
     }
 
     try {
+      console.log('🚀 Début du traitement de l\'envoi...');
       let photoUrl = null;
       
       // Gestion de la photo
@@ -2647,7 +2658,10 @@ export default function MyProfilePage() {
           )}
 
           {/* Bouton permanent pour envoyer le profil en examen */}
-          {activeTab === 'view' && (
+          {(() => {
+            console.log('🔍 Vérification affichage bouton:', { activeTab, candidateStatus, formDataId: formData.id });
+            return activeTab === 'view';
+          })() && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -2663,9 +2677,12 @@ export default function MyProfilePage() {
                     Envoyez votre profil pour qu'il soit examiné par notre équipe
                   </p>
                   <button
-                    onClick={handleSubmit}
+                    onClick={(e) => {
+                      console.log('🖱️ Bouton cliqué !', { activeTab, candidateStatus, formDataId: formData.id });
+                      handleSubmit(e);
+                    }}
                     disabled={isLoading}
-                    className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto hover:bg-blue-50"
+                    className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto hover:bg-blue-50 relative z-10 cursor-pointer"
                   >
                     {isLoading ? (
                       <>
