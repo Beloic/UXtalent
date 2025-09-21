@@ -1035,33 +1035,42 @@ export default function MyProfilePage() {
       let photoUrl = null;
       
       // Gestion de la photo
+      console.log('📸 Gestion de la photo:', formData.photo);
       if (formData.photo?.file) {
+        console.log('📸 Nouvelle photo à uploader:', formData.photo.file.name);
         // Nouvelle photo uploadée
         const fileExt = formData.photo.file.name.split('.').pop();
         const fileName = `${user.id}-${Date.now()}.${fileExt}`;
         
+        console.log('📸 Upload vers Supabase Storage:', fileName);
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('profile-photos')
           .upload(fileName, formData.photo.file);
           
         if (uploadError) {
+          console.error('📸 Erreur upload:', uploadError);
           throw new Error(`Erreur lors de l'upload de la photo: ${uploadError.message}`);
         }
         
+        console.log('📸 Upload réussi:', uploadData);
         // Récupérer l'URL publique de la photo
         const { data: publicUrl } = supabase.storage
           .from('profile-photos')
           .getPublicUrl(fileName);
           
         photoUrl = publicUrl.publicUrl;
+        console.log('📸 URL publique générée:', photoUrl);
         
       } else if (formData.photo?.removed) {
         // Photo supprimée explicitement
+        console.log('📸 Photo supprimée explicitement');
         photoUrl = null;
       } else if (formData.photo?.existing) {
         // Photo existante conservée
+        console.log('📸 Photo existante conservée:', formData.photo.existing);
         photoUrl = formData.photo.existing;
       } else {
+        console.log('📸 Aucune photo à traiter');
         // Pas de photo (supprimée ou jamais ajoutée)
         photoUrl = null;
       }
