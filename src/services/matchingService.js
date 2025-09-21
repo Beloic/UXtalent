@@ -284,26 +284,45 @@ function extractCity(location) {
 
 /**
  * Vérifie si deux villes sont dans la même région
+ * Filtrage strict par région géographique française
  */
 function isSameRegion(city1, city2) {
+  // Si les villes sont identiques, elles sont dans la même région
+  if (city1 === city2) {
+    return true;
+  }
+
   const regions = {
-    'paris': ['paris', 'versailles', 'boulogne-billancourt', 'saint-denis', 'créteil', 'nanterre', 'argenteuil', 'montreuil', 'saint-denis', 'aubervilliers', 'asnières-sur-seine', 'colombes', 'courbevoie', 'rueil-malmaison', 'levallois-perret', 'neuilly-sur-seine', 'clichy', 'pantin', 'issy-les-moulineaux', 'antony', 'sèvres', 'meudon', 'fontenay-aux-roses', 'bourges', 'orléans', 'chartres', 'melun', 'evry', 'corbeil-essonnes', 'palaiseau', 'massy', 'saint-germain-en-laye', 'mantes-la-jolie', 'rambouillet', 'poissy', 'sartrouville', 'conflans-sainte-honorine', 'houilles', 'carrières-sur-seine', 'bezons', 'herblay', 'taverny', 'montmorency', 'sannois', 'ermont', 'franconville', 'cergy', 'pontoise', 'saint-ouen-l\'aumône', 'osny', 'menucourt', 'vaudherland', 'domont', 'bouffémont', 'saint-prix', 'taverny', 'bessancourt', 'frépillon', 'mériel', 'méry-sur-oise', 'nerville-la-forêt', 'presles', 'saint-leu-la-forêt', 'chauvry', 'margency', 'andilly', 'montlignon', 'saint-gratien', 'soisy-sous-montmorency', 'deuil-la-barre', 'groslay', 'sarcelles', 'garges-lès-gonesse', 'villiers-le-bel', 'arneville', 'gonesse', 'bonneuil-en-france', 'roissy-en-france', 'le-bourget', 'drancy', 'aulnay-sous-bois', 'le-raincy', 'livry-gargan', 'sevran', 'villetaneuse', 'epinay-sur-seine', 'saint-ouen', 'l\'ile-saint-denis', 'stains', 'pierrefitte-sur-seine', 'sarcelles', 'garges-lès-gonesse', 'villiers-le-bel', 'arneville', 'gonesse', 'bonneuil-en-france', 'roissy-en-france', 'le-bourget', 'drancy', 'aulnay-sous-bois', 'le-raincy', 'livry-gargan', 'sevran', 'villetaneuse', 'epinay-sur-seine', 'saint-ouen', 'l\'ile-saint-denis', 'stains', 'pierrefitte-sur-seine'],
-    'lyon': ['lyon', 'villeurbanne', 'vénissieux', 'saint-priest', 'bron', 'vaulx-en-velin', 'caluire-et-cuire', 'décines-charpieu', 'meyzieu', 'oullins', 'saint-fons', 'tassin-la-demi-lune', 'écully', 'charbonnières-les-bains', 'francheville', 'sainte-foy-lès-lyon', 'la-mulatière', 'oullins', 'saint-genis-laval', 'saint-genis-les-ollières', 'chassieu', 'genas', 'mions', 'corbas', 'solaize', 'feyzin', 'saint-symphorien-d\'ozon', 'grigny', 'irigny', 'vernaison', 'millery', 'montagny', 'charly', 'saint-pierre-de-chandieu', 'toussieu', 'marennes', 'saint-laurent-de-mure', 'tignieu-jameyzieu', 'janieu', 'chamagnieu', 'diémoz', 'heyrieux', 'mions', 'corbas', 'solaize', 'feyzin', 'saint-symphorien-d\'ozon', 'grigny', 'irigny', 'vernaison', 'millery', 'montagny', 'charly', 'saint-pierre-de-chandieu', 'toussieu', 'marennes', 'saint-laurent-de-mure', 'tignieu-jameyzieu', 'janieu', 'chamagnieu', 'diémoz', 'heyrieux'],
-    'marseille': ['marseille', 'aix-en-provence', 'aubagne', 'cassis', 'la-ciotat', 'marignane', 'vitrolles', 'les-pennes-mirabeau', 'plan-de-cuques', 'allauh', 'septèmes-les-vallons', 'gignac-la-nerthe', 'marignane', 'vitrolles', 'les-pennes-mirabeau', 'plan-de-cuques', 'allauh', 'septèmes-les-vallons', 'gignac-la-nerthe'],
-    'toulouse': ['toulouse', 'colomiers', 'tournefeuille', 'blagnac', 'muret', 'ramonville-saint-agne', 'auzeville-tolosane', 'castanet-tolosan', 'escouloubre', 'l\'union', 'saint-jean', 'balma', 'l\'union', 'saint-jean', 'balma'],
-    'nice': ['nice', 'cannes', 'antibes', 'grasse', 'menton', 'monaco', 'monte-carlo', 'cap-d\'ail', 'beaulieu-sur-mer', 'saint-jean-cap-ferrat', 'villefranche-sur-mer', 'eze', 'la-turbie', 'peille', 'lucéram', 'contes', 'berre-les-alpes', 'aspremont', 'carros', 'gattières', 'le-broc', 'saint-jeannet', 'vence', 'saint-paul-de-vence', 'tourrettes-sur-loup', 'le-rouret', 'valbonne', 'mougins', 'le-cannet', 'vallauris', 'golfe-juan', 'juan-les-pins', 'biot', 'valbonne', 'mougins', 'le-cannet', 'vallauris', 'golfe-juan', 'juan-les-pins', 'biot'],
-    'nantes': ['nantes', 'saint-nazaire', 'saint-herblain', 'reze', 'orvault', 'vertou', 'couëron', 'bouguenais', 'carquefou', 'saint-sebastien-sur-loire', 'la-chapelle-sur-erdre', 'treillieres', 'sucé-sur-erdre', 'thouaré-sur-loire', 'sainte-luce-sur-loire', 'saint-julien-de-concelles', 'haute-goulaine', 'le-loroux-bottereau', 'la-regrippiere', 'vallet', 'le-landreau', 'la-chapelle-heulin', 'le-palais', 'saint-fiacre-sur-maine', 'maisdon-sur-sevre', 'aigrefeuille-sur-maine', 'remouillé', 'vieillevigne', 'saint-philbert-de-grand-lieu', 'bouaye', 'brains', 'indre', 'le-pellerin', 'cheix-en-retz', 'porte-saint-père', 'rouans', 'saint-mars-de-coutais', 'saint-léger-les-vignes', 'saint-aignan-grandlieu', 'saint-philbert-de-grand-lieu', 'bouaye', 'brains', 'indre', 'le-pellerin', 'cheix-en-retz', 'porte-saint-père', 'rouans', 'saint-mars-de-coutais', 'saint-léger-les-vignes', 'saint-aignan-grandlieu'],
-    'montpellier': ['montpellier', 'lattes', 'castelnau-le-lez', 'le-cres', 'jacou', 'clapiers', 'grabels', 'saint-jean-de-vedas', 'lavérune', 'villeneuve-lès-maguelone', 'fabrègues', 'pignan', 'saint-georges-d\'orques', 'murviel-lès-montpellier', 'saint-jean-de-cuculles', 'saint-bauzille-de-montmel', 'saint-gély-du-fesc', 'combaillaux', 'saint-hilaire-de-beauvoir', 'saint-jean-de-cornies', 'saint-jean-de-cuculles', 'saint-mathieu-de-tréviers', 'saint-vincent-de-barbeyrargues', 'saturargues', 'saussan', 'saussines', 'sauteyrargues', 'sauve', 'sauviac', 'savignargues', 'sérignan', 'sérignan-du-comtat', 'sérignan-le-comtat', 'sérignan-du-comtat', 'sérignan-le-comtat'],
-    'strasbourg': ['strasbourg', 'schiltigheim', 'bischheim', 'hoenheim', 'oberhausbergen', 'obernai', 'sélestat', 'colmar', 'mulhouse', 'saint-louis', 'huningue', 'saint-louis', 'huningue'],
-    'bordeaux': ['bordeaux', 'mérignac', 'pessac', 'talence', 'villenave-d\'ornon', 'bègles', 'gradignan', 'le-bouscat', 'cestas', 'eysines', 'bruges', 'le-haillan', 'mérignac', 'pessac', 'talence', 'villenave-d\'ornon', 'bègles', 'gradignan', 'le-bouscat', 'cestas', 'eysines', 'bruges', 'le-haillan']
+    'ile-de-france': ['paris', 'versailles', 'boulogne-billancourt', 'saint-denis', 'créteil', 'nanterre', 'argenteuil', 'montreuil', 'aubervilliers', 'asnières-sur-seine', 'colombes', 'courbevoie', 'rueil-malmaison', 'levallois-perret', 'neuilly-sur-seine', 'clichy', 'pantin', 'issy-les-moulineaux', 'antony', 'sèvres', 'meudon', 'fontenay-aux-roses', 'melun', 'evry', 'corbeil-essonnes', 'palaiseau', 'massy', 'saint-germain-en-laye', 'mantes-la-jolie', 'rambouillet', 'poissy', 'sartrouville', 'conflans-sainte-honorine', 'houilles', 'carrières-sur-seine', 'bezons', 'herblay', 'taverny', 'montmorency', 'sannois', 'ermont', 'franconville', 'cergy', 'pontoise', 'saint-ouen-l\'aumône', 'osny', 'menucourt', 'vaudherland', 'domont', 'bouffémont', 'saint-prix', 'bessancourt', 'frépillon', 'mériel', 'méry-sur-oise', 'nerville-la-forêt', 'presles', 'saint-leu-la-forêt', 'chauvry', 'margency', 'andilly', 'montlignon', 'saint-gratien', 'soisy-sous-montmorency', 'deuil-la-barre', 'groslay', 'sarcelles', 'garges-lès-gonesse', 'villiers-le-bel', 'arneville', 'gonesse', 'bonneuil-en-france', 'roissy-en-france', 'le-bourget', 'drancy', 'aulnay-sous-bois', 'le-raincy', 'livry-gargan', 'sevran', 'villetaneuse', 'epinay-sur-seine', 'saint-ouen', 'l\'ile-saint-denis', 'stains', 'pierrefitte-sur-seine'],
+    'auvergne-rhone-alpes': ['lyon', 'villeurbanne', 'vénissieux', 'saint-priest', 'bron', 'vaulx-en-velin', 'caluire-et-cuire', 'décines-charpieu', 'meyzieu', 'oullins', 'saint-fons', 'tassin-la-demi-lune', 'écully', 'charbonnières-les-bains', 'francheville', 'sainte-foy-lès-lyon', 'la-mulatière', 'saint-genis-laval', 'saint-genis-les-ollières', 'chassieu', 'genas', 'mions', 'corbas', 'solaize', 'feyzin', 'saint-symphorien-d\'ozon', 'grigny', 'irigny', 'vernaison', 'millery', 'montagny', 'charly', 'saint-pierre-de-chandieu', 'toussieu', 'marennes', 'saint-laurent-de-mure', 'tignieu-jameyzieu', 'janieu', 'chamagnieu', 'diémoz', 'heyrieux', 'grenoble', 'saint-étienne', 'clermont-ferrand', 'annecy', 'valence', 'chambéry', 'bourges', 'orléans', 'chartres'],
+    'provence-alpes-cote-azur': ['marseille', 'aix-en-provence', 'aubagne', 'cassis', 'la-ciotat', 'marignane', 'vitrolles', 'les-pennes-mirabeau', 'plan-de-cuques', 'allauh', 'septèmes-les-vallons', 'gignac-la-nerthe', 'nice', 'cannes', 'antibes', 'grasse', 'menton', 'monaco', 'monte-carlo', 'cap-d\'ail', 'beaulieu-sur-mer', 'saint-jean-cap-ferrat', 'villefranche-sur-mer', 'eze', 'la-turbie', 'peille', 'lucéram', 'contes', 'berre-les-alpes', 'aspremont', 'carros', 'gattières', 'le-broc', 'saint-jeannet', 'vence', 'saint-paul-de-vence', 'tourrettes-sur-loup', 'le-rouret', 'valbonne', 'mougins', 'le-cannet', 'vallauris', 'golfe-juan', 'juan-les-pins', 'biot', 'toulon'],
+    'occitanie': ['toulouse', 'colomiers', 'tournefeuille', 'blagnac', 'muret', 'ramonville-saint-agne', 'auzeville-tolosane', 'castanet-tolosan', 'escouloubre', 'l\'union', 'saint-jean', 'balma', 'montpellier', 'lattes', 'castelnau-le-lez', 'le-cres', 'jacou', 'clapiers', 'grabels', 'saint-jean-de-vedas', 'lavérune', 'villeneuve-lès-maguelone', 'fabrègues', 'pignan', 'saint-georges-d\'orques', 'murviel-lès-montpellier', 'saint-jean-de-cuculles', 'saint-bauzille-de-montmel', 'saint-gély-du-fesc', 'combaillaux', 'saint-hilaire-de-beauvoir', 'saint-jean-de-cornies', 'saint-mathieu-de-tréviers', 'saint-vincent-de-barbeyrargues', 'saturargues', 'saussan', 'saussines', 'sauteyrargues', 'sauve', 'sauviac', 'savignargues', 'sérignan', 'sérignan-du-comtat', 'sérignan-le-comtat', 'perpignan', 'nîmes'],
+    'pays-de-la-loire': ['nantes', 'saint-nazaire', 'saint-herblain', 'reze', 'orvault', 'vertou', 'couëron', 'bouguenais', 'carquefou', 'saint-sebastien-sur-loire', 'la-chapelle-sur-erdre', 'treillieres', 'sucé-sur-erdre', 'thouaré-sur-loire', 'sainte-luce-sur-loire', 'saint-julien-de-concelles', 'haute-goulaine', 'le-loroux-bottereau', 'la-regrippiere', 'vallet', 'le-landreau', 'la-chapelle-heulin', 'le-palais', 'saint-fiacre-sur-maine', 'maisdon-sur-sevre', 'aigrefeuille-sur-maine', 'remouillé', 'vieillevigne', 'saint-philbert-de-grand-lieu', 'bouaye', 'brains', 'indre', 'le-pellerin', 'cheix-en-retz', 'porte-saint-père', 'rouans', 'saint-mars-de-coutais', 'saint-léger-les-vignes', 'saint-aignan-grandlieu', 'le-mans', 'angers', 'tours'],
+    'grand-est': ['strasbourg', 'schiltigheim', 'bischheim', 'hoenheim', 'oberhausbergen', 'obernai', 'sélestat', 'colmar', 'mulhouse', 'saint-louis', 'huningue', 'reims', 'metz', 'nancy', 'troyes', 'chalons-en-champagne'],
+    'nouvelle-aquitaine': ['bordeaux', 'mérignac', 'pessac', 'talence', 'villenave-d\'ornon', 'bègles', 'gradignan', 'le-bouscat', 'cestas', 'eysines', 'bruges', 'le-haillan', 'limoges', 'poitiers', 'la-rochelle', 'pau', 'bayonne'],
+    'hauts-de-france': ['lille', 'roubaix', 'tourcoing', 'villeneuve-d\'ascq', 'dunkerque', 'calais', 'boulogne-sur-mer', 'amiens', 'beauvais', 'compiegne'],
+    'bretagne': ['rennes', 'brest', 'quimper', 'lorient', 'vannes', 'saint-brieuc', 'saint-malo'],
+    'normandie': ['rouen', 'caen', 'le-havre', 'cherbourg', 'evreux', 'alençon'],
+    'centre-val-de-loire': ['orléans', 'tours', 'bourges', 'chartres', 'blois', 'châteauroux'],
+    'bourgogne-franche-comte': ['dijon', 'besançon', 'mâcon', 'auxerre', 'nevers'],
+    'corse': ['ajaccio', 'bastia', 'porto-vecchio', 'calvi']
   };
 
+  // Recherche dans quelle région se trouve chaque ville
+  let region1 = null;
+  let region2 = null;
+
   for (const [region, cities] of Object.entries(regions)) {
-    if (cities.includes(city1) && cities.includes(city2)) {
-      return true;
+    if (cities.includes(city1)) {
+      region1 = region;
+    }
+    if (cities.includes(city2)) {
+      region2 = region;
     }
   }
-  return false;
+
+  // Retourne true seulement si les deux villes sont dans la même région
+  return region1 !== null && region2 !== null && region1 === region2;
 }
 
 /**
@@ -338,7 +357,7 @@ function isGeographicallyCompatible(candidateLocation, candidateRemote, jobLocat
     return true;
   }
   
-  // Si l'offre est onsite ou hybrid, vérifier la proximité géographique
+  // Si l'offre est onsite ou hybrid, vérifier la proximité géographique STRICTEMENT
   if (jobRemote === 'onsite' || jobRemote === 'hybrid') {
     if (!candidateLocation || !jobLocation) {
       return false; // Données manquantes = incompatible
@@ -352,12 +371,17 @@ function isGeographicallyCompatible(candidateLocation, candidateRemote, jobLocat
       return true;
     }
     
-    // Même région = compatible pour hybrid, pas pour onsite
-    if (isSameRegion(candidateCity, jobCity)) {
-      return jobRemote === 'hybrid'; // Compatible seulement si l'offre est hybrid
+    // Pour les offres onsite : SEULEMENT même ville acceptée
+    if (jobRemote === 'onsite') {
+      return false; // Pas de flexibilité pour les offres onsite
     }
     
-    // Villes très éloignées = incompatible pour onsite/hybrid
+    // Pour les offres hybrid : même région acceptée
+    if (jobRemote === 'hybrid') {
+      return isSameRegion(candidateCity, jobCity);
+    }
+    
+    // Villes très éloignées = incompatible
     return false;
   }
   
