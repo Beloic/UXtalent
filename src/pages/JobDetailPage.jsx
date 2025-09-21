@@ -538,10 +538,11 @@ export default function JobDetailPage() {
                         Votre offre d'emploi
                       </div>
                     ) : (
-                      <button className="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold">
-                        <Mail className="w-5 h-5" />
-                        Contacter l'entreprise
-                      </button>
+                      // Les recruteurs ne peuvent pas se contacter entre eux
+                      <div className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-semibold">
+                        <Building2 className="w-5 h-5" />
+                        Offre d'emploi d'un autre recruteur
+                      </div>
                     )
                   )}
                 </div>
