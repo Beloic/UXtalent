@@ -246,12 +246,22 @@ export default function MyProfilePage() {
       
       const response = await fetch(apiUrl);
       
-      console.log('🌐 BACKEND RENDER - RÉPONSE:', {
+      console.log('🌐 API VERCEL - RÉPONSE:', {
         status: response.status,
         statusText: response.statusText,
         ok: response.ok,
         url: response.url
       });
+      
+      // Si erreur 500, essayer de lire le contenu de l'erreur
+      if (!response.ok) {
+        try {
+          const errorText = await response.text();
+          console.log('🌐 API VERCEL - ERREUR DÉTAILLÉE:', errorText);
+        } catch (e) {
+          console.log('🌐 API VERCEL - Impossible de lire l\'erreur:', e);
+        }
+      }
       
       if (response.ok) {
         const existingCandidate = await response.json();
