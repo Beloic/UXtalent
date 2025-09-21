@@ -26,6 +26,29 @@ import { supabase } from "../lib/supabase";
 import { buildApiUrl } from "../config/api";
 import MatchingWidget from "../components/MatchingWidget";
 
+// Fonction pour formater le texte des offres d'emploi
+const formatJobText = (text) => {
+  if (!text) return '';
+  
+  // Diviser le texte en lignes
+  const lines = text.split('\n');
+  const formattedLines = lines.map(line => {
+    // Si la ligne commence par •, créer une puce stylisée
+    if (line.trim().startsWith('•')) {
+      const content = line.trim().substring(1).trim();
+      return `<div class="flex items-start gap-2 mb-2"><span class="text-blue-600 font-bold mt-1">•</span><span>${content}</span></div>`;
+    }
+    // Si la ligne contient **texte**, formater en gras
+    if (line.includes('**')) {
+      return line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-900">$1</strong>');
+    }
+    // Sinon, retourner la ligne avec un <br> si elle n'est pas vide
+    return line.trim() ? `${line}<br>` : '';
+  });
+  
+  return formattedLines.join('');
+};
+
 export default function JobDetailPage() {
   const { id } = useParams();
   const [job, setJob] = useState(null);
@@ -430,7 +453,10 @@ export default function JobDetailPage() {
                   À propos de cette offre
                 </h2>
                 <div className="bg-gray-50 rounded-2xl p-6">
-                  <p className="text-gray-700 leading-relaxed text-lg">{job.description}</p>
+                  <div 
+                    className="text-gray-700 leading-relaxed text-lg"
+                    dangerouslySetInnerHTML={{ __html: formatJobText(job.description) }}
+                  />
                 </div>
                 
                 {/* Description complète */}
@@ -441,14 +467,10 @@ export default function JobDetailPage() {
                       Exigences
                     </h3>
                     <div className="bg-gray-50 rounded-2xl p-6">
-                      <div className="text-gray-700 leading-relaxed">
-                        {job.requirements.split('\\n').filter(req => req.trim()).map((requirement, index) => (
-                          <div key={index} className="flex items-start gap-2 mb-2">
-                            <span className="text-blue-600 font-bold">•</span>
-                            <span>{requirement.trim().replace(/^•\s*/, '')}</span>
-                          </div>
-                        ))}
-                      </div>
+                      <div 
+                        className="text-gray-700 leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: formatJobText(job.requirements) }}
+                      />
                     </div>
                   </div>
                 )}
@@ -602,14 +624,10 @@ export default function JobDetailPage() {
                   Avantages
                 </h3>
                 <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="text-gray-700 leading-relaxed text-sm">
-                    {job.benefits.split('\\n').filter(benefit => benefit.trim()).map((benefit, index) => (
-                      <div key={index} className="flex items-start gap-2 mb-1">
-                        <span className="text-green-600 font-bold">•</span>
-                        <span>{benefit.trim().replace(/^•\s*/, '')}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <div 
+                    className="text-gray-700 leading-relaxed text-sm"
+                    dangerouslySetInnerHTML={{ __html: formatJobText(job.benefits) }}
+                  />
                 </div>
               </motion.div>
             )}
