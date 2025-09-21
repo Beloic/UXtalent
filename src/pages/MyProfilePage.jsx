@@ -2778,7 +2778,7 @@ export default function MyProfilePage() {
                     >
                       <div className="text-center mb-8">
                         <h3 className="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
-                        <p className="text-gray-600 mb-4">Parfait pour les petites entreprises</p>
+                        <p className="text-gray-600 mb-4">Pour planifier un recrutement</p>
                         <div className="flex items-baseline justify-center">
                           <span className="text-5xl font-bold text-gray-900">19,99€</span>
                           <span className="text-xl text-gray-600 ml-2">/mois</span>
