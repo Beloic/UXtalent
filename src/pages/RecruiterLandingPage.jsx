@@ -436,7 +436,7 @@ export default function RecruiterLandingPage() {
                 <ul className="space-y-3 mb-8 text-left">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-300" />
-                    <span>Sélection de profil sur-mesure par notre équipe</span>
+                    <span>🎯 Sélection de profil sur-mesure par notre équipe</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-300" />

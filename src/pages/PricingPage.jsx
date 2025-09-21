@@ -34,7 +34,7 @@ export default function PricingPage() {
       period: "/mois",
       description: "Pour un besoin de recrutement imminent",
       features: [
-        "Sélection de profil sur-mesure par notre équipe",
+        "🎯 Sélection de profil sur-mesure par notre équipe",
         "Accès illimité aux profils",
         "Contact direct avec tous les candidats",
         "Support prioritaire",

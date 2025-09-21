@@ -89,7 +89,7 @@ export const PaymentLinkPricingGrid = ({ userType = 'candidate' }) => {
       period: '/mois',
       description: 'Pour les grandes entreprises',
       features: [
-        'Sélection de profil sur-mesure par notre équipe',
+        '🎯 Sélection de profil sur-mesure par notre équipe',
         'Accès illimité aux profils',
         'Contact direct avec tous les candidats',
         'Support prioritaire',

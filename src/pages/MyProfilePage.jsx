@@ -2836,7 +2836,7 @@ export default function MyProfilePage() {
                       <ul className="space-y-4 mb-8">
                         <li className="flex items-start gap-3">
                           <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">Sélection de profil sur-mesure par notre équipe</span>
+                          <span className="text-gray-700">🎯 Sélection de profil sur-mesure par notre équipe</span>
                         </li>
                         <li className="flex items-start gap-3">
                           <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
@@ -2920,7 +2920,7 @@ export default function MyProfilePage() {
                         </li>
                         <li className="flex items-start gap-3">
                           <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">Sélection de profil sur-mesure par notre équipe</span>
+                          <span className="text-gray-700">🎯 Sélection de profil sur-mesure par notre équipe</span>
                         </li>
                       </ul>
 
