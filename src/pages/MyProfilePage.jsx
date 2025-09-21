@@ -47,7 +47,6 @@ export default function MyProfilePage() {
     return String(value);
   };
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
   
   // Déterminer l'onglet actif basé sur l'URL
   const getActiveTabFromPath = () => {
@@ -136,8 +135,6 @@ export default function MyProfilePage() {
   const [editingField, setEditingField] = useState(null);
   const [tempValue, setTempValue] = useState('');
   const [isSavingInline, setIsSavingInline] = useState(false);
-
-  const totalSteps = 6;
 
   // Fonction pour charger les statistiques du profil
   const loadProfileStats = useCallback(async () => {
@@ -804,53 +801,7 @@ export default function MyProfilePage() {
 
 
 
-  const validateStep = (step) => {
-    switch (step) {
-      case 1: // Photo (optionnelle) => toujours valide
-        return true;
-      case 2: // Informations personnelles
-        return (
-          safeTrim(formData.name) &&
-          safeTrim(formData.email)
-        );
-      case 3: // Informations professionnelles
-        return (
-          safeTrim(formData.title) &&
-          safeTrim(formData.location) &&
-          formData.remote
-        );
-      case 4: // Présentation et compétences
-        return (
-          safeTrim(formData.bio) &&
-          safeTrim(formData.skills)
-        );
-      case 5: // Rémunération (obligatoire)
-        return (
-          safeTrim(formData.dailyRate) &&
-          safeTrim(formData.annualSalary)
-        );
-      case 6: // Liens et portfolio
-        return (
-          safeTrim(formData.portfolio) &&
-          safeTrim(formData.linkedin)
-        );
-      default:
-        return true;
-    }
-  };
 
-  const goNextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep((s) => Math.min(totalSteps, s + 1));
-    } else {
-      setMessage('❌ Veuillez compléter les champs requis avant de continuer.');
-      setTimeout(() => setMessage(''), 3000);
-    }
-  };
-
-  const goPrevStep = () => {
-    setCurrentStep((s) => Math.max(1, s - 1));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1288,7 +1239,6 @@ export default function MyProfilePage() {
                   e.stopPropagation();
                   // Permettre la modification du profil même si rejeté
                   setIsEditingRejected(true);
-                  setCurrentStep(1);
                   navigateToTab('view');
                 }}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold cursor-pointer"
