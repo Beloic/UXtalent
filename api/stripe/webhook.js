@@ -1,5 +1,4 @@
 import Stripe from 'stripe';
-import { headers } from 'next/headers';
 
 console.log('🔧 [VERCEL WEBHOOK] Initialisation du module webhook');
 console.log('🔧 [VERCEL WEBHOOK] Stripe key présent:', !!process.env.STRIPE_SECRET_KEY);
@@ -23,7 +22,7 @@ export async function POST(req) {
     const body = await req.text();
     console.log('🔍 [VERCEL WEBHOOK] Body récupéré, taille:', body?.length || 'undefined');
     
-    const signature = headers().get('stripe-signature');
+    const signature = req.headers.get('stripe-signature');
     console.log('🔍 [VERCEL WEBHOOK] Signature récupérée:', !!signature);
 
     console.log('🔍 [VERCEL WEBHOOK] Stripe configuré:', !!process.env.STRIPE_SECRET_KEY);
