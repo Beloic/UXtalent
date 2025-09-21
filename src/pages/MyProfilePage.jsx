@@ -244,9 +244,23 @@ export default function MyProfilePage() {
       if (response.ok) {
         const existingCandidate = await response.json();
         
+        console.log('🔍 PROFIL CHARGÉ:', {
+          existingCandidate,
+          status: existingCandidate?.status,
+          id: existingCandidate?.id,
+          email: existingCandidate?.email,
+          name: existingCandidate?.name
+        });
+        
         if (existingCandidate) {
           // Logique simplifiée : utiliser directement le statut
           const status = existingCandidate.status || 'pending';
+          
+          console.log('🔍 STATUT DÉFINI:', {
+            originalStatus: existingCandidate.status,
+            finalStatus: status,
+            candidateId: existingCandidate.id
+          });
           
           setCandidateStatus(status);
           
@@ -299,17 +313,33 @@ export default function MyProfilePage() {
         }
       } else if (response.status === 404) {
         // Candidat non trouvé - c'est normal pour un nouveau profil
-        console.log('✅ Profil non trouvé - nouveau candidat détecté');
+        console.log('🔍 PROFIL NON TROUVÉ (404):', {
+          userEmail: user.email,
+          responseStatus: response.status,
+          action: 'Setting candidateStatus to "new"'
+        });
         setMessage('ℹ️ Aucun profil existant trouvé. Vous pouvez créer un nouveau profil.');
         setCandidateStatus('new'); // Nouveau statut pour les nouveaux profils
         // S'assurer que formData.id reste null pour les nouveaux candidats
         setFormData(prev => ({ ...prev, id: null }));
       } else {
         const errorText = await response.text();
+        console.log('🔍 ERREUR DE RÉPONSE:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorText: errorText,
+          userEmail: user.email,
+          url: buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`)
+        });
         console.error('❌ Erreur de réponse:', response.status, errorText);
         setMessage(`❌ Erreur lors du chargement: ${response.status}`);
       }
     } catch (error) {
+      console.log('🔍 ERREUR CATCH:', {
+        error: error.message,
+        userEmail: user.email,
+        action: 'Setting candidateStatus to "new" due to error'
+      });
       console.error('❌ Erreur lors du chargement du profil existant:', error);
       setMessage(`❌ Erreur: ${error.message}`);
       // En cas d'erreur réseau, considérer comme nouveau candidat
@@ -2123,7 +2153,7 @@ export default function MyProfilePage() {
                 <p className="text-sm text-yellow-700">
                   candidateStatus: {candidateStatus || 'null'} | 
                   formData.id: {formData.id || 'null'} | 
-                  Should show button: {(!formData.id || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES' : 'NO'}
+                  Should show button: {(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES' : 'NO'}
                 </p>
               </div>
 
@@ -2133,12 +2163,36 @@ export default function MyProfilePage() {
                 // ou si son profil est en attente/rejeté
                 const shouldShow = !formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
                 
-                console.log('🔍 Debug bouton:', {
-                  candidateStatus,
+                console.log('🔍 Debug bouton DÉTAILLÉ:', {
+                  candidateStatus: candidateStatus,
+                  candidateStatusType: typeof candidateStatus,
                   formDataId: formData.id,
-                  shouldShow,
+                  formDataIdType: typeof formData.id,
+                  shouldShow: shouldShow,
                   userEmail: user?.email,
-                  condition: '!formData.id || candidateStatus === "new" || candidateStatus === "pending" || candidateStatus === "rejected"'
+                  condition1: '!formData.id',
+                  condition1Result: !formData.id,
+                  condition2: 'candidateStatus === "new"',
+                  condition2Result: candidateStatus === 'new',
+                  condition3: 'candidateStatus === "pending"',
+                  condition3Result: candidateStatus === 'pending',
+                  condition4: 'candidateStatus === "rejected"',
+                  condition4Result: candidateStatus === 'rejected',
+                  fullCondition: '!formData.id || candidateStatus === "new" || candidateStatus === "pending" || candidateStatus === "rejected"'
+                });
+                
+                // Logs supplémentaires pour debug
+                console.log('🔍 État complet du composant:', {
+                  isLoadingProfile,
+                  isAuthenticated,
+                  user: user ? { id: user.id, email: user.email } : null,
+                  formData: {
+                    id: formData.id,
+                    name: formData.name,
+                    email: formData.email
+                  },
+                  candidateStatus,
+                  message
                 });
                 
                 return shouldShow;
