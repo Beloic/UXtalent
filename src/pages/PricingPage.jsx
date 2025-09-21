@@ -35,25 +35,24 @@ export default function PricingPage() {
       period: "/mois",
       description: "Pour les entreprises en croissance",
       features: [
-        "🎯 Sélection de profil sur-mesure par notre équipe",
         "Accès illimité aux profils",
         "Contact direct avec tous les candidats",
         "Support prioritaire",
         "Tableau de bord complet",
         "Tableau Kanban avancé pour organiser les candidats",
         "Algorithme de Matching intelligent",
-        "Export des talents en CSV/JSON"
+        "Export des talents en CSV/JSON",
+        "Sélection de profil sur-mesure par notre équipe"
       ],
       popular: true,
       cta: "Commencer"
     },
     {
-      name: "Premium",
+      name: "Sur-mesure",
       price: "Sur mesure",
       period: "",
       description: "Solutions personnalisées",
       features: [
-        "🎯 Sélection de profil sur-mesure par notre équipe",
         "Accès illimité aux profils",
         "Recherche ultra-avancée",
         "Contact direct illimité",
@@ -64,7 +63,8 @@ export default function PricingPage() {
         "Export des talents en CSV/JSON",
         "Intégrations personnalisées",
         "Formation équipe",
-        "SLA garantis"
+        "SLA garantis",
+        "Sélection de profil sur-mesure par notre équipe"
       ],
       popular: false,
       cta: "Nous contacter"
