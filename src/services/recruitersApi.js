@@ -345,7 +345,28 @@ export class RecruitersApiService {
 
 // Fonctions simplifiées pour le hook useRecruiter
 export const fetchRecruiterProfile = async () => {
-  return await RecruitersApiService.getMyProfile();
+  try {
+    // Essayer d'abord l'endpoint /me
+    return await RecruitersApiService.getMyProfile();
+  } catch (error) {
+    console.log('⚠️ Endpoint /me non disponible, tentative avec /email/:email');
+    // Fallback vers l'endpoint par email
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error('Non authentifié');
+    
+    const response = await fetch(buildApiUrl(`/api/recruiters/email/${encodeURIComponent(session.user.email)}`), {
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+    
+    return await response.json();
+  }
 };
 
 export const fetchRecruiterStats = async (recruiterId) => {
