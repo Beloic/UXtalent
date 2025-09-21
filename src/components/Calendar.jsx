@@ -309,13 +309,13 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
   return (
     <div className="space-y-4">
       {/* Header du calendrier */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between mb-8 -mt-2">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center gap-3">
-            <CalendarIcon className="w-5 h-5 text-blue-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Mes rendez-vous</h3>
+            <CalendarIcon className="w-6 h-6 text-blue-600" />
+            <h3 className="text-2xl font-bold text-gray-900">Mes rendez-vous</h3>
           </div>
-          <span className="text-gray-600">
+          <span className="text-gray-600 text-sm">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
           </span>
         </div>
