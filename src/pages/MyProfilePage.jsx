@@ -1613,6 +1613,35 @@ export default function MyProfilePage() {
                                 className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
                               />
                             )}
+                            
+                            {/* Bouton d'import de photo */}
+                            <button
+                              onClick={() => {
+                                const input = document.createElement('input');
+                                input.type = 'file';
+                                input.accept = 'image/*';
+                                input.onchange = (e) => {
+                                  const file = e.target.files[0];
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = (event) => {
+                                      setFormData(prev => ({
+                                        ...prev,
+                                        photo: {
+                                          file: file,
+                                          preview: event.target.result
+                                        }
+                                      }));
+                                    };
+                                    reader.readAsDataURL(file);
+                                  }
+                                };
+                                input.click();
+                              }}
+                              className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-white"
+                            >
+                              <Camera className="w-4 h-4" />
+                            </button>
                           </div>
                           
                           <div className="flex-1">
@@ -1858,8 +1887,8 @@ export default function MyProfilePage() {
 
                             {/* Portfolio */}
                             <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-                              <div className="p-2 bg-gray-100 rounded-lg">
-                                <Globe className="w-5 h-5 text-gray-600" />
+                              <div className="p-2 bg-blue-100 rounded-lg">
+                                <Globe className="w-5 h-5 text-blue-600" />
                               </div>
                               <div className="flex-1">
                                 <p className="text-sm font-medium text-gray-500 mb-1">Portfolio</p>
@@ -1874,8 +1903,8 @@ export default function MyProfilePage() {
 
                             {/* GitHub */}
                             <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-                              <div className="p-2 bg-gray-100 rounded-lg">
-                                <ExternalLink className="w-5 h-5 text-gray-600" />
+                              <div className="p-2 bg-blue-100 rounded-lg">
+                                <ExternalLink className="w-5 h-5 text-blue-600" />
                               </div>
                               <div className="flex-1">
                                 <p className="text-sm font-medium text-gray-500 mb-1">GitHub</p>
