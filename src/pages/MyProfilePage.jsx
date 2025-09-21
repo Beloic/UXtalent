@@ -239,10 +239,24 @@ export default function MyProfilePage() {
       setIsLoadingProfile(true);
       
       // Utiliser la nouvelle route spécifique pour récupérer le profil par email
-      const response = await fetch(buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`));
+      const apiUrl = buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`);
+      console.log('🌐 BACKEND RENDER - URL API COMPLÈTE:', apiUrl);
+      console.log('🌐 BACKEND RENDER - USER EMAIL:', user.email);
+      console.log('🌐 BACKEND RENDER - Appel API en cours...');
+      
+      const response = await fetch(apiUrl);
+      
+      console.log('🌐 BACKEND RENDER - RÉPONSE:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        url: response.url
+      });
       
       if (response.ok) {
         const existingCandidate = await response.json();
+        
+        console.log('🌐 BACKEND RENDER - RÉPONSE SUCCÈS - Données reçues:', existingCandidate);
         
         console.log('🔍 PROFIL CHARGÉ:', {
           existingCandidate,
@@ -250,6 +264,16 @@ export default function MyProfilePage() {
           id: existingCandidate?.id,
           email: existingCandidate?.email,
           name: existingCandidate?.name
+        });
+        
+        console.log('🔍 PROFIL CHARGÉ - DÉTAILS STATUT:', {
+          rawStatus: existingCandidate?.status,
+          statusType: typeof existingCandidate?.status,
+          statusLength: existingCandidate?.status?.length,
+          statusIsNew: existingCandidate?.status === 'new',
+          statusIsPending: existingCandidate?.status === 'pending',
+          statusIsApproved: existingCandidate?.status === 'approved',
+          statusIsRejected: existingCandidate?.status === 'rejected'
         });
         
         if (existingCandidate) {
@@ -263,6 +287,12 @@ export default function MyProfilePage() {
           });
           
           setCandidateStatus(status);
+          
+          // Log après setCandidateStatus
+          console.log('🔍 CANDIDATESTATUS DÉFINI DANS STATE:', {
+            statusSetTo: status,
+            willTriggerRerender: true
+          });
           
           // Charger le plan du candidat
           setCandidatePlan(existingCandidate.plan || 'free');
@@ -884,7 +914,7 @@ export default function MyProfilePage() {
           setIsEditingRejected(false);
         } else if (candidateStatus === 'new') {
           // Profil nouveau envoyé pour validation - message spécial
-          setMessage(`✅ Profil envoyé avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
+          setMessage(`✅ Profil en attente pour examen. Votre profil a été envoyé avec succès et est maintenant en cours d'examen par notre équipe.`);
           // Changer le statut à pending
           setCandidateStatus('pending');
         } else {
@@ -1767,10 +1797,10 @@ export default function MyProfilePage() {
                               <Clock className="w-5 h-5 text-yellow-600" />
                               <div>
                                 <p className="text-sm font-medium text-yellow-800">
-                                  {candidateStatus === 'new' ? 'Profil en cours de finalisation' : 'Profil en attente de validation'}
+                                  {candidateStatus === 'new' ? 'Profil en attente de validation' : 'Profil en attente de validation'}
                                 </p>
                                 <p className="text-xs text-yellow-600">
-                                  {candidateStatus === 'new' ? 'Complétez votre profil et envoyez-le pour validation' : 'Votre profil est en cours d\'examen par notre équipe'}
+                                  {candidateStatus === 'new' ? 'Complétez votre profil et envoyez-le pour examen' : 'Votre profil est en cours d\'examen par notre équipe'}
                                 </p>
                               </div>
                             </div>
@@ -2149,12 +2179,22 @@ export default function MyProfilePage() {
 
               {/* Bouton de test temporaire - toujours visible */}
               <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-4">
-                <h4 className="text-lg font-bold text-yellow-800 mb-2">🔍 Debug Info</h4>
-                <p className="text-sm text-yellow-700">
-                  candidateStatus: {candidateStatus || 'null'} | 
-                  formData.id: {formData.id || 'null'} | 
-                  Should show button: {(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES' : 'NO'}
-                </p>
+                <h4 className="text-lg font-bold text-yellow-800 mb-2">🔍 Debug Info DÉTAILLÉ</h4>
+                <div className="text-sm text-yellow-700 space-y-1">
+                  <p><strong>candidateStatus:</strong> "{candidateStatus || 'null'}" (type: {typeof candidateStatus})</p>
+                  <p><strong>formData.id:</strong> "{formData.id || 'null'}" (type: {typeof formData.id})</p>
+                  <p><strong>user.email:</strong> {user?.email || 'null'}</p>
+                  <p><strong>isLoadingProfile:</strong> {isLoadingProfile ? 'true' : 'false'}</p>
+                  <p><strong>Backend URL:</strong> {user?.email ? buildApiUrl(`/api/candidates?email=${encodeURIComponent(user.email)}`) : 'N/A'}</p>
+                  <hr className="my-2" />
+                  <p><strong>Conditions:</strong></p>
+                  <p>• !formData.id: {!formData.id ? 'TRUE ✅' : 'FALSE ❌'}</p>
+                  <p>• candidateStatus === 'new': {candidateStatus === 'new' ? 'TRUE ✅' : 'FALSE ❌'}</p>
+                  <p>• candidateStatus === 'pending': {candidateStatus === 'pending' ? 'TRUE ✅' : 'FALSE ❌'}</p>
+                  <p>• candidateStatus === 'rejected': {candidateStatus === 'rejected' ? 'TRUE ✅' : 'FALSE ❌'}</p>
+                  <hr className="my-2" />
+                  <p><strong>RÉSULTAT FINAL - Should show button:</strong> <span className="font-bold text-lg">{(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES ✅' : 'NO ❌'}</span></p>
+                </div>
               </div>
 
               {/* Bouton "Envoyer mon profil" pour les candidats non approuvés */}
@@ -2196,12 +2236,34 @@ export default function MyProfilePage() {
                 });
                 
                 return shouldShow;
+              })()}
+              
+              {/* Message si le bouton ne s'affiche pas */}
+              {(() => {
+                const shouldShow = !formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
+                if (!shouldShow) {
+                  return (
+                    <div className="mt-8 bg-red-50 border border-red-200 rounded-2xl p-4 mb-4">
+                      <h4 className="text-lg font-bold text-red-800 mb-2">❌ BOUTON MASQUÉ</h4>
+                      <p className="text-sm text-red-700">
+                        Le bouton "Envoyer mon profil" n'est pas affiché car aucune condition n'est remplie.
+                        <br />Votre statut semble être "{candidateStatus}" et vous avez un ID: "{formData.id}"
+                      </p>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+              
+              {(() => {
+                const shouldShow = !formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
+                return shouldShow;
               })() && (
                 <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
                   <div className="text-center">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">
                       {!formData.id ? 'Créer votre profil candidat' : 
-                       candidateStatus === 'new' ? 'Finaliser votre profil' :
+                       candidateStatus === 'new' ? 'Valider votre profil candidat' :
                        candidateStatus === 'pending' ? 'Modifier votre profil' : 
                        candidateStatus === 'rejected' ? 'Modifier votre profil rejeté' : 
                        'Finaliser votre profil'}
@@ -2210,7 +2272,7 @@ export default function MyProfilePage() {
                       {!formData.id ? 
                         'Remplissez tous les champs requis et cliquez sur "Envoyer mon profil" pour créer votre candidature.' :
                         candidateStatus === 'new' ?
-                          'Votre profil a été créé automatiquement lors de l\'inscription. Complétez-le et cliquez sur "Envoyer mon profil" pour le soumettre à validation.' :
+                          'Votre profil a été créé automatiquement lors de l\'inscription. Complétez-le et cliquez sur "Envoyer mon profil pour examen" pour le soumettre à validation.' :
                         candidateStatus === 'pending' ? 
                           'Votre profil a été soumis et est en cours de validation. Modifiez les champs nécessaires et cliquez sur "Modifier et renvoyer mon profil" pour soumettre à nouveau votre candidature.' :
                         candidateStatus === 'rejected' ?
@@ -2262,7 +2324,7 @@ export default function MyProfilePage() {
                         <>
                           <CheckCircle className="w-5 h-5" />
                           {!formData.id ? 'Envoyer mon profil' : 
-                           candidateStatus === 'new' ? 'Envoyer mon profil' :
+                           candidateStatus === 'new' ? 'Envoyer mon profil pour examen' :
                            candidateStatus === 'pending' ? 'Modifier et renvoyer mon profil' : 
                            candidateStatus === 'rejected' ? 'Modifier et renvoyer mon profil' : 
                            'Envoyer mon profil'}
