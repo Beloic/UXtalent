@@ -696,10 +696,7 @@ export default function MyProfilePage() {
         setMessage('✅ Champ mis à jour avec succès');
         setTimeout(() => setMessage(''), 3000);
         
-        // Recharger le profil pour s'assurer que les données sont à jour
-        setTimeout(() => {
-          loadExistingProfile();
-        }, 500);
+        // Ne pas recharger automatiquement la page - les données sont déjà mises à jour localement
       } else {
         const errorText = await response.text();
         console.error('❌ Erreur sauvegarde:', errorText);
@@ -1091,10 +1088,7 @@ export default function MyProfilePage() {
           setMessage('');
         }, formData.id ? 3000 : 5000);
         
-        // Recharger le profil immédiatement pour récupérer les données à jour
-        setTimeout(() => {
-          loadExistingProfile();
-        }, 500);
+        // Ne pas recharger automatiquement - les données sont déjà mises à jour localement
       } else {
         const errorData = await response.json();
         const action = formData.id ? 'mettre à jour' : 'créer';
@@ -1467,15 +1461,6 @@ export default function MyProfilePage() {
 
   return (
     <div className="min-h-screen py-8">
-      {/* BOUTON DEBUG TEMPORAIRE - TOUJOURS VISIBLE */}
-      <div className="fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg z-50">
-        <h3 className="font-bold">🚨 DEBUG TEMPORAIRE</h3>
-        <p>Status: {candidateStatus || 'null'}</p>
-        <p>Email: {user?.email || 'null'}</p>
-        <p>Loading: {isLoadingProfile ? 'true' : 'false'}</p>
-        <p>Tab: {activeTab}</p>
-        <p>Button should show: {(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') ? 'YES' : 'NO'}</p>
-      </div>
 
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
