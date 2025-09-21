@@ -377,6 +377,7 @@ export default function RecruiterLandingPage() {
                 className="bg-white rounded-2xl p-8 border border-gray-200"
               >
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Starter</h3>
+                <p className="text-gray-600 mb-4">Pour planifier un recrutement</p>
                 <div className="text-3xl font-bold text-gray-900 mb-4">19,99€<span className="text-lg">/mois</span></div>
                 <ul className="space-y-3 mb-8 text-left">
                   <li className="flex items-center gap-2 text-gray-600">
@@ -430,6 +431,7 @@ export default function RecruiterLandingPage() {
                   </span>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Max</h3>
+                <p className="text-green-100 mb-4">Pour un besoin de recrutement imminent</p>
                 <div className="text-3xl font-bold mb-4">79€<span className="text-lg">/mois</span></div>
                 <ul className="space-y-3 mb-8 text-left">
                   <li className="flex items-center gap-2">
@@ -486,6 +488,7 @@ export default function RecruiterLandingPage() {
                 className="bg-white rounded-2xl p-8 border border-gray-200"
               >
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Premium</h3>
+                <p className="text-gray-600 mb-4">Solutions personnalisées</p>
                 <div className="text-3xl font-bold text-gray-900 mb-4">Sur mesure</div>
                 <ul className="space-y-3 mb-8 text-left">
                   <li className="flex items-center gap-2 text-gray-600">
