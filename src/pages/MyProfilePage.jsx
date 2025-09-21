@@ -105,7 +105,7 @@ export default function MyProfilePage() {
     id: null,
     name: '',
     email: '',
-    title: '',
+    title: 'UX Designer',
     location: '',
     remote: 'hybrid',
     yearsOfExperience: '', // Nouveau champ
@@ -409,7 +409,7 @@ export default function MyProfilePage() {
           id: candidate.id || null,
           name: candidate.name || '',
           email: candidate.email || '',
-          title: candidate.title || '',
+          title: candidate.title && candidate.title.trim() !== '' ? candidate.title : 'UX Designer',
           location: candidate.location || '',
           remote: candidate.remote || 'hybrid',
           experience: candidate.experience || '',
@@ -496,7 +496,7 @@ export default function MyProfilePage() {
             id: existingCandidate.id || null,
             name: existingCandidate.name || '',
             email: existingCandidate.email || '',
-            title: existingCandidate.title || '',
+            title: existingCandidate.title && existingCandidate.title.trim() !== '' ? existingCandidate.title : 'UX Designer',
             location: existingCandidate.location || '',
             remote: existingCandidate.remote || 'hybrid',
             yearsOfExperience: (() => {
@@ -912,11 +912,40 @@ export default function MyProfilePage() {
       linkedin: 'LinkedIn'
     };
 
+    // Valeurs par défaut acceptées comme valides
+    const defaultValues = {
+      title: 'UX Designer',
+      skills: 'UX Design, Figma',
+      portfolio: 'https://votre-portfolio.com',
+      linkedin: 'https://linkedin.com/in/votre-profil',
+      github: 'https://github.com/votre-profil'
+    };
+
+    console.log('🔍 Validation des champs obligatoires:', formData);
+    
     for (const [field, label] of Object.entries(requiredFields)) {
-      if (!formData[field] || safeTrim(formData[field]) === '') {
+      const value = formData[field];
+      const defaultValue = defaultValues[field];
+      const isEmpty = !value || safeTrim(value) === '';
+      const isDefaultValue = defaultValue && safeTrim(value) === defaultValue;
+      
+      console.log(`🔍 Champ ${field} (${label}):`, { 
+        value, 
+        isEmpty, 
+        trimmed: safeTrim(value),
+        defaultValue,
+        isDefaultValue,
+        isValid: !isEmpty || isDefaultValue
+      });
+      
+      // Un champ est valide s'il n'est pas vide OU s'il a une valeur par défaut
+      if (isEmpty && !isDefaultValue) {
+        console.log(`❌ Champ manquant: ${field} (${label})`);
         return false;
       }
     }
+    
+    console.log('✅ Tous les champs obligatoires sont remplis');
     return true;
   };
 
@@ -1264,14 +1293,20 @@ export default function MyProfilePage() {
             transition={{ delay: 0.1 }}
             className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8"
           >
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">Bienvenue !</h2>
-            <p className="text-blue-700 mb-6">
-              Votre profil candidat a été créé automatiquement lors de votre inscription. 
-              Complétez-le maintenant et envoyez-le pour examen par notre équipe.
+            <h2 className="text-xl font-semibold text-blue-800 mb-4">Parlez-nous un peu de vous !</h2>
+            <p className="text-blue-700">
+              Profil créé automatiquement lors de l'inscription.
             </p>
-            
-            {/* Bouton pour compléter le profil */}
-            <div className="text-center">
+          </motion.div>
+
+          {/* Bouton pour compléter le profil */}
+          <div className="text-center">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-center"
+            >
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -1286,8 +1321,8 @@ export default function MyProfilePage() {
                 <Edit className="w-5 h-5" />
                 Compléter mon profil
               </button>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </div>
     );
