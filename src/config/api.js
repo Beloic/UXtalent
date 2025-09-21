@@ -1,7 +1,8 @@
 // Configuration des URLs de l'API
-// Utiliser localhost en développement, production en prod
-const DEFAULT_API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com';
+// Utiliser l'API Vercel en production, localhost en développement
+const DEFAULT_API_BASE_URL = ''; // API Vercel (même domaine)
 const LOCAL_API_BASE_URL = 'http://localhost:3001';
+const RENDER_API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com';
 
 // Détecter si on est en développement (localhost)
 const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -16,6 +17,11 @@ export const buildApiUrl = (endpoint) => {
 // Fonction synchrone pour les cas où on ne peut pas attendre
 export const buildApiUrlSync = (endpoint) => {
   return `${API_BASE_URL}${endpoint}`;
+};
+
+// Fonction pour utiliser le backend Render (si nécessaire)
+export const buildRenderApiUrl = (endpoint) => {
+  return `${RENDER_API_BASE_URL}${endpoint}`;
 };
 
 // URLs spécifiques
