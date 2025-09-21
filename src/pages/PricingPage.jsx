@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, Users, Briefcase, Star, ArrowRight, CheckCircle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { usePermissions } from "../hooks/usePermissions";
 import { buildApiUrl } from "../config/api";
 import { supabase } from "../lib/supabase";
 
 export default function PricingPage() {
   const [selectedTab, setSelectedTab] = useState('candidates');
   const { user, isAuthenticated } = useAuth();
+  const { isRecruiter } = usePermissions();
   const [userPlan, setUserPlan] = useState(null);
   const [isLoadingPlan, setIsLoadingPlan] = useState(false);
 
@@ -283,7 +285,7 @@ export default function PricingPage() {
                 })}
               </ul>
 
-              {isCurrentPlan(plan.name) && selectedTab === 'recruiters' ? (
+              {isCurrentPlan(plan.name) && selectedTab === 'recruiters' && isRecruiter ? (
                 <div className="w-full py-4 px-6 rounded-xl font-semibold bg-green-100 text-green-800 border-2 border-green-300 flex items-center justify-center gap-2">
                   <CheckCircle className="w-5 h-5" />
                   Plan actuel
