@@ -1,14 +1,9 @@
 // Suggestions pour l'autocomplétion
 export const jobTitleSuggestions = [
   'UX Designer',
-  'UX Designer Senior',
-  'UX Designer Junior',
   'UX Researcher',
-  'UX Researcher Senior',
   'Product Designer',
-  'Product Designer Senior',
   'UI Designer',
-  'UI Designer Senior',
   'UX Writer',
   'UX Manager',
   'Design System Designer',
@@ -22,7 +17,6 @@ export const jobTitleSuggestions = [
   'Designer d\'Expérience',
   'Chef de Projet UX',
   'Lead UX Designer',
-  'Principal UX Designer'
 ];
 
 export const locationSuggestions = [
@@ -61,4 +55,29 @@ export const locationSuggestions = [
   'France',
   'Europe',
   'International'
+];
+
+export const salaryRanges = [
+  'Non spécifié',
+  '30k-40k€',
+  '35k-45k€',
+  '40k-50k€',
+  '45k-55k€',
+  '50k-60k€',
+  '55k-65k€',
+  '60k-70k€',
+  '65k-75k€',
+  '70k-80k€',
+  '75k-85k€',
+  '80k-90k€',
+  '85k-95k€',
+  '90k-100k€',
+  '95k-110k€',
+  '100k-120k€',
+  '110k-130k€',
+  '120k-140k€',
+  '130k-150k€',
+  '140k-160k€',
+  '150k+€',
+  'À négocier'
 ];

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import AutocompleteInput from './AutocompleteInput';
-import { jobTitleSuggestions, locationSuggestions } from '../data/suggestions';
+import { jobTitleSuggestions, locationSuggestions, salaryRanges } from '../data/suggestions';
 
 export default function PublishJobForm({ onJobPublished }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -32,7 +32,7 @@ export default function PublishJobForm({ onJobPublished }) {
     remote: 'onsite',
     type: 'CDI',
     seniority: 'Mid',
-    salary: '',
+    salary: 'Non spécifié',
     description: '',
     requirements: '',
     benefits: '',
@@ -175,7 +175,7 @@ export default function PublishJobForm({ onJobPublished }) {
             remote: 'onsite',
             type: 'CDI',
             seniority: 'Mid',
-            salary: '',
+            salary: 'Non spécifié',
             description: '',
             requirements: '',
             benefits: '',
@@ -331,14 +331,18 @@ export default function PublishJobForm({ onJobPublished }) {
                   <DollarSign className="w-4 h-4 inline mr-2" />
                   Salaire (optionnel)
                 </label>
-                <input
-                  type="text"
+                <select
                   name="salary"
                   value={formData.salary}
                   onChange={handleInputChange}
-                  placeholder="ex: 45k-60k€"
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
+                >
+                  {salaryRanges.map((range) => (
+                    <option key={range} value={range}>
+                      {range}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
