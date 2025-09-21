@@ -81,7 +81,8 @@ export default function PricingPage() {
         "Profil candidat complet",
         "Visibilité dans l'annuaire",
         "Contact par les recruteurs",
-        "Accès au forum communautaire"
+        "Accès au forum communautaire",
+        "Accès à des offres d'emploi exclusives"
       ],
       popular: false,
       cta: "Créer mon profil"
@@ -98,6 +99,7 @@ export default function PricingPage() {
         "Statistiques de profil détaillées",
         "Accès au forum communautaire",
         "Accès exclusif au Slack communautaire",
+        "Accès à des offres d'emploi exclusives",
         "Support prioritaire"
       ],
       popular: true,
@@ -113,7 +115,7 @@ export default function PricingPage() {
         "Tout du Premium",
         "Badge Pro exclusif",
         "Statistiques avancées",
-        "Accès aux offres exclusives",
+        "Accès aux offres d'emploi exclusives",
         "Coaching carrière 1-à-1",
         "Support VIP",
         "Formations premium",
