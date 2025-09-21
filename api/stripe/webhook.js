@@ -66,11 +66,14 @@ export async function POST(req) {
 // Gestionnaire pour checkout.session.completed
 async function handleCheckoutSessionCompleted(session) {
   console.log('💳 Paiement réussi:', session.id);
+  console.log('🔍 [WEBHOOK] Session complète:', JSON.stringify(session, null, 2));
   
   try {
     // Récupérer l'email du customer depuis Stripe
     const customer = await stripe.customers.retrieve(session.customer);
     const userEmail = customer.email;
+    
+    console.log('🔍 [WEBHOOK] Customer récupéré:', JSON.stringify(customer, null, 2));
     
     if (!userEmail) {
       console.error('❌ Email du customer non trouvé');
@@ -81,20 +84,28 @@ async function handleCheckoutSessionCompleted(session) {
     
     // Déterminer le type de plan basé sur le priceId
     const priceId = session.line_items?.data[0]?.price?.id || session.amount_total;
+    console.log('🔍 [WEBHOOK] PriceId détecté:', priceId);
+    console.log('🔍 [WEBHOOK] Line items:', JSON.stringify(session.line_items, null, 2));
+    
     const planType = getPlanTypeFromPriceId(priceId);
     
     if (!planType) {
       console.error('❌ Type de plan non déterminé pour:', priceId);
+      console.log('🔍 [WEBHOOK] Mapping des prix disponible:', JSON.stringify(getPlanTypeFromPriceId, null, 2));
       return;
     }
     
     console.log('🎯 Plan détecté:', planType);
+    console.log('🚀 [WEBHOOK] Début mise à jour plan pour:', userEmail, 'vers:', planType);
     
     // Mettre à jour le plan dans la base de données
     await updateUserPlan(userEmail, planType);
     
+    console.log('✅ [WEBHOOK] Mise à jour plan terminée pour:', userEmail);
+    
   } catch (error) {
     console.error('❌ Erreur lors du traitement du paiement:', error);
+    console.error('🔍 [WEBHOOK] Stack trace:', error.stack);
   }
 }
 
@@ -227,25 +238,37 @@ function getPlanTypeFromPriceId(priceId) {
 // Fonction pour mettre à jour le plan d'un utilisateur
 async function updateUserPlan(userEmail, planType) {
   try {
-    console.log(`🔄 Mise à jour du plan pour ${userEmail} vers ${planType}`);
+    console.log(`🔄 [WEBHOOK] Mise à jour du plan pour ${userEmail} vers ${planType}`);
+    
+    const apiUrl = `${process.env.API_BASE_URL || 'http://localhost:3001'}/api/candidates/email/${encodeURIComponent(userEmail)}/plan`;
+    console.log(`🔍 [WEBHOOK] URL API appelée:`, apiUrl);
+    
+    const requestBody = { planType, durationMonths: 1 };
+    console.log(`🔍 [WEBHOOK] Corps de la requête:`, JSON.stringify(requestBody, null, 2));
     
     // Appeler l'API pour mettre à jour le plan
-    const response = await fetch(`${process.env.API_BASE_URL || 'http://localhost:3001'}/api/candidates/email/${encodeURIComponent(userEmail)}/plan`, {
+    const response = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.ADMIN_TOKEN_SECRET || 'admin-token'}`
       },
-      body: JSON.stringify({ planType, durationMonths: 1 })
+      body: JSON.stringify(requestBody)
     });
+    
+    console.log(`🔍 [WEBHOOK] Réponse API status:`, response.status);
+    console.log(`🔍 [WEBHOOK] Réponse API headers:`, Object.fromEntries(response.headers.entries()));
     
     if (response.ok) {
       const result = await response.json();
-      console.log(`✅ Plan mis à jour avec succès pour ${userEmail}:`, result);
+      console.log(`✅ [WEBHOOK] Plan mis à jour avec succès pour ${userEmail}:`, JSON.stringify(result, null, 2));
     } else {
-      console.error(`❌ Erreur API lors de la mise à jour du plan: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`❌ [WEBHOOK] Erreur API lors de la mise à jour du plan: ${response.status}`);
+      console.error(`🔍 [WEBHOOK] Réponse d'erreur:`, errorText);
     }
   } catch (error) {
-    console.error('❌ Erreur lors de la mise à jour du plan:', error);
+    console.error('❌ [WEBHOOK] Erreur lors de la mise à jour du plan:', error);
+    console.error('🔍 [WEBHOOK] Stack trace:', error.stack);
   }
 }

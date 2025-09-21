@@ -259,6 +259,13 @@ export const deleteCandidate = async (id) => {
 // Mettre à jour le plan d'un candidat
 export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
   try {
+    console.log(`🔍 [DB] Début mise à jour plan candidat:`, {
+      id: id,
+      planType: planType,
+      durationMonths: durationMonths,
+      idType: typeof id
+    });
+    
     const now = new Date();
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + durationMonths);
@@ -271,7 +278,14 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       featured_until: planType !== 'free' ? endDate.toISOString() : null
     };
     
-    console.log('🔄 Mise à jour du plan candidat:', { id, updateData });
+    console.log('🔍 [DB] Données de mise à jour calculées:', {
+      id: id,
+      updateData: updateData,
+      now: now.toISOString(),
+      endDate: endDate.toISOString()
+    });
+    
+    console.log('🚀 [DB] Exécution requête Supabase UPDATE...');
     
     const { data, error } = await supabaseAdmin
       .from('candidates')
@@ -280,12 +294,21 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       .select()
       .single();
     
+    console.log('🔍 [DB] Résultat requête Supabase:', {
+      hasData: !!data,
+      hasError: !!error,
+      data: data,
+      error: error
+    });
+    
     if (error) {
-      console.error('❌ Erreur Supabase:', error);
+      console.error('❌ [DB] Erreur Supabase:', error);
       throw error;
     }
     
-    console.log('📊 Données retournées par Supabase:', data);
+    console.log('📊 [DB] Données retournées par Supabase:', data);
+    
+    console.log('🔄 [DB] Gestion du cache...');
     
     // Vider le cache existant avant de mettre à jour
     clearCandidatePlan(id);
@@ -293,7 +316,7 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
     // Mettre en cache le nouveau plan
     setCandidatePlan(id, planType);
     
-    console.log('🔄 Cache vidé et mis à jour pour candidat:', id);
+    console.log('✅ [DB] Cache vidé et mis à jour pour candidat:', id);
     
     // Mapper les noms de colonnes de snake_case vers camelCase
     const mappedData = {
@@ -309,10 +332,16 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       featuredUntil: data.featured_until
     };
     
-    console.log('✅ Plan candidat mis à jour:', mappedData);
+    console.log('✅ [DB] Plan candidat mis à jour avec succès:', {
+      candidateId: id,
+      newPlan: planType,
+      mappedData: mappedData
+    });
+    
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du plan candidat:', error);
+    console.error('❌ [DB] Erreur lors de la mise à jour du plan candidat:', error);
+    console.error('🔍 [DB] Stack trace:', error.stack);
     throw error;
   }
 };

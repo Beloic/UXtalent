@@ -242,10 +242,19 @@ export default function MyProfilePage() {
 
   // Rafraîchir le plan périodiquement pour détecter les changements
   useEffect(() => {
-    if (!isAuthenticated || !user?.email) return;
+    if (!isAuthenticated || !user?.email) {
+      console.log('🔍 [POLLING] Polling ignoré:', {
+        isAuthenticated,
+        hasEmail: !!user?.email
+      });
+      return;
+    }
+
+    console.log('🚀 [POLLING] Démarrage du polling des plans pour:', user.email);
 
     const refreshPlan = async () => {
       try {
+        console.log('🔄 [POLLING] Début vérification plan pour:', user.email);
         setIsRefreshingPlan(true);
         
         // Obtenir le token d'authentification
@@ -253,42 +262,75 @@ export default function MyProfilePage() {
         const token = session.data.session?.access_token;
         
         if (!token) {
+          console.log('🔍 [POLLING] Token manquant, plan défini sur free');
           setCandidatePlan('free');
           return;
         }
         
-        const response = await fetch(buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`), {
+        const apiUrl = buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`);
+        console.log('🔍 [POLLING] URL API:', apiUrl);
+        
+        const response = await fetch(apiUrl, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
         
+        console.log('🔍 [POLLING] Réponse API:', {
+          status: response.status,
+          ok: response.ok,
+          headers: Object.fromEntries(response.headers.entries())
+        });
+        
         if (response.ok) {
           // Vérifier que la réponse est bien du JSON avant de l'analyser
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
+            console.log('🔍 [POLLING] Réponse non-JSON ignorée');
             return;
           }
           
           const responseData = await response.json();
+          console.log('🔍 [POLLING] Données reçues:', responseData);
+          
           // Gérer les deux formats de réponse possibles
           const userProfile = responseData.candidates?.[0] || responseData;
+          console.log('🔍 [POLLING] Profil utilisateur extrait:', {
+            userProfile: userProfile,
+            currentPlan: candidatePlan,
+            newPlan: userProfile?.plan,
+            hasChanged: userProfile && userProfile.plan !== candidatePlan
+          });
+          
           if (userProfile && userProfile.plan !== candidatePlan) {
+            console.log('🎯 [POLLING] Changement de plan détecté!', {
+              ancienPlan: candidatePlan,
+              nouveauPlan: userProfile.plan
+            });
+            
             setCandidatePlan(userProfile.plan || 'free');
 
             // Déclencher l'événement pour notifier les autres composants
+            console.log('📡 [POLLING] Déclenchement événement planUpdated');
             window.dispatchEvent(new CustomEvent('planUpdated', {
               detail: { plan: userProfile.plan }
             }));
+          } else {
+            console.log('✅ [POLLING] Aucun changement de plan détecté');
           }
+        } else {
+          console.error('❌ [POLLING] Erreur API:', response.status);
         }
       } catch (error) {
+        console.error('❌ [POLLING] Erreur lors du polling:', error);
         // Gestion spéciale pour les erreurs de parsing JSON
         if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
-          }
+          console.log('🔍 [POLLING] Erreur de parsing JSON ignorée');
+        }
       } finally {
         setIsRefreshingPlan(false);
+        console.log('✅ [POLLING] Vérification plan terminée');
       }
     };
 
@@ -296,9 +338,15 @@ export default function MyProfilePage() {
     refreshPlan();
 
     // Rafraîchir toutes les 30 secondes
-    const interval = setInterval(refreshPlan, 30000);
+    const interval = setInterval(() => {
+      console.log('⏰ [POLLING] Intervalle de 30s écoulé, nouvelle vérification...');
+      refreshPlan();
+    }, 30000);
 
-    return () => clearInterval(interval);
+    return () => {
+      console.log('🛑 [POLLING] Arrêt du polling des plans');
+      clearInterval(interval);
+    };
   }, [isAuthenticated, user, candidatePlan]);
 
   const loadExistingProfile = useCallback(async () => {

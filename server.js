@@ -1056,15 +1056,27 @@ app.put('/api/candidates/email/:email/plan', async (req, res) => {
     const { planType, durationMonths = 1 } = req.body;
     const email = decodeURIComponent(req.params.email);
     
+    console.log(`🔍 [API] Requête reçue pour mise à jour plan:`, {
+      email: email,
+      planType: planType,
+      durationMonths: durationMonths,
+      body: req.body,
+      headers: req.headers
+    });
+    
     // Valider le type de plan
     if (!['free', 'premium', 'pro'].includes(planType)) {
+      console.error(`❌ [API] Type de plan invalide: ${planType}`);
       return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, premium, ou pro' });
     }
     
     // Valider la durée
     if (durationMonths < 1 || durationMonths > 12) {
+      console.error(`❌ [API] Durée invalide: ${durationMonths}`);
       return res.status(400).json({ error: 'Durée invalide. Doit être entre 1 et 12 mois' });
     }
+    
+    console.log(`🔍 [API] Recherche du candidat par email: ${email}`);
     
     // Trouver le candidat par email
     const { data: candidate, error: fetchError } = await supabaseAdmin
@@ -1073,15 +1085,35 @@ app.put('/api/candidates/email/:email/plan', async (req, res) => {
       .eq('email', email)
       .single();
     
+    console.log(`🔍 [API] Résultat recherche candidat:`, {
+      hasData: !!candidate,
+      candidateId: candidate?.id,
+      hasError: !!fetchError,
+      error: fetchError
+    });
+    
     if (fetchError || !candidate) {
+      console.error(`❌ [API] Candidat non trouvé pour l'email: ${email}`, fetchError);
       logger.error('Candidat non trouvé pour l\'email:', email);
       return res.status(404).json({ error: 'Candidat non trouvé' });
     }
     
+    console.log(`🚀 [API] Début mise à jour plan pour candidat ID: ${candidate.id}`);
+    
     // Mettre à jour le plan
     const updatedCandidate = await updateCandidatePlan(candidate.id, planType, durationMonths);
+    
+    console.log(`✅ [API] Plan mis à jour avec succès:`, {
+      candidateId: candidate.id,
+      email: email,
+      newPlan: planType,
+      updatedData: updatedCandidate
+    });
+    
     res.json(updatedCandidate);
   } catch (error) {
+    console.error(`❌ [API] Erreur lors de la mise à jour du plan candidat par email:`, error);
+    console.error(`🔍 [API] Stack trace:`, error.stack);
     logger.error('Erreur lors de la mise à jour du plan candidat par email', { error: error.message });
     res.status(500).json({ error: 'Erreur lors de la mise à jour du plan candidat' });
   }
@@ -1379,33 +1411,42 @@ app.post('/api/stripe/webhook', async (req, res) => {
     console.log('✅ Webhook vérifié:', event.type);
     
     // Traiter les événements
+    console.log('🔍 [WEBHOOK] Traitement événement:', event.type);
+    console.log('🔍 [WEBHOOK] Données événement:', JSON.stringify(event.data.object, null, 2));
+    
     switch (event.type) {
       case 'customer.subscription.deleted':
+        console.log('🗑️ [WEBHOOK] Traitement subscription.deleted');
         await handleSubscriptionDeleted(event.data.object);
         break;
         
       case 'customer.subscription.created':
+        console.log('📝 [WEBHOOK] Traitement subscription.created');
         await handleSubscriptionCreated(event.data.object);
         break;
         
       case 'customer.subscription.updated':
+        console.log('🔄 [WEBHOOK] Traitement subscription.updated');
         await handleSubscriptionUpdated(event.data.object);
         break;
         
       case 'checkout.session.completed':
+        console.log('💳 [WEBHOOK] Traitement checkout.session.completed');
         await handleCheckoutSessionCompleted(event.data.object);
         break;
         
       case 'invoice.payment_succeeded':
+        console.log('💰 [WEBHOOK] Traitement invoice.payment_succeeded');
         await handleInvoicePaymentSucceeded(event.data.object);
         break;
         
       case 'invoice.payment_failed':
+        console.log('❌ [WEBHOOK] Traitement invoice.payment_failed');
         await handleInvoicePaymentFailed(event.data.object);
         break;
         
       default:
-        console.log('ℹ️ Événement non géré:', event.type);
+        console.log('ℹ️ [WEBHOOK] Événement non géré:', event.type);
     }
     
     res.json({ received: true });
