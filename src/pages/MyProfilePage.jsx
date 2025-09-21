@@ -2661,6 +2661,44 @@ export default function MyProfilePage() {
             </motion.div>
           )}
 
+          {/* Bouton permanent pour envoyer le profil en examen */}
+          {activeTab === 'view' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-8"
+            >
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 shadow-xl border border-blue-500">
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    Prêt à soumettre votre profil ?
+                  </h3>
+                  <p className="text-blue-100 mb-4">
+                    Envoyez votre profil pour qu'il soit examiné par notre équipe
+                  </p>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isLoading}
+                    className="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto hover:bg-blue-50"
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                        Envoi en cours...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        Envoyer mon profil pour examen
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {activeTab === 'plan' && (
             <motion.div
               key="plan"
