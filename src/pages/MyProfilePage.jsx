@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, Kanban, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown, Clock, XCircle, Mail } from 'lucide-react';
+import { User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown, Clock, XCircle, Mail } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
@@ -1429,7 +1429,7 @@ export default function MyProfilePage() {
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
-                    <Kanban className="w-5 h-5" />
+                    <Briefcase className="w-5 h-5" />
                     Mon offre
                   </button>
                   <button
@@ -2800,10 +2800,6 @@ export default function MyProfilePage() {
                         </li>
                         <li className="flex items-start gap-3">
                           <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">Tableau Kanban pour organiser les candidats</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                           <span className="text-gray-700">Support par email</span>
                         </li>
                       </ul>
@@ -2860,10 +2856,6 @@ export default function MyProfilePage() {
                         </li>
                         <li className="flex items-start gap-3">
                           <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">Tableau Kanban avancé pour organiser les candidats</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                           <span className="text-gray-700">Export des données</span>
                         </li>
                       </ul>
@@ -2912,10 +2904,6 @@ export default function MyProfilePage() {
                         </li>
                         <li className="flex items-start gap-3">
                           <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">Tableau Kanban personnalisé pour organiser les candidats</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                           <span className="text-gray-700">Export avancé des données</span>
                         </li>
                         <li className="flex items-start gap-3">
@@ -2936,125 +2924,17 @@ export default function MyProfilePage() {
                         </li>
                       </ul>
 
-                      <button className="w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 bg-gray-100 text-gray-900 hover:bg-gray-200">
+                      <a 
+                        href="mailto:hello@loicbernard.com?subject=Demande d'information - Plan Premium sur-mesure&body=Bonjour,%0D%0A%0D%0AJe souhaite obtenir des informations sur le plan Premium sur-mesure.%0D%0A%0D%0AMerci de me recontacter.%0D%0A%0D%0ACordialement"
+                        className="w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 bg-gray-100 text-gray-900 hover:bg-gray-200"
+                      >
                         Nous contacter
                         <ArrowRight className="w-4 h-4" />
-                      </button>
+                      </a>
                     </motion.div>
                   </motion.div>
 
-                  {/* Section Tableau Kanban */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="mt-16"
-                  >
-                    <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 max-w-5xl mx-auto">
-                      <div className="text-center mb-8">
-                        <div className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl shadow-2xl mx-auto mb-6 w-fit">
-                          <Kanban className="w-12 h-12 text-white" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                          Tableau Kanban pour recruteurs
-                        </h3>
-                        <p className="text-gray-600 mb-8 max-w-3xl mx-auto text-lg leading-relaxed">
-                          Organisez efficacement vos candidats avec notre tableau Kanban intuitif. 
-                          Suivez l'avancement de vos recrutements de manière visuelle et collaborative.
-                        </p>
-                      </div>
 
-                      <div className="grid md:grid-cols-2 gap-8 mb-8">
-                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
-                          <h4 className="text-lg font-semibold text-blue-900 mb-3">Fonctionnalités incluses</h4>
-                          <ul className="space-y-2 text-blue-800">
-                            <li className="flex items-center gap-2">
-                              <Check className="w-4 h-4 text-blue-600" />
-                              Colonnes personnalisables
-                            </li>
-                            <li className="flex items-center gap-2">
-                              <Check className="w-4 h-4 text-blue-600" />
-                              Glisser-déposer intuitif
-                            </li>
-                            <li className="flex items-center gap-2">
-                              <Check className="w-4 h-4 text-blue-600" />
-                              Filtres avancés
-                            </li>
-                            <li className="flex items-center gap-2">
-                              <Check className="w-4 h-4 text-blue-600" />
-                              Notifications en temps réel
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
-                          <h4 className="text-lg font-semibold text-green-900 mb-3">Avantages</h4>
-                          <ul className="space-y-2 text-green-800">
-                            <li className="flex items-center gap-2">
-                              <Check className="w-4 h-4 text-green-600" />
-                              Gain de temps significatif
-                            </li>
-                            <li className="flex items-center gap-2">
-                              <Check className="w-4 h-4 text-green-600" />
-                              Collaboration équipe
-                            </li>
-                            <li className="flex items-center gap-2">
-                              <Check className="w-4 h-4 text-green-600" />
-                              Suivi des performances
-                            </li>
-                            <li className="flex items-center gap-2">
-                              <Check className="w-4 h-4 text-green-600" />
-                              Intégration complète
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="text-center">
-                        <Link 
-                          to="/recruiter-dashboard"
-                          className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-                        >
-                          <Kanban className="w-5 h-5" />
-                          Accéder au tableau Kanban
-                        </Link>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* FAQ Section */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="mt-16 text-center"
-                  >
-                    <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 max-w-5xl mx-auto">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-8">
-                        Questions fréquentes
-                      </h2>
-                      <div className="grid md:grid-cols-2 gap-8 text-left">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                            Comment fonctionne le tableau Kanban ?
-                          </h3>
-                          <p className="text-gray-600">
-                            Le tableau Kanban vous permet d'organiser vos candidats en colonnes (À contacter, Entretien prévu, En cours, Accepté, Rejeté) 
-                            et de les déplacer facilement selon l'avancement de leur candidature.
-                          </p>
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                            Puis-je personnaliser les colonnes ?
-                          </h3>
-                          <p className="text-gray-600">
-                            Oui, avec les plans Max et Premium, vous pouvez créer des colonnes personnalisées 
-                            adaptées à votre processus de recrutement spécifique.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
                 </div>
               </div>
             </motion.div>
