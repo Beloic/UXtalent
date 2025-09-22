@@ -65,12 +65,12 @@ export const RecruiterSubscriptionGuard = ({
             Renouveler mon abonnement
           </Link>
           
-          <Link
-            to="/contact"
+          <a
+            href="mailto:hello@loicbernard.com"
             className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
           >
             Contacter le support
-          </Link>
+          </a>
         </div>
         
         <div className="mt-6 pt-6 border-t border-gray-200">
