@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { supabase, supabaseAdmin } from '../lib/supabase'
+import { supabase } from '../lib/supabase'
 import { buildApiUrl } from '../config/api'
-import { createRecruiter, getRecruiterByEmail } from '../database/recruitersDatabase.js'
 
 const AuthContext = createContext({})
 
@@ -13,49 +12,6 @@ export const useAuth = () => {
   return context
 }
 
-// Fonction pour créer automatiquement un profil recruteur lors de l'inscription
-const createRecruiterProfileIfNotExists = async (user) => {
-  try {
-    console.log('🔄 Création du profil recruteur pour:', user.email)
-    
-    // Vérifier si le profil existe déjà
-    const existingProfile = await getRecruiterByEmail(user.email)
-    
-    if (existingProfile) {
-      console.log('✅ Profil recruteur existant trouvé pour:', user.email)
-      return existingProfile
-    }
-    
-    console.log('📝 Création d\'un nouveau profil recruteur pour:', user.email)
-    
-    // Plutôt que d'écrire en base directement côté client (supabaseAdmin indisponible),
-    // déclencher la création côté serveur via l'endpoint /api/recruiters/me (auto-bootstrap)
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      console.warn('⚠️ Impossible de récupérer la session pour créer le profil recruteur')
-      return null
-    }
-    const resp = await fetch(buildApiUrl('/api/recruiters/me'), {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${session.access_token}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    if (!resp.ok) {
-      console.warn('⚠️ Appel /api/recruiters/me non OK pendant bootstrap:', resp.status)
-      return null
-    }
-    const created = await resp.json()
-    console.log('✅ Profil recruteur créé/récupéré via API:', created?.id)
-    return created
-    
-  } catch (error) {
-    console.error('❌ Erreur lors de la création du profil recruteur:', error)
-    // Ne pas faire échouer l'inscription si la création du profil échoue
-    throw error // Re-throw pour permettre au code appelant de gérer l'erreur
-  }
-}
 
 // Fonction pour créer automatiquement un profil candidat lors de l'inscription
 const createCandidateProfileIfNotExists = async (user) => {
@@ -161,7 +117,23 @@ export const AuthProvider = ({ children }) => {
             await createCandidateProfileIfNotExists(data.user)
           } else if (userData?.role === 'recruiter') {
             console.log('🏢 Création du profil recruteur pour:', data.user.email)
-            await createRecruiterProfileIfNotExists(data.user)
+            // Utiliser l'API backend pour créer le profil recruteur (auto-bootstrap)
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session) {
+              const resp = await fetch(buildApiUrl('/api/recruiters/me'), {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${session.access_token}`,
+                  'Content-Type': 'application/json'
+                }
+              })
+              if (resp.ok) {
+                const profile = await resp.json()
+                console.log('✅ Profil recruteur créé via API:', profile?.id)
+              } else {
+                console.warn('⚠️ Appel /api/recruiters/me non OK pendant inscription:', resp.status)
+              }
+            }
           }
         } catch (profileError) {
           console.error('❌ Erreur lors de la création du profil:', profileError)
@@ -191,10 +163,22 @@ export const AuthProvider = ({ children }) => {
           const userRole = data.user.user_metadata?.role
           if (userRole === 'recruiter') {
             console.log('🔍 Vérification du profil recruteur pour:', data.user.email)
-            const existingProfile = await getRecruiterByEmail(data.user.email)
-            if (!existingProfile) {
-              console.log('📝 Création du profil recruteur manquant pour:', data.user.email)
-              await createRecruiterProfileIfNotExists(data.user)
+            // Utiliser l'API backend pour vérifier/créer le profil (auto-bootstrap)
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session) {
+              const resp = await fetch(buildApiUrl('/api/recruiters/me'), {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${session.access_token}`,
+                  'Content-Type': 'application/json'
+                }
+              })
+              if (resp.ok) {
+                const profile = await resp.json()
+                console.log('✅ Profil recruteur vérifié/créé via API:', profile?.id)
+              } else {
+                console.warn('⚠️ Appel /api/recruiters/me non OK pendant connexion:', resp.status)
+              }
             }
           }
         } catch (profileError) {
