@@ -1528,7 +1528,7 @@ async function handleSubscriptionCreated(subscription) {
     // Déterminer le type de plan
     const planType = getPlanTypeFromPriceId(subscription.items.data[0].price.id);
     
-    if (planType) {
+  if (planType) {
       // Essayer d'abord de mettre à jour le candidat
       try {
         await updateCandidatePlan(userEmail, planType);
@@ -1617,6 +1617,27 @@ async function handleSubscriptionUpdated(subscription) {
         } catch (recruiterError) {
           console.error('❌ Erreur lors de la mise à jour du recruteur:', recruiterError);
         }
+      }
+    } else if (subscription.status === 'canceled') {
+      // Résiliation: basculer recruteur en compte suspendu
+      try {
+        const { data: recruiter, error: fetchError } = await supabaseAdmin
+          .from('recruiters')
+          .select('id')
+          .eq('email', userEmail)
+          .single();
+        if (recruiter && !fetchError) {
+          await updateRecruiterPlan(recruiter.id, 'custom', {
+            status: 'cancelled',
+            endDate: new Date().toISOString(),
+            accountStatus: 'suspended',
+            stripeCustomerId: subscription.customer,
+            stripeSubscriptionId: subscription.id
+          });
+          console.log('⬇️ Recruteur basculé en plan cancel (custom/suspended):', userEmail);
+        }
+      } catch (recruiterError) {
+        console.error('❌ Erreur lors du basculement cancel recruteur:', recruiterError);
       }
     }
     
@@ -3403,9 +3424,9 @@ app.put('/api/recruiters/email/:email/plan', async (req, res) => {
     });
     
     // Valider le type de plan
-    if (!['free', 'starter', 'max'].includes(planType)) {
+    if (!['free', 'starter', 'max', 'custom'].includes(planType)) {
       console.error(`❌ [API] Type de plan invalide: ${planType}`);
-      return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, starter, ou max' });
+      return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, starter, max, ou custom' });
     }
     
     console.log(`🔍 [API] Recherche du recruteur par email: ${email}`);

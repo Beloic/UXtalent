@@ -255,6 +255,11 @@ export const updateRecruiterPlan = async (recruiterId, planType, subscriptionDat
       payment_method: subscriptionData.paymentMethod || null
     };
     
+    // Permettre de modifier le statut de compte (active/suspended/etc.)
+    if (subscriptionData.accountStatus !== undefined) {
+      updateData.status = subscriptionData.accountStatus;
+    }
+    
     // Définir les quotas selon le plan
     switch (planType) {
       case 'starter':
@@ -275,6 +280,18 @@ export const updateRecruiterPlan = async (recruiterId, planType, subscriptionDat
       default:
         // Garder les valeurs existantes pour les plans personnalisés
         break;
+    }
+
+    // Si on résilie: quotas à 0 et suspension, quel que soit le plan (on utilise plan_type='custom')
+    if ((subscriptionData.status === 'cancelled') || (subscriptionData.accountStatus === 'suspended')) {
+      updateData.max_job_posts = 0;
+      updateData.max_candidate_contacts = 0;
+      updateData.max_featured_jobs = 0;
+      if (!updateData.subscription_end_date) {
+        updateData.subscription_end_date = new Date().toISOString();
+      }
+      updateData.subscription_status = subscriptionData.status || 'cancelled';
+      updateData.status = subscriptionData.accountStatus || 'suspended';
     }
     
     const { data, error } = await supabaseAdmin
