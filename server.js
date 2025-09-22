@@ -3366,10 +3366,32 @@ app.get('/api/recruiters/me', requireRole(['recruiter', 'admin']), async (req, r
       });
     }
     
-    const recruiter = await getRecruiterByEmail(req.user.email);
+    let recruiter = await getRecruiterByEmail(req.user.email);
     
     if (!recruiter) {
-      return res.status(404).json({ error: 'Profil recruteur non trouvé' });
+      // Auto-création d'un profil recruteur minimal si manquant
+      try {
+        const defaultName = (req.user?.user_metadata?.first_name && req.user?.user_metadata?.last_name)
+          ? `${req.user.user_metadata.first_name} ${req.user.user_metadata.last_name}`
+          : (req.user?.email?.split('@')[0] || 'Nouveau Recruteur');
+        const recruiterData = {
+          email: req.user.email,
+          name: defaultName,
+          company: req.user?.user_metadata?.company || '',
+          phone: req.user?.user_metadata?.phone || '',
+          website: req.user?.user_metadata?.website || '',
+          planType: 'starter',
+          subscriptionStatus: 'active',
+          subscriptionStartDate: new Date().toISOString(),
+          subscriptionEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'active',
+          notes: 'Profil auto-créé lors du premier appel à /api/recruiters/me.'
+        };
+        recruiter = await createRecruiter(recruiterData);
+      } catch (createError) {
+        logger.error('Auto-création du profil recruteur échouée', { error: createError.message });
+        return res.status(404).json({ error: 'Profil recruteur non trouvé' });
+      }
     }
     
     res.json(recruiter);
