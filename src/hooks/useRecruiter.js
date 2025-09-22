@@ -35,16 +35,14 @@ export const useRecruiter = () => {
       console.log('✅ [useRecruiter] Profil récupéré:', profile);
       setRecruiter(profile);
 
-      // Charger les stats et permissions en parallèle pour accélérer
-      console.log('📊 [useRecruiter] Récupération des stats et permissions en parallèle...');
-      const [recruiterStats, recruiterPermissions] = await Promise.all([
-        fetchRecruiterStats(profile.id),
-        fetchRecruiterPermissions(profile.id)
-      ]);
-      
+      console.log('📊 [useRecruiter] Récupération des stats...');
+      const recruiterStats = await fetchRecruiterStats(profile.id);
       console.log('✅ [useRecruiter] Stats récupérées:', recruiterStats);
-      console.log('✅ [useRecruiter] Permissions récupérées:', recruiterPermissions);
       setStats(recruiterStats);
+
+      console.log('🔐 [useRecruiter] Récupération des permissions...');
+      const recruiterPermissions = await fetchRecruiterPermissions(profile.id);
+      console.log('✅ [useRecruiter] Permissions récupérées:', recruiterPermissions);
       setPermissions(recruiterPermissions);
 
     } catch (err) {

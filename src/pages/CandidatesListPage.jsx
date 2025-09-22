@@ -8,7 +8,7 @@ import Pagination from "../components/Pagination";
 import { useCandidates } from "../services/candidatesApi";
 import { usePermissions } from "../hooks/usePermissions";
 import { RecruiterSubscriptionGuard } from "../components/RecruiterSubscriptionGuard";
-import { useRecruiterOptimized as useRecruiter } from "../hooks/useRecruiterOptimized";
+import { useRecruiter } from "../hooks/useRecruiter";
 
 const EXPERIENCE_ORDER = { Junior: 1, Mid: 2, Senior: 3, Lead: 4 };
 
