@@ -1,5 +1,5 @@
 // Middleware de gestion des rôles et permissions
-import { supabase } from '../database/supabaseClient.js';
+import { supabase } from '../lib/supabase.js';
 
 // Définition des rôles et permissions
 export const ROLES = {

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
-import { supabaseAdmin } from '../config/supabase'
+import { supabase, supabaseAdmin } from '../lib/supabase'
 import { buildApiUrl } from '../config/api'
 import { createRecruiter, getRecruiterByEmail } from '../database/recruitersDatabase.js'
 

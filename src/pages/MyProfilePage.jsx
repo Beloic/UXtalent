@@ -9,7 +9,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { usePermissions } from '../hooks/usePermissions';
 import { useRecruiter } from '../hooks/useRecruiter';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
-import { supabaseAdmin } from '../config/supabase';
+import { supabaseAdmin } from '../lib/supabase';
 
 export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { supabase, supabaseAdmin } from './src/config/supabase.js';
+import { supabase, supabaseAdmin } from './src/lib/supabase.js';
 import { redisClient, connectRedis, checkRedisHealth } from './src/config/redis.js';
 import Stripe from 'stripe';
 import { 
@@ -12,19 +12,12 @@ import {
   updateCandidate, 
   deleteCandidate,
   updateCandidatePlan,
-  getAllMetrics,
-  resetMetrics,
   recordMetric,
-  getProfileViewsStats,
-  getProfileViewsToday,
-  getProfileViewsByDay,
-  getProfileViewsByPeriod,
-  trackProfileView,
   addToFavorites,
   removeFromFavorites,
   getRecruiterFavorites,
   isCandidateFavorited,
-} from './src/database/supabaseClient.js';
+} from './src/database/supabaseDatabase.js';
 import {
   addPost,
   updatePost,
@@ -100,7 +93,7 @@ import { redisCacheMiddleware, redisCache } from './src/cache/redisCache.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuration Supabase - Les clients sont importés depuis src/config/supabase.js
+// Configuration Supabase - Les clients sont importés depuis src/lib/supabase.js
 
 // Configuration Stripe
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;

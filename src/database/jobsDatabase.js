@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabaseClient.js';
+import { supabaseAdmin } from '../lib/supabase.js';
 
 // ===== JOBS =====
 

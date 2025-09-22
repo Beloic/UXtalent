@@ -9,7 +9,7 @@ import {
   findBestJobsForCandidate,
   calculateMatchingStats 
 } from './matchingService.js';
-import { loadCandidates } from '../database/supabaseClient.js';
+import { loadCandidates } from '../database/supabaseDatabase.js';
 import { loadJobs } from '../database/jobsDatabase.js';
 
 // ===== CACHE POUR LES PERFORMANCES =====

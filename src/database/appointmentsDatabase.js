@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabaseClient.js';
+import { supabaseAdmin } from '../lib/supabase.js';
 
 // Charger tous les rendez-vous d'un recruteur
 export const loadAppointments = async (recruiterId) => {

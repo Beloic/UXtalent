@@ -1,4 +1,4 @@
-import { recordMetric, recordError } from '../database/supabaseClient.js';
+import { recordMetric, recordError } from '../database/supabaseDatabase.js';
 
 // Middleware de métriques stateless
 export const metricsMiddleware = (req, res, next) => {

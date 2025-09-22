@@ -1,4 +1,4 @@
-import { supabase, supabaseAdmin } from './supabaseClient.js';
+import { supabase, supabaseAdmin } from '../lib/supabase.js';
 
 // ===== FONCTIONS POUR LES RECHERCHES DE RECRUTEURS =====
 
