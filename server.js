@@ -4015,6 +4015,29 @@ app.get('/api/matching/score/:candidateId/:jobId', requireRole(['candidate', 're
 // FONCTIONS DE STATISTIQUES DE PROFIL
 // ========================================
 
+// Fonction pour enregistrer une vue de profil
+async function trackProfileView(candidateId) {
+  try {
+    const { data, error } = await supabase
+      .from('profile_tracking')
+      .insert({
+        candidate_id: candidateId,
+        viewed_at: new Date().toISOString()
+      });
+    
+    if (error) {
+      console.error('Erreur lors de l\'enregistrement de la vue:', error);
+      throw error;
+    }
+    
+    console.log(`✅ Vue enregistrée pour le candidat ${candidateId}`);
+    return data;
+  } catch (error) {
+    console.error('Erreur dans trackProfileView:', error);
+    throw error;
+  }
+}
+
 // Fonction pour récupérer le total des vues d'un profil
 async function getProfileViewsStats(candidateId) {
   try {
