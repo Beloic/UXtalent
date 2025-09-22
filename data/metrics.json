@@ -15,10 +15,10 @@
     "memoryUsage": 867
   },
   "system": {
-    "uptime": 2100.450462542,
-    "memoryUsage": 23889488,
-    "cpuUsage": 1.726817,
-    "lastUpdate": "2025-09-22T08:23:00.585Z"
+    "uptime": 2460.463928959,
+    "memoryUsage": 23464808,
+    "cpuUsage": 1.733446,
+    "lastUpdate": "2025-09-22T08:29:00.600Z"
   },
   "scraping": {
     "totalRuns": 0,

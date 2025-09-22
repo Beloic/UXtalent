@@ -783,12 +783,10 @@ export default function RecruiterDashboard() {
                 </button>
                 <button
                   onClick={() => navigate('/recruiter-dashboard/myjobs')}
-                  disabled={refreshing || (recruiter?.subscription_status !== 'active')}
+                  disabled={refreshing}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'myjobs'
                       ? 'bg-blue-600 text-white shadow-lg'
-                      : recruiter?.subscription_status !== 'active'
-                      ? 'text-gray-400 cursor-not-allowed'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
@@ -806,12 +804,10 @@ export default function RecruiterDashboard() {
                 </button>
                 <button
                   onClick={() => navigate('/recruiter-dashboard/matching')}
-                  disabled={refreshing || (recruiter?.subscription_status !== 'active')}
+                  disabled={refreshing}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'matching'
                       ? 'bg-blue-600 text-white shadow-lg'
-                      : recruiter?.subscription_status !== 'active'
-                      ? 'text-gray-400 cursor-not-allowed'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
