@@ -9,9 +9,13 @@ import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Charger les variables d'environnement
+dotenv.config({ path: './env.production' });
 
 // Configuration Supabase - Utilisation des variables d'environnement uniquement
 const supabaseUrl = process.env.VITE_SUPABASE_URL;

@@ -16,16 +16,19 @@ export const useAuth = () => {
 // Fonction pour créer automatiquement un profil recruteur lors de l'inscription
 const createRecruiterProfileIfNotExists = async (user) => {
   try {
+    console.log('🔄 Création du profil recruteur pour:', user.email)
     
     // Vérifier si le profil existe déjà
     const existingProfile = await getRecruiterByEmail(user.email)
     
     if (existingProfile) {
-      return
+      console.log('✅ Profil recruteur existant trouvé pour:', user.email)
+      return existingProfile
     }
     
+    console.log('📝 Création d\'un nouveau profil recruteur pour:', user.email)
     
-    // Créer le profil recruteur avec les données par défaut
+    // Créer le profil recruteur avec les données par défaut (colonnes disponibles uniquement)
     const recruiterData = {
       email: user.email,
       name: user.user_metadata?.first_name && user.user_metadata?.last_name 
@@ -38,17 +41,24 @@ const createRecruiterProfileIfNotExists = async (user) => {
       subscriptionStatus: 'active',
       subscriptionStartDate: new Date().toISOString(),
       subscriptionEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // +30 jours
-      maxJobPosts: 5,
-      maxCandidateContacts: 100,
-      maxFeaturedJobs: 1,
+      // maxJobPosts: 5, // Colonne non disponible
+      // maxCandidateContacts: 100, // Colonne non disponible
+      // maxFeaturedJobs: 1, // Colonne non disponible
       status: 'active',
       notes: 'Profil créé automatiquement lors de l\'inscription.'
     }
     
+    console.log('📊 Données du recruteur:', recruiterData)
+    
     const newRecruiter = await createRecruiter(recruiterData)
+    console.log('✅ Profil recruteur créé avec succès:', newRecruiter.id)
+    
+    return newRecruiter
     
   } catch (error) {
+    console.error('❌ Erreur lors de la création du profil recruteur:', error)
     // Ne pas faire échouer l'inscription si la création du profil échoue
+    throw error // Re-throw pour permettre au code appelant de gérer l'erreur
   }
 }
 
@@ -150,10 +160,18 @@ export const AuthProvider = ({ children }) => {
       
       // Si l'inscription est réussie, créer automatiquement le profil selon le rôle
       if (data?.user) {
-        if (userData?.role === 'candidate') {
-          await createCandidateProfileIfNotExists(data.user)
-        } else if (userData?.role === 'recruiter') {
-          await createRecruiterProfileIfNotExists(data.user)
+        try {
+          if (userData?.role === 'candidate') {
+            console.log('👤 Création du profil candidat pour:', data.user.email)
+            await createCandidateProfileIfNotExists(data.user)
+          } else if (userData?.role === 'recruiter') {
+            console.log('🏢 Création du profil recruteur pour:', data.user.email)
+            await createRecruiterProfileIfNotExists(data.user)
+          }
+        } catch (profileError) {
+          console.error('❌ Erreur lors de la création du profil:', profileError)
+          // Ne pas faire échouer l'inscription si la création du profil échoue
+          // L'utilisateur peut toujours se connecter et créer son profil manuellement
         }
       }
       
@@ -171,6 +189,25 @@ export const AuthProvider = ({ children }) => {
       })
       
       if (error) throw error
+      
+      // Vérifier et créer le profil si nécessaire après connexion
+      if (data?.user) {
+        try {
+          const userRole = data.user.user_metadata?.role
+          if (userRole === 'recruiter') {
+            console.log('🔍 Vérification du profil recruteur pour:', data.user.email)
+            const existingProfile = await getRecruiterByEmail(data.user.email)
+            if (!existingProfile) {
+              console.log('📝 Création du profil recruteur manquant pour:', data.user.email)
+              await createRecruiterProfileIfNotExists(data.user)
+            }
+          }
+        } catch (profileError) {
+          console.error('❌ Erreur lors de la vérification/création du profil:', profileError)
+          // Ne pas faire échouer la connexion si la création du profil échoue
+        }
+      }
+      
       return { data, error: null }
     } catch (error) {
       return { data: null, error }

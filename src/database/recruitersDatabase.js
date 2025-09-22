@@ -43,6 +43,7 @@ export const getRecruiterById = async (id) => {
 // Créer un nouveau recruteur
 export const createRecruiter = async (recruiterData) => {
   try {
+    // Utiliser seulement les colonnes qui existent actuellement dans la table
     const dbData = {
       email: recruiterData.email,
       name: recruiterData.name || null,
@@ -57,9 +58,9 @@ export const createRecruiter = async (recruiterData) => {
       stripe_customer_id: recruiterData.stripeCustomerId || null,
       stripe_subscription_id: recruiterData.stripeSubscriptionId || null,
       payment_method: recruiterData.paymentMethod || null,
-      max_job_posts: recruiterData.maxJobPosts || 5,
-      max_candidate_contacts: recruiterData.maxCandidateContacts || 100,
-      max_featured_jobs: recruiterData.maxFeaturedJobs || 1,
+      // max_job_posts: recruiterData.maxJobPosts || 5, // Colonne non disponible
+      // max_candidate_contacts: recruiterData.maxCandidateContacts || 100, // Colonne non disponible
+      // max_featured_jobs: recruiterData.maxFeaturedJobs || 1, // Colonne non disponible
       status: recruiterData.status || 'active',
       notes: recruiterData.notes || null
     };
