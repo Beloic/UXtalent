@@ -286,6 +286,35 @@ export class RecruitersApiService {
     }
   }
   
+  // Annuler l'abonnement d'un recruteur
+  static async cancelSubscription(recruiterId) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('Non authentifié');
+      }
+      
+      const response = await fetch(buildApiUrl(`/api/recruiters/${recruiterId}/cancel-subscription`), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Erreur HTTP: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Erreur lors de l\'annulation de l\'abonnement:', error);
+      throw error;
+    }
+  }
+  
   // Incrémenter le compteur d'offres publiées
   static async incrementJobPosts() {
     try {

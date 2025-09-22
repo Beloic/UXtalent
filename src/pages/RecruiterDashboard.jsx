@@ -44,6 +44,7 @@ import PublishJobForm from '../components/PublishJobForm';
 import EditJobForm from '../components/EditJobForm';
 import MatchingDashboard from '../components/MatchingDashboard';
 import { loadAppointments } from '../services/appointmentsApi';
+import { RecruitersApiService } from '../services/recruitersApi';
 import { buildApiUrl } from '../config/api';
 
 export default function RecruiterDashboard() {
@@ -75,6 +76,9 @@ export default function RecruiterDashboard() {
   const [editingJob, setEditingJob] = useState(null);
   const [showPublishForm, setShowPublishForm] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState({});
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [cancellationInfo, setCancellationInfo] = useState(null);
 
   // Fonction pour toggle le dropdown des candidatures
   const toggleDropdown = (jobId) => {
@@ -463,6 +467,35 @@ export default function RecruiterDashboard() {
       setTimeout(() => setMessage(''), 3000);
       // En cas d'erreur, recharger pour restaurer l'état correct
       loadCandidates();
+    }
+  };
+
+  // Fonction pour annuler l'abonnement
+  const handleCancelSubscription = async () => {
+    if (!recruiter?.id || !user) {
+      alert('Erreur: Profil recruteur non trouvé');
+      return;
+    }
+
+    setIsCancelling(true);
+    try {
+      const result = await RecruitersApiService.cancelSubscription(recruiter.id);
+      
+      // Stocker les informations d'annulation
+      setCancellationInfo({
+        access_until: result.access_until,
+        cancellation_scheduled: result.cancellation_scheduled
+      });
+      
+      setMessage('✅ Annulation programmée. Vous gardez l\'accès premium jusqu\'à la fin de votre période.');
+      setTimeout(() => setMessage(''), 5000);
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'annulation:', error);
+      setMessage(`❌ Erreur: ${error.message}`);
+      setTimeout(() => setMessage(''), 5000);
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -1398,29 +1431,9 @@ export default function RecruiterDashboard() {
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-xl font-bold text-gray-900">
-                              Plan {getPlanInfo().name}
-                            </h3>
-                            {recruiter?.plan_type === 'starter' && (
-                              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-green-600 text-white rounded-full shadow-lg">
-                                <span className="text-green-200">🚀</span>
-                                Starter
-                              </span>
-                            )}
-                            {recruiter?.plan_type === 'max' && (
-                              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-lg">
-                                <span className="text-purple-100">⭐</span>
-                                Max
-                              </span>
-                            )}
-                            {recruiter?.plan_type === 'premium' && (
-                              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full shadow-lg">
-                                <span className="text-yellow-100">👑</span>
-                                Premium
-                              </span>
-                            )}
-                          </div>
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            Plan {getPlanInfo().name}
+                          </h3>
                           <p className="text-gray-600">
                             {recruiter?.plan_type === 'starter' 
                               ? 'Accès aux fonctionnalités de base pour le recrutement'
@@ -1445,71 +1458,47 @@ export default function RecruiterDashboard() {
                       </div>
                     </div>
 
-                    {/* Statistiques d'utilisation */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                      <div className="bg-white border border-gray-200 rounded-xl p-6">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <Briefcase className="w-5 h-5 text-blue-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900">Offres publiées</h4>
-                            <p className="text-sm text-gray-600">Utilisation du mois</p>
-                          </div>
-                        </div>
-                        <div className="text-2xl font-bold text-gray-900">
-                          {recruiter?.total_jobs_posted || 0} / {getPlanInfo().maxJobPosts}
-                        </div>
-                        <div className="text-sm text-gray-500 mt-1">
-                          {getRemainingJobPosts()} restantes
-                        </div>
-                      </div>
-
-                      <div className="bg-white border border-gray-200 rounded-xl p-6">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <Users className="w-5 h-5 text-green-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900">Candidats contactés</h4>
-                            <p className="text-sm text-gray-600">Utilisation du mois</p>
-                          </div>
-                        </div>
-                        <div className="text-2xl font-bold text-gray-900">
-                          {recruiter?.total_candidates_contacted || 0} / {getPlanInfo().maxCandidateContacts}
-                        </div>
-                        <div className="text-sm text-gray-500 mt-1">
-                          {getRemainingCandidateContacts()} restants
-                        </div>
-                      </div>
-
-                      <div className="bg-white border border-gray-200 rounded-xl p-6">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <Star className="w-5 h-5 text-purple-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900">Offres mises en avant</h4>
-                            <p className="text-sm text-gray-600">Utilisation du mois</p>
-                          </div>
-                        </div>
-                        <div className="text-2xl font-bold text-gray-900">
-                          0 / {getPlanInfo().maxFeaturedJobs}
-                        </div>
-                        <div className="text-sm text-gray-500 mt-1">
-                          {getPlanInfo().maxFeaturedJobs} disponibles
-                        </div>
-                      </div>
-                    </div>
-
                     {/* Actions */}
                     <div className="flex justify-center gap-4 mt-6">
-                      <button
-                        onClick={() => window.open('/pricing', '_blank')}
-                        className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
-                      >
-                        Passer à Premium
-                      </button>
+                      {!cancellationInfo?.cancellation_scheduled ? (
+                        <>
+                          {/* Afficher le bouton "Annuler mon plan" seulement si l'utilisateur n'est pas au plan gratuit */}
+                          {recruiter?.plan_type !== 'free' && (
+                            <button
+                              onClick={() => setShowCancelConfirm(true)}
+                              className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+                            >
+                              Annuler mon plan
+                            </button>
+                          )}
+                          <button
+                            onClick={() => window.open('/pricing', '_blank')}
+                            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                          >
+                            {recruiter?.plan_type === 'free' ? 'Passer à Premium' : 'Changer de plan'}
+                          </button>
+                        </>
+                      ) : (
+                        <div className="text-center">
+                          <div className="mb-4">
+                            <button
+                              disabled
+                              className="px-6 py-3 bg-gray-300 text-gray-500 rounded-xl font-semibold cursor-not-allowed"
+                            >
+                              Plan annulé
+                            </button>
+                          </div>
+                          <p className="text-gray-600 mb-4">
+                            Votre annulation est déjà programmée. Vous pouvez toujours changer d'avis en souscrivant à un nouveau plan.
+                          </p>
+                          <button
+                            onClick={() => window.open('/pricing', '_blank')}
+                            className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                          >
+                            Souscrire à un nouveau plan
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1519,6 +1508,44 @@ export default function RecruiterDashboard() {
             {/* Formulaire de publication déplacé vers la page /jobs/new */}
           </AnimatePresence>
         </div>
+
+        {/* Popup de confirmation d'annulation */}
+        {showCancelConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+              <div className="text-center">
+                <div className="p-4 bg-red-100 rounded-full w-fit mx-auto mb-6">
+                  <AlertCircle className="w-8 h-8 text-red-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Annuler votre abonnement ?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Êtes-vous sûr de vouloir annuler votre abonnement {getPlanInfo().name} ? 
+                  Vous garderez l'accès à toutes les fonctionnalités premium jusqu'à la fin de votre période de facturation.
+                </p>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setShowCancelConfirm(false)}
+                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                  >
+                    Garder mon plan
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setShowCancelConfirm(false);
+                      await handleCancelSubscription();
+                    }}
+                    className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isCancelling}
+                  >
+                    {isCancelling ? 'Annulation en cours...' : 'Confirmer l\'annulation'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </RoleGuard>
   );
