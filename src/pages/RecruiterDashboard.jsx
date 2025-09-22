@@ -37,6 +37,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { RoleGuard } from '../components/RoleGuard';
 import { usePermissions } from '../hooks/usePermissions';
+import { useRecruiter } from '../hooks/useRecruiter';
 import Calendar from '../components/Calendar';
 import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';
@@ -49,6 +50,7 @@ export default function RecruiterDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { isRecruiter } = usePermissions();
+  const { recruiter, getPlanInfo, getRemainingJobPosts, getRemainingCandidateContacts } = useRecruiter();
   const location = useLocation();
   const getActiveTabFromPath = () => {
     if (location.pathname.startsWith('/recruiter-dashboard/appointments')) return 'appointments';
@@ -1396,20 +1398,106 @@ export default function RecruiterDashboard() {
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">
-                            Plan Gratuit
-                          </h3>
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-bold text-gray-900">
+                              Plan {getPlanInfo().name}
+                            </h3>
+                            {recruiter?.plan_type === 'starter' && (
+                              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-green-600 text-white rounded-full shadow-lg">
+                                <span className="text-green-200">🚀</span>
+                                Starter
+                              </span>
+                            )}
+                            {recruiter?.plan_type === 'max' && (
+                              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-lg">
+                                <span className="text-purple-100">⭐</span>
+                                Max
+                              </span>
+                            )}
+                            {recruiter?.plan_type === 'premium' && (
+                              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full shadow-lg">
+                                <span className="text-yellow-100">👑</span>
+                                Premium
+                              </span>
+                            )}
+                          </div>
                           <p className="text-gray-600">
-                            Accès aux fonctionnalités de base
+                            {recruiter?.plan_type === 'starter' 
+                              ? 'Accès aux fonctionnalités de base pour le recrutement'
+                              : recruiter?.plan_type === 'max'
+                              ? 'Accès aux fonctionnalités avancées avec sélection sur-mesure'
+                              : recruiter?.plan_type === 'premium'
+                              ? 'Accès illimité à toutes les fonctionnalités'
+                              : 'Plan personnalisé'
+                            }
                           </p>
                         </div>
                         <div className="text-right">
                           <div className="text-2xl font-bold text-blue-600">
-                            0€
+                            {recruiter?.plan_type === 'starter' ? '29€' : 
+                             recruiter?.plan_type === 'max' ? '99€' : 
+                             recruiter?.plan_type === 'premium' ? '199€' : '0€'}
                           </div>
                           <div className="text-sm text-gray-500">
-                            
+                            par mois
                           </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Statistiques d'utilisation */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                      <div className="bg-white border border-gray-200 rounded-xl p-6">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <Briefcase className="w-5 h-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900">Offres publiées</h4>
+                            <p className="text-sm text-gray-600">Utilisation du mois</p>
+                          </div>
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900">
+                          {recruiter?.total_jobs_posted || 0} / {getPlanInfo().maxJobPosts}
+                        </div>
+                        <div className="text-sm text-gray-500 mt-1">
+                          {getRemainingJobPosts()} restantes
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-xl p-6">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <Users className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900">Candidats contactés</h4>
+                            <p className="text-sm text-gray-600">Utilisation du mois</p>
+                          </div>
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900">
+                          {recruiter?.total_candidates_contacted || 0} / {getPlanInfo().maxCandidateContacts}
+                        </div>
+                        <div className="text-sm text-gray-500 mt-1">
+                          {getRemainingCandidateContacts()} restants
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-gray-200 rounded-xl p-6">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <Star className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900">Offres mises en avant</h4>
+                            <p className="text-sm text-gray-600">Utilisation du mois</p>
+                          </div>
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900">
+                          0 / {getPlanInfo().maxFeaturedJobs}
+                        </div>
+                        <div className="text-sm text-gray-500 mt-1">
+                          {getPlanInfo().maxFeaturedJobs} disponibles
                         </div>
                       </div>
                     </div>
