@@ -131,12 +131,19 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
       return null;
     }
     
+    // Vérifier le statut d'abonnement - ne pas afficher le badge si annulé/suspendu
+    if (recruiter.subscription_status !== 'active' && recruiter.subscription_status !== 'trialing') {
+      console.log('🚫 [Layout] Abonnement non actif, badge non affiché:', recruiter.subscription_status);
+      return null;
+    }
+    
     const planInfo = getPlanInfo();
     const planType = recruiter.plan_type;
     
     console.log('✅ [Layout] Recruteur trouvé:', {
       planType,
       planInfo,
+      subscription_status: recruiter.subscription_status,
       recruiterData: recruiter
     });
     
