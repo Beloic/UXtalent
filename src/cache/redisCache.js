@@ -86,17 +86,54 @@ class RedisCache {
     return `cache:${endpoint}:${JSON.stringify(sortedParams)}`;
   }
 
-  // Obtenir une valeur du cache - DÉSACTIVÉ
+  // Obtenir une valeur du cache
   async get(key) {
-    logger.debug(`🚫 Redis désactivé - pas de cache pour ${key}`);
-    metrics.recordCacheMiss();
-    return null;
+    if (!this.isConnected) {
+      await this.checkConnection();
+      if (!this.isConnected) {
+        logger.debug(`🚫 Redis non connecté - pas de cache pour ${key}`);
+        metrics.recordCacheMiss();
+        return null;
+      }
+    }
+
+    try {
+      const result = await redisClient.get(key);
+      if (result) {
+        logger.debug(`✅ Redis Cache hit pour ${key}`);
+        metrics.recordCacheHit();
+        return JSON.parse(result);
+      } else {
+        logger.debug(`❌ Redis Cache miss pour ${key}`);
+        metrics.recordCacheMiss();
+        return null;
+      }
+    } catch (error) {
+      logger.error('❌ Redis Cache get error:', { error: error.message, key });
+      metrics.recordCacheMiss();
+      return null;
+    }
   }
 
-  // Stocker une valeur dans le cache - DÉSACTIVÉ
+  // Stocker une valeur dans le cache
   async set(key, data, cacheType = 'DEFAULT') {
-    logger.debug(`🚫 Redis désactivé - pas de cache set pour ${key}`);
-    return false;
+    if (!this.isConnected) {
+      await this.checkConnection();
+      if (!this.isConnected) {
+        logger.debug(`🚫 Redis non connecté - pas de cache set pour ${key}`);
+        return false;
+      }
+    }
+
+    try {
+      const ttl = CACHE_DURATION[cacheType] || CACHE_DURATION.DEFAULT;
+      await redisClient.setEx(key, ttl, JSON.stringify(data));
+      logger.debug(`💾 Redis Cache set pour ${key} (TTL: ${ttl}s)`);
+      return true;
+    } catch (error) {
+      logger.error('❌ Redis Cache set error:', { error: error.message, key });
+      return false;
+    }
   }
 
   // Supprimer une entrée du cache
@@ -289,11 +326,47 @@ class RedisCache {
 // Instance singleton du cache Redis
 export const redisCache = new RedisCache();
 
-// Middleware pour le cache Redis - DÉSACTIVÉ
+// Middleware pour le cache Redis
 export const redisCacheMiddleware = (req, res, next) => {
-  // Redis complètement désactivé - passer directement à next()
-  logger.debug(`🚫 Redis désactivé - pas de cache pour ${req.originalUrl}`);
-  next();
+  // Vérifier si Redis est disponible
+  if (!redisCache.isConnected) {
+    logger.debug(`🚫 Redis non connecté - pas de cache pour ${req.originalUrl}`);
+    next();
+    return;
+  }
+
+  // Générer la clé de cache basée sur l'URL et les paramètres
+  const cacheKey = redisCache.generateKey(req.originalUrl, req.query);
+  
+  // Essayer de récupérer depuis le cache
+  redisCache.get(cacheKey).then(cachedData => {
+    if (cachedData) {
+      logger.debug(`✅ Cache hit pour ${req.originalUrl}`);
+      res.json(cachedData);
+      return;
+    }
+    
+    // Si pas de cache, continuer et intercepter la réponse
+    const originalJson = res.json;
+    res.json = function(data) {
+      // Stocker dans le cache (déterminer le type de cache basé sur l'URL)
+      let cacheType = 'DEFAULT';
+      if (req.originalUrl.includes('/candidates')) cacheType = 'CANDIDATES';
+      else if (req.originalUrl.includes('/jobs')) cacheType = 'JOBS';
+      else if (req.originalUrl.includes('/forum')) cacheType = 'FORUM';
+      else if (req.originalUrl.includes('/metrics')) cacheType = 'METRICS';
+      
+      redisCache.set(cacheKey, data, cacheType);
+      
+      // Appeler la méthode originale
+      originalJson.call(this, data);
+    };
+    
+    next();
+  }).catch(error => {
+    logger.error('❌ Redis Cache middleware error:', { error: error.message, url: req.originalUrl });
+    next();
+  });
 };
 
 export default redisCache;
