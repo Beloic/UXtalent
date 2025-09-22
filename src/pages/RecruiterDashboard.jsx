@@ -1102,14 +1102,15 @@ export default function RecruiterDashboard() {
             )}
 
             {activeTab === 'myjobs' && (
-              <motion.div 
-                key="myjobs"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: 0.2 }}
-                className="space-y-8"
-              >
+              <RecruiterSubscriptionGuard recruiter={recruiter}>
+                <motion.div 
+                  key="myjobs"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ delay: 0.2 }}
+                  className="space-y-8"
+                >
                 {/* Formulaire d'édition */}
                 {editingJob && (
                   <EditJobForm 
