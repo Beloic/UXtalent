@@ -34,11 +34,19 @@ export class RecruitersApiService {
   // Récupérer les statistiques du recruteur connecté
   static async getMyStats(recruiterId) {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Erreur de session:', sessionError);
+        throw new Error(`Erreur de session: ${sessionError.message}`);
+      }
       
       if (!session) {
-        throw new Error('Non authentifié');
+        console.warn('Aucune session active trouvée');
+        throw new Error('Session expirée ou utilisateur non connecté');
       }
+      
+      console.log('🔍 [STATS] Session trouvée, appel API pour recruiter:', recruiterId);
       
       const response = await fetch(buildApiUrl(`/api/recruiters/${recruiterId}/stats`), {
         headers: {

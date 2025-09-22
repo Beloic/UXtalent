@@ -14,22 +14,31 @@ export const useRecruiter = () => {
 
   const loadRecruiterData = useCallback(async () => {
     if (!isAuthenticated || !isRecruiter || !user?.id) {
+      console.log('🔍 [RECRUITER] Utilisateur non authentifié ou non recruteur:', { isAuthenticated, isRecruiter, userId: user?.id });
       setLoading(false);
       return;
     }
+    
     setLoading(true);
     setError(null);
+    
     try {
+      console.log('🔍 [RECRUITER] Chargement du profil recruteur...');
       const profile = await fetchRecruiterProfile();
       setRecruiter(profile);
 
+      console.log('🔍 [RECRUITER] Chargement des statistiques...');
       const recruiterStats = await fetchRecruiterStats(profile.id);
       setStats(recruiterStats);
 
+      console.log('🔍 [RECRUITER] Chargement des permissions...');
       const recruiterPermissions = await fetchRecruiterPermissions(profile.id);
       setPermissions(recruiterPermissions);
 
+      console.log('✅ [RECRUITER] Données chargées avec succès');
+
     } catch (err) {
+      console.error('❌ [RECRUITER] Erreur lors du chargement:', err);
       setError(err);
     } finally {
       setLoading(false);

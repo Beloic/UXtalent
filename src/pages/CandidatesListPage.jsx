@@ -83,14 +83,14 @@ export default function CandidatesListPage() {
         <div className="mb-12">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold text-gray-900">
-              {isCandidate ? "Communauté UX/UI" : "Talents UX/UI disponibles"}
+              {isCandidate ? "Communauté" : "Talents disponibles"}
             </h1>
             {/* Bouton suggestions supprimé pour les candidats */}
           </div>
           <p className="text-gray-600">
             {isCandidate 
-              ? "Explorez la communauté et découvrez d'autres designers talentueux" 
-              : "Découvrez les profils de designers vérifiés et sélectionnés"
+              ? "Explorez la communauté et découvrez d'autres talents" 
+              : "Découvrez les profils de talents vérifiés et sélectionnés"
             }
           </p>
         </div>

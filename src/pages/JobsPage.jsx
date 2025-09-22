@@ -113,10 +113,10 @@ export default function JobsPage() {
         >
           <div className="text-left mb-12">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Offres d'emploi UX/UI
+              Offres d'emploi
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl">
-              Découvrez les meilleures opportunités dans le design et l'expérience utilisateur
+              Découvrez les meilleures opportunités
             </p>
           </div>
         </motion.div>
