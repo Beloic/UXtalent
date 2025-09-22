@@ -1,8 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Configuration Supabase
-const supabaseUrl = 'https://ktfdrwpvofxuktnunukv.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8';
+// Configuration Supabase - Utilisation des variables d'environnement
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+
+// Vérification que les variables d'environnement sont définies
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Variables d\'environnement Supabase manquantes dans supabaseForum.js');
+  throw new Error('Configuration Supabase incomplète - vérifiez vos variables d\'environnement');
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Ajouter un nouveau post

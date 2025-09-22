@@ -1,9 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Configuration Supabase directement dans l'API pour éviter les problèmes d'import
-// Utiliser les vraies valeurs hardcodées pour éviter les problèmes de variables d'environnement
-const supabaseUrl = 'https://ktfdrwpvofxuktnunukv.supabase.co';
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzU5NTg0MCwiZXhwIjoyMDczMTcxODQwfQ.Epv9_DhrTR6uzM2vf0LqTzgUkIDy5HGfw9FjHUFDf4c';
+// Configuration Supabase avec variables d'environnement
+const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+// Vérification que les variables d'environnement sont définies
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('❌ [API] Variables d\'environnement Supabase manquantes:');
+  console.error('VITE_SUPABASE_URL:', !!supabaseUrl);
+  console.error('SUPABASE_SERVICE_KEY:', !!supabaseServiceKey);
+  throw new Error('Configuration Supabase incomplète');
+}
 
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
@@ -29,7 +36,8 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
 console.log('🔧 [API] Configuration Supabase:', {
   url: supabaseUrl,
   hasServiceKey: !!supabaseServiceKey,
-  serviceKeyLength: supabaseServiceKey?.length
+  serviceKeyLength: supabaseServiceKey?.length,
+  environment: process.env.NODE_ENV || 'development'
 });
 
 export default async function handler(req, res) {
