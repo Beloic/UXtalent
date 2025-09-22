@@ -1,5 +1,5 @@
 // Middleware de gestion des rôles et permissions
-import { supabase } from '../lib/supabase.js';
+import { supabaseAdmin } from '../lib/supabase.js';
 
 // Définition des rôles et permissions
 export const ROLES = {
@@ -81,8 +81,8 @@ export const requireRole = (allowedRoles) => {
         return next();
       }
 
-      // Récupérer l'utilisateur depuis Supabase
-      const { data: { user }, error } = await supabase.auth.getUser(token);
+      // Récupérer l'utilisateur depuis Supabase avec le client admin
+      const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
 
       if (error || !user) {
         return res.status(401).json({ 
@@ -173,7 +173,7 @@ export const requireOwnership = (resourceIdField = 'id') => {
       // Pour les candidats, vérifier qu'ils accèdent à leur propre ressource
       if (userRole === ROLES.CANDIDATE) {
         // Récupérer le candidat depuis la base pour vérifier l'ownership
-        const { data: candidate, error } = await supabase
+        const { data: candidate, error } = await supabaseAdmin
           .from('candidates')
           .select('userId')
           .eq('id', resourceId)
