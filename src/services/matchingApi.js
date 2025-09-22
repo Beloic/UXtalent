@@ -213,6 +213,7 @@ export async function recordMatchingFeedback(feedbackData) {
 
     // Ici, vous pourriez sauvegarder en base de données
     // Pour l'instant, on log juste les données
+    console.log('📊 Feedback enregistré:', {
       userId,
       userType,
       recommendationId,
