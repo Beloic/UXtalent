@@ -6,8 +6,30 @@ import { Link } from 'react-router-dom';
 export const RecruiterSubscriptionGuard = ({ 
   children, 
   recruiter,
+  loading = false,
   showError = true 
 }) => {
+  // Si les données sont en cours de chargement, afficher un indicateur de chargement
+  if (loading || recruiter === null) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-200 p-8 text-center">
+          <div className="mb-6">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Chargement...
+            </h1>
+            <p className="text-gray-600 mb-4">
+              Vérification de votre statut d'abonnement en cours.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Vérifier si l'abonnement est annulé ou suspendu
   const isSubscriptionCancelled = recruiter?.subscription_status === 'cancelled' || 
                                   recruiter?.subscription_status === 'expired' ||

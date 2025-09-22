@@ -25,7 +25,7 @@ export default function CandidatesListPage() {
   const pageSize = 8;
   
   const { isRecruiter, isCandidate } = usePermissions();
-  const { recruiter } = useRecruiter();
+  const { recruiter, loading: recruiterLoading } = useRecruiter();
 
   useEffect(() => setPage(1), [q, remote, experience, location, salaryRange, sortBy]);
 
@@ -47,7 +47,7 @@ export default function CandidatesListPage() {
   const hasActiveFilters = remote.length || experience.length || location.length || salaryRange.length || q;
 
   return (
-    <RecruiterSubscriptionGuard recruiter={recruiter}>
+    <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Titre simple */}

@@ -53,7 +53,7 @@ export default function RecruiterDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { isRecruiter } = usePermissions();
-  const { recruiter, getPlanInfo, getRemainingJobPosts, getRemainingCandidateContacts } = useRecruiter();
+  const { recruiter, loading: recruiterLoading, getPlanInfo, getRemainingJobPosts, getRemainingCandidateContacts } = useRecruiter();
   const location = useLocation();
   const getActiveTabFromPath = () => {
     if (location.pathname.startsWith('/recruiter-dashboard/appointments')) return 'appointments';
@@ -879,7 +879,7 @@ export default function RecruiterDashboard() {
           {/* Contenu des onglets */}
           <AnimatePresence mode="wait">
             {activeTab === 'favorites' && (
-              <RecruiterSubscriptionGuard recruiter={recruiter}>
+              <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
                 <motion.div 
                   key="favorites"
                   initial={{ opacity: 0, y: 20 }}
@@ -1048,7 +1048,7 @@ export default function RecruiterDashboard() {
             )}
 
             {activeTab === 'appointments' && (
-              <RecruiterSubscriptionGuard recruiter={recruiter}>
+              <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
                 <motion.div 
                   key="appointments"
                   initial={{ opacity: 0, y: 20 }}
@@ -1117,7 +1117,7 @@ export default function RecruiterDashboard() {
             )}
 
             {activeTab === 'myjobs' && (
-              <RecruiterSubscriptionGuard recruiter={recruiter}>
+              <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
                 <motion.div 
                   key="myjobs"
                   initial={{ opacity: 0, y: 20 }}
@@ -1419,7 +1419,7 @@ export default function RecruiterDashboard() {
             )}
 
             {activeTab === 'matching' && (
-              <RecruiterSubscriptionGuard recruiter={recruiter}>
+              <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
                 <motion.div 
                   key="matching"
                   initial={{ opacity: 0, y: 20 }}
