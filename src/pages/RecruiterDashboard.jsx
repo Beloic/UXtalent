@@ -39,7 +39,7 @@ import { supabase } from '../lib/supabase';
 import { RoleGuard } from '../components/RoleGuard';
 import { RecruiterSubscriptionGuard, SubscriptionBasedContent } from '../components/RecruiterSubscriptionGuard';
 import { usePermissions } from '../hooks/usePermissions';
-import { useRecruiter } from '../hooks/useRecruiter';
+import { useRecruiterOptimized as useRecruiter } from '../hooks/useRecruiterOptimized';
 import Calendar from '../components/Calendar';
 import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';

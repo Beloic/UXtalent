@@ -2,12 +2,34 @@ import { supabaseAdmin } from './supabaseClient.js';
 
 // ===== FONCTIONS POUR LES RECRUTEURS =====
 
-// Récupérer un recruteur par email
+// Récupérer un recruteur par email (OPTIMISÉ)
 export const getRecruiterByEmail = async (email) => {
   try {
     const { data, error } = await supabaseAdmin
       .from('recruiters')
-      .select('*')
+      .select(`
+        id,
+        email,
+        name,
+        company,
+        phone,
+        website,
+        plan_type,
+        subscription_status,
+        subscription_start_date,
+        subscription_end_date,
+        trial_end_date,
+        stripe_customer_id,
+        stripe_subscription_id,
+        payment_method,
+        max_job_posts,
+        max_candidate_contacts,
+        max_featured_jobs,
+        status,
+        notes,
+        created_at,
+        updated_at
+      `)
       .eq('email', email)
       .single();
     
