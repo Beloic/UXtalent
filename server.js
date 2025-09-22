@@ -1494,12 +1494,13 @@ async function handleSubscriptionDeleted(subscription) {
         .single();
       
       if (recruiter && !fetchError) {
-        await updateRecruiterPlan(recruiter.id, 'free', {
-          status: 'canceled',
+        await updateRecruiterPlan(recruiter.id, 'custom', {
+          status: 'cancelled',
           startDate: new Date().toISOString(),
-          endDate: null
+          endDate: new Date().toISOString(),
+          accountStatus: 'suspended'
         });
-        console.log('⬇️ Recruteur rétrogradé vers le plan gratuit:', userEmail);
+        console.log('⬇️ Recruteur basculé vers le plan custom (annulé):', userEmail);
       } else {
         console.error('❌ Aucun utilisateur trouvé (ni candidat ni recruteur) pour:', userEmail);
       }
