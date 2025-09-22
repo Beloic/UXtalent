@@ -5,7 +5,7 @@ const LOCAL_API_BASE_URL = 'http://localhost:3001';
 const RENDER_API_BASE_URL = 'https://ux-jobs-pro-backend.onrender.com';
 
 // Détecter si on est en développement (localhost)
-const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isDevelopment = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 // Utiliser l'API locale en développement, Render en production
 const API_BASE_URL = isDevelopment ? LOCAL_API_BASE_URL : DEFAULT_API_BASE_URL;
 
