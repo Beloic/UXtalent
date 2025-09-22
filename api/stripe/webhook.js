@@ -212,14 +212,8 @@ async function handleInvoicePaymentFailed(invoice) {
 
 // Fonction utilitaire pour déterminer le type de plan
 function getPlanTypeFromPriceId(priceId) {
-  // Pour les Payment Links, on peut aussi utiliser le montant
+  // Mapping basé sur les montants des Payment Links Stripe
   const planMapping = {
-    // Price IDs Stripe - Candidats
-    'price_premium_candidat': 'premium',
-    'price_elite_candidat': 'elite',
-    // Price IDs Stripe - Recruteurs
-    'price_starter': 'starter',
-    'price_max': 'max',
     // Montants en centimes pour les Payment Links - Candidats
     799: 'premium', // 7.99€
     3900: 'elite',    // 39€

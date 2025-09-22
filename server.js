@@ -1693,11 +1693,14 @@ async function handleInvoicePaymentFailed(invoice) {
 
 // Fonction utilitaire pour déterminer le type de plan
 function getPlanTypeFromPriceId(priceId) {
+  // Mapping basé sur les montants des Payment Links Stripe
   const planMapping = {
-    'price_premium_candidat': 'premium',
-    'price_elite_candidat': 'elite',
-    'price_starter': 'starter',
-    'price_max': 'max'
+    // Montants en centimes pour les Payment Links - Candidats
+    799: 'premium', // 7.99€
+    3900: 'elite',    // 39€
+    // Montants en centimes pour les Payment Links - Recruteurs
+    1999: 'starter', // 19.99€
+    7900: 'max'     // 79€
   };
   
   return planMapping[priceId] || null;
