@@ -42,8 +42,7 @@ import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';
 import EditJobForm from '../components/EditJobForm';
 import MatchingDashboard from '../components/MatchingDashboard';
-import PaymentLinkPricingGrid from '../components/PaymentLinkPricing';
-import RecruiterPlanStatus from '../components/RecruiterPlanStatus';
+import PlanManager from '../components/PlanManager';
 import { loadAppointments } from '../services/appointmentsApi';
 import { buildApiUrl } from '../config/api';
 
@@ -1380,27 +1379,9 @@ export default function RecruiterDashboard() {
                 transition={{ delay: 0.2 }}
                 className="space-y-8"
               >
-                <div className="bg-white rounded-3xl shadow-xl border border-gray-100">
-                  <div className="p-8 border-b border-gray-200">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
-                        <CreditCard className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-gray-900">Mon Plan</h2>
-                        <p className="text-gray-600">Gérez votre abonnement et vos fonctionnalités</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-8">
-                    <RecruiterPlanStatus />
-                    <div className="mt-8">
-                      <h3 className="text-xl font-bold text-gray-900 mb-6">Changer de plan</h3>
-                      <PaymentLinkPricingGrid userType="recruiter" />
-                    </div>
-                  </div>
-                </div>
+                <PlanManager candidate={user} onPlanUpdate={(planType) => {
+                  console.log('Plan mis à jour:', planType);
+                }} />
               </motion.div>
             )}
 
