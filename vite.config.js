@@ -31,7 +31,9 @@ export default defineConfig({
     terserOptions: process.env.NODE_ENV === 'production' ? {
       compress: {
         drop_console: false,  // ← GARDER les console.log même en production
-        drop_debugger: true
+        drop_debugger: true,
+        sequences: false,  // ← Éviter la minification des séquences avec virgule
+        side_effects: false  // ← Préserver les effets de bord des console.error
       }
     } : {},
     // Limiter la taille des chunks
