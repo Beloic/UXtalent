@@ -207,8 +207,8 @@ app.get('/api/geocode', async (req, res) => {
   }
 });
 
-// Servir les fichiers statiques
-app.use(express.static(__dirname));
+// Servir les fichiers statiques du frontend buildé
+app.use(express.static(path.join(__dirname, 'dist')));
 
 // Fonction utilitaire pour générer un ID entier temporaire basé sur l'email
 const generateTempUserId = (email) => {
@@ -4143,6 +4143,11 @@ app.post('/api/matching/cache/refresh', requireRole(['admin']), async (req, res)
     });
     res.status(500).json({ error: 'Erreur lors de la mise à jour du cache' });
   }
+});
+
+// Route catch-all pour servir l'index.html du frontend (SPA)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 process.on('SIGTERM', () => {
