@@ -181,13 +181,12 @@ app.use(requestLogger);
 app.use(metricsMiddleware);
 app.use(redisCacheMiddleware);
 
-// Middleware de debug pour les routes candidats
+// Middleware de debug pour les routes candidats (logs réduits)
 app.use('/api/candidates', (req, res, next) => {
-  console.log('📋 [CANDIDATES] Requête:', req.method, req.url);
-  console.log('📋 [CANDIDATES] Headers:', {
-    authorization: req.headers.authorization ? 'Présent' : 'Absent',
-    contentType: req.headers['content-type']
-  });
+  // Log seulement les erreurs et les actions importantes
+  if (req.method !== 'GET' || req.query.action) {
+    console.log('📋 [CANDIDATES]', req.method, req.url);
+  }
   next();
 });
 
@@ -365,11 +364,6 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       const applicationsWithCandidates = await Promise.all(
         dedupedApplications.map(async (application) => {
           try {
-            console.log('🔍 [GET_JOB_APPLICATIONS] Application:', {
-              id: application.id,
-              candidate_id: application.candidate_id,
-              candidate_id_type: typeof application.candidate_id
-            });
             
             // Avec la nouvelle table, candidate_id est déjà un INTEGER (ID numérique)
             const { data: candidate, error: candidateError } = await supabaseAdmin
@@ -379,18 +373,9 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
               .single();
 
             if (candidateError) {
-              console.error('❌ [GET_JOB_APPLICATIONS] Erreur candidat:', {
-                candidate_id: application.candidate_id,
-                error: candidateError.message,
-                code: candidateError.code
-              });
               
               // Si on a first_name et last_name dans l'application, essayer de trouver le vrai ID du candidat
               if (application.first_name && application.last_name) {
-                console.log('✅ [GET_JOB_APPLICATIONS] Recherche du candidat par nom:', {
-                  first_name: application.first_name,
-                  last_name: application.last_name
-                });
                 
                 // Chercher le candidat par nom complet
                 const fullName = `${application.first_name} ${application.last_name}`.trim();
@@ -401,12 +386,10 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
                   .single();
                   
                 if (!nameError && candidateByName) {
-                  console.log('✅ [GET_JOB_APPLICATIONS] Candidat trouvé par nom:', candidateByName.id);
                   return { ...application, candidate: candidateByName };
                 }
                 
                 // Si pas trouvé par nom, créer un objet temporaire mais sans ID valide
-                console.log('⚠️ [GET_JOB_APPLICATIONS] Candidat non trouvé par nom, création temporaire');
                 const tempCandidate = {
                   id: null, // Pas d'ID valide pour éviter les 404
                   name: fullName,
@@ -428,17 +411,14 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
                 .single();
                 
               if (!emailError && candidateByEmail) {
-                console.log('✅ [GET_JOB_APPLICATIONS] Candidat trouvé par email:', candidateByEmail.id);
                 return { ...application, candidate: candidateByEmail };
               }
               
               return { ...application, candidate: null };
             }
 
-            console.log('✅ [GET_JOB_APPLICATIONS] Candidat trouvé par ID:', candidate.id);
             return { ...application, candidate };
           } catch (e) {
-            console.error('Erreur inattendue lors de la récupération du candidat:', e);
             return { ...application, candidate: null };
           }
         })
@@ -474,13 +454,12 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
         // Essayer de récupérer depuis le cache
         const cachedData = await redisClient.get(cacheKey);
         if (cachedData) {
-          console.log('🚀 [CACHE] Données récupérées depuis Redis');
           const parsedData = JSON.parse(cachedData);
           return res.json(parsedData);
         }
       }
     } catch (cacheError) {
-      console.log('⚠️ [CACHE] Erreur Redis, utilisation de la DB:', cacheError.message);
+      // Erreur Redis, utilisation de la DB
     }
     
     // Charger depuis la DB si pas en cache
@@ -574,7 +553,6 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       // Vérifier le token admin spécial (généré dynamiquement)
       const adminTokenSecret = process.env.ADMIN_TOKEN_SECRET || 'admin-token';
       if (token === adminTokenSecret) {
-        console.log('🔑 Token admin détecté - accès complet à TOUS les candidats');
         userRole = ROLES.ADMIN;
         visibleCandidates = filteredCandidates; // Tous les candidats, même non approuvés
         totalHiddenCandidates = 0;
@@ -584,14 +562,12 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
         const { data: { user: authUser }, error: userError } = await supabase.auth.getUser(token);
         
         if (userError || !authUser) {
-          console.log('❌ Token invalide');
           // Retourner au mode freemium
           visibleCandidates = filteredCandidates.filter(c => c.status === 'approved');
           totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
           isAuthenticated = false;
         } else {
           userRole = authUser.user_metadata?.role;
-          console.log(`✅ Utilisateur authentifié avec le rôle: ${userRole}`);
           
           if (userRole === ROLES.RECRUITER) {
             // Les recruteurs voient tous les candidats approuvés
@@ -605,7 +581,6 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
             isAuthenticated = true;
           } else {
             // Rôle non reconnu, mode freemium
-            console.log(`⚠️ Rôle non reconnu: ${userRole}`);
             visibleCandidates = filteredCandidates.filter(c => c.status === 'approved');
             totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
             isAuthenticated = false;
@@ -614,7 +589,6 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       }
     } else {
       // Pas d'authentification - montrer tous les candidats approuvés
-      console.log('🔒 Pas d\'authentification - affichage de tous les candidats approuvés');
       visibleCandidates = filteredCandidates.filter(c => c.status === 'approved');
       totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
     }
@@ -683,10 +657,9 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       if (redisHealthy && !fromCache) {
         // Cache pour 5 minutes
         await redisClient.setex(cacheKey, 300, JSON.stringify(responseData));
-        console.log('💾 [CACHE] Données mises en cache Redis');
       }
     } catch (cacheError) {
-      console.log('⚠️ [CACHE] Erreur lors de la mise en cache:', cacheError.message);
+      // Erreur lors de la mise en cache
     }
 
     res.json(responseData);
