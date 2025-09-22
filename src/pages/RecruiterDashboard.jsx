@@ -925,9 +925,9 @@ export default function RecruiterDashboard() {
                                 Premium
                               </span>
                             )}
-                            {candidate.planType === 'pro' && (
+                            {candidate.planType === 'elite' && (
                               <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full">
-                                Pro
+                                Elite
                               </span>
                             )}
                             

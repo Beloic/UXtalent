@@ -58,8 +58,8 @@ export default function PlanManager({ candidate, onPlanUpdate }) {
       cta: getButtonText('premium')
     },
     {
-      id: 'pro',
-      name: "Pro",
+      id: 'elite',
+      name: "Elite",
       price: "39€",
       period: "/mois",
       description: "Pour un maximum de réussite",
@@ -69,15 +69,14 @@ export default function PlanManager({ candidate, onPlanUpdate }) {
         "Mise en avant maximale",
         "Statistiques avancées",
         "Accès aux offres exclusives",
-        "Coaching carrière 1-à-1",
         "Support VIP",
         "Formations premium",
         "Réseautage événements",
         "Accès exclusif au Slack communautaire"
       ],
       popular: false,
-      current: selectedPlan === 'pro',
-      cta: getButtonText('pro')
+      current: selectedPlan === 'elite',
+      cta: getButtonText('elite')
     }
   ];
 

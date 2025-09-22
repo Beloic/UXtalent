@@ -43,22 +43,21 @@ export const PaymentLinkPricingGrid = ({ userType = 'candidate' }) => {
       planType: 'premium-candidat'
     },
     {
-      id: 'pro',
-      name: 'Pro',
+      id: 'elite',
+      name: 'Elite',
       price: '39',
       period: '/mois',
       description: 'Pour les professionnels expérimentés',
       features: [
         'Tous les avantages Premium',
         'Accès aux offres exclusives',
-        'Coaching personnalisé',
         'Support dédié',
         'Mise en avant maximale',
         'Statistiques avancées'
       ],
       popular: false,
-      cta: 'Choisir Pro',
-      planType: 'pro-candidat'
+      cta: 'Choisir Elite',
+      planType: 'elite-candidat'
     }
   ];
 

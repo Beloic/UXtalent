@@ -129,7 +129,7 @@ export default function CandidateCard({ candidate, compact = false }) {
     if (candidate.planType === 'premium') {
       return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-blue-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 cursor-pointer`;
     }
-    if (candidate.planType === 'pro') {
+    if (candidate.planType === 'elite') {
       return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-amber-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 cursor-pointer`;
     }
     return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-blue-200/50 cursor-pointer`;
@@ -141,7 +141,7 @@ export default function CandidateCard({ candidate, compact = false }) {
       {!shouldHideName() && (
         <div className="absolute top-3 right-3 flex items-center gap-2">
           {candidate.planType === 'premium' && <PremiumBadge />}
-          {candidate.planType === 'pro' && <ProBadge />}
+          {candidate.planType === 'elite' && <ProBadge />}
         </div>
       )}
       {/* Header aligné avec JobCard */}

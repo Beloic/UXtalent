@@ -105,8 +105,8 @@ export default function PricingPage() {
       cta: "Passer Premium"
     },
     {
-      name: "Pro",
-      price: "69€",
+      name: "Elite",
+      price: "39€",
       period: "/mois",
       description: "Pour un maximum de réussite",
       features: [
@@ -115,14 +115,13 @@ export default function PricingPage() {
         "Badge Pro exclusif",
         "Statistiques avancées",
         "Accès aux offres d'emploi exclusives",
-        "Coaching carrière 1-à-1",
         "Support VIP",
         "Formations premium",
         "Réseautage événements",
         "Accès exclusif au Slack communautaire"
       ],
       popular: false,
-      cta: "Devenir Pro"
+      cta: "Devenir Elite"
     }
   ];
 
@@ -315,8 +314,8 @@ export default function PricingPage() {
                       window.open('/register?role=candidate', '_blank');
                     } else if (plan.name === "Premium" && selectedTab === 'candidates') {
                       window.open(import.meta.env.VITE_STRIPE_PREMIUM_CANDIDAT_LINK, '_blank');
-                    } else if (plan.name === "Pro") {
-                      window.open(import.meta.env.VITE_STRIPE_PRO_CANDIDAT_LINK, '_blank');
+                    } else if (plan.name === "Elite") {
+                      window.open(import.meta.env.VITE_STRIPE_ELITE_CANDIDAT_LINK, '_blank');
                     } else if (plan.name === "Starter") {
                       window.open(import.meta.env.VITE_STRIPE_STARTER_LINK, '_blank');
                     } else if (plan.name === "Max") {

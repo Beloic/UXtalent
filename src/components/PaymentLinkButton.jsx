@@ -13,7 +13,7 @@ export default function PaymentLinkButton({
   const getPaymentLink = (planType) => {
     const links = {
       'premium-candidat': import.meta.env.VITE_STRIPE_PREMIUM_CANDIDAT_LINK,
-      'pro-candidat': import.meta.env.VITE_STRIPE_PRO_CANDIDAT_LINK,
+      'elite-candidat': import.meta.env.VITE_STRIPE_ELITE_CANDIDAT_LINK,
       'starter': import.meta.env.VITE_STRIPE_STARTER_LINK,
       'max': import.meta.env.VITE_STRIPE_MAX_LINK,
     };

@@ -216,12 +216,12 @@ function getPlanTypeFromPriceId(priceId) {
   const planMapping = {
     // Price IDs Stripe
     'price_premium_candidat': 'premium',
-    'price_pro_candidat': 'pro',
+    'price_elite_candidat': 'elite',
     'price_starter': 'starter',
     'price_max': 'max',
     // Montants en centimes pour les Payment Links
     799: 'premium', // 7.99€
-    3900: 'pro',    // 39€
+    3900: 'elite',    // 39€
     1999: 'starter', // 19.99€
     7900: 'max'     // 79€
   };

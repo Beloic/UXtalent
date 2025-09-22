@@ -134,7 +134,7 @@ export default function MyProfilePage() {
   const [isEditingRejected, setIsEditingRejected] = useState(false); // Mode édition pour candidats rejetés
   const [isEditingNew, setIsEditingNew] = useState(false); // Mode édition pour candidats nouveaux
   const [userPlan, setUserPlan] = useState('free');
-  const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'pro'
+  const [candidatePlan, setCandidatePlan] = useState('free'); // 'free', 'premium', 'elite'
   const [isRefreshingPlan, setIsRefreshingPlan] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
@@ -1478,14 +1478,14 @@ export default function MyProfilePage() {
                             <Eye className="w-5 h-5" />
                           </Link>
                           
-                          {(candidatePlan === 'premium' || candidatePlan === 'pro') && (
+                          {(candidatePlan === 'premium' || candidatePlan === 'elite') && (
                             <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
-                              candidatePlan === 'pro' 
+                              candidatePlan === 'elite' 
                                 ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
                                 : 'bg-blue-600'
                             }`}>
-                              <span className={candidatePlan === 'pro' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
-                              {candidatePlan === 'pro' ? 'Pro' : 'Premium'}
+                              <span className={candidatePlan === 'elite' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
+                              {candidatePlan === 'elite' ? 'Elite' : 'Premium'}
                             </span>
                           )}
                         </div>
@@ -2773,7 +2773,7 @@ export default function MyProfilePage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="text-xl font-bold text-gray-900 mb-2">
-                            Plan {candidatePlan === 'free' ? 'Gratuit' : candidatePlan === 'premium' ? 'Premium' : candidatePlan === 'pro' ? 'Pro' : candidatePlan}
+                            Plan {candidatePlan === 'free' ? 'Gratuit' : candidatePlan === 'premium' ? 'Premium' : candidatePlan === 'elite' ? 'Elite' : candidatePlan}
                             {cancellationInfo?.cancellation_scheduled && (
                               <span className="ml-2 text-sm font-normal text-orange-600">
                                 (Annulé)
@@ -3093,7 +3093,7 @@ export default function MyProfilePage() {
                   Annuler votre abonnement ?
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Êtes-vous sûr de vouloir annuler votre abonnement {candidatePlan === 'premium' ? 'Premium' : 'Pro'} ? 
+                  Êtes-vous sûr de vouloir annuler votre abonnement {candidatePlan === 'premium' ? 'Premium' : 'Elite'} ? 
                   Vous garderez l'accès à toutes les fonctionnalités premium jusqu'à la fin de votre période de facturation.
                 </p>
                 <div className="flex gap-4">

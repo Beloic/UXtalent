@@ -467,14 +467,14 @@ export default function CandidateDetailPage() {
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm relative">
               {/* Badges + Favori en haut à droite */}
               <div className="absolute top-4 right-4 flex items-center gap-3">
-                {!shouldHideName() && (candidate.planType === 'premium' || candidate.planType === 'pro') && (
+                {!shouldHideName() && (candidate.planType === 'premium' || candidate.planType === 'elite') && (
                   <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
-                    candidate.planType === 'pro' 
+                    candidate.planType === 'elite' 
                       ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
                       : 'bg-blue-600'
                   }`}>
-                    <span className={candidate.planType === 'pro' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
-                    {candidate.planType === 'pro' ? 'Pro' : 'Premium'}
+                    <span className={candidate.planType === 'elite' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
+                    {candidate.planType === 'elite' ? 'Elite' : 'Premium'}
                   </span>
                 )}
                 {user && isRecruiter && (

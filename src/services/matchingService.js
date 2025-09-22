@@ -441,7 +441,7 @@ export function findBestCandidatesForJob(candidates, job, limit = 10) {
       
       // Bonus pour les plans premium/pro
       let planBonus = 0;
-      if (candidate.planType === 'pro') {
+      if (candidate.planType === 'elite') {
         planBonus = 0.2; // +20% pour Pro
       } else if (candidate.planType === 'premium') {
         planBonus = 0.1; // +10% pour Premium

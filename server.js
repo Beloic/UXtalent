@@ -1045,7 +1045,7 @@ app.put('/api/candidates/:id/plan', async (req, res) => {
     const { planType, durationMonths = 1 } = req.body;
     
     // Valider le type de plan
-    if (!['free', 'premium', 'pro'].includes(planType)) {
+    if (!['free', 'premium', 'elite'].includes(planType)) {
       return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, premium, ou pro' });
     }
     
@@ -1077,7 +1077,7 @@ app.put('/api/candidates/email/:email/plan', async (req, res) => {
     });
     
     // Valider le type de plan
-    if (!['free', 'premium', 'pro'].includes(planType)) {
+    if (!['free', 'premium', 'elite'].includes(planType)) {
       console.error(`❌ [API] Type de plan invalide: ${planType}`);
       return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, premium, ou pro' });
     }
@@ -1609,7 +1609,7 @@ async function handleInvoicePaymentFailed(invoice) {
 function getPlanTypeFromPriceId(priceId) {
   const planMapping = {
     'price_premium_candidat': 'premium',
-    'price_pro_candidat': 'pro',
+    'price_elite_candidat': 'elite',
     'price_starter': 'starter',
     'price_max': 'max'
   };
