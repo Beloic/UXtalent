@@ -26,13 +26,10 @@ async function updateCache() {
   
   if (!cacheTimestamp || (now - cacheTimestamp) > CACHE_DURATION) {
     try {
-      console.log('🔄 Mise à jour du cache de matching...');
       candidatesCache = await loadCandidates();
       jobsCache = await loadJobs();
       cacheTimestamp = now;
-      console.log(`✅ Cache mis à jour: ${candidatesCache.length} candidats, ${jobsCache.length} offres`);
     } catch (error) {
-      console.error('❌ Erreur lors de la mise à jour du cache:', error);
       throw error;
     }
   }
@@ -112,7 +109,6 @@ export async function getBestCandidatesForJob(jobId, options = {}) {
       }))
     };
   } catch (error) {
-    console.error('Erreur dans getBestCandidatesForJob:', error);
     throw error;
   }
 }
@@ -190,7 +186,6 @@ export async function getBestJobsForCandidate(candidateId, options = {}) {
       }))
     };
   } catch (error) {
-    console.error('Erreur dans getBestJobsForCandidate:', error);
     throw error;
   }
 }
@@ -218,7 +213,6 @@ export async function recordMatchingFeedback(feedbackData) {
 
     // Ici, vous pourriez sauvegarder en base de données
     // Pour l'instant, on log juste les données
-    console.log('📊 Feedback de matching:', {
       userId,
       userType,
       recommendationId,
@@ -234,7 +228,6 @@ export async function recordMatchingFeedback(feedbackData) {
       feedbackId: `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     };
   } catch (error) {
-    console.error('Erreur dans recordMatchingFeedback:', error);
     throw error;
   }
 }
@@ -274,7 +267,6 @@ export async function getMatchingStats() {
       }
     };
   } catch (error) {
-    console.error('Erreur dans getMatchingStats:', error);
     throw error;
   }
 }
@@ -374,7 +366,6 @@ export async function getCompatibilityScore(candidateId, jobId) {
       recommendations: generateRecommendations(result, candidate, job)
     };
   } catch (error) {
-    console.error('Erreur dans getCompatibilityScore:', error);
     throw error;
   }
 }

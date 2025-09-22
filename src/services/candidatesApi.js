@@ -61,7 +61,6 @@ export function useCandidates(filters = {}, page = 1, pageSize = 8) {
         setTotal(data.total || 0);
       } catch (err) {
         setError(err.message);
-        console.error('Erreur lors du chargement des candidats:', err);
       } finally {
         setLoading(false);
       }
@@ -111,7 +110,6 @@ export function useCandidate(id) {
         setCandidate(data);
       } catch (err) {
         setError(err.message);
-        console.error('Erreur lors du chargement du candidat:', err);
       } finally {
         setLoading(false);
       }
@@ -200,7 +198,6 @@ export function useStats() {
         setStats(data);
       } catch (err) {
         setError(err.message);
-        console.error('Erreur lors du chargement des statistiques:', err);
       } finally {
         setLoading(false);
       }
@@ -244,7 +241,6 @@ export function useFavoritesBatch(candidateIds = []) {
           setFavorites(new Set(data.favoriteIds || []));
         }
       } catch (error) {
-        console.error('Erreur lors de la récupération des favoris:', error);
       } finally {
         setLoading(false);
       }

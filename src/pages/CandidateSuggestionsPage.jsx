@@ -55,7 +55,6 @@ export default function CandidateSuggestionsPage() {
         setStats(data);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des statistiques:', error);
     }
   };
 

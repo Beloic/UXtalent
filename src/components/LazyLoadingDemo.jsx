@@ -72,11 +72,9 @@ const LazyLoadingDemo = () => {
   ];
 
   const handleComponentLoad = (componentId) => {
-    console.log(`Composant ${componentId} chargé avec succès`);
   };
 
   const handleComponentError = (error) => {
-    console.error('Erreur de chargement:', error);
   };
 
   return (

@@ -121,10 +121,8 @@ export default function AddProfilePage() {
           navigate('/candidates');
         }, 2000);
       } else {
-        console.error('Erreur lors de l\'ajout du profil');
       }
     } catch (error) {
-      console.error('Erreur:', error);
     } finally {
       setIsSubmitting(false);
     }

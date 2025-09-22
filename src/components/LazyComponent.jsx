@@ -25,7 +25,6 @@ const LazyComponent = ({
 
   // Gestion des erreurs avec retry
   const handleError = (error) => {
-    console.error('Erreur dans LazyComponent:', error);
     setHasError(true);
     onError?.(error);
   };
@@ -102,7 +101,6 @@ const LazyComponent = ({
     }
 
     componentDidCatch(error, errorInfo) {
-      console.error('ErrorBoundary caught an error:', error, errorInfo);
       handleError(error);
     }
 

@@ -56,7 +56,6 @@ const CandidateNotesModal = ({
       // Fermer automatiquement après la sauvegarde
       onClose();
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde des notes:', error);
     } finally {
       setIsSaving(false);
     }

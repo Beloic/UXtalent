@@ -63,7 +63,6 @@ const CandidateSuggestions = ({ candidateId }) => {
       setSuggestions(data.jobs || []);
       setStats(data);
     } catch (err) {
-      console.error('Erreur:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -106,7 +105,6 @@ const CandidateSuggestions = ({ candidateId }) => {
         })
       });
     } catch (err) {
-      console.error('Erreur lors de l\'enregistrement du feedback:', err);
     }
   };
 

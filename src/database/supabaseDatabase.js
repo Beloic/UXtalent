@@ -70,10 +70,8 @@ export const loadCandidates = async () => {
           // Sinon, construire l'URL depuis Supabase Storage
           try {
             const { data } = supabase.storage.from('profile-photos').getPublicUrl(candidate.photo);
-            console.log(`📸 Photo URL construite pour ${candidate.name}:`, data.publicUrl);
             return data.publicUrl;
           } catch (error) {
-            console.error(`❌ Erreur construction URL photo pour ${candidate.name}:`, error);
             return null;
           }
         })()
@@ -97,7 +95,6 @@ export const loadCandidates = async () => {
     
     return sortedCandidates;
   } catch (error) {
-    console.error('Erreur lors du chargement des candidats:', error);
     return [];
   }
 };
@@ -110,7 +107,6 @@ export const getCandidateStats = async () => {
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Erreur lors du chargement des statistiques des candidats:', error);
     return { total: 0, approved: 0, pending: 0, rejected: 0 };
   }
 };
@@ -131,7 +127,6 @@ export const addCandidate = async (candidateData) => {
     delete dbData.annualSalary;
     delete dbData.yearsOfExperience; // Ignorer car la colonne n'existe pas encore
     
-    console.log('🆕 [SUPABASE] Création candidat avec statut:', { 
       status: dbData.status 
     });
     
@@ -155,7 +150,6 @@ export const addCandidate = async (candidateData) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de l\'ajout du candidat:', error);
     throw error;
   }
 };
@@ -170,7 +164,6 @@ export const updateCandidate = async (id, candidateData) => {
       .single();
     
     if (fetchError) {
-      console.error('❌ Erreur lors de la récupération du candidat actuel:', fetchError);
     }
     
     // Convertir les noms de colonnes de camelCase vers snake_case pour Supabase
@@ -194,11 +187,9 @@ export const updateCandidate = async (id, candidateData) => {
     
     // Logique spéciale pour les candidats rejetés : remettre en attente après modification
     if (currentCandidate?.status === 'rejected' && candidateData.status === 'pending') {
-      console.log(`🔄 Candidat rejeté mis à jour: ${id} - Retour en attente`);
       dbData.status = 'pending'; // Remettre en attente
     }
     
-    console.log('🔄 Mise à jour candidat:', { id, dbData });
     
     const { data, error } = await supabase
       .from('candidates')
@@ -208,7 +199,6 @@ export const updateCandidate = async (id, candidateData) => {
       .single();
     
     if (error) {
-      console.error('❌ Erreur Supabase:', error);
       throw error;
     }
     
@@ -226,10 +216,8 @@ export const updateCandidate = async (id, candidateData) => {
       featuredUntil: data.featured_until
     };
     
-    console.log('✅ Candidat mis à jour:', mappedData);
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du candidat:', error);
     throw error;
   }
 };
@@ -244,7 +232,6 @@ export const deleteCandidate = async (id) => {
     if (error) throw error;
     return { success: true };
   } catch (error) {
-    console.error('Erreur lors de la suppression du candidat:', error);
     throw error;
   }
 };
@@ -252,7 +239,6 @@ export const deleteCandidate = async (id) => {
 // Mettre à jour le plan d'un candidat
 export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
   try {
-    console.log(`🔍 [DB] Début mise à jour plan candidat:`, {
       id: id,
       planType: planType,
       durationMonths: durationMonths,
@@ -271,14 +257,12 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       featured_until: planType !== 'free' ? endDate.toISOString() : null
     };
     
-    console.log('🔍 [DB] Données de mise à jour calculées:', {
       id: id,
       updateData: updateData,
       now: now.toISOString(),
       endDate: endDate.toISOString()
     });
     
-    console.log('🚀 [DB] Exécution requête Supabase UPDATE...');
     
     const { data, error } = await supabaseAdmin
       .from('candidates')
@@ -287,7 +271,6 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       .select()
       .single();
     
-    console.log('🔍 [DB] Résultat requête Supabase:', {
       hasData: !!data,
       hasError: !!error,
       data: data,
@@ -295,13 +278,10 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
     });
     
     if (error) {
-      console.error('❌ [DB] Erreur Supabase:', error);
       throw error;
     }
     
-    console.log('📊 [DB] Données retournées par Supabase:', data);
     
-    console.log('🔄 [DB] Gestion du cache...');
     
     // Vider le cache existant avant de mettre à jour
     clearCandidatePlan(id);
@@ -309,7 +289,6 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
     // Mettre en cache le nouveau plan
     setCandidatePlan(id, planType);
     
-    console.log('✅ [DB] Cache vidé et mis à jour pour candidat:', id);
     
     // Mapper les noms de colonnes de snake_case vers camelCase
     const mappedData = {
@@ -325,7 +304,6 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       featuredUntil: data.featured_until
     };
     
-    console.log('✅ [DB] Plan candidat mis à jour avec succès:', {
       candidateId: id,
       newPlan: planType,
       mappedData: mappedData
@@ -333,8 +311,6 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
     
     return mappedData;
   } catch (error) {
-    console.error('❌ [DB] Erreur lors de la mise à jour du plan candidat:', error);
-    console.error('🔍 [DB] Stack trace:', error.stack);
     throw error;
   }
 };
@@ -354,7 +330,6 @@ export const recordMetric = async (method, route, statusCode, responseTime) => {
     
     if (error) throw error;
   } catch (error) {
-    console.error('Erreur lors de l\'enregistrement de la métrique:', error);
   }
 };
 
@@ -371,7 +346,6 @@ export const recordError = async (errorType, route, data) => {
     
     if (error) throw error;
   } catch (error) {
-    console.error('Erreur lors de l\'enregistrement de l\'erreur:', error);
   }
 };
 
@@ -424,7 +398,6 @@ export const addToFavorites = async (recruiterId, candidateId) => {
         // ignorer et rethrow plus bas
       }
     }
-    console.error('Erreur lors de l\'ajout aux favoris:', error);
     throw error;
   }
 };
@@ -441,7 +414,6 @@ export const removeFromFavorites = async (recruiterId, candidateId) => {
     if (error) throw error;
     return { success: true };
   } catch (error) {
-    console.error('Erreur lors de la suppression des favoris:', error);
     throw error;
   }
 };
@@ -496,7 +468,6 @@ export const getRecruiterFavorites = async (recruiterId) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de la récupération des favoris:', error);
     return [];
   }
 };
@@ -514,7 +485,6 @@ export const isCandidateFavorited = async (recruiterId, candidateId) => {
     if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows returned
     return !!data;
   } catch (error) {
-    console.error('Erreur lors de la vérification des favoris:', error);
     return false;
   }
 };

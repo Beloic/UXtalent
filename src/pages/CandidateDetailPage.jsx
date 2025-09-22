@@ -71,7 +71,6 @@ function ProfileViewsStats({ candidateId }) {
             return;
           }
         } catch (apiError) {
-          console.log('API publique non disponible, utilisation des données simulées');
         }
         
         // Fallback avec des données simulées
@@ -85,7 +84,6 @@ function ProfileViewsStats({ candidateId }) {
         
         setStats(mockStats);
       } catch (error) {
-        console.error('Erreur lors du chargement des statistiques:', error);
       } finally {
         setLoading(false);
       }
@@ -204,7 +202,6 @@ function LocationMap({ location }) {
           setError('Localisation non trouvée');
         }
       } catch (err) {
-        console.error('Erreur lors du géocodage:', err);
         setError('Impossible de localiser');
       } finally {
         setLoading(false);
@@ -291,7 +288,6 @@ export default function CandidateDetailPage() {
         setIsFavorited(data.isFavorited);
       }
     } catch (error) {
-      console.error('Erreur lors de la vérification des favoris:', error);
     }
   };
 
@@ -333,7 +329,6 @@ export default function CandidateDetailPage() {
         }
       }
     } catch (error) {
-      console.error('Erreur lors de la modification des favoris:', error);
       setFavoriteMessage('❌ Erreur lors de la modification des favoris');
       setTimeout(() => setFavoriteMessage(''), 3000);
     } finally {
@@ -361,7 +356,6 @@ export default function CandidateDetailPage() {
         // Vue trackée avec succès
       })
       .catch(error => {
-        console.error('Erreur lors du tracking de la vue:', error);
         hasTrackedViewRef.current = false; // Réinitialiser en cas d'erreur
       });
     }
@@ -791,7 +785,6 @@ export default function CandidateDetailPage() {
                           const date = new Date(dateValue);
                           return isNaN(date.getTime()) ? 'Non spécifiée' : date.toLocaleDateString('fr-FR');
                         } catch (error) {
-                          console.error('Erreur de format de date:', dateValue, error);
                           return 'Non spécifiée';
                         }
                       })()}

@@ -12,7 +12,6 @@ export const useRecruiter = () => {
 
   const loadRecruiterData = useCallback(async () => {
     if (!isAuthenticated || !isRecruiter || !user?.id) {
-      console.log('🔍 [RECRUITER] Utilisateur non authentifié ou non recruteur:', { isAuthenticated, isRecruiter, userId: user?.id });
       setLoading(false);
       return;
     }
@@ -21,14 +20,11 @@ export const useRecruiter = () => {
     setError(null);
     
     try {
-      console.log('🔍 [RECRUITER] Chargement du profil recruteur...');
       const profile = await fetchRecruiterProfile();
       setRecruiter(profile);
 
-      console.log('✅ [RECRUITER] Données chargées avec succès');
 
     } catch (err) {
-      console.error('❌ [RECRUITER] Erreur lors du chargement:', err);
       setError(err);
     } finally {
       setLoading(false);

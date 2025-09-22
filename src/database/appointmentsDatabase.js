@@ -11,7 +11,6 @@ export const loadAppointments = async (recruiterId) => {
       .order('appointment_time', { ascending: true });
 
     if (error) {
-      console.error('Erreur lors du chargement des rendez-vous:', error);
       
       // Vérifier si c'est une erreur de table manquante
       if (error.message.includes('relation "appointments" does not exist') || 
@@ -24,7 +23,6 @@ export const loadAppointments = async (recruiterId) => {
 
     return data || [];
   } catch (error) {
-    console.error('Erreur lors du chargement des rendez-vous:', error);
     throw error;
   }
 };
@@ -39,7 +37,6 @@ export const createAppointment = async (appointmentData) => {
       .single();
 
     if (error) {
-      console.error('Erreur lors de la création du rendez-vous:', error);
       
       // Vérifier si c'est une erreur de table manquante
       if (error.message.includes('relation "appointments" does not exist') || 
@@ -52,7 +49,6 @@ export const createAppointment = async (appointmentData) => {
 
     return data;
   } catch (error) {
-    console.error('Erreur lors de la création du rendez-vous:', error);
     throw error;
   }
 };
@@ -68,13 +64,11 @@ export const updateAppointment = async (appointmentId, appointmentData) => {
       .single();
 
     if (error) {
-      console.error('Erreur lors de la mise à jour du rendez-vous:', error);
       throw error;
     }
 
     return data;
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du rendez-vous:', error);
     throw error;
   }
 };
@@ -88,13 +82,11 @@ export const deleteAppointment = async (appointmentId) => {
       .eq('id', appointmentId);
 
     if (error) {
-      console.error('Erreur lors de la suppression du rendez-vous:', error);
       throw error;
     }
 
     return true;
   } catch (error) {
-    console.error('Erreur lors de la suppression du rendez-vous:', error);
     throw error;
   }
 };
@@ -111,13 +103,11 @@ export const getAppointmentsForCandidate = async (recruiterId, candidateId) => {
       .order('appointment_time', { ascending: true });
 
     if (error) {
-      console.error('Erreur lors du chargement des rendez-vous du candidat:', error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error('Erreur lors du chargement des rendez-vous du candidat:', error);
     return [];
   }
 };
@@ -140,7 +130,6 @@ export const getNextAppointmentForCandidate = async (recruiterId, candidateId) =
       .limit(1);
 
     if (error) {
-      console.error('Erreur lors du chargement du prochain rendez-vous:', error);
       return null;
     }
 
@@ -161,7 +150,6 @@ export const getNextAppointmentForCandidate = async (recruiterId, candidateId) =
           .limit(1);
 
         if (nextError) {
-          console.error('Erreur lors du chargement du prochain rendez-vous:', nextError);
           return null;
         }
 
@@ -173,7 +161,6 @@ export const getNextAppointmentForCandidate = async (recruiterId, candidateId) =
 
     return null;
   } catch (error) {
-    console.error('Erreur lors du chargement du prochain rendez-vous:', error);
     return null;
   }
 };

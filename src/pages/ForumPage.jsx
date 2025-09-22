@@ -84,7 +84,6 @@ export default function ForumPage() {
         
         setCategories(dynamicCategories);
       } catch (error) {
-        console.error('Erreur lors du chargement des données:', error);
         setMessage(`Erreur lors du chargement des données du forum: ${error.message}`);
       } finally {
         setIsLoading(false);
@@ -127,7 +126,6 @@ export default function ForumPage() {
       // Recharger les données
       setRefreshTrigger(prev => prev + 1);
     } catch (error) {
-      console.error('Erreur lors de la création du post:', error);
       setMessage(error.message || 'Erreur lors de la création du post');
       // Effacer le message d'erreur après 5 secondes
       setTimeout(() => setMessage(''), 5000);
@@ -194,7 +192,6 @@ export default function ForumPage() {
         );
       }
     } catch (error) {
-      console.error('Erreur lors du like:', error);
     }
   };
 
@@ -233,7 +230,6 @@ export default function ForumPage() {
         });
       }
     } catch (error) {
-      console.error('Erreur lors du like de la réponse:', error);
     }
   };
 

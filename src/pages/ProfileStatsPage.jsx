@@ -42,7 +42,6 @@ export default function ProfileStatsPage() {
       
       setStats(mockStats);
     } catch (error) {
-      console.error('Erreur lors du chargement des statistiques:', error);
     } finally {
       setIsLoading(false);
     }

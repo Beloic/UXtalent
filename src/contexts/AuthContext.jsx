@@ -16,17 +16,14 @@ export const useAuth = () => {
 // Fonction pour créer automatiquement un profil recruteur lors de l'inscription
 const createRecruiterProfileIfNotExists = async (user) => {
   try {
-    console.log('🔄 [SIGNUP_CREATE] Vérification du profil recruteur pour:', user.email)
     
     // Vérifier si le profil existe déjà
     const existingProfile = await getRecruiterByEmail(user.email)
     
     if (existingProfile) {
-      console.log('✅ [SIGNUP_CREATE] Profil recruteur existe déjà')
       return
     }
     
-    console.log('🆕 [SIGNUP_CREATE] Création automatique du profil recruteur...')
     
     // Créer le profil recruteur avec les données par défaut
     const recruiterData = {
@@ -49,10 +46,8 @@ const createRecruiterProfileIfNotExists = async (user) => {
     }
     
     const newRecruiter = await createRecruiter(recruiterData)
-    console.log('✅ [SIGNUP_CREATE] Profil recruteur créé avec succès:', newRecruiter.id)
     
   } catch (error) {
-    console.error('❌ [SIGNUP_CREATE] Erreur lors de la création du profil recruteur:', error)
     // Ne pas faire échouer l'inscription si la création du profil échoue
   }
 }
@@ -60,7 +55,6 @@ const createRecruiterProfileIfNotExists = async (user) => {
 // Fonction pour créer automatiquement un profil candidat lors de l'inscription
 const createCandidateProfileIfNotExists = async (user) => {
   try {
-    console.log('🔄 [SIGNUP_CREATE] Vérification du profil candidat pour:', user.email)
     
     // Vérifier si le profil existe déjà en utilisant l'admin client
     const { data: existingProfile, error: checkError } = await supabaseAdmin
@@ -70,13 +64,11 @@ const createCandidateProfileIfNotExists = async (user) => {
       .single()
     
     if (existingProfile) {
-      console.log('✅ [SIGNUP_CREATE] Profil candidat existe déjà')
       return
     }
     
     if (checkError && checkError.code === 'PGRST116') {
       // Profil n'existe pas, on peut le créer
-      console.log('🆕 [SIGNUP_CREATE] Création automatique du profil candidat...')
       
       // Créer le profil candidat avec statut 'new'
       const candidateData = {
@@ -104,15 +96,11 @@ const createCandidateProfileIfNotExists = async (user) => {
         .single()
       
       if (createError) {
-        console.error('❌ [SIGNUP_CREATE] Erreur lors de la création:', createError)
       } else {
-        console.log('✅ [SIGNUP_CREATE] Profil candidat créé avec succès avec statut "new":', newProfile)
       }
     } else if (checkError) {
-      console.error('❌ [SIGNUP_CREATE] Erreur lors de la vérification:', checkError)
     }
   } catch (error) {
-    console.error('❌ [SIGNUP_CREATE] Erreur inattendue:', error)
   }
 }
 
@@ -163,10 +151,8 @@ export const AuthProvider = ({ children }) => {
       // Si l'inscription est réussie, créer automatiquement le profil selon le rôle
       if (data?.user) {
         if (userData?.role === 'candidate') {
-          console.log('🆕 [SIGNUP] Création automatique du profil candidat après inscription réussie')
           await createCandidateProfileIfNotExists(data.user)
         } else if (userData?.role === 'recruiter') {
-          console.log('🆕 [SIGNUP] Création automatique du profil recruteur après inscription réussie')
           await createRecruiterProfileIfNotExists(data.user)
         }
       }

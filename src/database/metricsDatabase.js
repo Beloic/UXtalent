@@ -47,7 +47,6 @@ export const loadMetrics = () => {
   try {
     return initializeMetrics();
   } catch (error) {
-    console.error('Erreur lors du chargement des métriques:', error);
     return initializeMetrics();
   }
 };
@@ -58,7 +57,6 @@ export const saveMetrics = (metrics) => {
     metrics.lastUpdated = new Date().toISOString();
     fs.writeFileSync(METRICS_FILE, JSON.stringify(metrics, null, 2));
   } catch (error) {
-    console.error('Erreur lors de la sauvegarde des métriques:', error);
   }
 };
 

@@ -245,18 +245,15 @@ export default function MyProfilePage() {
   // Rafraîchir le plan périodiquement pour détecter les changements
   useEffect(() => {
     if (!isAuthenticated || !user?.email) {
-      console.log('🔍 [POLLING] Polling ignoré:', {
         isAuthenticated,
         hasEmail: !!user?.email
       });
       return;
     }
 
-    console.log('🚀 [POLLING] Démarrage du polling des plans pour:', user.email);
 
     const refreshPlan = async () => {
       try {
-        console.log('🔄 [POLLING] Début vérification plan pour:', user.email);
         setIsRefreshingPlan(true);
         
         // Obtenir le token d'authentification
@@ -264,13 +261,11 @@ export default function MyProfilePage() {
         const token = session.data.session?.access_token;
         
         if (!token) {
-          console.log('🔍 [POLLING] Token manquant, plan défini sur free');
           setCandidatePlan('free');
           return;
         }
         
         const apiUrl = buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`);
-        console.log('🔍 [POLLING] URL API:', apiUrl);
         
         const response = await fetch(apiUrl, {
           headers: {
@@ -279,7 +274,6 @@ export default function MyProfilePage() {
           }
         });
         
-        console.log('🔍 [POLLING] Réponse API:', {
           status: response.status,
           ok: response.ok,
           headers: Object.fromEntries(response.headers.entries())
@@ -289,18 +283,15 @@ export default function MyProfilePage() {
           // Vérifier que la réponse est bien du JSON avant de l'analyser
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
-            console.log('🔍 [POLLING] Réponse non-JSON ignorée');
             return;
           }
           
           const responseData = await response.json();
-          console.log('🔍 [POLLING] Données reçues:', responseData);
           
           // Gérer les deux formats de réponse possibles
           const userProfile = responseData.candidates?.[0] || responseData;
           const newPlan = userProfile?.plan || userProfile?.planType || userProfile?.plan_type || 'free';
           
-          console.log('🔍 [POLLING] Profil utilisateur extrait:', {
             userProfile: userProfile,
             currentPlan: candidatePlan,
             newPlan: newPlan,
@@ -310,7 +301,6 @@ export default function MyProfilePage() {
           });
           
           if (userProfile && newPlan !== candidatePlan) {
-            console.log('🎯 [POLLING] Changement de plan détecté!', {
               ancienPlan: candidatePlan,
               nouveauPlan: newPlan
             });
@@ -318,25 +308,19 @@ export default function MyProfilePage() {
             setCandidatePlan(newPlan);
 
             // Déclencher l'événement pour notifier les autres composants
-            console.log('📡 [POLLING] Déclenchement événement planUpdated');
             window.dispatchEvent(new CustomEvent('planUpdated', {
               detail: { plan: newPlan }
             }));
           } else {
-            console.log('✅ [POLLING] Aucun changement de plan détecté');
           }
         } else {
-          console.error('❌ [POLLING] Erreur API:', response.status);
         }
       } catch (error) {
-        console.error('❌ [POLLING] Erreur lors du polling:', error);
         // Gestion spéciale pour les erreurs de parsing JSON
         if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
-          console.log('🔍 [POLLING] Erreur de parsing JSON ignorée');
         }
       } finally {
         setIsRefreshingPlan(false);
-        console.log('✅ [POLLING] Vérification plan terminée');
       }
     };
 
@@ -345,12 +329,10 @@ export default function MyProfilePage() {
 
     // Rafraîchir toutes les 30 secondes
     const interval = setInterval(() => {
-      console.log('⏰ [POLLING] Intervalle de 30s écoulé, nouvelle vérification...');
       refreshPlan();
     }, 30000);
 
     return () => {
-      console.log('🛑 [POLLING] Arrêt du polling des plans');
       clearInterval(interval);
     };
   }, [isAuthenticated, user, candidatePlan]);
@@ -421,7 +403,6 @@ export default function MyProfilePage() {
         setCandidateStatus(status);
         setCandidatePlan(plan);
         
-        console.log('🔍 [PROFILE] Candidat chargé:', {
           status: status,
           plan: plan,
           planType: candidate.planType,
@@ -929,42 +910,33 @@ export default function MyProfilePage() {
       let photoUrl = null;
       
       // Gestion de la photo
-      console.log('📸 Gestion de la photo:', formData.photo);
       if (formData.photo?.file) {
-        console.log('📸 Nouvelle photo à uploader:', formData.photo.file.name);
         // Nouvelle photo uploadée
         const fileExt = formData.photo.file.name.split('.').pop();
         const fileName = `${user.id}-${Date.now()}.${fileExt}`;
         
-        console.log('📸 Upload vers Supabase Storage:', fileName);
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('profile-photos')
           .upload(fileName, formData.photo.file);
           
         if (uploadError) {
-          console.error('📸 Erreur upload:', uploadError);
           throw new Error(`Erreur lors de l'upload de la photo: ${uploadError.message}`);
         }
         
-        console.log('📸 Upload réussi:', uploadData);
         // Récupérer l'URL publique de la photo
         const { data: publicUrl } = supabase.storage
           .from('profile-photos')
           .getPublicUrl(fileName);
           
         photoUrl = publicUrl.publicUrl;
-        console.log('📸 URL publique générée:', photoUrl);
         
       } else if (formData.photo?.removed) {
         // Photo supprimée explicitement
-        console.log('📸 Photo supprimée explicitement');
         photoUrl = null;
       } else if (formData.photo?.existing) {
         // Photo existante conservée
-        console.log('📸 Photo existante conservée:', formData.photo.existing);
         photoUrl = formData.photo.existing;
       } else {
-        console.log('📸 Aucune photo à traiter');
         // Pas de photo (supprimée ou jamais ajoutée)
         photoUrl = null;
       }

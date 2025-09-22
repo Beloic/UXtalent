@@ -14,7 +14,6 @@ export const getRecruiterSearches = async (recruiterId) => {
     if (error) throw error;
     return data || [];
   } catch (error) {
-    console.error('Erreur lors de la récupération des recherches:', error);
     return [];
   }
 };
@@ -31,7 +30,6 @@ export const createRecruiterSearch = async (searchData) => {
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Erreur lors de la création de la recherche:', error);
     throw error;
   }
 };
@@ -49,7 +47,6 @@ export const updateRecruiterSearch = async (searchId, searchData) => {
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de la recherche:', error);
     throw error;
   }
 };
@@ -65,7 +62,6 @@ export const deleteRecruiterSearch = async (searchId) => {
     if (error) throw error;
     return { success: true };
   } catch (error) {
-    console.error('Erreur lors de la suppression de la recherche:', error);
     throw error;
   }
 };
@@ -83,7 +79,6 @@ export const getRecruiterSearchById = async (searchId, recruiterId) => {
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Erreur lors de la récupération de la recherche:', error);
     return null;
   }
 };
@@ -111,7 +106,6 @@ export const getRecruiterSearchStats = async (recruiterId) => {
     
     return stats;
   } catch (error) {
-    console.error('Erreur lors de la récupération des statistiques:', error);
     return { total: 0, active: 0, paused: 0, completed: 0, archived: 0 };
   }
 };
@@ -174,7 +168,6 @@ export const searchCandidatesByCriteria = async (searchCriteria) => {
     
     return sortedCandidates;
   } catch (error) {
-    console.error('Erreur lors de la recherche de candidats:', error);
     return [];
   }
 };

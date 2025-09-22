@@ -27,7 +27,6 @@ export default function PaymentLinkButton({
     if (paymentLink && paymentLink !== '#') {
       window.open(paymentLink, '_blank');
     } else {
-      console.error('Lien de paiement non configuré pour le plan:', planType);
     }
   };
 

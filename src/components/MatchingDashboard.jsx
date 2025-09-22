@@ -47,7 +47,6 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   // Déclencher l'animation quand toutes les données sont complètement chargées
   useEffect(() => {
-    console.log('🎬 [ANIMATION] Vérification conditions:', {
       isFullyLoaded,
       statsLoaded,
       jobsLoaded,
@@ -58,11 +57,9 @@ const MatchingDashboard = ({ recruiterId }) => {
     
     // Animation se déclenche si les candidats sont chargés, même sans les stats
     if (isFullyLoaded && jobsLoaded && !loading && candidates.length > 0 && !hasAnimatedRef.current) {
-      console.log('🎬 [ANIMATION] Déclenchement de l\'animation dans 1 seconde');
       hasAnimatedRef.current = true;
       // Délai d'1 seconde après chargement complet des données en base
       const timer = setTimeout(() => {
-        console.log('🎬 [ANIMATION] Animation activée !');
         setAnimateBars(true);
       }, 2000);
       return () => clearTimeout(timer);
@@ -88,7 +85,6 @@ const MatchingDashboard = ({ recruiterId }) => {
         setJobsLoaded(true);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des offres:', error);
       setJobsLoaded(true); // Marquer comme chargé même en cas d'erreur
     }
   };
@@ -111,7 +107,6 @@ const MatchingDashboard = ({ recruiterId }) => {
       setIsFullyLoaded(true);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des candidats:', error);
     } finally {
       setLoading(false);
     }
@@ -119,24 +114,17 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   const fetchStats = async () => {
     try {
-      console.log('📊 [STATS] Début du chargement des statistiques');
       const apiUrl = buildApiUrl(API_ENDPOINTS.MATCHING_STATS);
-      console.log('📊 [STATS] URL:', apiUrl);
       const response = await authenticatedFetch(apiUrl);
-      console.log('📊 [STATS] Réponse status:', response.status, 'ok:', response.ok);
       
       if (response.ok) {
         const data = await response.json();
-        console.log('📊 [STATS] Données reçues:', data);
         setStats(data);
         setStatsLoaded(true);
-        console.log('📊 [STATS] Stats chargées avec succès');
       } else {
-        console.error('📊 [STATS] Erreur HTTP:', response.status, response.statusText);
         setStatsLoaded(true); // Marquer comme chargé même en cas d'erreur
       }
     } catch (error) {
-      console.error('📊 [STATS] Erreur lors du chargement des statistiques:', error);
       setStatsLoaded(true); // Marquer comme chargé même en cas d'erreur
     }
   };
@@ -178,12 +166,9 @@ const MatchingDashboard = ({ recruiterId }) => {
     const hasAnimated = useRef(false);
     
     useEffect(() => {
-      console.log(`🎬 [BARRE ${label}] animateBars:`, animateBars, 'hasAnimated:', hasAnimated.current, 'delay:', delay);
       if (animateBars && !hasAnimated.current) {
         hasAnimated.current = true;
-        console.log(`🎬 [BARRE ${label}] Démarrage animation dans ${delay}ms`);
         const timer = setTimeout(() => {
-          console.log(`🎬 [BARRE ${label}] Animation démarrée !`);
           setIsAnimated(true);
         }, delay);
         return () => clearTimeout(timer);
@@ -344,12 +329,10 @@ const MatchingDashboard = ({ recruiterId }) => {
                                     alt={`Photo de ${candidate.name}`}
                                     className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                                     onError={(e) => {
-                                      console.log(`❌ Erreur chargement photo pour ${candidate.name}:`, candidate.profilePhoto);
                                       e.target.style.display = 'none';
                                       e.target.nextSibling.style.display = 'flex';
                                     }}
                                     onLoad={() => {
-                                      console.log(`✅ Photo chargée pour ${candidate.name}:`, candidate.profilePhoto);
                                     }}
                                   />
                                 ) : null}

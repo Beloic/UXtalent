@@ -189,7 +189,6 @@ export default function EditJobForm({ job, onJobUpdated, onCancel }) {
         setTimeout(() => setMessage(''), 5000);
       }
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de l\'offre:', error);
       setMessage('❌ Erreur lors de la mise à jour de l\'offre');
       setTimeout(() => setMessage(''), 3000);
     } finally {

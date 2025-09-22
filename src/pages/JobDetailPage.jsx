@@ -79,26 +79,20 @@ export default function JobDetailPage() {
 
   // Fonction pour postuler à l'offre
   const applyToJob = async () => {
-    console.log('🚀 [CLIENT] Début de la candidature');
     if (!job) {
-      console.log('❌ [CLIENT] Pas d\'offre chargée');
       return;
     }
     
-    console.log('📝 [CLIENT] Offre:', job.title, 'ID:', job.id);
     setIsApplying(true);
     try {
       const session = await supabase.auth.getSession();
-      console.log('🔐 [CLIENT] Session:', session);
       const token = session.data.session?.access_token;
       
       if (!token) {
-        console.log('❌ [CLIENT] Pas de token d\'authentification');
         alert('Vous devez être connecté pour postuler');
         return;
       }
       
-      console.log('✅ [CLIENT] Token trouvé, envoi de la requête...');
 
       // Solution temporaire : utiliser une route existante
       const requestData = { 
@@ -108,7 +102,6 @@ export default function JobDetailPage() {
         company: job.company
       };
       
-      console.log('📤 [CLIENT] Données envoyées:', requestData);
       
       const response = await fetch(buildApiUrl('/api/candidates/'), {
         method: 'POST',
@@ -119,7 +112,6 @@ export default function JobDetailPage() {
         body: JSON.stringify(requestData)
       });
       
-      console.log('📥 [CLIENT] Réponse reçue:', response.status, response.statusText);
 
       if (response.ok) {
         const result = await response.json();
@@ -140,7 +132,6 @@ export default function JobDetailPage() {
         alert(error.error || 'Erreur lors de l\'envoi de la candidature');
       }
     } catch (error) {
-      console.error('Erreur lors de la candidature:', error);
       alert('Erreur lors de l\'envoi de la candidature');
     } finally {
       setIsApplying(false);
@@ -171,7 +162,6 @@ export default function JobDetailPage() {
         }
       }
     } catch (error) {
-      console.error('Erreur lors de la vérification du statut:', error);
     }
   };
 
@@ -202,7 +192,6 @@ export default function JobDetailPage() {
           setError('network_error');
         }
       } catch (error) {
-        console.error('Erreur lors du chargement de l\'offre:', error);
         setError('network_error');
       } finally {
         setLoading(false);
@@ -223,7 +212,6 @@ export default function JobDetailPage() {
           setCurrentUserId(session.data.session.user.id);
         }
       } catch (error) {
-        console.error('Erreur lors de la récupération de l\'utilisateur:', error);
       }
     };
 

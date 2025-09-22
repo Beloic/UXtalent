@@ -31,7 +31,6 @@ export const loadAppointments = async () => {
 
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors du chargement des rendez-vous:', error);
     throw error;
   }
 };
@@ -63,7 +62,6 @@ export const createAppointment = async (appointmentData) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la création du rendez-vous:', error);
     throw error;
   }
 };
@@ -90,7 +88,6 @@ export const updateAppointment = async (appointmentId, appointmentData) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du rendez-vous:', error);
     throw error;
   }
 };
@@ -115,7 +112,6 @@ export const deleteAppointment = async (appointmentId) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la suppression du rendez-vous:', error);
     throw error;
   }
 };
@@ -138,7 +134,6 @@ export const getAppointmentsForCandidate = async (candidateId) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors du chargement des rendez-vous du candidat:', error);
     throw error;
   }
 };
@@ -161,7 +156,6 @@ export const getNextAppointmentForCandidate = async (candidateId) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors du chargement du prochain rendez-vous:', error);
     throw error;
   }
 };

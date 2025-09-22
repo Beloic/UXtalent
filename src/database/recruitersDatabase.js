@@ -17,7 +17,6 @@ export const getRecruiterByEmail = async (email) => {
     
     return data;
   } catch (error) {
-    console.error('Erreur lors de la récupération du recruteur:', error);
     return null;
   }
 };
@@ -37,7 +36,6 @@ export const getRecruiterById = async (id) => {
     
     return data;
   } catch (error) {
-    console.error('Erreur lors de la récupération du recruteur:', error);
     return null;
   }
 };
@@ -76,7 +74,6 @@ export const createRecruiter = async (recruiterData) => {
     
     return data;
   } catch (error) {
-    console.error('Erreur lors de la création du recruteur:', error);
     throw error;
   }
 };
@@ -117,7 +114,6 @@ export const updateRecruiter = async (id, recruiterData) => {
     
     return data;
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du recruteur:', error);
     throw error;
   }
 };
@@ -134,7 +130,6 @@ export const deleteRecruiter = async (id) => {
     
     return true;
   } catch (error) {
-    console.error('Erreur lors de la suppression du recruteur:', error);
     throw error;
   }
 };
@@ -151,12 +146,50 @@ export const getAllRecruiters = async () => {
     
     return data || [];
   } catch (error) {
-    console.error('Erreur lors de la récupération des recruteurs:', error);
     return [];
   }
 };
 
 
+// Incrémenter le compteur d'offres publiées
+export const incrementJobPosts = async (recruiterId) => {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('recruiters')
+      .update({ 
+        total_jobs_posted: supabaseAdmin.raw('total_jobs_posted + 1')
+      })
+      .eq('id', recruiterId)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Incrémenter le compteur de candidats contactés
+export const incrementCandidateContacts = async (recruiterId) => {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('recruiters')
+      .update({ 
+        total_candidates_contacted: supabaseAdmin.raw('total_candidates_contacted + 1')
+      })
+      .eq('id', recruiterId)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 // Mettre à jour le plan d'un recruteur
 export const updateRecruiterPlan = async (recruiterId, planType, subscriptionData = {}) => {
@@ -221,7 +254,6 @@ export const updateRecruiterPlan = async (recruiterId, planType, subscriptionDat
     
     return data;
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du plan:', error);
     throw error;
   }
 };
@@ -257,7 +289,6 @@ export const getRecruiterStats = async (recruiterId) => {
       remainingCandidateContacts: recruiter.max_candidate_contacts - recruiter.total_candidates_contacted
     };
   } catch (error) {
-    console.error('Erreur lors de la récupération des statistiques:', error);
     return null;
   }
 };
@@ -276,7 +307,6 @@ export const upsertRecruiter = async (recruiterData) => {
       return await createRecruiter(recruiterData);
     }
   } catch (error) {
-    console.error('Erreur lors de l\'upsert du recruteur:', error);
     throw error;
   }
 };

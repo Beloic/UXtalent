@@ -51,7 +51,6 @@ const MatchingWidget = ({
       const data = await response.json();
       setRecommendations(data[type] || []);
     } catch (err) {
-      console.error('Erreur:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -89,7 +88,6 @@ const MatchingWidget = ({
   const openProfile = (candidateObj) => {
     const targetId = candidateObj?.candidateId || candidateObj?.id;
     if (!targetId) {
-      console.warn('Aucun candidateId/id pour la recommandation:', candidateObj);
       return;
     }
     navigate(`/candidates/${targetId}`);

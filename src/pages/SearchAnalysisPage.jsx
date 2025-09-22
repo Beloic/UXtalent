@@ -77,7 +77,6 @@ export default function SearchAnalysisPage() {
         setMessage('❌ Erreur lors du chargement des candidats');
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des données:', error);
       setMessage('❌ Erreur lors du chargement des données');
     } finally {
       setLoading(false);
@@ -140,7 +139,6 @@ export default function SearchAnalysisPage() {
       setMessage('✅ Analyse terminée avec succès !');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      console.error('Erreur lors de l\'analyse:', error);
       setMessage('❌ Erreur lors de l\'analyse IA');
     } finally {
       setAnalyzing(false);

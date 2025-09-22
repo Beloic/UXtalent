@@ -26,7 +26,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de la récupération du profil recruteur:', error);
       throw error;
     }
   }
@@ -56,7 +55,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du profil:', error);
       throw error;
     }
   }
@@ -84,7 +82,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de la récupération du recruteur:', error);
       throw error;
     }
   }
@@ -111,7 +108,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de la récupération des recruteurs:', error);
       throw error;
     }
   }
@@ -140,7 +136,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de la création du recruteur:', error);
       throw error;
     }
   }
@@ -169,7 +164,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du recruteur:', error);
       throw error;
     }
   }
@@ -197,7 +191,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de la suppression du recruteur:', error);
       throw error;
     }
   }
@@ -229,7 +222,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du plan:', error);
       throw error;
     }
   }
@@ -258,7 +250,6 @@ export class RecruitersApiService {
       
       return await response.json();
     } catch (error) {
-      console.error('Erreur lors de l\'annulation de l\'abonnement:', error);
       throw error;
     }
   }

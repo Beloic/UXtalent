@@ -24,7 +24,6 @@ export const loadJobs = async () => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors du chargement des offres:', error);
     return [];
   }
 };
@@ -57,7 +56,6 @@ export const getJobById = async (id) => {
     
     return null;
   } catch (error) {
-    console.error('Erreur lors du chargement de l\'offre:', error);
     return null;
   }
 };
@@ -103,7 +101,6 @@ export const createJob = async (jobData, recruiterId) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de la création de l\'offre:', error);
     throw error;
   }
 };
@@ -159,7 +156,6 @@ export const updateJob = async (id, jobData, recruiterId) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de l\'offre:', error);
     throw error;
   }
 };
@@ -185,7 +181,6 @@ export const deleteJob = async (id, recruiterId) => {
     
     return true;
   } catch (error) {
-    console.error('Erreur lors de la suppression de l\'offre:', error);
     throw error;
   }
 };
@@ -212,7 +207,6 @@ export const getRecruiterJobs = async (recruiterId) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors du chargement des offres du recruteur:', error);
     return [];
   }
 };
@@ -238,7 +232,6 @@ export const incrementJobViews = async (jobId) => {
     
     return true;
   } catch (error) {
-    console.error('Erreur lors de l\'incrémentation des vues:', error);
     return false;
   }
 };
@@ -264,7 +257,6 @@ export const incrementJobApplications = async (jobId) => {
     
     return true;
   } catch (error) {
-    console.error('Erreur lors de l\'incrémentation des candidatures:', error);
     return false;
   }
 };
@@ -287,7 +279,6 @@ export const getJobStats = async () => {
     
     return stats;
   } catch (error) {
-    console.error('Erreur lors du calcul des statistiques des offres:', error);
     return { total: 0, active: 0, pending: 0, rejected: 0, paused: 0 };
   }
 };
@@ -316,7 +307,6 @@ export const getPendingJobs = async () => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors du chargement des offres en attente:', error);
     return [];
   }
 };
@@ -347,7 +337,6 @@ export const approveJob = async (jobId) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de l\'approbation de l\'offre:', error);
     throw error;
   }
 };
@@ -379,7 +368,6 @@ export const rejectJob = async (jobId, reason = null) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors du rejet de l\'offre:', error);
     throw error;
   }
 };
@@ -423,7 +411,6 @@ export const pauseJob = async (jobId, recruiterId) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de la mise en pause de l\'offre:', error);
     throw error;
   }
 };
@@ -467,7 +454,6 @@ export const resumeJob = async (jobId, recruiterId) => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors de la reprise de l\'offre:', error);
     throw error;
   }
 };
@@ -493,7 +479,6 @@ export const getAllJobsForAdmin = async () => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors du chargement de toutes les offres:', error);
     return [];
   }
 };
@@ -520,7 +505,6 @@ export const loadAllJobsForAdmin = async () => {
     
     return mappedData;
   } catch (error) {
-    console.error('Erreur lors du chargement de toutes les offres pour l\'admin:', error);
     return [];
   }
 };

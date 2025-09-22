@@ -10,7 +10,6 @@ export default function PlanManager({ candidate, onPlanUpdate }) {
   // Mettre à jour le plan sélectionné quand le candidat change
   useEffect(() => {
     if (candidate?.planType) {
-      console.log('🎯 PlanManager: Mise à jour du plan sélectionné:', candidate.planType);
       setSelectedPlan(candidate.planType);
     }
   }, [candidate?.planType]);
@@ -81,19 +80,15 @@ export default function PlanManager({ candidate, onPlanUpdate }) {
   ];
 
   const handlePlanChange = async (planId) => {
-    console.log('🔄 Tentative de changement de plan:', { candidate, planId });
     
     if (!candidate?.id) {
-      console.error('❌ ID candidat manquant:', candidate);
       alert('Erreur: Profil candidat non trouvé. Veuillez d\'abord créer votre profil.');
       return;
     }
 
     setLoading(true);
     try {
-      console.log('📡 Appel API updateCandidatePlan:', candidate.id, planId);
       const result = await updateCandidatePlan(candidate.id, planId, 1);
-      console.log('✅ Résultat API:', result);
       
       setSelectedPlan(planId);
       if (onPlanUpdate) {
@@ -105,14 +100,11 @@ export default function PlanManager({ candidate, onPlanUpdate }) {
       alert(`Plan changé avec succès vers ${planNames[planId]} !`);
       
       // Déclencher un événement pour mettre à jour le badge dans la barre du haut
-      console.log('📡 Déclenchement événement planUpdated:', { planType: planId });
       window.dispatchEvent(new CustomEvent('planUpdated', {
         detail: { planType: planId }
       }));
       
     } catch (error) {
-      console.error('❌ Erreur lors de la mise à jour du plan:', error);
-      console.error('❌ Détails de l\'erreur:', {
         message: error.message,
         candidate: candidate,
         planId: planId

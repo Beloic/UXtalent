@@ -68,7 +68,6 @@ export default function ForumPostPage() {
         }));
       }
     } catch (error) {
-      console.error('Erreur lors du like:', error);
       setMessage('Erreur lors du like');
     }
   };
@@ -114,7 +113,6 @@ export default function ForumPostPage() {
         }));
       }
     } catch (error) {
-      console.error('Erreur lors du like de la réponse:', error);
       setMessage('Erreur lors du like de la réponse');
     }
   };
@@ -134,7 +132,6 @@ export default function ForumPostPage() {
         }
       });
     } catch (error) {
-      console.error('Erreur lors de l\'incrémentation des vues:', error);
     }
   };
 
@@ -148,7 +145,6 @@ export default function ForumPostPage() {
         }
       setPost(postData);
     } catch (error) {
-      console.error('Erreur lors du chargement du post:', error);
       setMessage('Erreur lors du chargement du post');
     } finally {
       setIsLoading(false);
@@ -177,7 +173,6 @@ export default function ForumPostPage() {
       // Recharger le post pour avoir les nouvelles réponses
       await loadPost();
     } catch (error) {
-      console.error('Erreur lors de l\'ajout de la réponse:', error);
       setMessage(error.message || 'Erreur lors de l\'ajout de la réponse');
     } finally {
       setIsSubmitting(false);
@@ -380,7 +375,6 @@ export default function ForumPostPage() {
             Array.isArray(post.replies) && post.replies.map((reply, index) => {
               // Vérifier que reply est un objet valide
               if (!reply || typeof reply !== 'object') {
-                console.error('Réponse invalide:', reply);
                 return null;
               }
               

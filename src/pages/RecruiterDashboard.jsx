@@ -141,7 +141,6 @@ export default function RecruiterDashboard() {
       const token = session.data.session?.access_token;
       
       if (!token) {
-        console.error('Token d\'authentification manquant');
         return;
       }
 
@@ -158,10 +157,8 @@ export default function RecruiterDashboard() {
         // Charger les candidatures pour chaque offre
         await loadApplicationsForJobs(jobsData, token);
       } else {
-        console.error('Erreur lors du chargement des offres');
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des offres:', error);
     } finally {
       setLoadingJobs(false);
     }
@@ -186,18 +183,15 @@ export default function RecruiterDashboard() {
             applicationsData[job.id] = result.applications || [];
           } else if (response.status === 503) {
             // Table applications non trouvée
-            console.warn(`Table applications non trouvée pour l'offre ${job.id}`);
             applicationsData[job.id] = [];
           }
         } catch (error) {
-          console.error(`Erreur lors du chargement des candidatures pour l'offre ${job.id}:`, error);
           applicationsData[job.id] = [];
         }
       }
       
       setJobApplications(applicationsData);
     } catch (error) {
-      console.error('Erreur lors du chargement des candidatures:', error);
     } finally {
       setLoadingApplications(false);
     }
@@ -206,12 +200,9 @@ export default function RecruiterDashboard() {
   // Charger les rendez-vous depuis l'API
   const loadAppointmentsData = useCallback(async () => {
     try {
-      console.log('🔄 Rechargement des rendez-vous...');
       const appointmentsData = await loadAppointments();
       setAppointments(appointmentsData);
-      console.log('✅ Rendez-vous rechargés:', appointmentsData.length);
     } catch (error) {
-      console.error('Erreur lors du chargement des rendez-vous:', error);
       setAppointments([]);
     }
   }, []);
@@ -236,11 +227,9 @@ export default function RecruiterDashboard() {
         setFavorites(data);
       } else {
         const errorData = await response.json().catch(() => ({ error: 'Erreur inconnue' }));
-        console.error('❌ Erreur lors du chargement des favoris:', response.status, errorData);
         setMessage('❌ Erreur lors du chargement des favoris');
       }
     } catch (error) {
-      console.error('❌ Erreur lors du chargement des favoris:', error);
       setMessage('❌ Erreur lors du chargement des favoris');
     } finally {
       setLoading(false);
@@ -292,7 +281,6 @@ export default function RecruiterDashboard() {
         loadFavorites();
       }
     } catch (error) {
-      console.error('Erreur lors de l\'ajout aux favoris:', error);
       setMessage('❌ Erreur lors de l\'ajout aux favoris');
       setTimeout(() => setMessage(''), 3000);
       // En cas d'erreur, recharger pour restaurer l'état correct
@@ -334,7 +322,6 @@ export default function RecruiterDashboard() {
         loadFavorites();
       }
     } catch (error) {
-      console.error('Erreur lors de la suppression des favoris:', error);
       setMessage('❌ Erreur lors de la suppression des favoris');
       setTimeout(() => setMessage(''), 3000);
       // En cas d'erreur, recharger pour restaurer l'état correct
@@ -378,7 +365,6 @@ export default function RecruiterDashboard() {
         setTimeout(() => setMessage(''), 3000);
       } else {
         const errorData = await response.json().catch(() => ({ error: 'Erreur inconnue' }));
-        console.error('Erreur d\'export:', response.status, errorData);
         
         if (response.status === 401) {
           setMessage('❌ Session expirée. Veuillez vous reconnecter.');
@@ -390,7 +376,6 @@ export default function RecruiterDashboard() {
         setTimeout(() => setMessage(''), 5000);
       }
     } catch (error) {
-      console.error('Erreur lors de l\'export:', error);
       setMessage('❌ Erreur lors de l\'export');
       setTimeout(() => setMessage(''), 3000);
     } finally {
@@ -417,10 +402,8 @@ export default function RecruiterDashboard() {
         const data = await response.json();
         setCandidates(data);
       } else {
-        console.error('❌ Erreur lors du chargement des candidats:', response.status);
       }
     } catch (error) {
-      console.error('❌ Erreur lors du chargement des candidats:', error);
     } finally {
       setCandidatesLoading(false);
     }
@@ -464,7 +447,6 @@ export default function RecruiterDashboard() {
         loadCandidates();
       }
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du statut:', error);
       setMessage('❌ Erreur lors de la mise à jour du statut');
       setTimeout(() => setMessage(''), 3000);
       // En cas d'erreur, recharger pour restaurer l'état correct
@@ -493,7 +475,6 @@ export default function RecruiterDashboard() {
       setTimeout(() => setMessage(''), 5000);
       
     } catch (error) {
-      console.error('Erreur lors de l\'annulation:', error);
       setMessage(`❌ Erreur: ${error.message}`);
       setTimeout(() => setMessage(''), 5000);
     } finally {
@@ -510,7 +491,6 @@ export default function RecruiterDashboard() {
         loadCandidates();
         loadAppointmentsData();
       } else {
-        console.log('Abonnement non actif, accès aux pages autorisé mais données non chargées');
       }
     }
   }, [user, isRecruiter, recruiter?.subscription_status, loadFavorites, loadCandidates, loadAppointmentsData]);
@@ -542,7 +522,6 @@ export default function RecruiterDashboard() {
         
         loadData();
       } else {
-        console.log('Abonnement non actif, accès aux pages autorisé mais données non rechargées');
         setRefreshing(false);
       }
     }
@@ -556,7 +535,6 @@ export default function RecruiterDashboard() {
         loadMyJobs();
       } else {
         // Permettre l'accès à la page mais ne pas charger les données
-        console.log('Abonnement non actif, accès à la page autorisé mais données non chargées');
         setMyJobs([]);
         setLoadingJobs(false);
       }
@@ -596,7 +574,6 @@ export default function RecruiterDashboard() {
       const token = session.data.session?.access_token;
       
       if (!token) {
-        console.error('Token d\'authentification manquant');
         setMessage('❌ Erreur d\'authentification');
         setTimeout(() => setMessage(''), 3000);
         return;
@@ -620,7 +597,6 @@ export default function RecruiterDashboard() {
         setTimeout(() => setMessage(''), 3000);
       }
     } catch (error) {
-      console.error('Erreur lors de la suppression de l\'offre:', error);
       setMessage('❌ Erreur lors de la suppression de l\'offre');
       setTimeout(() => setMessage(''), 3000);
     }
@@ -661,7 +637,6 @@ export default function RecruiterDashboard() {
         setTimeout(() => setMessage(''), 5000);
       }
     } catch (error) {
-      console.error('Erreur lors de la mise en pause de l\'offre:', error);
       setMessage('❌ Erreur lors de la mise en pause de l\'offre');
       setTimeout(() => setMessage(''), 3000);
     }
@@ -702,7 +677,6 @@ export default function RecruiterDashboard() {
         setTimeout(() => setMessage(''), 5000);
       }
     } catch (error) {
-      console.error('Erreur lors de la reprise de l\'offre:', error);
       setMessage('❌ Erreur lors de la reprise de l\'offre');
       setTimeout(() => setMessage(''), 3000);
     }

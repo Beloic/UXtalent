@@ -13,11 +13,9 @@ export function loadCandidates() {
       return JSON.parse(data);
     }
   } catch (error) {
-    console.error('Erreur lors du chargement des candidats:', error);
   }
   
   // Retourner des données par défaut si le fichier n'existe pas
-  console.log('📁 Utilisation des données par défaut (fichier JSON non trouvé)');
   return [
     {
       id: "1",
@@ -152,10 +150,8 @@ export function saveCandidates(candidates) {
     }
     
     fs.writeFileSync(DATA_FILE, JSON.stringify(candidates, null, 2));
-    console.log(`💾 ${candidates.length} candidats sauvegardés dans ${DATA_FILE}`);
     return true;
   } catch (error) {
-    console.error('Erreur lors de la sauvegarde des candidats:', error);
     return false;
   }
 }
@@ -173,7 +169,6 @@ export function addCandidate(candidate) {
   
   const updatedCandidates = [newCandidate, ...existingCandidates];
   saveCandidates(updatedCandidates);
-  console.log(`✨ Nouveau candidat ajouté: ${newCandidate.name} (status: ${newCandidate.status})`);
   return newCandidate;
 }
 
@@ -192,10 +187,8 @@ export function updateCandidate(id, updates) {
   // Si c'est une mise à jour par l'utilisateur
   if (updates.updatedByUser) {
     if (currentCandidate.status === 'approved') {
-      console.log(`🔄 Candidat approuvé mis à jour par l'utilisateur: ${currentCandidate.name} - Retour en attente`);
       updates.status = 'pending'; // Remettre en attente
     } else {
-      console.log(`🔄 Candidat mis à jour par l'utilisateur: ${currentCandidate.name}`);
     }
   }
   
@@ -206,7 +199,6 @@ export function updateCandidate(id, updates) {
   };
   
   saveCandidates(candidates);
-  console.log(`📝 Candidat mis à jour: ${candidates[candidateIndex].name} (status: ${candidates[candidateIndex].status || 'none'})`);
   return candidates[candidateIndex];
 }
 
@@ -223,7 +215,6 @@ export function deleteCandidate(id) {
   candidates.splice(candidateIndex, 1);
   
   saveCandidates(candidates);
-  console.log(`🗑️ Candidat supprimé: ${deletedCandidate.name}`);
   return deletedCandidate;
 }
 

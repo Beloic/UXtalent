@@ -6,16 +6,13 @@ const getAuthToken = async () => {
   const { data: { session }, error } = await supabase.auth.getSession();
   
   if (error) {
-    console.error('Erreur lors de la récupération de la session:', error);
     return null;
   }
   
   if (!session) {
-    console.log('❌ Aucune session active');
     return null;
   }
   
-  console.log('✅ Token récupéré:', session.access_token.substring(0, 20) + '...');
   return session.access_token;
 };
 
@@ -40,7 +37,6 @@ export const getForumPosts = async (filters = {}) => {
     
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la récupération des posts:', error);
     // Retourner des données vides en cas d'erreur
     return { posts: [], total: 0, page: 1, totalPages: 1 };
   }
@@ -60,7 +56,6 @@ export const getForumPost = async (postId) => {
     
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la récupération du post:', error);
     throw error;
   }
 };
@@ -90,7 +85,6 @@ export const createForumPost = async (postData) => {
     
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la création du post:', error);
     throw error;
   }
 };
@@ -120,7 +114,6 @@ export const updateForumPost = async (postId, postData) => {
     
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du post:', error);
     throw error;
   }
 };
@@ -148,7 +141,6 @@ export const deleteForumPost = async (postId) => {
     
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la suppression du post:', error);
     throw error;
   }
 };
@@ -178,7 +170,6 @@ export const addForumReply = async (postId, content) => {
     
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de l\'ajout de la réponse:', error);
     throw error;
   }
 };
@@ -197,7 +188,6 @@ export const getForumCategories = async () => {
     
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la récupération des catégories:', error);
     // Retourner des catégories par défaut en cas d'erreur
     return [
       { name: "UX Design", count: 0, color: "bg-blue-100 text-blue-700" },
@@ -224,7 +214,6 @@ export const getForumStats = async () => {
     
     return await response.json();
   } catch (error) {
-    console.error('Erreur lors de la récupération des statistiques:', error);
     // Retourner des statistiques par défaut en cas d'erreur
     return { totalPosts: 0, totalReplies: 0, totalUsers: 0 };
   }
@@ -249,7 +238,6 @@ export const likePost = async (postId) => {
       throw new Error('Erreur lors du like du post');
     }
   } catch (error) {
-    console.error('Erreur lors du like du post:', error);
     throw error;
   }
 };
@@ -273,7 +261,6 @@ export const likeReply = async (replyId) => {
       throw new Error('Erreur lors du like de la réponse');
     }
   } catch (error) {
-    console.error('Erreur lors du like de la réponse:', error);
     throw error;
   }
 };

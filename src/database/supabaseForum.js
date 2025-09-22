@@ -25,7 +25,6 @@ export const addPost = async (postData) => {
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Erreur lors de l\'ajout du post:', error);
     throw error;
   }
 };
@@ -46,7 +45,6 @@ export const updatePost = async (postId, updateData) => {
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du post:', error);
     throw error;
   }
 };
@@ -62,7 +60,6 @@ export const deletePost = async (postId) => {
     if (error) throw error;
     return true;
   } catch (error) {
-    console.error('Erreur lors de la suppression du post:', error);
     throw error;
   }
 };
@@ -85,7 +82,6 @@ export const addReply = async (replyData) => {
     if (error) throw error;
     return data;
   } catch (error) {
-    console.error('Erreur lors de l\'ajout de la réponse:', error);
     throw error;
   }
 };
@@ -102,7 +98,6 @@ export const deleteReply = async (postId, replyId) => {
     if (error) throw error;
     return true;
   } catch (error) {
-    console.error('Erreur lors de la suppression de la réponse:', error);
     throw error;
   }
 };
@@ -142,7 +137,6 @@ export const getPosts = async (filters = {}) => {
       totalPages: Math.ceil((count || 0) / limit)
     };
   } catch (error) {
-    console.error('Erreur lors de la récupération des posts:', error);
     throw error;
   }
 };
@@ -180,7 +174,6 @@ export const getPostById = async (postId) => {
       replies_count: replies?.length || 0
     };
   } catch (error) {
-    console.error('Erreur lors de la récupération du post:', error);
     throw error;
   }
 };
@@ -215,7 +208,6 @@ export const getForumStats = async () => {
       totalUsers: uniqueUsers
     };
   } catch (error) {
-    console.error('Erreur lors de la récupération des statistiques:', error);
     throw error;
   }
 };
@@ -231,7 +223,6 @@ export const getCategories = async () => {
     if (error) throw error;
     return data || [];
   } catch (error) {
-    console.error('Erreur lors de la récupération des catégories:', error);
     throw error;
   }
 };
@@ -293,7 +284,6 @@ export const togglePostLike = async (postId, userId) => {
       return { success: true, likes: (post?.likes || 0) + 1, isLiked: true };
     }
   } catch (error) {
-    console.error('Erreur lors du like du post:', error);
     throw error;
   }
 };
@@ -355,7 +345,6 @@ export const toggleReplyLike = async (replyId, userId) => {
       return { success: true, likes: (reply?.likes || 0) + 1, isLiked: true };
     }
   } catch (error) {
-    console.error('Erreur lors du like de la réponse:', error);
     throw error;
   }
 };
@@ -387,7 +376,6 @@ export const incrementPostViews = async (postId) => {
     if (error) throw error;
     return { success: true, views: newViews };
   } catch (error) {
-    console.error('Erreur lors de l\'incrémentation des vues:', error);
     return { success: false, error: error.message };
   }
 };

@@ -20,9 +20,7 @@ export const setCandidatePlan = (candidateId, planType) => {
     // Cache temporaire en mémoire
     planCache.set(candidateId, planData);
     
-    console.log('💾 Plan mis en cache temporaire:', { candidateId, planType, planData });
   } catch (error) {
-    console.error('❌ Erreur cache plan:', { error: error.message, candidateId });
   }
 };
 
@@ -50,9 +48,7 @@ export const clearPlanCache = () => {
   try {
     // Cache temporaire en mémoire
     planCache.clear();
-    console.log('🧹 Cache plans vidé');
   } catch (error) {
-    console.error('❌ Erreur vidage cache plans:', { error: error.message });
   }
 };
 
@@ -60,9 +56,7 @@ export const clearCandidatePlan = (candidateId) => {
   try {
     // Supprimer le cache d'un candidat spécifique
     planCache.delete(candidateId);
-    console.log('🧹 Cache plan vidé pour candidat:', candidateId);
   } catch (error) {
-    console.error('❌ Erreur vidage cache plan candidat:', { error: error.message, candidateId });
   }
 };
 

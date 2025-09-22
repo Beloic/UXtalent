@@ -49,7 +49,6 @@ export default function OptimizedCandidateCard({ candidate, compact = false, isF
     try {
       await onToggleFavorite(candidate.id, !isFavorited);
     } catch (error) {
-      console.error('Erreur lors de la modification des favoris:', error);
     } finally {
       setIsLoadingFavorite(false);
     }

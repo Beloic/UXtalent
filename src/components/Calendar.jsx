@@ -95,7 +95,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
         const appointmentsData = await loadAppointments();
         setAppointments(appointmentsData);
       } catch (error) {
-        console.error('Erreur lors du chargement des rendez-vous:', error);
         
         // Vérifier si c'est une erreur de table manquante
         if (error.message.includes('Table appointments non trouvée')) {
@@ -173,9 +172,7 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
         notes: formData.notes
       };
 
-      console.log('Données du rendez-vous à créer:', appointmentData);
       const newAppointment = await createAppointment(appointmentData);
-      console.log('Rendez-vous créé:', newAppointment);
       setAppointments(prev => [...prev, newAppointment]);
       
       // Réinitialiser le formulaire
@@ -193,7 +190,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
       
       setShowAddModal(false);
     } catch (error) {
-      console.error('Erreur lors de la création du rendez-vous:', error);
       
       // Vérifier si c'est une erreur de table manquante
       if (error.message.includes('Table appointments non trouvée')) {
@@ -206,7 +202,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
 
   // Modifier un rendez-vous
   const handleEditAppointment = (appointment) => {
-    console.log('Modification du rendez-vous:', appointment);
     setFormData({
       title: appointment.title || '',
       candidateId: appointment.candidate_id || '',
@@ -237,7 +232,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
         notes: formData.notes
       };
 
-      console.log('Données du rendez-vous à modifier:', appointmentData);
       const updatedAppointment = await updateAppointment(editingAppointment, appointmentData);
       setAppointments(prev => prev.map(apt => 
         apt.id === editingAppointment ? updatedAppointment : apt
@@ -257,7 +251,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
         notes: ''
       });
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du rendez-vous:', error);
       alert('Erreur lors de la mise à jour du rendez-vous');
     }
   };
@@ -269,7 +262,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
         await deleteAppointment(appointmentId);
         setAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
       } catch (error) {
-        console.error('Erreur lors de la suppression du rendez-vous:', error);
         alert('Erreur lors de la suppression du rendez-vous');
       }
     }
@@ -589,7 +581,6 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
                       value={formData.candidateId}
                       onChange={(e) => {
                         const candidate = favoritesList.find(c => c.id === e.target.value);
-                        console.log('Candidat sélectionné:', candidate);
                         setFormData(prev => ({ 
                           ...prev, 
                           candidateId: e.target.value,

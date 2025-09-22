@@ -53,7 +53,6 @@ const ProfilePhotoUpload = ({ userId, currentPhoto, onPhotoChange, onError }) =>
       });
 
     } catch (error) {
-      console.error('Erreur lors de l\'upload:', error);
       onError(`Erreur lors de l'upload: ${error.message}`);
       // Ne pas restaurer l'aperçu précédent, laisser l'utilisateur choisir une nouvelle photo
     } finally {
@@ -87,7 +86,6 @@ const ProfilePhotoUpload = ({ userId, currentPhoto, onPhotoChange, onError }) =>
       });
 
     } catch (error) {
-      console.error('Erreur lors de la suppression:', error);
       onError(`Erreur lors de la suppression: ${error.message}`);
     }
   };

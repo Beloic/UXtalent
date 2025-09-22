@@ -45,7 +45,6 @@ export default function ExportButton({ className = "" }) {
       window.URL.revokeObjectURL(downloadUrl);
       
     } catch (error) {
-      console.error('Erreur lors de l\'export:', error);
       alert(`Erreur lors de l'export ${type.toUpperCase()}: ${error.message}`);
     } finally {
       setIsExporting(false);

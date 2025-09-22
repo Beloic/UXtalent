@@ -69,7 +69,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           setHasProfile(false);
         }
       } catch (error) {
-        console.error('Erreur lors de la vérification du profil:', error);
         setHasProfile(false);
       }
     };
@@ -158,7 +157,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
     try {
       await signOut();
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
     }
   };
 

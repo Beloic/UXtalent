@@ -115,7 +115,6 @@ export const requireRole = (allowedRoles) => {
       req.userRole = userRole;
       next();
     } catch (error) {
-      console.error('Erreur dans requireRole:', error);
       return res.status(500).json({ 
         error: 'Erreur de vérification des rôles',
         code: 'ROLE_CHECK_ERROR'
@@ -150,7 +149,6 @@ export const requirePermission = (permission) => {
 
       next();
     } catch (error) {
-      console.error('Erreur dans requirePermission:', error);
       return res.status(500).json({ 
         error: 'Erreur de vérification des permissions',
         code: 'PERMISSION_CHECK_ERROR'
@@ -198,7 +196,6 @@ export const requireOwnership = (resourceIdField = 'id') => {
 
       next();
     } catch (error) {
-      console.error('Erreur dans requireOwnership:', error);
       return res.status(500).json({ 
         error: 'Erreur de vérification de propriété',
         code: 'OWNERSHIP_CHECK_ERROR'

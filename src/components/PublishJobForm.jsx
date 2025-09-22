@@ -191,7 +191,6 @@ export default function PublishJobForm({ onJobPublished }) {
         setTimeout(() => setMessage(''), 5000);
       }
     } catch (error) {
-      console.error('Erreur lors de la publication de l\'offre:', error);
       setMessage('❌ Erreur lors de la publication de l\'offre');
       setTimeout(() => setMessage(''), 3000);
     } finally {

@@ -50,11 +50,9 @@ export default function JobsPage() {
         const jobsData = await response.json();
         setJobs(jobsData);
       } else {
-        console.error('Erreur lors du chargement des offres');
         setJobs([]);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des offres:', error);
       setJobs([]);
     } finally {
       setLoading(false);

@@ -36,7 +36,6 @@ export default function CandidateCard({ candidate, compact = false }) {
         setIsFavorited(data.isFavorited);
       }
     } catch (error) {
-      console.error('Erreur lors de la vérification des favoris:', error);
     }
   };
 
@@ -77,7 +76,6 @@ export default function CandidateCard({ candidate, compact = false }) {
         }
       }
     } catch (error) {
-      console.error('Erreur lors de la modification des favoris:', error);
     } finally {
       setIsLoadingFavorite(false);
     }

@@ -17,7 +17,6 @@ export const metricsMiddleware = (req, res, next) => {
       try {
         recordMetric(method, route, statusCode, duration);
       } catch (error) {
-        console.error('Erreur lors de l\'enregistrement des métriques:', error);
       }
     });
     
@@ -38,7 +37,6 @@ export const metricsMiddleware = (req, res, next) => {
         try {
           recordError(errorType, route, data);
         } catch (error) {
-          console.error('Erreur lors de l\'enregistrement de l\'erreur:', error);
         }
       });
     }

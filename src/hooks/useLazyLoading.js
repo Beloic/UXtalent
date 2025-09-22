@@ -31,7 +31,6 @@ export const useLazyLoading = (importFunction, options = {}) => {
       setIsLoading(false);
       setRetryCount(0);
     } catch (err) {
-      console.error('Erreur lors du chargement du composant:', err);
       setError(err);
       setIsLoading(false);
       
@@ -83,7 +82,6 @@ export const useSmartPreloading = () => {
     importFunction().then(() => {
       setPreloadedComponents(prev => new Set([...prev, componentName]));
     }).catch(error => {
-      console.warn(`Échec du preloading de ${componentName}:`, error);
     });
   }, [preloadedComponents]);
 
