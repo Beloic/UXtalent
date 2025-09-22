@@ -156,9 +156,8 @@ async function handleSubscriptionUpdated(subscription) {
       }
     } else if (subscription.status === 'canceled') {
       console.log('❌ Abonnement annulé pour:', userEmail);
-      // Pour les recruteurs, utiliser 'custom' au lieu de 'free'
-      await updateUserPlan(userEmail, 'custom');
-      console.log('⬇️ Utilisateur basculé vers le plan custom (annulé):', userEmail);
+      await updateUserPlan(userEmail, 'free');
+      console.log('⬇️ Utilisateur rétrogradé vers le plan gratuit:', userEmail);
     } else if (subscription.status === 'past_due') {
       console.log('⚠️ Abonnement en retard pour:', userEmail);
       // Optionnel : mettre à jour le statut ou envoyer une notification
@@ -184,10 +183,10 @@ async function handleSubscriptionDeleted(subscription) {
     
     console.log('📧 Email du customer pour annulation:', userEmail);
     
-    // Mettre à jour le plan vers 'custom' pour les recruteurs, 'free' pour les candidats
-    await updateUserPlan(userEmail, 'custom');
+    // Mettre à jour le plan vers 'free' dans la base de données
+    await updateUserPlan(userEmail, 'free');
     
-    console.log('⬇️ Utilisateur basculé vers le plan custom (supprimé):', userEmail);
+    console.log('⬇️ Utilisateur rétrogradé vers le plan gratuit:', userEmail);
     
   } catch (error) {
     console.error('❌ Erreur lors de l\'annulation de l\'abonnement:', error);
@@ -270,12 +269,12 @@ async function updateUserPlan(userEmail, planType) {
           'Authorization': `Bearer ${process.env.ADMIN_TOKEN_SECRET || 'admin-token'}`
         },
         body: JSON.stringify({
-          planType,
+          planType: planType === 'free' ? 'custom' : planType,
           subscriptionData: {
-            status: planType === 'free' ? 'canceled' : planType === 'custom' ? 'cancelled' : 'active',
+            status: planType === 'free' ? 'cancelled' : 'active',
             startDate: new Date().toISOString(),
-            endDate: planType === 'free' ? null : planType === 'custom' ? new Date().toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 jours
-            accountStatus: planType === 'custom' ? 'suspended' : undefined
+            endDate: planType === 'free' ? new Date().toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 jours
+            accountStatus: planType === 'free' ? 'suspended' : 'active'
           }
         })
       });

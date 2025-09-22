@@ -1500,7 +1500,7 @@ async function handleSubscriptionDeleted(subscription) {
           endDate: new Date().toISOString(),
           accountStatus: 'suspended'
         });
-        console.log('⬇️ Recruteur basculé vers le plan custom (annulé):', userEmail);
+        console.log('⬇️ Recruteur basculé en plan custom (annulé):', userEmail);
       } else {
         console.error('❌ Aucun utilisateur trouvé (ni candidat ni recruteur) pour:', userEmail);
       }
@@ -1635,7 +1635,7 @@ async function handleSubscriptionUpdated(subscription) {
             stripeCustomerId: subscription.customer,
             stripeSubscriptionId: subscription.id
           });
-          console.log('⬇️ Recruteur basculé en plan cancel (custom/suspended):', userEmail);
+          console.log('⬇️ Recruteur basculé en plan custom (annulé/suspendu):', userEmail);
         }
       } catch (recruiterError) {
         console.error('❌ Erreur lors du basculement cancel recruteur:', recruiterError);

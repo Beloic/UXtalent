@@ -165,6 +165,9 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             Premium
           </span>
         );
+      case 'custom':
+        console.log('🚫 [Layout] Plan custom (annulé) - pas de badge');
+        return null;
       default:
         console.log('❓ [Layout] Plan inconnu:', planType);
         return null;
