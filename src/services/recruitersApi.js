@@ -61,32 +61,6 @@ export class RecruitersApiService {
     }
   }
   
-  // Vérifier les permissions du recruteur connecté
-  static async getMyPermissions(recruiterId) {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error('Non authentifié');
-      }
-      
-      const response = await fetch(buildApiUrl(`/api/recruiters/${recruiterId}/permissions`), {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Erreur lors de la vérification des permissions:', error);
-      throw error;
-    }
-  }
   
   // Récupérer un recruteur par ID (admin seulement)
   static async getRecruiterById(id) {
@@ -353,9 +327,6 @@ export const fetchRecruiterProfile = async () => {
 };
 
 
-export const fetchRecruiterPermissions = async (recruiterId) => {
-  return await RecruitersApiService.getMyPermissions(recruiterId);
-};
 
 export const incrementRecruiterJobPosts = async (recruiterId) => {
   return await RecruitersApiService.incrementJobPosts();

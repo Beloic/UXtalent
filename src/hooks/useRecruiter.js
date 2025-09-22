@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { usePermissions } from './usePermissions';
-import { fetchRecruiterProfile, fetchRecruiterPermissions, incrementRecruiterJobPosts, incrementRecruiterCandidateContacts } from '../services/recruitersApi';
+import { fetchRecruiterProfile, incrementRecruiterJobPosts, incrementRecruiterCandidateContacts } from '../services/recruitersApi';
 
 export const useRecruiter = () => {
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter } = usePermissions();
   const [recruiter, setRecruiter] = useState(null);
-  const [permissions, setPermissions] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -25,10 +24,6 @@ export const useRecruiter = () => {
       console.log('🔍 [RECRUITER] Chargement du profil recruteur...');
       const profile = await fetchRecruiterProfile();
       setRecruiter(profile);
-
-      console.log('🔍 [RECRUITER] Chargement des permissions...');
-      const recruiterPermissions = await fetchRecruiterPermissions(profile.id);
-      setPermissions(recruiterPermissions);
 
       console.log('✅ [RECRUITER] Données chargées avec succès');
 
@@ -70,12 +65,14 @@ export const useRecruiter = () => {
 
 
   const canPostJob = useCallback(() => {
-    return permissions?.canPostJob || false;
-  }, [permissions]);
+    // Utiliser le système d'abonnement au lieu des permissions
+    return recruiter?.subscription_status === 'active' && recruiter?.status !== 'suspended';
+  }, [recruiter]);
 
   const canContactCandidate = useCallback(() => {
-    return permissions?.canContactCandidate || false;
-  }, [permissions]);
+    // Utiliser le système d'abonnement au lieu des permissions
+    return recruiter?.subscription_status === 'active' && recruiter?.status !== 'suspended';
+  }, [recruiter]);
 
   const incrementJobPosts = useCallback(async () => {
     if (!recruiter) return;
@@ -91,7 +88,6 @@ export const useRecruiter = () => {
 
   return {
     recruiter,
-    permissions,
     loading,
     error,
     getPlanInfo,

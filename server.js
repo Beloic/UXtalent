@@ -64,8 +64,6 @@ import {
   updateRecruiter,
   deleteRecruiter,
   getAllRecruiters,
-  canRecruiterPostJob,
-  canRecruiterContactCandidate,
   incrementJobPosts,
   incrementCandidateContacts,
   updateRecruiterPlan,
@@ -122,8 +120,6 @@ import helmet from 'helmet';
 const allowedOrigins = [
   'https://u-xtalent.vercel.app',
   'https://uxtalent.vercel.app',  // Ajout de l'URL sans tiret
-  /^https:\/\/.*\.netlify\.app$/,
-  /^https:\/\/.*\.vercel\.app$/,
   'http://localhost:5173',
   'http://127.0.0.1:5173'
 ];
@@ -3526,32 +3522,6 @@ app.put('/api/recruiters/email/:email/plan', async (req, res) => {
   }
 });
 
-// GET /api/recruiters/:id/permissions - Vérifier les permissions d'un recruteur
-app.get('/api/recruiters/:id/permissions', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // Vérifier que l'utilisateur peut accéder à ces permissions
-    if (req.user.role !== 'admin') {
-      // Pour les recruteurs, vérifier par email au lieu de l'ID
-      const recruiter = await getRecruiterById(id);
-      if (!recruiter || recruiter.email !== req.user.email) {
-        return res.status(403).json({ error: 'Accès refusé' });
-      }
-    }
-    
-    const canPostJob = await canRecruiterPostJob(id);
-    const canContactCandidate = await canRecruiterContactCandidate(id);
-    
-    res.json({
-      canPostJob,
-      canContactCandidate
-    });
-  } catch (error) {
-    logger.error('Erreur lors de la vérification des permissions', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la vérification des permissions' });
-  }
-});
 
 // POST /api/recruiters/:id/increment-job-posts - Incrémenter le compteur d'offres
 app.post('/api/recruiters/:id/increment-job-posts', requireRole(['recruiter', 'admin']), async (req, res) => {

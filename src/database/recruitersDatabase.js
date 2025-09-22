@@ -156,49 +156,6 @@ export const getAllRecruiters = async () => {
   }
 };
 
-// Vérifier si un recruteur peut publier une offre
-export const canRecruiterPostJob = async (recruiterId) => {
-  try {
-    const recruiter = await getRecruiterById(recruiterId);
-    if (!recruiter) return false;
-    
-    // Vérifier si l'abonnement est actif
-    if (recruiter.subscription_status !== 'active') return false;
-    
-    // Vérifier si la date d'expiration n'est pas dépassée
-    if (recruiter.subscription_end_date && new Date(recruiter.subscription_end_date) < new Date()) {
-      return false;
-    }
-    
-    // Vérifier les quotas
-    return recruiter.total_jobs_posted < recruiter.max_job_posts;
-  } catch (error) {
-    console.error('Erreur lors de la vérification des permissions:', error);
-    return false;
-  }
-};
-
-// Vérifier si un recruteur peut contacter un candidat
-export const canRecruiterContactCandidate = async (recruiterId) => {
-  try {
-    const recruiter = await getRecruiterById(recruiterId);
-    if (!recruiter) return false;
-    
-    // Vérifier si l'abonnement est actif
-    if (recruiter.subscription_status !== 'active') return false;
-    
-    // Vérifier si la date d'expiration n'est pas dépassée
-    if (recruiter.subscription_end_date && new Date(recruiter.subscription_end_date) < new Date()) {
-      return false;
-    }
-    
-    // Vérifier les quotas
-    return recruiter.total_candidates_contacted < recruiter.max_candidate_contacts;
-  } catch (error) {
-    console.error('Erreur lors de la vérification des permissions:', error);
-    return false;
-  }
-};
 
 // Incrémenter le compteur d'offres publiées
 export const incrementJobPosts = async (recruiterId) => {
