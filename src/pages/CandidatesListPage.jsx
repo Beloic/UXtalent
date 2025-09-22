@@ -79,21 +79,6 @@ export default function CandidatesListPage() {
     <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Titre simple */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-gray-900">
-              {isCandidate ? "Communauté" : "Talents disponibles"}
-            </h1>
-            {/* Bouton suggestions supprimé pour les candidats */}
-          </div>
-          <p className="text-gray-600">
-            {isCandidate 
-              ? "Explorez la communauté et découvrez d'autres talents" 
-              : "Découvrez les profils de talents vérifiés et sélectionnés"
-            }
-          </p>
-        </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Sidebar filters */}
@@ -229,9 +214,6 @@ export default function CandidatesListPage() {
           <section className="lg:col-span-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Talents disponibles
-                </h2>
                 <p className="text-gray-600">
                   {loading ? "Chargement..." : `${total} candidat${total>1?"s":""} trouvé${total>1?"s":""}`}
                 </p>
