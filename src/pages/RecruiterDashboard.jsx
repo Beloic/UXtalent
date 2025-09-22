@@ -1538,8 +1538,9 @@ export default function RecruiterDashboard() {
                     <div className="flex justify-center gap-4 mt-6">
                       {!cancellationInfo?.cancellation_scheduled ? (
                         <>
-                          {/* Afficher le bouton "Annuler mon plan" pour tous les plans payants */}
-                          {recruiter?.plan_type && ['starter', 'max'].includes(recruiter.plan_type) && (
+                          {/* Afficher le bouton "Annuler mon plan" pour tous les plans payants actifs */}
+                          {recruiter?.plan_type && ['starter', 'max'].includes(recruiter.plan_type) && 
+                           recruiter?.subscription_status === 'active' && (
                             <button
                               onClick={() => setShowCancelConfirm(true)}
                               className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
