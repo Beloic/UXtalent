@@ -1460,8 +1460,9 @@ export default function RecruiterDashboard() {
                               </span>
                             </div>
                           )}
-                          {/* Date de fin d'abonnement */}
-                          {recruiter?.subscription_end_date && (
+                          {/* Date de fin d'abonnement - seulement si pas actif ou annulation programmée */}
+                          {recruiter?.subscription_end_date && 
+                           (recruiter?.subscription_status !== 'active' || cancellationInfo?.cancellation_scheduled) && (
                             <p className="text-sm text-gray-500 mt-2">
                               Expire le {new Date(recruiter.subscription_end_date).toLocaleDateString('fr-FR', {
                                 weekday: 'long',
