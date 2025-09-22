@@ -1,81 +1,53 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MapPin, Globe, User, Briefcase, Euro, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PremiumBadge, ProBadge } from "./Badge";
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
-import { useFavoritesBatch } from "../services/candidatesApi";
 
-export default function CandidateCard({ candidate, compact = false }) {
+export default function OptimizedCandidateCard({ candidate, compact = false, isFavorited = false, onToggleFavorite }) {
   const { user } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
-  const [isFavorited, setIsFavorited] = useState(false);
   const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const imgRef = useRef(null);
 
-  // Vérifier si le candidat est en favori
+  // Intersection Observer pour le lazy loading des images
   useEffect(() => {
-    if (user && isRecruiter) {
-      checkIfFavorited();
-    }
-  }, [user, isRecruiter, candidate.id]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+              observer.unobserve(img);
+            }
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-  const checkIfFavorited = async () => {
-    try {
-      const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
-      
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}/check`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setIsFavorited(data.isFavorited);
-      }
-    } catch (error) {
-      console.error('Erreur lors de la vérification des favoris:', error);
+    if (imgRef.current) {
+      observer.observe(imgRef.current);
     }
-  };
+
+    return () => observer.disconnect();
+  }, []);
 
   const toggleFavorite = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (!user || !isRecruiter) return;
+    if (!user || !isRecruiter || !onToggleFavorite) return;
     
     setIsLoadingFavorite(true);
     try {
-      const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
-      
-      if (isFavorited) {
-        // Retirer des favoris
-        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (response.ok) {
-          setIsFavorited(false);
-        }
-      } else {
-        // Ajouter aux favoris
-        const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidate.id}`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (response.ok) {
-          setIsFavorited(true);
-        }
-      }
+      await onToggleFavorite(candidate.id, !isFavorited);
     } catch (error) {
       console.error('Erreur lors de la modification des favoris:', error);
     } finally {
@@ -121,7 +93,6 @@ export default function CandidateCard({ candidate, compact = false }) {
     return false;
   };
 
-
   // Style aligné sur la carte d'offre (JobCard)
   const getCardStyles = () => {
     const base = "group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 transition-all duration-300";
@@ -136,6 +107,12 @@ export default function CandidateCard({ candidate, compact = false }) {
     return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-blue-200/50 cursor-pointer`;
   };
 
+  // Générer l'URL de l'avatar avec lazy loading
+  const getAvatarUrl = () => {
+    const name = shouldHideName() ? 'Candidat' : encodeURIComponent(candidate.name || 'UX');
+    return `https://ui-avatars.com/api/?name=${name}&size=96&background=6366f1&color=ffffff&bold=true`;
+  };
+
   return (
     <div className={getCardStyles()}>
       {/* Badges en haut à droite - masqués pour les candidats anonymes */}
@@ -145,30 +122,39 @@ export default function CandidateCard({ candidate, compact = false }) {
           {candidate.planType === 'elite' && <ProBadge />}
         </div>
       )}
+      
       {/* Header aligné avec JobCard */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-0">
-          {/* Colonne gauche: Avatar (style carte carrée arrondie) */}
+          {/* Colonne gauche: Avatar avec lazy loading */}
           <div className="flex flex-col items-start gap-2 w-24">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-gray-100 shadow">
-              {candidate.photo ? (
+              {candidate.photo && !imageError ? (
                 <img
-                  src={candidate.photo}
+                  ref={imgRef}
+                  data-src={candidate.photo}
                   alt={shouldHideName() ? "Photo de candidat anonyme" : `Photo de ${candidate.name}`}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${shouldHideName() ? 'Candidat' : encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`;
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => {
+                    setImageError(true);
+                    setImageLoaded(true);
+                  }}
+                  style={{ 
+                    opacity: imageLoaded ? 1 : 0,
+                    transition: 'opacity 0.3s ease'
                   }}
                 />
               ) : (
                 <img
-                  src={`https://ui-avatars.com/api/?name=${shouldHideName() ? 'Candidat' : encodeURIComponent(candidate.name || 'UX')}&size=96&background=6366f1&color=ffffff&bold=true`}
+                  src={getAvatarUrl()}
                   alt={shouldHideName() ? "Avatar anonyme" : `Avatar de ${candidate.name}`}
                   className="w-full h-full object-cover"
                 />
               )}
             </div>
           </div>
+          
           {/* Colonne droite: texte principal */}
           <div className="flex-1 min-w-0 flex flex-col justify-between h-16 sm:h-20">
             <div className="flex items-center justify-between gap-3">
@@ -177,10 +163,10 @@ export default function CandidateCard({ candidate, compact = false }) {
                   {shouldHideName() ? "Candidat anonyme" : candidate.name}
                 </h3>
               </div>
-              {/* rien à droite */}
             </div>
             <p className="text-gray-600 text-base font-medium line-clamp-2">{candidate.title}</p>
-            {/* Ligne de métadonnées alignée à gauche: localisation, expérience, (optionnel) mode de travail */}
+            
+            {/* Ligne de métadonnées alignée à gauche */}
             <div className="flex items-center gap-6 text-gray-500 text-sm">
               {candidate.location && (
                 <div className="flex items-center">
@@ -203,7 +189,6 @@ export default function CandidateCard({ candidate, compact = false }) {
             </div>
           </div>
         </div>
-        {/* Rien en haut à droite: le niveau d'expérience est désormais dans la ligne méta */}
       </div>
 
       {/* Description alignée */}
@@ -214,7 +199,7 @@ export default function CandidateCard({ candidate, compact = false }) {
         })()}
       </p>
 
-      {/* Footer avec rémunération et bouton comme JobCard */}
+      {/* Footer avec rémunération et bouton */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         <div className="flex items-center gap-4 text-sm text-gray-600">
           {(candidate.dailyRate || candidate.daily_rate) && (
@@ -230,6 +215,7 @@ export default function CandidateCard({ candidate, compact = false }) {
             </div>
           )}
         </div>
+        
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
           {candidate.id ? (
             <Link

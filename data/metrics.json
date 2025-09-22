@@ -9,16 +9,16 @@
   },
   "cache": {
     "hits": 70,
-    "misses": 30,
-    "hitRatio": 70,
+    "misses": 33,
+    "hitRatio": 67.96116504854369,
     "totalEntries": 19,
     "memoryUsage": 867
   },
   "system": {
-    "uptime": 120.388317083,
-    "memoryUsage": 20266336,
-    "cpuUsage": 0.37615,
-    "lastUpdate": "2025-09-22T09:38:10.525Z"
+    "uptime": 360.393618666,
+    "memoryUsage": 20660328,
+    "cpuUsage": 0.38144,
+    "lastUpdate": "2025-09-22T09:42:10.528Z"
   },
   "scraping": {
     "totalRuns": 0,

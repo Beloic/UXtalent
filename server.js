@@ -3,6 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { supabase, supabaseAdmin } from './src/config/supabase.js';
+import { redisClient, connectRedis, checkRedisHealth } from './src/config/redis.js';
 import Stripe from 'stripe';
 import { 
   loadCandidates,
@@ -447,10 +448,44 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       return res.json({ applications: applicationsWithCandidates });
     }
 
-    // Charger les données depuis la DB à chaque requête (stateless)
-    const CANDIDATES = await loadCandidates();
-
-    const { search, remote, experience, availability, location, salaryRange, sortBy = 'recent' } = req.query;
+    // Charger les données depuis la DB avec mise en cache Redis
+    const { search, remote, experience, availability, location, salaryRange, sortBy = 'recent', page = 1, pageSize = 8 } = req.query;
+    
+    // Créer une clé de cache basée sur les paramètres
+    const cacheKey = `candidates:${JSON.stringify({
+      search: search || '',
+      remote: remote || [],
+      experience: experience || [],
+      availability: availability || [],
+      location: location || [],
+      salaryRange: salaryRange || [],
+      sortBy: sortBy || 'recent',
+      page: parseInt(page) || 1,
+      pageSize: parseInt(pageSize) || 8
+    })}`;
+    
+    let CANDIDATES;
+    let fromCache = false;
+    
+    try {
+      // Vérifier si Redis est disponible
+      const redisHealthy = await checkRedisHealth();
+      
+      if (redisHealthy) {
+        // Essayer de récupérer depuis le cache
+        const cachedData = await redisClient.get(cacheKey);
+        if (cachedData) {
+          console.log('🚀 [CACHE] Données récupérées depuis Redis');
+          const parsedData = JSON.parse(cachedData);
+          return res.json(parsedData);
+        }
+      }
+    } catch (cacheError) {
+      console.log('⚠️ [CACHE] Erreur Redis, utilisation de la DB:', cacheError.message);
+    }
+    
+    // Charger depuis la DB si pas en cache
+    CANDIDATES = await loadCandidates();
 
     let filteredCandidates = [...CANDIDATES];
 
@@ -618,17 +653,78 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
     // Désactiver le masquage forcé pour les utilisateurs authentifiés
     // Conserver le masquage uniquement pour les visiteurs non authentifiés (logique précédente déjà appliquée)
 
-    res.json({
-      candidates: visibleCandidates,
+    // Pagination côté serveur
+    const currentPage = parseInt(page) || 1;
+    const itemsPerPage = parseInt(pageSize) || 8;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    
+    const paginatedCandidates = visibleCandidates.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(visibleCandidates.length / itemsPerPage);
+
+    const responseData = {
+      candidates: paginatedCandidates,
       total: visibleCandidates.length,
       totalHidden: totalHiddenCandidates,
       authenticated: isAuthenticated,
       role: userRole,
-      filters: { search, remote, experience, availability, location, salaryRange, sortBy }
-    });
+      filters: { search, remote, experience, availability, location, salaryRange, sortBy },
+      pagination: {
+        currentPage,
+        totalPages,
+        pageSize: itemsPerPage,
+        hasNextPage: currentPage < totalPages,
+        hasPrevPage: currentPage > 1
+      }
+    };
+
+    // Mettre en cache le résultat si Redis est disponible
+    try {
+      const redisHealthy = await checkRedisHealth();
+      if (redisHealthy && !fromCache) {
+        // Cache pour 5 minutes
+        await redisClient.setex(cacheKey, 300, JSON.stringify(responseData));
+        console.log('💾 [CACHE] Données mises en cache Redis');
+      }
+    } catch (cacheError) {
+      console.log('⚠️ [CACHE] Erreur lors de la mise en cache:', cacheError.message);
+    }
+
+    res.json(responseData);
 
   } catch (error) {
     logger.error('Erreur lors de la récupération des candidats', { error: error.message });
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// POST /api/recruiter/favorites/batch - Récupérer les favoris en batch (optimisation performance)
+app.post('/api/recruiter/favorites/batch', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { candidateIds } = req.body;
+    const recruiterId = req.user?.id;
+    
+    if (!candidateIds || !Array.isArray(candidateIds) || candidateIds.length === 0) {
+      return res.status(400).json({ error: 'Liste des IDs de candidats requise' });
+    }
+
+    // Récupérer tous les favoris du recruteur pour les candidats spécifiés
+    const { data: favorites, error } = await supabaseAdmin
+      .from('recruiter_favorites')
+      .select('candidate_id')
+      .eq('recruiter_id', recruiterId)
+      .in('candidate_id', candidateIds);
+
+    if (error) {
+      console.error('Erreur lors de la récupération des favoris:', error);
+      return res.status(500).json({ error: 'Erreur lors de la récupération des favoris' });
+    }
+
+    const favoriteIds = favorites?.map(f => f.candidate_id) || [];
+    
+    res.json({ favoriteIds });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des favoris en batch:', error);
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 });

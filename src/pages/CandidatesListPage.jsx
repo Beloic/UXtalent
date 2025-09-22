@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Filter, X, Users, MapPin, Briefcase, Search, Globe, DollarSign, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import CandidateCard from "../components/CandidateCard";
+import OptimizedCandidateCard from "../components/OptimizedCandidateCard";
 import SignupCard from "../components/SignupCard";
 import ToggleChip from "../components/ToggleChip";
 import Pagination from "../components/Pagination";
-import { useCandidates } from "../services/candidatesApi";
+import { useCandidates, useFavoritesBatch } from "../services/candidatesApi";
 import { usePermissions } from "../hooks/usePermissions";
 import { RecruiterSubscriptionGuard } from "../components/RecruiterSubscriptionGuard";
 import { useRecruiter } from "../hooks/useRecruiter";
@@ -29,9 +29,13 @@ export default function CandidatesListPage() {
 
   useEffect(() => setPage(1), [q, remote, experience, location, salaryRange, sortBy]);
 
+  // Récupérer les favoris en batch pour optimiser les performances
+  const candidateIds = candidates.map(c => c.id).filter(Boolean);
+  const { favorites } = useFavoritesBatch(candidateIds);
+
   const toggleIn = (arr, setArr, v) => setArr(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
-  // Utiliser l'API pour récupérer les candidats
+  // Utiliser l'API pour récupérer les candidats avec pagination côté serveur
   const { candidates, loading, error, total } = useCandidates({
     search: q,
     remote,
@@ -39,12 +43,37 @@ export default function CandidatesListPage() {
     location,
     salaryRange,
     sortBy
-  });
+  }, page, pageSize);
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const paged = candidates.slice((page - 1) * pageSize, page * pageSize);
+  // Plus besoin de pagination côté client - déjà fait côté serveur
+  const paged = candidates;
 
   const hasActiveFilters = remote.length || experience.length || location.length || salaryRange.length || q;
+
+  // Fonction pour gérer les favoris
+  const handleToggleFavorite = async (candidateId, isFavorited) => {
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) return;
+
+      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidateId}`, {
+        method: isFavorited ? 'POST' : 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Erreur lors de la modification des favoris');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la modification des favoris:', error);
+      throw error;
+    }
+  };
 
   return (
     <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
@@ -238,7 +267,15 @@ export default function CandidatesListPage() {
                   
                   // Plus de floutage - tous les profils approuvés sont visibles en clair
                   
-                  return <CandidateCard key={candidate.id} candidate={candidate} compact />;
+                  return (
+                    <OptimizedCandidateCard 
+                      key={candidate.id} 
+                      candidate={candidate} 
+                      compact 
+                      isFavorited={favorites.has(candidate.id)}
+                      onToggleFavorite={handleToggleFavorite}
+                    />
+                  );
                 })}
                 {paged.length === 0 && (
                   <div className="col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center shadow-xl border border-white/20">

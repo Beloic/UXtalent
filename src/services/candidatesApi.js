@@ -4,8 +4,8 @@ import { authenticatedFetch } from '../utils/auth';
 import { buildApiUrl } from '../config/api';
 
 
-// Hook pour récupérer les candidats avec filtres
-export function useCandidates(filters = {}) {
+// Hook pour récupérer les candidats avec filtres et pagination optimisée
+export function useCandidates(filters = {}, page = 1, pageSize = 8) {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,8 +18,12 @@ export function useCandidates(filters = {}) {
         setLoading(true);
         setError(null);
 
-        // Construire les paramètres de requête
+        // Construire les paramètres de requête avec pagination
         const params = new URLSearchParams();
+        
+        // Pagination côté serveur
+        params.append('page', page.toString());
+        params.append('pageSize', pageSize.toString());
         
         if (filters.search) params.append('search', filters.search);
         if (filters.remote && filters.remote.length > 0) {
@@ -64,7 +68,7 @@ export function useCandidates(filters = {}) {
     };
 
     fetchCandidates();
-  }, [filters.search, filters.remote, filters.experience, filters.availability, filters.location, filters.salaryRange, filters.sortBy, authVersion]);
+  }, [filters.search, filters.remote, filters.experience, filters.availability, filters.location, filters.salaryRange, filters.sortBy, page, pageSize, authVersion]);
 
   // Rafraîchir quand la session change (connexion/déconnexion)
   useEffect(() => {
@@ -206,4 +210,48 @@ export function useStats() {
   }, []);
 
   return { stats, loading, error };
+}
+
+// Hook pour récupérer les favoris en batch (optimisation performance)
+export function useFavoritesBatch(candidateIds = []) {
+  const [favorites, setFavorites] = useState(new Set());
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!candidateIds.length) return;
+
+    const fetchFavoritesBatch = async () => {
+      try {
+        setLoading(true);
+        
+        const session = await supabase.auth.getSession();
+        const token = session.data.session?.access_token;
+        
+        if (!token) return;
+
+        // Requête batch pour récupérer tous les favoris d'un coup
+        const response = await fetch(buildApiUrl('/api/recruiter/favorites/batch'), {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ candidateIds })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setFavorites(new Set(data.favoriteIds || []));
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des favoris:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavoritesBatch();
+  }, [candidateIds.join(',')]);
+
+  return { favorites, loading };
 }
