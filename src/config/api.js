@@ -12,10 +12,17 @@ const API_BASE_URL = LOCAL_API_BASE_URL;
 
 // Fonction pour construire une URL complète
 export const buildApiUrl = (endpoint) => {
+  // Endpoints spéciaux qui ne doivent pas avoir de slash final
+  const specialEndpoints = ['/me', '/stats', '/permissions'];
+  
   // Ajouter un slash final si l'endpoint commence par /api/ et ne contient pas de paramètres de requête
-  const normalizedEndpoint = endpoint.startsWith('/api/') && !endpoint.endsWith('/') && !endpoint.includes('?')
-    ? `${endpoint}/`
-    : endpoint;
+  // mais pas pour les endpoints spéciaux
+  const shouldAddSlash = endpoint.startsWith('/api/') && 
+                       !endpoint.endsWith('/') && 
+                       !endpoint.includes('?') &&
+                       !specialEndpoints.some(special => endpoint.endsWith(special));
+  
+  const normalizedEndpoint = shouldAddSlash ? `${endpoint}/` : endpoint;
   return `${API_BASE_URL}${normalizedEndpoint}`;
 };
 

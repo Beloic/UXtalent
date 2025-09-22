@@ -2796,7 +2796,7 @@ export default function MyProfilePage() {
                             {candidatePlan === 'free' 
                               ? '0€'
                               : candidatePlan === 'premium'
-                              ? '4,99€'
+                              ? '7,99€'
                               : candidatePlan === 'pro'
                               ? '39€'
                               : 'Sur mesure'

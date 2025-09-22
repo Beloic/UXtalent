@@ -220,7 +220,7 @@ function getPlanTypeFromPriceId(priceId) {
     'price_starter': 'starter',
     'price_max': 'max',
     // Montants en centimes pour les Payment Links
-    499: 'premium', // 4.99€
+    799: 'premium', // 7.99€
     3900: 'pro',    // 39€
     1999: 'starter', // 19.99€
     7900: 'max'     // 79€

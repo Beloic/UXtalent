@@ -88,7 +88,7 @@ export default function PricingPage() {
     },
     {
       name: "Premium",
-      price: "4,99€",
+      price: "7,99€",
       period: "/mois",
       description: "Pour booster votre visibilité",
       features: [

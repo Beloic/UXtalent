@@ -27,7 +27,7 @@ export const PaymentLinkPricingGrid = ({ userType = 'candidate' }) => {
     {
       id: 'premium',
       name: 'Premium',
-      price: '4,99',
+      price: '7,99',
       period: '/mois',
       description: 'Pour les candidats ambitieux',
       features: [
