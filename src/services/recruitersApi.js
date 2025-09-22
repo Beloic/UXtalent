@@ -263,61 +263,6 @@ export class RecruitersApiService {
     }
   }
   
-  // Incrémenter le compteur d'offres publiées
-  static async incrementJobPosts() {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error('Non authentifié');
-      }
-      
-      const response = await fetch(buildApiUrl('/api/recruiters/me/increment-job-posts'), {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Erreur lors de l\'incrémentation des offres:', error);
-      throw error;
-    }
-  }
-  
-  // Incrémenter le compteur de candidats contactés
-  static async incrementCandidateContacts() {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error('Non authentifié');
-      }
-      
-      const response = await fetch(buildApiUrl('/api/recruiters/me/increment-candidate-contacts'), {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Erreur lors de l\'incrémentation des contacts:', error);
-      throw error;
-    }
-  }
 }
 
 // Fonctions simplifiées pour le hook useRecruiter
@@ -328,13 +273,6 @@ export const fetchRecruiterProfile = async () => {
 
 
 
-export const incrementRecruiterJobPosts = async (recruiterId) => {
-  return await RecruitersApiService.incrementJobPosts();
-};
-
-export const incrementRecruiterCandidateContacts = async (recruiterId) => {
-  return await RecruitersApiService.incrementCandidateContacts();
-};
 
 // Export des fonctions individuelles pour faciliter l'utilisation
 export const {

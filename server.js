@@ -3523,41 +3523,6 @@ app.put('/api/recruiters/email/:email/plan', async (req, res) => {
 });
 
 
-// POST /api/recruiters/:id/increment-job-posts - Incrémenter le compteur d'offres
-app.post('/api/recruiters/:id/increment-job-posts', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // Vérifier que l'utilisateur peut modifier ce recruteur
-    if (req.user.role !== 'admin' && req.user.id !== id) {
-      return res.status(403).json({ error: 'Accès refusé' });
-    }
-    
-    const recruiter = await incrementJobPosts(id);
-    res.json(recruiter);
-  } catch (error) {
-    logger.error('Erreur lors de l\'incrémentation des offres', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de l\'incrémentation des offres' });
-  }
-});
-
-// POST /api/recruiters/:id/increment-candidate-contacts - Incrémenter le compteur de contacts
-app.post('/api/recruiters/:id/increment-candidate-contacts', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // Vérifier que l'utilisateur peut modifier ce recruteur
-    if (req.user.role !== 'admin' && req.user.id !== id) {
-      return res.status(403).json({ error: 'Accès refusé' });
-    }
-    
-    const recruiter = await incrementCandidateContacts(id);
-    res.json(recruiter);
-  } catch (error) {
-    logger.error('Erreur lors de l\'incrémentation des contacts', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de l\'incrémentation des contacts' });
-  }
-});
 
 // POST /api/recruiters/:id/cancel-subscription - Annuler l'abonnement Stripe d'un recruteur
 app.post('/api/recruiters/:id/cancel-subscription', authenticateUser, async (req, res) => {

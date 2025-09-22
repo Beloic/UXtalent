@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { usePermissions } from './usePermissions';
-import { fetchRecruiterProfile, incrementRecruiterJobPosts, incrementRecruiterCandidateContacts } from '../services/recruitersApi';
+import { fetchRecruiterProfile } from '../services/recruitersApi';
 
 export const useRecruiter = () => {
   const { user, isAuthenticated } = useAuth();
@@ -57,11 +57,6 @@ export const useRecruiter = () => {
     }
   }, [recruiter]);
 
-  const getRemainingJobPosts = useCallback(() => {
-    if (!recruiter) return 0;
-    const plan = getPlanInfo();
-    return Math.max(0, plan.maxJobPosts - (recruiter.total_jobs_posted || 0));
-  }, [recruiter, getPlanInfo]);
 
 
   const canPostJob = useCallback(() => {
@@ -74,28 +69,14 @@ export const useRecruiter = () => {
     return recruiter?.subscription_status === 'active' && recruiter?.status !== 'suspended';
   }, [recruiter]);
 
-  const incrementJobPosts = useCallback(async () => {
-    if (!recruiter) return;
-    await incrementRecruiterJobPosts(recruiter.id);
-    loadRecruiterData(); // Refresh data
-  }, [recruiter, loadRecruiterData]);
-
-  const incrementCandidateContacts = useCallback(async () => {
-    if (!recruiter) return;
-    await incrementRecruiterCandidateContacts(recruiter.id);
-    loadRecruiterData(); // Refresh data
-  }, [recruiter, loadRecruiterData]);
 
   return {
     recruiter,
     loading,
     error,
     getPlanInfo,
-    getRemainingJobPosts,
     canPostJob,
     canContactCandidate,
-    incrementJobPosts,
-    incrementCandidateContacts,
     refreshRecruiterData: loadRecruiterData,
   };
 };

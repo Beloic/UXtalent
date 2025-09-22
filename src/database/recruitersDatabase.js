@@ -157,47 +157,6 @@ export const getAllRecruiters = async () => {
 };
 
 
-// Incrémenter le compteur d'offres publiées
-export const incrementJobPosts = async (recruiterId) => {
-  try {
-    const { data, error } = await supabaseAdmin
-      .from('recruiters')
-      .update({ 
-        total_jobs_posted: supabaseAdmin.raw('total_jobs_posted + 1')
-      })
-      .eq('id', recruiterId)
-      .select()
-      .single();
-    
-    if (error) throw error;
-    
-    return data;
-  } catch (error) {
-    console.error('Erreur lors de l\'incrémentation des offres:', error);
-    throw error;
-  }
-};
-
-// Incrémenter le compteur de candidats contactés
-export const incrementCandidateContacts = async (recruiterId) => {
-  try {
-    const { data, error } = await supabaseAdmin
-      .from('recruiters')
-      .update({ 
-        total_candidates_contacted: supabaseAdmin.raw('total_candidates_contacted + 1')
-      })
-      .eq('id', recruiterId)
-      .select()
-      .single();
-    
-    if (error) throw error;
-    
-    return data;
-  } catch (error) {
-    console.error('Erreur lors de l\'incrémentation des contacts:', error);
-    throw error;
-  }
-};
 
 // Mettre à jour le plan d'un recruteur
 export const updateRecruiterPlan = async (recruiterId, planType, subscriptionData = {}) => {
