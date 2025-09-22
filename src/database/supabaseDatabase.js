@@ -127,9 +127,6 @@ export const addCandidate = async (candidateData) => {
     delete dbData.annualSalary;
     delete dbData.yearsOfExperience; // Ignorer car la colonne n'existe pas encore
     
-      status: dbData.status 
-    });
-    
     const { data, error } = await supabase
       .from('candidates')
       .insert([dbData])
@@ -239,6 +236,7 @@ export const deleteCandidate = async (id) => {
 // Mettre à jour le plan d'un candidat
 export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
   try {
+    console.log('🔄 Mise à jour du plan candidat:', {
       id: id,
       planType: planType,
       durationMonths: durationMonths,
@@ -257,6 +255,7 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       featured_until: planType !== 'free' ? endDate.toISOString() : null
     };
     
+    console.log('📝 Données de mise à jour:', {
       id: id,
       updateData: updateData,
       now: now.toISOString(),
@@ -271,6 +270,7 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       .select()
       .single();
     
+    console.log('📊 Résultat de la mise à jour:', {
       hasData: !!data,
       hasError: !!error,
       data: data,
@@ -304,6 +304,7 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       featuredUntil: data.featured_until
     };
     
+    console.log('✅ Plan candidat mis à jour:', {
       candidateId: id,
       newPlan: planType,
       mappedData: mappedData
