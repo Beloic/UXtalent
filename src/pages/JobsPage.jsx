@@ -106,20 +106,6 @@ export default function JobsPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header avec statistiques */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="text-left mb-12">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Offres d'emploi
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl">
-              Découvrez les meilleures opportunités
-            </p>
-          </div>
-        </motion.div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Sidebar filters */}

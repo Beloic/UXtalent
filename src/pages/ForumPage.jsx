@@ -268,12 +268,6 @@ export default function ForumPage() {
         <div className="mb-12">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">
-                Forum Communauté
-              </h1>
-              <p className="text-gray-600">
-                Partagez vos expériences et échangez avec la communauté
-              </p>
             </div>
             {user && (
               <button
