@@ -1,4 +1,4 @@
-import { buildApiUrl } from '../config/api';
+import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 import { supabase } from '../lib/supabase';
 
 // Service API pour la gestion des recruteurs
@@ -295,7 +295,7 @@ export class RecruitersApiService {
         throw new Error('Non authentifié');
       }
       
-      const response = await fetch(buildApiUrl(`/api/recruiters/${recruiterId}/cancel-subscription`), {
+      const response = await fetch(buildApiUrl(`${API_ENDPOINTS.RECRUITERS}${recruiterId}/cancel-subscription/`), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,

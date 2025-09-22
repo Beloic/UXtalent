@@ -39,6 +39,7 @@ export const buildRenderApiUrl = (endpoint) => {
 // URLs spécifiques
 export const API_ENDPOINTS = {
   CANDIDATES: '/api/candidates/',
+  RECRUITERS: '/api/recruiters/',
   JOBS: '/api/jobs/',
   FORUM_POSTS: '/api/forum/posts/',
   FORUM_STATS: '/api/forum/stats/',
