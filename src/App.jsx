@@ -200,6 +200,13 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        <Route path="/recruiter-dashboard/plan" element={
+          <Layout>
+            <ProtectedRoute>
+              <RecruiterDashboard />
+            </ProtectedRoute>
+          </Layout>
+        } />
         <Route path="/recruiter/search-analysis/:searchId" element={
           <Layout>
             <ProtectedRoute>

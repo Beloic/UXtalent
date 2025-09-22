@@ -30,7 +30,8 @@ import {
   X,
   Pause,
   Play,
-  TrendingUp
+  TrendingUp,
+  CreditCard
 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -41,6 +42,8 @@ import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';
 import EditJobForm from '../components/EditJobForm';
 import MatchingDashboard from '../components/MatchingDashboard';
+import PaymentLinkPricingGrid from '../components/PaymentLinkPricing';
+import RecruiterPlanStatus from '../components/RecruiterPlanStatus';
 import { loadAppointments } from '../services/appointmentsApi';
 import { buildApiUrl } from '../config/api';
 
@@ -53,6 +56,7 @@ export default function RecruiterDashboard() {
     if (location.pathname.startsWith('/recruiter-dashboard/appointments')) return 'appointments';
     if (location.pathname.startsWith('/recruiter-dashboard/myjobs')) return 'myjobs';
     if (location.pathname.startsWith('/recruiter-dashboard/matching')) return 'matching';
+    if (location.pathname.startsWith('/recruiter-dashboard/plan')) return 'plan';
     return 'favorites';
   };
   const activeTab = getActiveTabFromPath();
@@ -779,6 +783,22 @@ export default function RecruiterDashboard() {
                   )}
                   Matching
                 </button>
+                <button
+                  onClick={() => navigate('/recruiter-dashboard/plan')}
+                  disabled={refreshing}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'plan'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'text-gray-600 hover:text-gray-900'
+                  } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {refreshing && activeTab === 'plan' ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <CreditCard className="w-4 h-4" />
+                  )}
+                  Mon Plan
+                </button>
               </div>
             </div>
           </motion.div>
@@ -1348,6 +1368,39 @@ export default function RecruiterDashboard() {
                 className="space-y-8"
               >
                 <MatchingDashboard recruiterId={user?.id} />
+              </motion.div>
+            )}
+
+            {activeTab === 'plan' && (
+              <motion.div 
+                key="plan"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: 0.2 }}
+                className="space-y-8"
+              >
+                <div className="bg-white rounded-3xl shadow-xl border border-gray-100">
+                  <div className="p-8 border-b border-gray-200">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+                        <CreditCard className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Mon Plan</h2>
+                        <p className="text-gray-600">Gérez votre abonnement et vos fonctionnalités</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-8">
+                    <RecruiterPlanStatus />
+                    <div className="mt-8">
+                      <h3 className="text-xl font-bold text-gray-900 mb-6">Changer de plan</h3>
+                      <PaymentLinkPricingGrid userType="recruiter" />
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             )}
 

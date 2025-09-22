@@ -3137,28 +3137,6 @@ app.get('/api/recruiters', requireRole(['admin']), async (req, res) => {
   }
 });
 
-// GET /api/recruiters/:id - Récupérer un recruteur par ID
-app.get('/api/recruiters/:id', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    const recruiter = await getRecruiterById(id);
-    
-    if (!recruiter) {
-      return res.status(404).json({ error: 'Recruteur non trouvé' });
-    }
-    
-    // Vérifier que l'utilisateur peut accéder à ce recruteur
-    if (req.user.role !== 'admin' && req.user.id !== id) {
-      return res.status(403).json({ error: 'Accès refusé' });
-    }
-    
-    res.json(recruiter);
-  } catch (error) {
-    logger.error('Erreur lors de la récupération du recruteur', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la récupération du recruteur' });
-  }
-});
-
 // GET /api/recruiters/email/:email - Récupérer un recruteur par email
 app.get('/api/recruiters/email/:email', requireRole(['recruiter', 'admin']), async (req, res) => {
   try {
@@ -3184,6 +3162,28 @@ app.get('/api/recruiters/email/:email', requireRole(['recruiter', 'admin']), asy
 // GET /api/recruiters/me - Récupérer le profil du recruteur connecté
 app.get('/api/recruiters/me', requireRole(['recruiter', 'admin']), async (req, res) => {
   try {
+    // Si c'est l'admin système, retourner un profil admin par défaut
+    if (req.user.email === 'admin@system') {
+      return res.json({
+        id: '00000000-0000-0000-0000-000000000000',
+        email: 'admin@system',
+        name: 'Administrateur Système',
+        company: 'UX Jobs Pro',
+        role: 'admin',
+        plan_type: 'premium',
+        subscription_status: 'active',
+        max_job_posts: 999999,
+        max_candidate_contacts: 999999,
+        max_featured_jobs: 999999,
+        total_jobs_posted: 0,
+        total_candidates_contacted: 0,
+        total_applications_received: 0,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+    }
+    
     const recruiter = await getRecruiterByEmail(req.user.email);
     
     if (!recruiter) {
@@ -3194,6 +3194,28 @@ app.get('/api/recruiters/me', requireRole(['recruiter', 'admin']), async (req, r
   } catch (error) {
     logger.error('Erreur lors de la récupération du profil recruteur', { error: error.message });
     res.status(500).json({ error: 'Erreur lors de la récupération du profil recruteur' });
+  }
+});
+
+// GET /api/recruiters/:id - Récupérer un recruteur par ID
+app.get('/api/recruiters/:id', requireRole(['recruiter', 'admin']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const recruiter = await getRecruiterById(id);
+    
+    if (!recruiter) {
+      return res.status(404).json({ error: 'Recruteur non trouvé' });
+    }
+    
+    // Vérifier que l'utilisateur peut accéder à ce recruteur
+    if (req.user.role !== 'admin' && req.user.id !== id) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+    
+    res.json(recruiter);
+  } catch (error) {
+    logger.error('Erreur lors de la récupération du recruteur', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la récupération du recruteur' });
   }
 });
 
