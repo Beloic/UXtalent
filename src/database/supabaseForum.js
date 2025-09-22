@@ -1,8 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Configuration Supabase - Utilisation des variables d'environnement
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+// Côté serveur: utiliser process.env uniquement
+// Côté client: import.meta.env sera disponible via Vite
+const supabaseUrl = typeof import.meta !== 'undefined' && import.meta.env 
+  ? import.meta.env.VITE_SUPABASE_URL 
+  : process.env.VITE_SUPABASE_URL;
+const supabaseKey = typeof import.meta !== 'undefined' && import.meta.env 
+  ? import.meta.env.VITE_SUPABASE_ANON_KEY 
+  : process.env.VITE_SUPABASE_ANON_KEY;
 
 // Vérification que les variables d'environnement sont définies
 if (!supabaseUrl || !supabaseKey) {
