@@ -510,7 +510,7 @@ export default function RecruiterDashboard() {
         loadCandidates();
         loadAppointmentsData();
       } else {
-        console.log('Abonnement non actif, données de base non chargées pour éviter les appels serveur inutiles');
+        console.log('Abonnement non actif, accès aux pages autorisé mais données non chargées');
       }
     }
   }, [user, isRecruiter, recruiter?.subscription_status, loadFavorites, loadCandidates, loadAppointmentsData]);
@@ -542,7 +542,7 @@ export default function RecruiterDashboard() {
         
         loadData();
       } else {
-        console.log('Abonnement non actif, données non rechargées pour éviter les appels serveur inutiles');
+        console.log('Abonnement non actif, accès aux pages autorisé mais données non rechargées');
         setRefreshing(false);
       }
     }
@@ -555,8 +555,8 @@ export default function RecruiterDashboard() {
       if (recruiter?.subscription_status === 'active' || recruiter?.subscription_status === 'trialing') {
         loadMyJobs();
       } else {
-        // Ne pas charger les données si l'abonnement est annulé/suspendu
-        console.log('Abonnement non actif, données non chargées pour éviter les appels serveur inutiles');
+        // Permettre l'accès à la page mais ne pas charger les données
+        console.log('Abonnement non actif, accès à la page autorisé mais données non chargées');
         setMyJobs([]);
         setLoadingJobs(false);
       }
