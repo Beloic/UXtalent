@@ -37,6 +37,7 @@ import {
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { RoleGuard } from '../components/RoleGuard';
+import { RecruiterSubscriptionGuard, SubscriptionBasedContent } from '../components/RecruiterSubscriptionGuard';
 import { usePermissions } from '../hooks/usePermissions';
 import { useRecruiter } from '../hooks/useRecruiter';
 import Calendar from '../components/Calendar';
@@ -724,7 +725,8 @@ export default function RecruiterDashboard() {
 
   return (
     <RoleGuard allowedRoles={['recruiter']}>
-      <div className="min-h-screen py-8">
+      <RecruiterSubscriptionGuard recruiter={recruiter}>
+        <div className="min-h-screen py-8">
         <div className="max-w-7xl mx-auto px-4">
           {/* Header */}
           <motion.div 
@@ -782,10 +784,12 @@ export default function RecruiterDashboard() {
                 </button>
                 <button
                   onClick={() => navigate('/recruiter-dashboard/myjobs')}
-                  disabled={refreshing}
+                  disabled={refreshing || (recruiter?.subscription_status !== 'active')}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'myjobs'
                       ? 'bg-blue-600 text-white shadow-lg'
+                      : recruiter?.subscription_status !== 'active'
+                      ? 'text-gray-400 cursor-not-allowed'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
@@ -803,10 +807,12 @@ export default function RecruiterDashboard() {
                 </button>
                 <button
                   onClick={() => navigate('/recruiter-dashboard/matching')}
-                  disabled={refreshing}
+                  disabled={refreshing || (recruiter?.subscription_status !== 'active')}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     activeTab === 'matching'
                       ? 'bg-blue-600 text-white shadow-lg'
+                      : recruiter?.subscription_status !== 'active'
+                      ? 'text-gray-400 cursor-not-allowed'
                       : 'text-gray-600 hover:text-gray-900'
                   } ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
@@ -1594,7 +1600,8 @@ export default function RecruiterDashboard() {
             </div>
           </div>
         )}
-      </div>
+        </div>
+      </RecruiterSubscriptionGuard>
     </RoleGuard>
   );
 }
