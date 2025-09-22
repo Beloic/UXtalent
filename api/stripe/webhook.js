@@ -214,14 +214,16 @@ async function handleInvoicePaymentFailed(invoice) {
 function getPlanTypeFromPriceId(priceId) {
   // Pour les Payment Links, on peut aussi utiliser le montant
   const planMapping = {
-    // Price IDs Stripe
+    // Price IDs Stripe - Candidats
     'price_premium_candidat': 'premium',
     'price_elite_candidat': 'elite',
+    // Price IDs Stripe - Recruteurs
     'price_starter': 'starter',
     'price_max': 'max',
-    // Montants en centimes pour les Payment Links
+    // Montants en centimes pour les Payment Links - Candidats
     799: 'premium', // 7.99€
     3900: 'elite',    // 39€
+    // Montants en centimes pour les Payment Links - Recruteurs
     1999: 'starter', // 19.99€
     7900: 'max'     // 79€
   };
@@ -229,14 +231,14 @@ function getPlanTypeFromPriceId(priceId) {
   return planMapping[priceId] || null;
 }
 
-// Fonction pour mettre à jour le plan d'un utilisateur
+// Fonction pour mettre à jour le plan d'un utilisateur (candidat ou recruteur)
 async function updateUserPlan(userEmail, planType) {
   try {
-    const apiUrl = `https://ux-jobs-pro-backend.onrender.com/api/candidates/email/${encodeURIComponent(userEmail)}/plan`;
-    const requestBody = { planType, durationMonths: 1 };
+    // Essayer d'abord de mettre à jour le candidat
+    let apiUrl = `https://ux-jobs-pro-backend.onrender.com/api/candidates/email/${encodeURIComponent(userEmail)}/plan`;
+    let requestBody = { planType, durationMonths: 1 };
     
-    // Appeler l'API pour mettre à jour le plan
-    const response = await fetch(apiUrl, {
+    let response = await fetch(apiUrl, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -246,11 +248,52 @@ async function updateUserPlan(userEmail, planType) {
     });
     
     if (response.ok) {
-      console.log(`✅ Plan mis à jour avec succès pour ${userEmail}: ${planType}`);
-    } else {
-      const errorText = await response.text();
-      console.error(`❌ Erreur API lors de la mise à jour du plan: ${response.status}`, errorText);
+      console.log(`✅ Plan candidat mis à jour avec succès pour ${userEmail}: ${planType}`);
+      return;
     }
+    
+    // Si ce n'est pas un candidat, essayer de mettre à jour le recruteur
+    console.log(`🔍 Candidat non trouvé, recherche du recruteur pour ${userEmail}`);
+    
+    // Chercher le recruteur par email
+    const recruiterResponse = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiters/email/${encodeURIComponent(userEmail)}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${process.env.ADMIN_TOKEN_SECRET || 'admin-token'}`
+      }
+    });
+    
+    if (recruiterResponse.ok) {
+      const recruiter = await recruiterResponse.json();
+      console.log(`🎯 Recruteur trouvé: ${recruiter.id}`);
+      
+      // Mettre à jour le plan du recruteur
+      const updateRecruiterResponse = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiters/${recruiter.id}/plan`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.ADMIN_TOKEN_SECRET || 'admin-token'}`
+        },
+        body: JSON.stringify({
+          planType,
+          subscriptionData: {
+            status: planType === 'free' ? 'canceled' : 'active',
+            startDate: new Date().toISOString(),
+            endDate: planType === 'free' ? null : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 jours
+          }
+        })
+      });
+      
+      if (updateRecruiterResponse.ok) {
+        console.log(`✅ Plan recruteur mis à jour avec succès pour ${userEmail}: ${planType}`);
+      } else {
+        const errorText = await updateRecruiterResponse.text();
+        console.error(`❌ Erreur API lors de la mise à jour du plan recruteur: ${updateRecruiterResponse.status}`, errorText);
+      }
+    } else {
+      console.error(`❌ Aucun utilisateur trouvé (ni candidat ni recruteur) pour ${userEmail}`);
+    }
+    
   } catch (error) {
     console.error('❌ Erreur lors de la mise à jour du plan:', error);
   }

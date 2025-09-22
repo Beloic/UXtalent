@@ -1476,10 +1476,36 @@ async function handleSubscriptionDeleted(subscription) {
     
     console.log('📧 Email du customer pour annulation:', userEmail);
     
-    // Mettre à jour le plan vers 'free' dans la base de données
-    await updateCandidatePlan(userEmail, 'free');
+    // Essayer d'abord de mettre à jour le candidat
+    try {
+      await updateCandidatePlan(userEmail, 'free');
+      console.log('⬇️ Candidat rétrogradé vers le plan gratuit:', userEmail);
+      return;
+    } catch (candidateError) {
+      console.log('🔍 Candidat non trouvé, recherche du recruteur pour:', userEmail);
+    }
     
-    console.log('⬇️ Utilisateur rétrogradé vers le plan gratuit:', userEmail);
+    // Si ce n'est pas un candidat, essayer de mettre à jour le recruteur
+    try {
+      const { data: recruiter, error: fetchError } = await supabaseAdmin
+        .from('recruiters')
+        .select('id')
+        .eq('email', userEmail)
+        .single();
+      
+      if (recruiter && !fetchError) {
+        await updateRecruiterPlan(recruiter.id, 'free', {
+          status: 'canceled',
+          startDate: new Date().toISOString(),
+          endDate: null
+        });
+        console.log('⬇️ Recruteur rétrogradé vers le plan gratuit:', userEmail);
+      } else {
+        console.error('❌ Aucun utilisateur trouvé (ni candidat ni recruteur) pour:', userEmail);
+      }
+    } catch (recruiterError) {
+      console.error('❌ Erreur lors de la mise à jour du recruteur:', recruiterError);
+    }
     
   } catch (error) {
     console.error('❌ Erreur lors de l\'annulation de l\'abonnement:', error);
@@ -1503,8 +1529,38 @@ async function handleSubscriptionCreated(subscription) {
     const planType = getPlanTypeFromPriceId(subscription.items.data[0].price.id);
     
     if (planType) {
-      await updateCandidatePlan(userEmail, planType);
-      console.log('⬆️ Utilisateur mis à niveau vers le plan:', planType);
+      // Essayer d'abord de mettre à jour le candidat
+      try {
+        await updateCandidatePlan(userEmail, planType);
+        console.log(`✅ Abonnement candidat ${planType} créé pour ${userEmail}`);
+        return;
+      } catch (candidateError) {
+        console.log('🔍 Candidat non trouvé, recherche du recruteur pour:', userEmail);
+      }
+      
+      // Si ce n'est pas un candidat, essayer de mettre à jour le recruteur
+      try {
+        const { data: recruiter, error: fetchError } = await supabaseAdmin
+          .from('recruiters')
+          .select('id')
+          .eq('email', userEmail)
+          .single();
+        
+        if (recruiter && !fetchError) {
+          await updateRecruiterPlan(recruiter.id, planType, {
+            status: 'active',
+            startDate: new Date().toISOString(),
+            endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 jours
+            stripeCustomerId: subscription.customer,
+            stripeSubscriptionId: subscription.id
+          });
+          console.log(`✅ Abonnement recruteur ${planType} créé pour ${userEmail}`);
+        } else {
+          console.error('❌ Aucun utilisateur trouvé (ni candidat ni recruteur) pour:', userEmail);
+        }
+      } catch (recruiterError) {
+        console.error('❌ Erreur lors de la mise à jour du recruteur:', recruiterError);
+      }
     }
     
   } catch (error) {
@@ -1529,8 +1585,38 @@ async function handleSubscriptionUpdated(subscription) {
     if (subscription.status === 'active') {
       const planType = getPlanTypeFromPriceId(subscription.items.data[0].price.id);
       if (planType) {
-        await updateCandidatePlan(userEmail, planType);
-        console.log('🔄 Plan mis à jour vers:', planType);
+        // Essayer d'abord de mettre à jour le candidat
+        try {
+          await updateCandidatePlan(userEmail, planType);
+          console.log(`🔄 Plan candidat mis à jour vers: ${planType}`);
+          return;
+        } catch (candidateError) {
+          console.log('🔍 Candidat non trouvé, recherche du recruteur pour:', userEmail);
+        }
+        
+        // Si ce n'est pas un candidat, essayer de mettre à jour le recruteur
+        try {
+          const { data: recruiter, error: fetchError } = await supabaseAdmin
+            .from('recruiters')
+            .select('id')
+            .eq('email', userEmail)
+            .single();
+          
+          if (recruiter && !fetchError) {
+            await updateRecruiterPlan(recruiter.id, planType, {
+              status: 'active',
+              startDate: new Date().toISOString(),
+              endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 jours
+              stripeCustomerId: subscription.customer,
+              stripeSubscriptionId: subscription.id
+            });
+            console.log(`🔄 Plan recruteur mis à jour vers: ${planType}`);
+          } else {
+            console.error('❌ Aucun utilisateur trouvé (ni candidat ni recruteur) pour:', userEmail);
+          }
+        } catch (recruiterError) {
+          console.error('❌ Erreur lors de la mise à jour du recruteur:', recruiterError);
+        }
       }
     }
     
@@ -3296,6 +3382,69 @@ app.put('/api/recruiters/:id/plan', requireRole(['admin']), async (req, res) => 
   } catch (error) {
     logger.error('Erreur lors de la mise à jour du plan', { error: error.message });
     res.status(500).json({ error: 'Erreur lors de la mise à jour du plan' });
+  }
+});
+
+// PUT /api/recruiters/email/:email/plan - Mettre à jour le plan d'un recruteur par email (pour les webhooks Stripe)
+app.put('/api/recruiters/email/:email/plan', async (req, res) => {
+  try {
+    const { planType, subscriptionData = {} } = req.body;
+    const email = decodeURIComponent(req.params.email);
+    
+    console.log(`🔍 [API] Requête reçue pour mise à jour plan recruteur:`, {
+      email: email,
+      planType: planType,
+      subscriptionData: subscriptionData,
+      body: req.body,
+      headers: req.headers
+    });
+    
+    // Valider le type de plan
+    if (!['free', 'starter', 'max'].includes(planType)) {
+      console.error(`❌ [API] Type de plan invalide: ${planType}`);
+      return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, starter, ou max' });
+    }
+    
+    console.log(`🔍 [API] Recherche du recruteur par email: ${email}`);
+    
+    // Trouver le recruteur par email
+    const { data: recruiter, error: fetchError } = await supabaseAdmin
+      .from('recruiters')
+      .select('id')
+      .eq('email', email)
+      .single();
+    
+    console.log(`🔍 [API] Résultat recherche recruteur:`, {
+      hasData: !!recruiter,
+      recruiterId: recruiter?.id,
+      hasError: !!fetchError,
+      error: fetchError
+    });
+    
+    if (fetchError || !recruiter) {
+      console.error(`❌ [API] Recruteur non trouvé pour l'email: ${email}`, fetchError);
+      logger.error('Recruteur non trouvé pour l\'email:', email);
+      return res.status(404).json({ error: 'Recruteur non trouvé' });
+    }
+    
+    console.log(`🚀 [API] Début mise à jour plan pour recruteur ID: ${recruiter.id}`);
+    
+    // Mettre à jour le plan
+    const updatedRecruiter = await updateRecruiterPlan(recruiter.id, planType, subscriptionData);
+    
+    console.log(`✅ [API] Plan recruteur mis à jour avec succès:`, {
+      recruiterId: recruiter.id,
+      email: email,
+      newPlan: planType,
+      updatedData: updatedRecruiter
+    });
+    
+    res.json(updatedRecruiter);
+  } catch (error) {
+    console.error(`❌ [API] Erreur lors de la mise à jour du plan recruteur par email:`, error);
+    console.error(`🔍 [API] Stack trace:`, error.stack);
+    logger.error('Erreur lors de la mise à jour du plan recruteur par email', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la mise à jour du plan recruteur' });
   }
 });
 
