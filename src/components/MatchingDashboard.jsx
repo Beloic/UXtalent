@@ -47,6 +47,7 @@ const MatchingDashboard = ({ recruiterId }) => {
 
   // Déclencher l'animation quand toutes les données sont complètement chargées
   useEffect(() => {
+    console.log('Animation check:', {
       isFullyLoaded,
       statsLoaded,
       jobsLoaded,
