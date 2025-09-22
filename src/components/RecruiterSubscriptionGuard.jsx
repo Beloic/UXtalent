@@ -14,7 +14,7 @@ export const RecruiterSubscriptionGuard = ({
                                   recruiter?.status === 'suspended';
   
   // Si l'abonnement est actif, afficher le contenu normal
-  if (!isSubscriptionCancelled) {
+  if (recruiter?.subscription_status === 'active' && recruiter?.status !== 'suspended') {
     return children;
   }
   
