@@ -28,32 +28,27 @@ const createRecruiterProfileIfNotExists = async (user) => {
     
     console.log('📝 Création d\'un nouveau profil recruteur pour:', user.email)
     
-    // Créer le profil recruteur avec les données par défaut (colonnes disponibles uniquement)
-    const recruiterData = {
-      email: user.email,
-      name: user.user_metadata?.first_name && user.user_metadata?.last_name 
-        ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
-        : user.email?.split('@')[0] || 'Nouveau Recruteur',
-      company: user.user_metadata?.company || '',
-      phone: user.user_metadata?.phone || '',
-      website: user.user_metadata?.website || '',
-      planType: 'starter', // Plan par défaut
-      subscriptionStatus: 'active',
-      subscriptionStartDate: new Date().toISOString(),
-      subscriptionEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // +30 jours
-      // maxJobPosts: 5, // Colonne non disponible
-      // maxCandidateContacts: 100, // Colonne non disponible
-      // maxFeaturedJobs: 1, // Colonne non disponible
-      status: 'active',
-      notes: 'Profil créé automatiquement lors de l\'inscription.'
+    // Plutôt que d'écrire en base directement côté client (supabaseAdmin indisponible),
+    // déclencher la création côté serveur via l'endpoint /api/recruiters/me (auto-bootstrap)
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      console.warn('⚠️ Impossible de récupérer la session pour créer le profil recruteur')
+      return null
     }
-    
-    console.log('📊 Données du recruteur:', recruiterData)
-    
-    const newRecruiter = await createRecruiter(recruiterData)
-    console.log('✅ Profil recruteur créé avec succès:', newRecruiter.id)
-    
-    return newRecruiter
+    const resp = await fetch(buildApiUrl('/api/recruiters/me'), {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    if (!resp.ok) {
+      console.warn('⚠️ Appel /api/recruiters/me non OK pendant bootstrap:', resp.status)
+      return null
+    }
+    const created = await resp.json()
+    console.log('✅ Profil recruteur créé/récupéré via API:', created?.id)
+    return created
     
   } catch (error) {
     console.error('❌ Erreur lors de la création du profil recruteur:', error)
