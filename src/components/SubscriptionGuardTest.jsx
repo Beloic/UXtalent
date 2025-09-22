@@ -165,7 +165,7 @@ const SubscriptionGuardTest = () => {
             💡 Instructions de test
           </h3>
           <div className="text-blue-800 space-y-2">
-            <p>1. <strong>Chargement :</strong> Affiche un spinner pendant 2 secondes</p>
+            <p>1. <strong>Chargement :</strong> Affiche un spinner simple pendant 2 secondes</p>
             <p>2. <strong>Abonnement actif :</strong> Affiche le contenu protégé</p>
             <p>3. <strong>Abonnement annulé/expiré :</strong> Affiche la popup "Accès suspendu"</p>
             <p>4. <strong>Compte suspendu :</strong> Affiche la popup "Accès suspendu"</p>
