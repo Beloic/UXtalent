@@ -58,18 +58,27 @@ export const useRecruiter = () => {
   }, [loadRecruiterData]);
 
   const getPlanInfo = useCallback(() => {
+    console.log('🔍 [getPlanInfo] recruiter:', recruiter);
+    console.log('🔍 [getPlanInfo] recruiter.plan_type:', recruiter?.plan_type);
+    
     if (!recruiter) {
+      console.log('❌ [getPlanInfo] Pas de données recruteur, retour plan par défaut');
       return { name: 'N/A', maxJobPosts: 0, maxCandidateContacts: 0, maxFeaturedJobs: 0 };
     }
+    
     // Map plan_type to display name and limits
     switch (recruiter.plan_type) {
       case 'starter':
+        console.log('✅ [getPlanInfo] Plan Starter détecté');
         return { name: 'Starter', maxJobPosts: 5, maxCandidateContacts: 100, maxFeaturedJobs: 1 };
       case 'max':
+        console.log('✅ [getPlanInfo] Plan Max détecté');
         return { name: 'Max', maxJobPosts: 50, maxCandidateContacts: 1000, maxFeaturedJobs: 5 };
       case 'premium':
+        console.log('✅ [getPlanInfo] Plan Premium détecté');
         return { name: 'Premium', maxJobPosts: 200, maxCandidateContacts: 5000, maxFeaturedJobs: 20 };
       default:
+        console.log('⚠️ [getPlanInfo] Plan inconnu:', recruiter.plan_type, 'retour plan gratuit');
         return { name: 'Gratuit', maxJobPosts: 0, maxCandidateContacts: 0, maxFeaturedJobs: 0 };
     }
   }, [recruiter]);
