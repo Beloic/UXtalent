@@ -53,7 +53,7 @@ export default function RecruiterDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { isRecruiter } = usePermissions();
-  const { recruiter, loading: recruiterLoading, getPlanInfo, getRemainingJobPosts, getRemainingCandidateContacts } = useRecruiter();
+  const { recruiter, loading: recruiterLoading, getPlanInfo, getRemainingJobPosts } = useRecruiter();
   const location = useLocation();
   const getActiveTabFromPath = () => {
     if (location.pathname.startsWith('/recruiter-dashboard/appointments')) return 'appointments';

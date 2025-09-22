@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { usePermissions } from './usePermissions';
-import { fetchRecruiterProfile, fetchRecruiterStats, fetchRecruiterPermissions, incrementRecruiterJobPosts, incrementRecruiterCandidateContacts } from '../services/recruitersApi';
+import { fetchRecruiterProfile, fetchRecruiterPermissions, incrementRecruiterJobPosts, incrementRecruiterCandidateContacts } from '../services/recruitersApi';
 
 export const useRecruiter = () => {
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter } = usePermissions();
   const [recruiter, setRecruiter] = useState(null);
-  const [stats, setStats] = useState(null);
   const [permissions, setPermissions] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,10 +25,6 @@ export const useRecruiter = () => {
       console.log('🔍 [RECRUITER] Chargement du profil recruteur...');
       const profile = await fetchRecruiterProfile();
       setRecruiter(profile);
-
-      console.log('🔍 [RECRUITER] Chargement des statistiques...');
-      const recruiterStats = await fetchRecruiterStats(profile.id);
-      setStats(recruiterStats);
 
       console.log('🔍 [RECRUITER] Chargement des permissions...');
       const recruiterPermissions = await fetchRecruiterPermissions(profile.id);
@@ -73,11 +68,6 @@ export const useRecruiter = () => {
     return Math.max(0, plan.maxJobPosts - (recruiter.total_jobs_posted || 0));
   }, [recruiter, getPlanInfo]);
 
-  const getRemainingCandidateContacts = useCallback(() => {
-    if (!recruiter) return 0;
-    const plan = getPlanInfo();
-    return Math.max(0, plan.maxCandidateContacts - (recruiter.total_candidates_contacted || 0));
-  }, [recruiter, getPlanInfo]);
 
   const canPostJob = useCallback(() => {
     return permissions?.canPostJob || false;
@@ -101,13 +91,11 @@ export const useRecruiter = () => {
 
   return {
     recruiter,
-    stats,
     permissions,
     loading,
     error,
     getPlanInfo,
     getRemainingJobPosts,
-    getRemainingCandidateContacts,
     canPostJob,
     canContactCandidate,
     incrementJobPosts,

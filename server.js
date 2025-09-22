@@ -69,7 +69,6 @@ import {
   incrementJobPosts,
   incrementCandidateContacts,
   updateRecruiterPlan,
-  getRecruiterStats,
   upsertRecruiter,
 } from './src/database/recruitersDatabase.js';
 import {
@@ -3449,28 +3448,6 @@ app.delete('/api/recruiters/:id', requireRole(['admin']), async (req, res) => {
   }
 });
 
-// GET /api/recruiters/:id/stats - Récupérer les statistiques d'un recruteur
-app.get('/api/recruiters/:id/stats', requireRole(['recruiter', 'admin']), async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    // Vérifier que l'utilisateur peut accéder à ces statistiques
-    if (req.user.role !== 'admin' && req.user.id !== id) {
-      return res.status(403).json({ error: 'Accès refusé' });
-    }
-    
-    const stats = await getRecruiterStats(id);
-    
-    if (!stats) {
-      return res.status(404).json({ error: 'Recruteur non trouvé' });
-    }
-    
-    res.json(stats);
-  } catch (error) {
-    logger.error('Erreur lors de la récupération des statistiques', { error: error.message });
-    res.status(500).json({ error: 'Erreur lors de la récupération des statistiques' });
-  }
-});
 
 // PUT /api/recruiters/:id/plan - Mettre à jour le plan d'un recruteur
 app.put('/api/recruiters/:id/plan', requireRole(['admin']), async (req, res) => {

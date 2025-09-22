@@ -14,7 +14,7 @@ import { supabaseAdmin } from '../lib/supabase';
 export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
-  const { recruiter, stats, permissions, loading: recruiterLoading, getPlanInfo, canPostJob, canContactCandidate, getRemainingJobPosts, getRemainingCandidateContacts } = useRecruiter();
+  const { recruiter, permissions, loading: recruiterLoading, getPlanInfo, canPostJob, canContactCandidate, getRemainingJobPosts } = useRecruiter();
   const location = useLocation();
 
   // Helper function pour gérer les compétences de manière sécurisée
@@ -2619,18 +2619,6 @@ export default function MyProfilePage() {
                         </div>
                         <div className="text-gray-600">Offres restantes</div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-green-600 mb-2">
-                          {getRemainingCandidateContacts()}
-                        </div>
-                        <div className="text-gray-600">Contacts restants</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-purple-600 mb-2">
-                          {stats?.activeJobs || 0}
-                        </div>
-                        <div className="text-gray-600">Offres actives</div>
-                      </div>
                     </div>
                   </div>
 
@@ -2645,10 +2633,6 @@ export default function MyProfilePage() {
                         <div className="flex justify-between">
                           <span className="text-gray-600">Total publiées</span>
                           <span className="font-semibold">{recruiter.total_jobs_posted || 0}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Actuellement actives</span>
-                          <span className="font-semibold">{stats?.activeJobs || 0}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Candidatures reçues</span>
@@ -2666,14 +2650,6 @@ export default function MyProfilePage() {
                         <div className="flex justify-between">
                           <span className="text-gray-600">Candidats contactés</span>
                           <span className="font-semibold">{recruiter.total_candidates_contacted || 0}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">En favoris</span>
-                          <span className="font-semibold">{stats?.favoriteCandidates || 0}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Contacts restants</span>
-                          <span className="font-semibold text-green-600">{getRemainingCandidateContacts()}</span>
                         </div>
                       </div>
                     </div>
@@ -2855,17 +2831,6 @@ export default function MyProfilePage() {
                             </div>
                           </div>
                           
-                          <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                            <div className="text-center">
-                              <div className="text-3xl font-bold text-green-600 mb-2">
-                                {getRemainingCandidateContacts()}
-                              </div>
-                              <div className="text-gray-600 mb-2">Contacts restants</div>
-                              <div className="text-sm text-gray-500">
-                                {recruiter?.total_candidates_contacted || 0} / {getPlanInfo().maxCandidateContacts} utilisés
-                              </div>
-                            </div>
-                          </div>
                           
                           <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
                             <div className="text-center">

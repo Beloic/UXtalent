@@ -31,40 +31,6 @@ export class RecruitersApiService {
     }
   }
   
-  // Récupérer les statistiques du recruteur connecté
-  static async getMyStats(recruiterId) {
-    try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        console.error('Erreur de session:', sessionError);
-        throw new Error(`Erreur de session: ${sessionError.message}`);
-      }
-      
-      if (!session) {
-        console.warn('Aucune session active trouvée');
-        throw new Error('Session expirée ou utilisateur non connecté');
-      }
-      
-      console.log('🔍 [STATS] Session trouvée, appel API pour recruiter:', recruiterId);
-      
-      const response = await fetch(buildApiUrl(`/api/recruiters/${recruiterId}/stats`), {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Erreur lors de la récupération des statistiques:', error);
-      throw error;
-    }
-  }
   
   // Mettre à jour le profil du recruteur connecté
   static async updateMyProfile(profileData) {
@@ -386,9 +352,6 @@ export const fetchRecruiterProfile = async () => {
   return await RecruitersApiService.getMyProfile();
 };
 
-export const fetchRecruiterStats = async (recruiterId) => {
-  return await RecruitersApiService.getMyStats(recruiterId);
-};
 
 export const fetchRecruiterPermissions = async (recruiterId) => {
   return await RecruitersApiService.getMyPermissions(recruiterId);
@@ -405,7 +368,6 @@ export const incrementRecruiterCandidateContacts = async (recruiterId) => {
 // Export des fonctions individuelles pour faciliter l'utilisation
 export const {
   getMyProfile,
-  getMyStats,
   updateMyProfile,
   getMyPermissions,
   getRecruiterById,
