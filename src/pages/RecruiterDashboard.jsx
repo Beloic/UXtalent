@@ -504,45 +504,64 @@ export default function RecruiterDashboard() {
   // Charger les données au montage du composant
   useEffect(() => {
     if (user && isRecruiter) {
-      loadFavorites();
-      loadCandidates();
-      loadAppointmentsData();
+      // Vérifier le statut d'abonnement avant de charger les données
+      if (recruiter?.subscription_status === 'active' || recruiter?.subscription_status === 'trialing') {
+        loadFavorites();
+        loadCandidates();
+        loadAppointmentsData();
+      } else {
+        console.log('Abonnement non actif, données de base non chargées pour éviter les appels serveur inutiles');
+      }
     }
-  }, [user, isRecruiter, loadFavorites, loadCandidates, loadAppointmentsData]);
+  }, [user, isRecruiter, recruiter?.subscription_status, loadFavorites, loadCandidates, loadAppointmentsData]);
 
   // Pas de gestion d'état d'onglet: déterminé par le chemin
 
   // Recharger les données quand on change de route d'onglet
   useEffect(() => {
     if (user && isRecruiter) {
-      setRefreshing(true);
-      
-      // Recharger les rendez-vous à chaque changement d'onglet
-      loadAppointmentsData();
-      
-      // Recharger les données spécifiques selon l'onglet
-      const loadData = async () => {
-        try {
-          if (activeTab === 'favorites') {
-            await loadFavorites();
-          } else if (activeTab === 'appointments') {
-            await loadCandidates();
+      // Vérifier le statut d'abonnement avant de charger les données
+      if (recruiter?.subscription_status === 'active' || recruiter?.subscription_status === 'trialing') {
+        setRefreshing(true);
+        
+        // Recharger les rendez-vous à chaque changement d'onglet
+        loadAppointmentsData();
+        
+        // Recharger les données spécifiques selon l'onglet
+        const loadData = async () => {
+          try {
+            if (activeTab === 'favorites') {
+              await loadFavorites();
+            } else if (activeTab === 'appointments') {
+              await loadCandidates();
+            }
+          } finally {
+            setRefreshing(false);
           }
-        } finally {
-          setRefreshing(false);
-        }
-      };
-      
-      loadData();
+        };
+        
+        loadData();
+      } else {
+        console.log('Abonnement non actif, données non rechargées pour éviter les appels serveur inutiles');
+        setRefreshing(false);
+      }
     }
-  }, [activeTab, user, isRecruiter, loadFavorites, loadCandidates, loadAppointmentsData]);
+  }, [activeTab, user, isRecruiter, recruiter?.subscription_status, loadFavorites, loadCandidates, loadAppointmentsData]);
 
   // Charger les offres quand l'onglet "Mes offres" est sélectionné
   useEffect(() => {
     if (activeTab === 'myjobs') {
-      loadMyJobs();
+      // Vérifier le statut d'abonnement avant de charger les données
+      if (recruiter?.subscription_status === 'active' || recruiter?.subscription_status === 'trialing') {
+        loadMyJobs();
+      } else {
+        // Ne pas charger les données si l'abonnement est annulé/suspendu
+        console.log('Abonnement non actif, données non chargées pour éviter les appels serveur inutiles');
+        setMyJobs([]);
+        setLoadingJobs(false);
+      }
     }
-  }, [activeTab]);
+  }, [activeTab, recruiter?.subscription_status]);
 
   // Fonction pour démarrer l'édition d'une offre
   const handleEditJob = (job) => {
