@@ -3401,7 +3401,7 @@ app.post('/api/recruiters/:id/cancel-subscription', authenticateUser, async (req
     const recruiter = recruiterById;
     console.log('✅ Recruteur trouvé:', { id: recruiter.id, email: recruiter.email, plan_type: recruiter.plan_type });
     
-    if (recruiter.plan_type === 'free') {
+    if (!['starter', 'max'].includes(recruiter.plan_type)) {
       return res.status(400).json({ error: 'Aucun abonnement actif à annuler' });
     }
     

@@ -1436,20 +1436,17 @@ export default function RecruiterDashboard() {
                           </h3>
                           <p className="text-gray-600">
                             {recruiter?.plan_type === 'starter' 
-                              ? 'Accès aux fonctionnalités de base pour le recrutement'
+                              ? 'Pour les petites équipes - Accès à tous les profils de talents'
                               : recruiter?.plan_type === 'max'
-                              ? 'Accès aux fonctionnalités avancées avec sélection sur-mesure'
-                              : recruiter?.plan_type === 'premium'
-                              ? 'Accès illimité à toutes les fonctionnalités'
+                              ? 'Pour les grandes entreprises - Sélection sur-mesure par notre équipe'
                               : 'Plan personnalisé'
                             }
                           </p>
                         </div>
                         <div className="text-right">
                           <div className="text-2xl font-bold text-blue-600">
-                            {recruiter?.plan_type === 'starter' ? '29€' : 
-                             recruiter?.plan_type === 'max' ? '99€' : 
-                             recruiter?.plan_type === 'premium' ? '199€' : '0€'}
+                            {recruiter?.plan_type === 'starter' ? '19,99€' : 
+                             recruiter?.plan_type === 'max' ? '79€' : '0€'}
                           </div>
                           <div className="text-sm text-gray-500">
                             par mois
@@ -1462,8 +1459,8 @@ export default function RecruiterDashboard() {
                     <div className="flex justify-center gap-4 mt-6">
                       {!cancellationInfo?.cancellation_scheduled ? (
                         <>
-                          {/* Afficher le bouton "Annuler mon plan" seulement si l'utilisateur n'est pas au plan gratuit */}
-                          {recruiter?.plan_type !== 'free' && (
+                          {/* Afficher le bouton "Annuler mon plan" pour tous les plans payants */}
+                          {recruiter?.plan_type && ['starter', 'max'].includes(recruiter.plan_type) && (
                             <button
                               onClick={() => setShowCancelConfirm(true)}
                               className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
@@ -1475,7 +1472,7 @@ export default function RecruiterDashboard() {
                             onClick={() => window.open('/pricing', '_blank')}
                             className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
                           >
-                            {recruiter?.plan_type === 'free' ? 'Passer à Premium' : 'Changer de plan'}
+                            {!recruiter?.plan_type || !['starter', 'max'].includes(recruiter.plan_type) ? 'Passer à Premium' : 'Changer de plan'}
                           </button>
                         </>
                       ) : (
