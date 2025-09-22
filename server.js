@@ -3463,6 +3463,111 @@ app.post('/api/recruiters/:id/cancel-subscription', authenticateUser, async (req
   }
 });
 
+// Route alternative avec slash final pour compatibilité
+app.post('/api/recruiters/:id/cancel-subscription/', authenticateUser, async (req, res) => {
+  try {
+    if (!stripe) {
+      logger.error('❌ Tentative d\'annulation sans Stripe configuré');
+      return res.status(503).json({ 
+        error: 'Service d\'annulation temporairement indisponible. Veuillez contacter le support à hello@loicbernard.com pour annuler votre abonnement.' 
+      });
+    }
+    
+    const recruiterId = req.params.id;
+    const userEmail = req.user.email;
+    
+    console.log('🔄 Annulation abonnement recruteur demandée pour:', userEmail);
+    console.log('🆔 ID recruteur demandé:', recruiterId);
+    console.log('🔍 Recherche du recruteur par ID...');
+    
+    // Vérifier que l'utilisateur peut annuler son propre abonnement
+    // Chercher le recruteur par ID
+    const { data: recruiterById, error: idError } = await supabase
+      .from('recruiters')
+      .select('id, email, plan_type')
+      .eq('id', recruiterId)
+      .single();
+    
+    if (idError || !recruiterById) {
+      logger.error('Recruteur non trouvé par ID:', { recruiterId, error: idError });
+      return res.status(404).json({ error: 'Profil recruteur non trouvé' });
+    }
+    
+    // Vérifier que l'email correspond (sécurité)
+    if (recruiterById.email !== userEmail) {
+      logger.error('Email utilisateur ne correspond pas au recruteur:', { 
+        recruiterId, 
+        recruiterEmail: recruiterById.email, 
+        userEmail 
+      });
+      return res.status(403).json({ error: 'Accès non autorisé à ce profil' });
+    }
+    
+    const recruiter = recruiterById;
+    console.log('✅ Recruteur trouvé:', { id: recruiter.id, email: recruiter.email, plan_type: recruiter.plan_type });
+    
+    if (!['starter', 'max'].includes(recruiter.plan_type)) {
+      return res.status(400).json({ error: 'Aucun abonnement actif à annuler' });
+    }
+    
+    // Chercher le customer Stripe par email
+    const customers = await stripe.customers.list({
+      email: userEmail,
+      limit: 1
+    });
+    
+    if (customers.data.length === 0) {
+      logger.error('Customer Stripe non trouvé pour:', userEmail);
+      return res.status(404).json({ error: 'Abonnement Stripe non trouvé' });
+    }
+    
+    const customer = customers.data[0];
+    
+    // Chercher les abonnements actifs du customer
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customer.id,
+      status: 'active',
+      limit: 1
+    });
+    
+    if (subscriptions.data.length === 0) {
+      logger.error('Abonnement actif non trouvé pour:', userEmail);
+      return res.status(404).json({ error: 'Aucun abonnement actif trouvé' });
+    }
+    
+    const subscription = subscriptions.data[0];
+    
+    // Programmer l'annulation à la fin de la période de facturation
+    const updatedSubscription = await stripe.subscriptions.update(subscription.id, {
+      cancel_at_period_end: true
+    });
+    
+    console.log('✅ Annulation programmée à la fin de période:', updatedSubscription.id);
+    console.log('📅 Fin de période:', new Date(updatedSubscription.current_period_end * 1000));
+    
+    // Ne pas mettre à jour le plan immédiatement - l'utilisateur garde l'accès jusqu'à la fin
+    // Le webhook Stripe se chargera de la mise à jour finale
+    
+    // Déclencher l'événement pour mettre à jour l'interface
+    res.json({
+      success: true,
+      message: 'Annulation programmée à la fin de votre période de facturation',
+      subscription: {
+        id: updatedSubscription.id,
+        status: updatedSubscription.status,
+        cancel_at_period_end: updatedSubscription.cancel_at_period_end,
+        current_period_end: updatedSubscription.current_period_end
+      },
+      access_until: new Date(updatedSubscription.current_period_end * 1000).toISOString(),
+      cancellation_scheduled: true
+    });
+    
+  } catch (error) {
+    logger.error('Erreur lors de l\'annulation de l\'abonnement recruteur', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de l\'annulation de l\'abonnement' });
+  }
+});
+
 // ===== ROUTES POUR LE MATCHING INTELLIGENT =====
 
 // GET /api/matching/candidates/:jobId - Trouve les meilleurs candidats pour une offre
