@@ -121,7 +121,7 @@ import helmet from 'helmet';
 // CORS: autoriser Netlify/Vercel (y compris les URL de preview) et localhost en dev
 const allowedOrigins = [
   'https://u-xtalent.vercel.app',
-  'https://ux-jobs-pro.netlify.app',
+  'https://uxtalent.vercel.app',  // Ajout de l'URL sans tiret
   /^https:\/\/.*\.netlify\.app$/,
   /^https:\/\/.*\.vercel\.app$/,
   'http://localhost:5173',
@@ -3394,7 +3394,7 @@ app.get('/api/recruiters/:id', requireRole(['recruiter', 'admin']), async (req, 
     }
     
     // Vérifier que l'utilisateur peut accéder à ce recruteur
-    if (req.user.role !== 'admin' && req.user.id !== id) {
+    if (req.user.role !== 'admin' && recruiter.email !== req.user.email) {
       return res.status(403).json({ error: 'Accès refusé' });
     }
     
@@ -3532,8 +3532,12 @@ app.get('/api/recruiters/:id/permissions', requireRole(['recruiter', 'admin']), 
     const { id } = req.params;
     
     // Vérifier que l'utilisateur peut accéder à ces permissions
-    if (req.user.role !== 'admin' && req.user.id !== id) {
-      return res.status(403).json({ error: 'Accès refusé' });
+    if (req.user.role !== 'admin') {
+      // Pour les recruteurs, vérifier par email au lieu de l'ID
+      const recruiter = await getRecruiterById(id);
+      if (!recruiter || recruiter.email !== req.user.email) {
+        return res.status(403).json({ error: 'Accès refusé' });
+      }
     }
     
     const canPostJob = await canRecruiterPostJob(id);
