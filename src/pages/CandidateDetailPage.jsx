@@ -46,7 +46,7 @@ function ProfileViewsStats({ candidateId }) {
         
         // Essayer de récupérer les vraies données depuis l'API publique
         try {
-          const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/candidates/${candidateId}/stats/`);
+          const response = await fetch(buildApiUrl(`/api/candidates/${candidateId}/stats`));
           if (response.ok) {
             const data = await response.json();
             const dailyViews = data.dailyViews || [];

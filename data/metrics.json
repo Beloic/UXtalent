@@ -8,17 +8,17 @@
     "lastRequest": null
   },
   "cache": {
-    "hits": 70,
-    "misses": 33,
-    "hitRatio": 67.96116504854369,
+    "hits": 76,
+    "misses": 38,
+    "hitRatio": 66.66666666666666,
     "totalEntries": 19,
     "memoryUsage": 867
   },
   "system": {
-    "uptime": 660.403139666,
-    "memoryUsage": 21962064,
-    "cpuUsage": 0.481716,
-    "lastUpdate": "2025-09-22T09:47:10.538Z"
+    "uptime": 240.33664775,
+    "memoryUsage": 23133832,
+    "cpuUsage": 0.498116,
+    "lastUpdate": "2025-09-22T11:57:56.261Z"
   },
   "scraping": {
     "totalRuns": 0,

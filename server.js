@@ -2093,8 +2093,23 @@ app.post('/api/profile-stats/:userId/track-view', async (req, res) => {
 app.get('/api/candidates/:candidateId/stats', async (req, res) => {
   try {
     const { candidateId } = req.params;
+    const candidateIdInt = parseInt(candidateId);
     
-    // Récupérer les vraies données de vues depuis les tables
+    // Vérifier que le candidat existe
+    const { data: candidate, error: candidateError } = await supabase
+      .from('candidates')
+      .select('id, name, status')
+      .eq('id', candidateIdInt)
+      .single();
+    
+    if (candidateError || !candidate) {
+      console.log('❌ [CANDIDATE_STATS] Candidat non trouvé pour ID:', candidateIdInt);
+      return res.status(404).json({ error: 'Candidat non trouvé' });
+    }
+    
+    console.log('✅ [CANDIDATE_STATS] Candidat trouvé:', candidate.name, 'ID:', candidate.id);
+    
+    // Récupérer les vraies données de vues depuis les tables (même logique que profile-stats)
     let profileViews = 0;
     let profileViewsToday = 0;
     let viewsLast7Days = 0;
@@ -2102,9 +2117,9 @@ app.get('/api/candidates/:candidateId/stats', async (req, res) => {
     
     try {
       const [viewsData, viewsTodayData, dailyViewsData] = await Promise.all([
-        getProfileViewsStats(candidateId),
-        getProfileViewsToday(candidateId),
-        getProfileViewsByDay(candidateId)
+        getProfileViewsStats(candidate.id),
+        getProfileViewsToday(candidate.id),
+        getProfileViewsByDay(candidate.id)
       ]);
       
       profileViews = viewsData[0]?.total_views || 0;
@@ -3995,6 +4010,155 @@ app.get('/api/matching/score/:candidateId/:jobId', requireRole(['candidate', 're
     res.status(500).json({ error: 'Erreur lors du calcul du score' });
   }
 });
+
+// ========================================
+// FONCTIONS DE STATISTIQUES DE PROFIL
+// ========================================
+
+// Fonction pour récupérer le total des vues d'un profil
+async function getProfileViewsStats(candidateId) {
+  try {
+    const { data, error } = await supabase
+      .from('profile_tracking')
+      .select('*')
+      .eq('candidate_id', candidateId);
+    
+    if (error) {
+      console.error('Erreur lors de la récupération des statistiques de vues:', error);
+      return [{ total_views: 0 }];
+    }
+    
+    return [{ total_views: data.length }];
+  } catch (error) {
+    console.error('Erreur dans getProfileViewsStats:', error);
+    return [{ total_views: 0 }];
+  }
+}
+
+// Fonction pour récupérer les vues d'aujourd'hui
+async function getProfileViewsToday(candidateId) {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const { data, error } = await supabase
+      .from('profile_tracking')
+      .select('*')
+      .eq('candidate_id', candidateId)
+      .gte('viewed_at', today.toISOString())
+      .lt('viewed_at', tomorrow.toISOString());
+    
+    if (error) {
+      console.error('Erreur lors de la récupération des vues d\'aujourd\'hui:', error);
+      return 0;
+    }
+    
+    return data.length;
+  } catch (error) {
+    console.error('Erreur dans getProfileViewsToday:', error);
+    return 0;
+  }
+}
+
+// Fonction pour récupérer les vues par jour (7 derniers jours)
+async function getProfileViewsByDay(candidateId) {
+  try {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const { data, error } = await supabase
+      .from('profile_tracking')
+      .select('viewed_at')
+      .eq('candidate_id', candidateId)
+      .gte('viewed_at', sevenDaysAgo.toISOString())
+      .order('viewed_at', { ascending: true });
+    
+    if (error) {
+      console.error('Erreur lors de la récupération des vues par jour:', error);
+      return [];
+    }
+    
+    // Grouper par jour
+    const dailyViews = {};
+    data.forEach(view => {
+      const date = new Date(view.viewed_at).toISOString().split('T')[0];
+      dailyViews[date] = (dailyViews[date] || 0) + 1;
+    });
+    
+    // Convertir en format attendu
+    const result = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      result.push({
+        date: dateStr,
+        views: dailyViews[dateStr] || 0
+      });
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Erreur dans getProfileViewsByDay:', error);
+    return [];
+  }
+}
+
+// Fonction pour récupérer les vues par période (pour les graphiques)
+async function getProfileViewsByPeriod(candidateId, period = 'week', offset = 0) {
+  try {
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() - (offset * 7)); // offset en semaines
+    
+    let startDate = new Date(endDate);
+    if (period === 'week') {
+      startDate.setDate(startDate.getDate() - 7);
+    } else if (period === 'month') {
+      startDate.setMonth(startDate.getMonth() - 1);
+    } else if (period === 'year') {
+      startDate.setFullYear(startDate.getFullYear() - 1);
+    }
+    
+    const { data, error } = await supabase
+      .from('profile_tracking')
+      .select('viewed_at')
+      .eq('candidate_id', candidateId)
+      .gte('viewed_at', startDate.toISOString())
+      .lt('viewed_at', endDate.toISOString())
+      .order('viewed_at', { ascending: true });
+    
+    if (error) {
+      console.error('Erreur lors de la récupération des vues par période:', error);
+      return [];
+    }
+    
+    // Grouper par jour
+    const dailyViews = {};
+    data.forEach(view => {
+      const date = new Date(view.viewed_at).toISOString().split('T')[0];
+      dailyViews[date] = (dailyViews[date] || 0) + 1;
+    });
+    
+    // Convertir en format attendu
+    const result = [];
+    const currentDate = new Date(startDate);
+    while (currentDate < endDate) {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      result.push({
+        date: dateStr,
+        views: dailyViews[dateStr] || 0
+      });
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Erreur dans getProfileViewsByPeriod:', error);
+    return [];
+  }
+}
 
 // POST /api/matching/feedback - Enregistre le feedback sur les recommandations
 app.post('/api/matching/feedback', authenticateUser, async (req, res) => {
