@@ -22,6 +22,7 @@ export default function CandidateProfileGuard({ children }) {
         // Utiliser le helper d'authentification pour faire l'appel API
         const response = await authenticatedFetch(buildApiUrl('/api/candidates/'));
 
+        console.log('Response details:', {
           status: response.status,
           statusText: response.statusText,
           ok: response.ok
