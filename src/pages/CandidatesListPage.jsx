@@ -29,10 +29,6 @@ export default function CandidatesListPage() {
 
   useEffect(() => setPage(1), [q, remote, experience, location, salaryRange, sortBy]);
 
-  // Récupérer les favoris en batch pour optimiser les performances
-  const candidateIds = candidates.map(c => c.id).filter(Boolean);
-  const { favorites } = useFavoritesBatch(candidateIds);
-
   const toggleIn = (arr, setArr, v) => setArr(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
   // Utiliser l'API pour récupérer les candidats avec pagination côté serveur
@@ -44,6 +40,10 @@ export default function CandidatesListPage() {
     salaryRange,
     sortBy
   }, page, pageSize);
+
+  // Récupérer les favoris en batch pour optimiser les performances (après avoir les IDs)
+  const candidateIds = (candidates || []).map(c => c.id).filter(Boolean);
+  const { favorites } = useFavoritesBatch(candidateIds);
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   // Plus besoin de pagination côté client - déjà fait côté serveur

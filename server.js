@@ -96,7 +96,6 @@ import {
 import { metricsMiddleware } from './src/middleware/metricsMiddleware.js';
 import { logger, requestLogger } from './src/logger/logger.js';
 import { redisCacheMiddleware, redisCache } from './src/cache/redisCache.js';
-import { connectRedis, checkRedisHealth } from './src/config/redis.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
