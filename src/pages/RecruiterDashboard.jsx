@@ -42,7 +42,6 @@ import AppointmentIndicator from '../components/AppointmentIndicator';
 import PublishJobForm from '../components/PublishJobForm';
 import EditJobForm from '../components/EditJobForm';
 import MatchingDashboard from '../components/MatchingDashboard';
-import PlanManager from '../components/PlanManager';
 import { loadAppointments } from '../services/appointmentsApi';
 import { buildApiUrl } from '../config/api';
 
@@ -1379,9 +1378,53 @@ export default function RecruiterDashboard() {
                 transition={{ delay: 0.2 }}
                 className="space-y-8"
               >
-                <PlanManager candidate={user} onPlanUpdate={(planType) => {
-                  console.log('Plan mis à jour:', planType);
-                }} />
+                <div className="bg-white rounded-3xl shadow-xl border border-gray-100">
+                  <div className="p-8 border-b border-gray-200">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+                        <CreditCard className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Mon Plan</h2>
+                        <p className="text-gray-600">Gérez votre abonnement et vos fonctionnalités</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-8">
+                    {/* Plan actuel */}
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            Plan Gratuit
+                          </h3>
+                          <p className="text-gray-600">
+                            Accès aux fonctionnalités de base
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-blue-600">
+                            0€
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex justify-center gap-4 mt-6">
+                      <button
+                        onClick={() => window.open('/pricing', '_blank')}
+                        className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                      >
+                        Passer à Premium
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             )}
 
