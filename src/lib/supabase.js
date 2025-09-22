@@ -3,7 +3,9 @@ import { createClient } from '@supabase/supabase-js'
 // Configuration Supabase centralisée - Utilisation des variables d'environnement
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
-const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_KEY
+
+// SUPABASE_SERVICE_KEY n'est disponible que côté serveur (sécurisé)
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY
 
 // Vérification que les variables d'environnement sont définies
 if (!supabaseUrl || !supabaseAnonKey) {
@@ -13,9 +15,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Configuration Supabase incomplète - vérifiez vos variables d\'environnement')
 }
 
-if (!supabaseServiceKey) {
-  console.warn('⚠️ SUPABASE_SERVICE_KEY manquante - certaines fonctionnalités admin peuvent ne pas fonctionner')
-}
+// Note: SUPABASE_SERVICE_KEY n'est pas disponible côté client (c'est normal et sécurisé)
 
 // Client Supabase principal (pour le frontend avec auth)
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
