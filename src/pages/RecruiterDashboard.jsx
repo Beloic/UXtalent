@@ -1443,6 +1443,34 @@ export default function RecruiterDashboard() {
                               : 'Plan personnalisé'
                             }
                           </p>
+                          {/* Statut de l'abonnement */}
+                          {recruiter?.subscription_status && (
+                            <div className="flex items-center gap-2 mt-3">
+                              <div className={`w-3 h-3 rounded-full ${
+                                recruiter.subscription_status === 'active' ? 'bg-green-500' :
+                                recruiter.subscription_status === 'trial' ? 'bg-yellow-500' :
+                                recruiter.subscription_status === 'expired' ? 'bg-red-500' :
+                                'bg-gray-500'
+                              }`}></div>
+                              <span className="text-sm font-medium text-gray-700">
+                                Statut: {recruiter.subscription_status === 'active' ? 'Actif' :
+                                         recruiter.subscription_status === 'trial' ? 'Essai' :
+                                         recruiter.subscription_status === 'expired' ? 'Expiré' :
+                                         recruiter.subscription_status}
+                              </span>
+                            </div>
+                          )}
+                          {/* Date de fin d'abonnement */}
+                          {recruiter?.subscription_end_date && (
+                            <p className="text-sm text-gray-500 mt-2">
+                              Expire le {new Date(recruiter.subscription_end_date).toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </p>
+                          )}
                         </div>
                         <div className="text-right">
                           <div className="text-2xl font-bold text-blue-600">
@@ -1455,6 +1483,27 @@ export default function RecruiterDashboard() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Statut d'annulation */}
+                    {cancellationInfo?.cancellation_scheduled && (
+                      <div className="mb-8 bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <AlertCircle className="w-5 h-5 text-orange-600" />
+                          <span className="text-orange-800 font-semibold">Annulation programmée</span>
+                        </div>
+                        <p className="text-orange-700 text-sm">
+                          Vous perdrez l'accès aux fonctionnalités premium le{' '}
+                          <span className="font-semibold">
+                            {new Date(cancellationInfo.access_until).toLocaleDateString('fr-FR', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </span>
+                        </p>
+                      </div>
+                    )}
 
                     {/* Actions */}
                     <div className="flex justify-center gap-4 mt-6">
