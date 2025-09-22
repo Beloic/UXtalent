@@ -117,9 +117,13 @@ export const AuthProvider = ({ children }) => {
             await createCandidateProfileIfNotExists(data.user)
           } else if (userData?.role === 'recruiter') {
             console.log('🏢 Création du profil recruteur pour:', data.user.email)
+            // Attendre un peu que la session soit disponible après signUp
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            
             // Utiliser l'API backend pour créer le profil recruteur (auto-bootstrap)
             const { data: { session } } = await supabase.auth.getSession()
             if (session) {
+              console.log('🔑 Session disponible, appel API...')
               const resp = await fetch(buildApiUrl('/api/recruiters/me'), {
                 method: 'GET',
                 headers: {
@@ -132,7 +136,11 @@ export const AuthProvider = ({ children }) => {
                 console.log('✅ Profil recruteur créé via API:', profile?.id)
               } else {
                 console.warn('⚠️ Appel /api/recruiters/me non OK pendant inscription:', resp.status)
+                const errorText = await resp.text()
+                console.log('   Détails:', errorText)
               }
+            } else {
+              console.warn('⚠️ Session non disponible après signUp')
             }
           }
         } catch (profileError) {
