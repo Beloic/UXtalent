@@ -725,8 +725,7 @@ export default function RecruiterDashboard() {
 
   return (
     <RoleGuard allowedRoles={['recruiter']}>
-      <RecruiterSubscriptionGuard recruiter={recruiter}>
-        <div className="min-h-screen py-8">
+      <div className="min-h-screen py-8">
         <div className="max-w-7xl mx-auto px-4">
           {/* Header */}
           <motion.div 
@@ -865,14 +864,15 @@ export default function RecruiterDashboard() {
           {/* Contenu des onglets */}
           <AnimatePresence mode="wait">
             {activeTab === 'favorites' && (
-              <motion.div 
-                key="favorites"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: 0.2 }}
-                className="bg-white rounded-3xl shadow-xl border border-gray-100"
-              >
+              <RecruiterSubscriptionGuard recruiter={recruiter}>
+                <motion.div 
+                  key="favorites"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ delay: 0.2 }}
+                  className="bg-white rounded-3xl shadow-xl border border-gray-100"
+                >
                 <div className="p-8 border-b border-gray-200">
                   <div className="flex items-center justify-between">
                     <div>
@@ -1029,16 +1029,18 @@ export default function RecruiterDashboard() {
                   </div>
                 )}
               </motion.div>
+              </RecruiterSubscriptionGuard>
             )}
 
             {activeTab === 'appointments' && (
-              <motion.div 
-                key="appointments"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: 0.2 }}
-              >
+              <RecruiterSubscriptionGuard recruiter={recruiter}>
+                <motion.div 
+                  key="appointments"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ delay: 0.2 }}
+                >
                 <div className="mb-8">
                   <div className="flex items-center justify-between">
                     <div>
@@ -1096,6 +1098,7 @@ export default function RecruiterDashboard() {
                   </div>
                 )}
               </motion.div>
+              </RecruiterSubscriptionGuard>
             )}
 
             {activeTab === 'myjobs' && (
@@ -1396,19 +1399,22 @@ export default function RecruiterDashboard() {
                   </div>
                 )}
               </motion.div>
+              </RecruiterSubscriptionGuard>
             )}
 
             {activeTab === 'matching' && (
-              <motion.div 
-                key="matching"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: 0.2 }}
-                className="space-y-8"
+              <RecruiterSubscriptionGuard recruiter={recruiter}>
+                <motion.div 
+                  key="matching"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ delay: 0.2 }}
+                  className="space-y-8"
               >
                 <MatchingDashboard recruiterId={user?.id} />
               </motion.div>
+              </RecruiterSubscriptionGuard>
             )}
 
             {activeTab === 'plan' && (
@@ -1601,7 +1607,6 @@ export default function RecruiterDashboard() {
           </div>
         )}
         </div>
-      </RecruiterSubscriptionGuard>
     </RoleGuard>
   );
 }

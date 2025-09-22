@@ -2,7 +2,7 @@ import React from 'react';
 import { AlertCircle, CreditCard, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-// Composant pour bloquer l'accès aux recruteurs avec abonnement annulé
+// Composant pour bloquer l'accès aux fonctionnalités spécifiques des recruteurs avec abonnement annulé
 export const RecruiterSubscriptionGuard = ({ 
   children, 
   recruiter,

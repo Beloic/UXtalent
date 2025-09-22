@@ -7,6 +7,8 @@ import ToggleChip from "../components/ToggleChip";
 import Pagination from "../components/Pagination";
 import { useCandidates } from "../services/candidatesApi";
 import { usePermissions } from "../hooks/usePermissions";
+import { RecruiterSubscriptionGuard } from "../components/RecruiterSubscriptionGuard";
+import { useRecruiter } from "../hooks/useRecruiter";
 
 const EXPERIENCE_ORDER = { Junior: 1, Mid: 2, Senior: 3, Lead: 4 };
 
@@ -23,6 +25,7 @@ export default function CandidatesListPage() {
   const pageSize = 8;
   
   const { isRecruiter, isCandidate } = usePermissions();
+  const { recruiter } = useRecruiter();
 
   useEffect(() => setPage(1), [q, remote, experience, location, salaryRange, sortBy]);
 
@@ -44,8 +47,9 @@ export default function CandidatesListPage() {
   const hasActiveFilters = remote.length || experience.length || location.length || salaryRange.length || q;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <RecruiterSubscriptionGuard recruiter={recruiter}>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Titre simple */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-4">
@@ -254,6 +258,7 @@ export default function CandidatesListPage() {
           </section>
         </div>
       </div>
-    </div>
+      </div>
+    </RecruiterSubscriptionGuard>
   );
 }
