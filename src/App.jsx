@@ -1,34 +1,57 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
+import CandidateProfileGuard from "./components/CandidateProfileGuard";
+import { RoleGuard } from "./components/RoleGuard";
+import LoadingSpinner from "./components/LoadingSpinner";
+
+// Composants légers - chargés immédiatement
 import LandingPage from "./pages/LandingPage";
 import RecruiterLandingPage from "./pages/RecruiterLandingPage";
-import CandidatesListPage from "./pages/CandidatesListPage";
-import CandidateDetailPage from "./pages/CandidateDetailPage";
-import AddProfilePage from "./pages/AddProfilePage";
-import MyProfilePage from "./pages/MyProfilePage";
-import ProfileStatsPage from "./pages/ProfileStatsPage";
-import RecruiterDashboard from "./pages/RecruiterDashboard";
-import SearchAnalysisPage from "./pages/SearchAnalysisPage";
-import ForumPage from "./pages/ForumPage";
-import ForumPostPage from "./pages/ForumPostPage";
-import JobsPage from "./pages/JobsPage";
-import JobDetailPage from "./pages/JobDetailPage";
-import LegalPage from "./pages/LegalPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import FAQPage from "./pages/FAQPage";
-import PricingPage from "./pages/PricingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ConfirmEmailPage from "./pages/ConfirmEmailPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import PublicRoute from "./components/PublicRoute";
-import CandidateProfileGuard from "./components/CandidateProfileGuard";
-import { RoleGuard } from "./components/RoleGuard";
-import PublishJobPage from "./pages/PublishJobPage";
+import LegalPage from "./pages/LegalPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import FAQPage from "./pages/FAQPage";
+import PricingPage from "./pages/PricingPage";
+
+// Composants lourds - chargés de manière paresseuse
+const CandidatesListPage = lazy(() => import("./pages/CandidatesListPage"));
+const CandidateDetailPage = lazy(() => import("./pages/CandidateDetailPage"));
+const AddProfilePage = lazy(() => import("./pages/AddProfilePage"));
+const MyProfilePage = lazy(() => import("./pages/MyProfilePage"));
+const ProfileStatsPage = lazy(() => import("./pages/ProfileStatsPage"));
+const RecruiterDashboard = lazy(() => import("./pages/RecruiterDashboard"));
+const SearchAnalysisPage = lazy(() => import("./pages/SearchAnalysisPage"));
+const ForumPage = lazy(() => import("./pages/ForumPage"));
+const ForumPostPage = lazy(() => import("./pages/ForumPostPage"));
+const JobsPage = lazy(() => import("./pages/JobsPage"));
+const JobDetailPage = lazy(() => import("./pages/JobDetailPage"));
+const PublishJobPage = lazy(() => import("./pages/PublishJobPage"));
+
+// Composants de chargement spécialisés pour différents contextes
+const PageLoadingSpinner = ({ message }) => (
+  <LoadingSpinner message={message} />
+);
+
+const DashboardLoadingSpinner = () => (
+  <LoadingSpinner message="Chargement du tableau de bord..." />
+);
+
+const ProfileLoadingSpinner = () => (
+  <LoadingSpinner message="Chargement du profil..." />
+);
+
+const CandidatesLoadingSpinner = () => (
+  <LoadingSpinner message="Chargement des candidats..." />
+);
+
 // AdminDashboard supprimé
 
 export default function App() {
@@ -114,14 +137,18 @@ export default function App() {
         <Route path="/candidates" element={
           <Layout>
             <ProtectedRoute>
-              <CandidatesListPage />
+              <Suspense fallback={<CandidatesLoadingSpinner />}>
+                <CandidatesListPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/candidates/:id" element={
           <Layout>
             <ProtectedRoute>
-              <CandidateDetailPage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du profil candidat..." />}>
+                <CandidateDetailPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
@@ -129,7 +156,9 @@ export default function App() {
         <Route path="/add-profile" element={
           <Layout>
             <ProtectedRoute>
-              <AddProfilePage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du formulaire de profil..." />}>
+                <AddProfilePage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
@@ -138,35 +167,45 @@ export default function App() {
         <Route path="/my-profile/profile" element={
           <Layout>
             <ProtectedRoute>
-              <MyProfilePage />
+              <Suspense fallback={<ProfileLoadingSpinner />}>
+                <MyProfilePage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/my-profile/stats" element={
           <Layout>
             <ProtectedRoute>
-              <MyProfilePage />
+              <Suspense fallback={<ProfileLoadingSpinner />}>
+                <MyProfilePage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/my-profile/plan" element={
           <Layout>
             <ProtectedRoute>
-              <MyProfilePage />
+              <Suspense fallback={<ProfileLoadingSpinner />}>
+                <MyProfilePage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/my-profile/offer" element={
           <Layout>
             <ProtectedRoute>
-              <MyProfilePage />
+              <Suspense fallback={<ProfileLoadingSpinner />}>
+                <MyProfilePage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/profile-stats" element={
           <Layout>
             <ProtectedRoute>
-              <ProfileStatsPage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement des statistiques..." />}>
+                <ProfileStatsPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
@@ -175,77 +214,99 @@ export default function App() {
         <Route path="/recruiter-dashboard/favorites" element={
           <Layout>
             <ProtectedRoute>
-              <RecruiterDashboard />
+              <Suspense fallback={<DashboardLoadingSpinner />}>
+                <RecruiterDashboard />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/recruiter-dashboard/appointments" element={
           <Layout>
             <ProtectedRoute>
-              <RecruiterDashboard />
+              <Suspense fallback={<DashboardLoadingSpinner />}>
+                <RecruiterDashboard />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/recruiter-dashboard/myjobs" element={
           <Layout>
             <ProtectedRoute>
-              <RecruiterDashboard />
+              <Suspense fallback={<DashboardLoadingSpinner />}>
+                <RecruiterDashboard />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/recruiter-dashboard/matching" element={
           <Layout>
             <ProtectedRoute>
-              <RecruiterDashboard />
+              <Suspense fallback={<DashboardLoadingSpinner />}>
+                <RecruiterDashboard />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/recruiter-dashboard/plan" element={
           <Layout>
             <ProtectedRoute>
-              <RecruiterDashboard />
+              <Suspense fallback={<DashboardLoadingSpinner />}>
+                <RecruiterDashboard />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/recruiter/search-analysis/:searchId" element={
           <Layout>
             <ProtectedRoute>
-              <SearchAnalysisPage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement de l'analyse de recherche..." />}>
+                <SearchAnalysisPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/forum" element={
           <Layout>
             <ProtectedRoute>
-              <ForumPage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du forum..." />}>
+                <ForumPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/forum/:id" element={
           <Layout>
             <ProtectedRoute>
-              <ForumPostPage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du post..." />}>
+                <ForumPostPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/jobs" element={
           <Layout>
             <ProtectedRoute>
-              <JobsPage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement des offres d'emploi..." />}>
+                <JobsPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/jobs/new" element={
           <Layout>
             <ProtectedRoute>
-              <PublishJobPage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du formulaire de publication..." />}>
+                <PublishJobPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />
         <Route path="/jobs/:id" element={
           <Layout>
             <ProtectedRoute>
-              <JobDetailPage />
+              <Suspense fallback={<PageLoadingSpinner message="Chargement de l'offre d'emploi..." />}>
+                <JobDetailPage />
+              </Suspense>
             </ProtectedRoute>
           </Layout>
         } />

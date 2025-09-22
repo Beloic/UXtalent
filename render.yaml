@@ -14,3 +14,18 @@ services:
         sync: false
       - key: UPSTASH_REDIS_REST_TOKEN
         sync: false
+      # Configuration Stripe - À CONFIGURER dans Render Dashboard
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: VITE_STRIPE_PREMIUM_CANDIDAT_LINK
+        sync: false
+      - key: VITE_STRIPE_ELITE_CANDIDAT_LINK
+        sync: false
+      - key: VITE_STRIPE_STARTER_LINK
+        sync: false
+      - key: VITE_STRIPE_MAX_LINK
+        sync: false
+      - key: ADMIN_TOKEN_SECRET
+        sync: false
