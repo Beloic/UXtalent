@@ -5,7 +5,7 @@ import OptimizedCandidateCard from "../components/OptimizedCandidateCard";
 import SignupCard from "../components/SignupCard";
 import ToggleChip from "../components/ToggleChip";
 import Pagination from "../components/Pagination";
-import { useCandidates, useFavoritesBatch } from "../services/candidatesApi";
+import { useCandidates } from "../services/candidatesApi";
 import { usePermissions } from "../hooks/usePermissions";
 import { RecruiterSubscriptionGuard } from "../components/RecruiterSubscriptionGuard";
 import { useRecruiter } from "../hooks/useRecruiter";
@@ -41,9 +41,6 @@ export default function CandidatesListPage() {
     sortBy
   }, page, pageSize);
 
-  // Récupérer les favoris en batch pour optimiser les performances (après avoir les IDs)
-  const candidateIds = (candidates || []).map(c => c.id).filter(Boolean);
-  const { favorites } = useFavoritesBatch(candidateIds);
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   // Plus besoin de pagination côté client - déjà fait côté serveur
@@ -51,29 +48,6 @@ export default function CandidatesListPage() {
 
   const hasActiveFilters = remote.length || experience.length || location.length || salaryRange.length || q;
 
-  // Fonction pour gérer les favoris
-  const handleToggleFavorite = async (candidateId, isFavorited) => {
-    try {
-      const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
-      
-      if (!token) return;
-
-      const response = await fetch(`https://ux-jobs-pro-backend.onrender.com/api/recruiter/favorites/${candidateId}`, {
-        method: isFavorited ? 'POST' : 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Erreur lors de la modification des favoris');
-      }
-    } catch (error) {
-      console.error('Erreur lors de la modification des favoris:', error);
-      throw error;
-    }
-  };
 
   return (
     <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
@@ -250,12 +224,10 @@ export default function CandidatesListPage() {
                   // Plus de floutage - tous les profils approuvés sont visibles en clair
                   
                   return (
-                    <OptimizedCandidateCard 
+                    <OptimizedCandidateCard
                       key={candidate.id} 
                       candidate={candidate} 
                       compact 
-                      isFavorited={favorites.has(candidate.id)}
-                      onToggleFavorite={handleToggleFavorite}
                     />
                   );
                 })}
