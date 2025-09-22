@@ -4,16 +4,12 @@ import { Check, Users, Briefcase, Star, ArrowRight, CheckCircle } from "lucide-r
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
 import { useRecruiter } from "../hooks/useRecruiter";
-import { buildApiUrl } from "../config/api";
-import { supabase } from "../lib/supabase";
 
 export default function PricingPage() {
   const [selectedTab, setSelectedTab] = useState('candidates');
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter } = usePermissions();
   const { recruiter, getPlanInfo } = useRecruiter();
-  const [userPlan, setUserPlan] = useState(null);
-  const [isLoadingPlan, setIsLoadingPlan] = useState(false);
 
   const recruiterPlans = [
     {
@@ -127,78 +123,38 @@ export default function PricingPage() {
 
   const currentPlans = selectedTab === 'recruiters' ? recruiterPlans : candidatePlans;
 
-  // Fonction pour récupérer le plan de l'utilisateur
-  const fetchUserPlan = async () => {
-    if (!isAuthenticated || !user?.email) return;
-    
-    setIsLoadingPlan(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const response = await fetch(buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`), {
-        headers: {
-          'Authorization': `Bearer ${session?.access_token}`
-        }
-      });
-      
-      if (response.ok) {
-        const responseData = await response.json();
-        // Gérer les deux formats de réponse possibles
-        const userProfile = responseData.candidates?.[0] || responseData;
-        if (userProfile) {
-          const plan = userProfile.plan || userProfile.planType || userProfile.plan_type || 'free';
-          setUserPlan(plan);
-          console.log('✅ Plan utilisateur récupéré dans PricingPage:', plan);
-          console.log('🔍 [PRICING] Données complètes utilisateur:', userProfile);
-        }
-      }
-    } catch (error) {
-      console.error('Erreur lors de la récupération du plan:', error);
-    } finally {
-      setIsLoadingPlan(false);
+  // Fonction pour obtenir le plan actuel de l'utilisateur
+  const getCurrentUserPlan = () => {
+    if (isRecruiter && recruiter) {
+      return recruiter.plan_type || 'starter';
     }
+    // Pour les candidats, on peut utiliser les métadonnées utilisateur ou par défaut 'free'
+    return user?.user_metadata?.plan || 'free';
   };
 
-  // Charger le plan de l'utilisateur au montage du composant
-  useEffect(() => {
-    fetchUserPlan();
-  }, [isAuthenticated, user]);
-
-  // Écouter les changements de plan depuis d'autres composants
-  useEffect(() => {
-    const handlePlanUpdate = (event) => {
-      console.log('🎯 Événement planUpdated reçu dans PricingPage:', event.detail);
-      setUserPlan(event.detail.plan || event.detail.planType || 'free');
-    };
-
-    window.addEventListener('planUpdated', handlePlanUpdate);
-    return () => {
-      window.removeEventListener('planUpdated', handlePlanUpdate);
-    };
-  }, []);
 
   // Fonction pour vérifier si un plan est le plan actuel de l'utilisateur
   const isCurrentPlan = (planName) => {
-    // Pour les recruteurs, utiliser les données du hook useRecruiter
-    if (isRecruiter && recruiter) {
-      const recruiterPlanType = recruiter.plan_type;
+    const currentPlan = getCurrentUserPlan();
+    
+    // Pour les recruteurs
+    if (isRecruiter) {
       const planMapping = {
         'Starter': 'starter',
         'Max': 'max',
         'Sur-mesure': 'premium'
       };
-      return planMapping[planName] === recruiterPlanType;
+      return planMapping[planName] === currentPlan;
     }
     
-    // Pour les candidats, utiliser l'ancienne logique
-    if (!userPlan) return false;
-    
+    // Pour les candidats
     const planMapping = {
       'Gratuit': 'free',
       'Premium': 'premium',
       'Pro': 'pro'
     };
     
-    return planMapping[planName] === userPlan;
+    return planMapping[planName] === currentPlan;
   };
 
   return (
