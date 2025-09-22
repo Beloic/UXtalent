@@ -14,7 +14,7 @@ import { supabaseAdmin } from '../config/supabase';
 export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
-  const { recruiter, stats, permissions, loading: recruiterLoading, getPlanInfo, canPostJob, canContactCandidate, getRemainingJobPosts, getRemainingCandidateContacts } = useRecruiter();
+  const { recruiter, stats, permissions, loading: recruiterLoading, getPlanInfo, canPostJob, canContactCandidate } = useRecruiter();
   const location = useLocation();
 
   // Helper function pour gérer les compétences de manière sécurisée
@@ -2841,41 +2841,15 @@ export default function MyProfilePage() {
                           )}
                         </div>
 
-                        {/* Quotas et utilisation */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                            <div className="text-center">
-                              <div className="text-3xl font-bold text-blue-600 mb-2">
-                                {getRemainingJobPosts()}
-                              </div>
-                              <div className="text-gray-600 mb-2">Offres restantes</div>
-                              <div className="text-sm text-gray-500">
-                                {recruiter?.total_jobs_posted || 0} / {getPlanInfo().maxJobPosts} utilisées
-                              </div>
+                        {/* Informations du plan sans limitations */}
+                        <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-green-600 mb-2">
+                              Accès illimité
                             </div>
-                          </div>
-                          
-                          <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                            <div className="text-center">
-                              <div className="text-3xl font-bold text-green-600 mb-2">
-                                {getRemainingCandidateContacts()}
-                              </div>
-                              <div className="text-gray-600 mb-2">Contacts restants</div>
-                              <div className="text-sm text-gray-500">
-                                {recruiter?.total_candidate_contacts || 0} / {getPlanInfo().maxCandidateContacts} utilisés
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                            <div className="text-center">
-                              <div className="text-3xl font-bold text-purple-600 mb-2">
-                                {getPlanInfo().maxFeaturedJobs - (recruiter?.total_featured_jobs || 0)}
-                              </div>
-                              <div className="text-gray-600 mb-2">Mises en avant restantes</div>
-                              <div className="text-sm text-gray-500">
-                                {recruiter?.total_featured_jobs || 0} / {getPlanInfo().maxFeaturedJobs} utilisées
-                              </div>
+                            <div className="text-gray-600 mb-4">Aucune limitation sur votre plan</div>
+                            <div className="text-sm text-gray-500">
+                              Vous pouvez publier autant d'offres que vous souhaitez et contacter tous les candidats
                             </div>
                           </div>
                         </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { usePermissions } from './usePermissions';
-import { fetchRecruiterProfile, fetchRecruiterStats, fetchRecruiterPermissions, incrementRecruiterJobPosts, incrementRecruiterCandidateContacts } from '../services/recruitersApi';
+import { fetchRecruiterProfile, fetchRecruiterStats, fetchRecruiterPermissions } from '../services/recruitersApi';
 
 export const useRecruiter = () => {
   const { user, isAuthenticated } = useAuth();
@@ -63,37 +63,27 @@ export const useRecruiter = () => {
     
     if (!recruiter) {
       console.log('❌ [getPlanInfo] Pas de données recruteur, retour plan par défaut');
-      return { name: 'N/A', maxJobPosts: 0, maxCandidateContacts: 0, maxFeaturedJobs: 0 };
+      return { name: 'N/A' };
     }
     
-    // Map plan_type to display name and limits
+    // Map plan_type to display name (sans limitations)
     switch (recruiter.plan_type) {
       case 'starter':
         console.log('✅ [getPlanInfo] Plan Starter détecté');
-        return { name: 'Starter', maxJobPosts: 5, maxCandidateContacts: 100, maxFeaturedJobs: 1 };
+        return { name: 'Starter' };
       case 'max':
         console.log('✅ [getPlanInfo] Plan Max détecté');
-        return { name: 'Max', maxJobPosts: 50, maxCandidateContacts: 1000, maxFeaturedJobs: 5 };
+        return { name: 'Max' };
       case 'premium':
         console.log('✅ [getPlanInfo] Plan Premium détecté');
-        return { name: 'Premium', maxJobPosts: 200, maxCandidateContacts: 5000, maxFeaturedJobs: 20 };
+        return { name: 'Premium' };
       default:
         console.log('⚠️ [getPlanInfo] Plan inconnu:', recruiter.plan_type, 'retour plan gratuit');
-        return { name: 'Gratuit', maxJobPosts: 0, maxCandidateContacts: 0, maxFeaturedJobs: 0 };
+        return { name: 'Gratuit' };
     }
   }, [recruiter]);
 
-  const getRemainingJobPosts = useCallback(() => {
-    if (!recruiter) return 0;
-    const plan = getPlanInfo();
-    return Math.max(0, plan.maxJobPosts - (recruiter.total_job_posts || 0));
-  }, [recruiter, getPlanInfo]);
-
-  const getRemainingCandidateContacts = useCallback(() => {
-    if (!recruiter) return 0;
-    const plan = getPlanInfo();
-    return Math.max(0, plan.maxCandidateContacts - (recruiter.total_candidate_contacts || 0));
-  }, [recruiter, getPlanInfo]);
+  // Fonctions de quotas supprimées - plus de limitations
 
   const canPostJob = useCallback(() => {
     return permissions?.canPostJob || false;
@@ -103,17 +93,7 @@ export const useRecruiter = () => {
     return permissions?.canContactCandidate || false;
   }, [permissions]);
 
-  const incrementJobPosts = useCallback(async () => {
-    if (!recruiter) return;
-    await incrementRecruiterJobPosts(recruiter.id);
-    loadRecruiterData(); // Refresh data
-  }, [recruiter, loadRecruiterData]);
-
-  const incrementCandidateContacts = useCallback(async () => {
-    if (!recruiter) return;
-    await incrementRecruiterCandidateContacts(recruiter.id);
-    loadRecruiterData(); // Refresh data
-  }, [recruiter, loadRecruiterData]);
+  // Fonctions d'incrémentation des quotas supprimées - plus de limitations
 
   return {
     recruiter,
@@ -122,12 +102,8 @@ export const useRecruiter = () => {
     loading,
     error,
     getPlanInfo,
-    getRemainingJobPosts,
-    getRemainingCandidateContacts,
     canPostJob,
     canContactCandidate,
-    incrementJobPosts,
-    incrementCandidateContacts,
     refreshRecruiterData: loadRecruiterData,
   };
 };
