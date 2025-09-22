@@ -245,6 +245,7 @@ export default function MyProfilePage() {
   // Rafraîchir le plan périodiquement pour détecter les changements
   useEffect(() => {
     if (!isAuthenticated || !user?.email) {
+      console.log('Auth check:', {
         isAuthenticated,
         hasEmail: !!user?.email
       });
@@ -274,6 +275,7 @@ export default function MyProfilePage() {
           }
         });
         
+        console.log('Response details:', {
           status: response.status,
           ok: response.ok,
           headers: Object.fromEntries(response.headers.entries())
@@ -292,6 +294,7 @@ export default function MyProfilePage() {
           const userProfile = responseData.candidates?.[0] || responseData;
           const newPlan = userProfile?.plan || userProfile?.planType || userProfile?.plan_type || 'free';
           
+          console.log('Plan comparison:', {
             userProfile: userProfile,
             currentPlan: candidatePlan,
             newPlan: newPlan,
@@ -301,6 +304,7 @@ export default function MyProfilePage() {
           });
           
           if (userProfile && newPlan !== candidatePlan) {
+            console.log('Plan changed:', {
               ancienPlan: candidatePlan,
               nouveauPlan: newPlan
             });
@@ -311,9 +315,7 @@ export default function MyProfilePage() {
             window.dispatchEvent(new CustomEvent('planUpdated', {
               detail: { plan: newPlan }
             }));
-          } else {
           }
-        } else {
         }
       } catch (error) {
         // Gestion spéciale pour les erreurs de parsing JSON
@@ -403,6 +405,7 @@ export default function MyProfilePage() {
         setCandidateStatus(status);
         setCandidatePlan(plan);
         
+        console.log('Profile loaded:', {
           status: status,
           plan: plan,
           planType: candidate.planType,
