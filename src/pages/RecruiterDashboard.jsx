@@ -31,7 +31,8 @@ import {
   Pause,
   Play,
   TrendingUp,
-  CreditCard
+  CreditCard,
+  AlertCircle
 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
