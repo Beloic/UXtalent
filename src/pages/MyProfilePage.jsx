@@ -2745,8 +2745,13 @@ export default function MyProfilePage() {
                       </p>
                       <button
                         onClick={() => {
-                          loadExistingProfile();
-                          }}
+                          if (isRecruiter) {
+                            // Recharger les données du recruteur
+                            window.location.reload();
+                          } else {
+                            loadExistingProfile();
+                          }
+                        }}
                         disabled={isRefreshingPlan}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 mx-auto ${
                           isRefreshingPlan 
@@ -2768,110 +2773,238 @@ export default function MyProfilePage() {
                       </button>
                     </div>
 
-                    {/* Plan actuel */}
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">
-                            Plan {candidatePlan === 'free' ? 'Gratuit' : candidatePlan === 'premium' ? 'Premium' : candidatePlan === 'elite' ? 'Elite' : candidatePlan}
-                            {cancellationInfo?.cancellation_scheduled && (
-                              <span className="ml-2 text-sm font-normal text-orange-600">
-                                (Annulé)
-                              </span>
-                            )}
-                          </h3>
-                          <p className="text-gray-600">
-                            {candidatePlan === 'free' 
-                              ? 'Accès aux fonctionnalités de base'
-                              : candidatePlan === 'premium'
-                              ? 'Accès aux fonctionnalités premium'
-                              : candidatePlan === 'pro'
-                              ? 'Accès aux fonctionnalités professionnelles'
-                              : 'Plan personnalisé'
-                            }
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-blue-600">
-                            {candidatePlan === 'free' 
-                              ? '0€'
-                              : candidatePlan === 'premium'
-                              ? '7,99€'
-                              : candidatePlan === 'pro'
-                              ? '39€'
-                              : 'Sur mesure'
-                            }
+                    {/* Contenu différent selon le type d'utilisateur */}
+                    {isRecruiter ? (
+                      /* Plan recruteur */
+                      <div className="space-y-8">
+                        {/* Plan actuel recruteur */}
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
+                          <div className="flex items-center justify-between mb-6">
+                            <div>
+                              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                Plan {getPlanInfo().name}
+                              </h3>
+                              <p className="text-gray-600">
+                                {recruiter?.plan_type === 'starter' 
+                                  ? 'Accès aux fonctionnalités de base pour le recrutement'
+                                  : recruiter?.plan_type === 'max'
+                                  ? 'Accès aux fonctionnalités avancées avec sélection sur-mesure'
+                                  : recruiter?.plan_type === 'premium'
+                                  ? 'Accès illimité à toutes les fonctionnalités'
+                                  : 'Plan personnalisé'
+                                }
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-2xl font-bold text-blue-600">
+                                {recruiter?.plan_type === 'starter' 
+                                  ? '19,99€'
+                                  : recruiter?.plan_type === 'max'
+                                  ? '79€'
+                                  : recruiter?.plan_type === 'premium'
+                                  ? 'Sur mesure'
+                                  : 'Gratuit'
+                                }
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {recruiter?.plan_type === 'premium' ? '' : '/mois'}
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-sm text-gray-500">
-                            {candidatePlan === 'free' ? '' : '/mois'}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Statut d'annulation */}
-                      {cancellationInfo?.cancellation_scheduled && (
-                        <div className="mt-4 bg-orange-50 border border-orange-200 rounded-lg p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <AlertCircle className="w-5 h-5 text-orange-600" />
-                            <span className="text-orange-800 font-semibold">Annulation programmée</span>
-                          </div>
-                          <p className="text-orange-700 text-sm">
-                            Vous perdrez l'accès aux fonctionnalités premium le{' '}
-                            <span className="font-semibold">
-                              {new Date(cancellationInfo.access_until).toLocaleDateString('fr-FR', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
-                            </span>
-                          </p>
-                        </div>
-                      )}
-                    </div>
 
-                    {/* Actions */}
-                    <div className="flex justify-center gap-4 mt-6">
-                      {!cancellationInfo?.cancellation_scheduled ? (
-                        <>
-                          {/* Afficher le bouton "Annuler mon plan" seulement si l'utilisateur n'est pas au plan gratuit */}
-                          {candidatePlan !== 'free' && (
-                            <button
-                              onClick={() => setShowCancelConfirm(true)}
-                              className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
-                            >
-                              Annuler mon plan
-                            </button>
+                          {/* Statut de l'abonnement */}
+                          {recruiter?.subscription_status && (
+                            <div className="flex items-center gap-2 mb-4">
+                              <div className={`w-3 h-3 rounded-full ${
+                                recruiter.subscription_status === 'active' ? 'bg-green-500' :
+                                recruiter.subscription_status === 'trial' ? 'bg-yellow-500' :
+                                recruiter.subscription_status === 'expired' ? 'bg-red-500' :
+                                'bg-gray-500'
+                              }`}></div>
+                              <span className="text-sm font-medium text-gray-700">
+                                Statut: {recruiter.subscription_status === 'active' ? 'Actif' :
+                                         recruiter.subscription_status === 'trial' ? 'Essai' :
+                                         recruiter.subscription_status === 'expired' ? 'Expiré' :
+                                         recruiter.subscription_status}
+                              </span>
+                            </div>
                           )}
-                          <button
-                            onClick={() => window.open('/pricing', '_blank')}
-                            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
-                          >
-                            {candidatePlan === 'free' ? 'Passer à Premium' : 'Changer de plan'}
-                          </button>
-                        </>
-                      ) : (
-                        <div className="text-center">
-                          <div className="mb-4">
-                            <button
-                              disabled
-                              className="px-6 py-3 bg-gray-300 text-gray-500 rounded-xl font-semibold cursor-not-allowed"
-                            >
-                              Plan annulé
-                            </button>
+
+                          {/* Dates d'abonnement */}
+                          {recruiter?.subscription_start_date && (
+                            <div className="text-sm text-gray-600">
+                              <p>Début d'abonnement: {new Date(recruiter.subscription_start_date).toLocaleDateString('fr-FR')}</p>
+                              {recruiter.subscription_end_date && (
+                                <p>Fin d'abonnement: {new Date(recruiter.subscription_end_date).toLocaleDateString('fr-FR')}</p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Quotas et utilisation */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                            <div className="text-center">
+                              <div className="text-3xl font-bold text-blue-600 mb-2">
+                                {getRemainingJobPosts()}
+                              </div>
+                              <div className="text-gray-600 mb-2">Offres restantes</div>
+                              <div className="text-sm text-gray-500">
+                                {recruiter?.total_jobs_posted || 0} / {getPlanInfo().maxJobPosts} utilisées
+                              </div>
+                            </div>
                           </div>
-                          <p className="text-gray-600 mb-4">
-                            Votre annulation est déjà programmée. Vous pouvez toujours changer d'avis en souscrivant à un nouveau plan.
-                          </p>
+                          
+                          <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                            <div className="text-center">
+                              <div className="text-3xl font-bold text-green-600 mb-2">
+                                {getRemainingCandidateContacts()}
+                              </div>
+                              <div className="text-gray-600 mb-2">Contacts restants</div>
+                              <div className="text-sm text-gray-500">
+                                {recruiter?.total_candidate_contacts || 0} / {getPlanInfo().maxCandidateContacts} utilisés
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                            <div className="text-center">
+                              <div className="text-3xl font-bold text-purple-600 mb-2">
+                                {getPlanInfo().maxFeaturedJobs - (recruiter?.total_featured_jobs || 0)}
+                              </div>
+                              <div className="text-gray-600 mb-2">Mises en avant restantes</div>
+                              <div className="text-sm text-gray-500">
+                                {recruiter?.total_featured_jobs || 0} / {getPlanInfo().maxFeaturedJobs} utilisées
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Actions pour recruteurs */}
+                        <div className="flex justify-center gap-4 mt-8">
                           <button
                             onClick={() => window.open('/pricing', '_blank')}
                             className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
                           >
-                            Souscrire à un nouveau plan
+                            {recruiter?.plan_type === 'starter' ? 'Passer à Max' : 'Changer de plan'}
+                          </button>
+                          <button
+                            onClick={() => window.open('/recruiter-dashboard', '_blank')}
+                            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                          >
+                            Tableau de bord
                           </button>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    ) : (
+                      /* Plan candidat (logique existante) */
+                      <div>
+                        {/* Plan actuel candidat */}
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 mb-8 border border-blue-100">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                Plan {candidatePlan === 'free' ? 'Gratuit' : candidatePlan === 'premium' ? 'Premium' : candidatePlan === 'elite' ? 'Elite' : candidatePlan}
+                                {cancellationInfo?.cancellation_scheduled && (
+                                  <span className="ml-2 text-sm font-normal text-orange-600">
+                                    (Annulé)
+                                  </span>
+                                )}
+                              </h3>
+                              <p className="text-gray-600">
+                                {candidatePlan === 'free' 
+                                  ? 'Accès aux fonctionnalités de base'
+                                  : candidatePlan === 'premium'
+                                  ? 'Accès aux fonctionnalités premium'
+                                  : candidatePlan === 'pro'
+                                  ? 'Accès aux fonctionnalités professionnelles'
+                                  : 'Plan personnalisé'
+                                }
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-2xl font-bold text-blue-600">
+                                {candidatePlan === 'free' 
+                                  ? '0€'
+                                  : candidatePlan === 'premium'
+                                  ? '7,99€'
+                                  : candidatePlan === 'pro'
+                                  ? '39€'
+                                  : 'Sur mesure'
+                                }
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {candidatePlan === 'free' ? '' : '/mois'}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Statut d'annulation */}
+                          {cancellationInfo?.cancellation_scheduled && (
+                            <div className="mt-4 bg-orange-50 border border-orange-200 rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <AlertCircle className="w-5 h-5 text-orange-600" />
+                                <span className="text-orange-800 font-semibold">Annulation programmée</span>
+                              </div>
+                              <p className="text-orange-700 text-sm">
+                                Vous perdrez l'accès aux fonctionnalités premium le{' '}
+                                <span className="font-semibold">
+                                  {new Date(cancellationInfo.access_until).toLocaleDateString('fr-FR', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                  })}
+                                </span>
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Actions pour candidats */}
+                        <div className="flex justify-center gap-4 mt-6">
+                          {!cancellationInfo?.cancellation_scheduled ? (
+                            <>
+                              {/* Afficher le bouton "Annuler mon plan" seulement si l'utilisateur n'est pas au plan gratuit */}
+                              {candidatePlan !== 'free' && (
+                                <button
+                                  onClick={() => setShowCancelConfirm(true)}
+                                  className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+                                >
+                                  Annuler mon plan
+                                </button>
+                              )}
+                              <button
+                                onClick={() => window.open('/pricing', '_blank')}
+                                className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                              >
+                                {candidatePlan === 'free' ? 'Passer à Premium' : 'Changer de plan'}
+                              </button>
+                            </>
+                          ) : (
+                            <div className="text-center">
+                              <div className="mb-4">
+                                <button
+                                  disabled
+                                  className="px-6 py-3 bg-gray-300 text-gray-500 rounded-xl font-semibold cursor-not-allowed"
+                                >
+                                  Plan annulé
+                                </button>
+                              </div>
+                              <p className="text-gray-600 mb-4">
+                                Votre annulation est déjà programmée. Vous pouvez toujours changer d'avis en souscrivant à un nouveau plan.
+                              </p>
+                              <button
+                                onClick={() => window.open('/pricing', '_blank')}
+                                className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                              >
+                                Souscrire à un nouveau plan
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
