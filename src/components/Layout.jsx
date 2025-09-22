@@ -60,13 +60,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           // Charger le plan du candidat
           if (userProfile) {
             const plan = userProfile.plan || userProfile.planType || userProfile.plan_type || 'free';
-            console.log('🎯 Profil candidat chargé dans Layout:', { 
-              plan: plan, 
-              isFeatured: userProfile.isFeatured,
-              planType: userProfile.planType,
-              plan_type: userProfile.plan_type,
-              rawData: userProfile
-            });
             setCandidatePlan(plan);
           }
         } else if (response.status === 404) {
@@ -85,7 +78,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
     // Écouter les changements de plan depuis d'autres composants
     const handlePlanUpdate = (event) => {
-      console.log('🎯 Événement planUpdated reçu:', event.detail);
       setCandidatePlan(event.detail.plan || event.detail.planType || 'free');
     };
 
@@ -121,35 +113,20 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
   // Fonction pour obtenir le badge de plan recruteur
   const getRecruiterPlanBadge = () => {
-    console.log('🎯 [Layout] getRecruiterPlanBadge appelé');
-    console.log('   - recruiter:', recruiter);
-    console.log('   - isRecruiter:', isRecruiter);
-    console.log('   - user:', user);
-    
     if (!recruiter) {
-      console.log('❌ [Layout] Aucun recruteur, badge non affiché');
       return null;
     }
     
     // Vérifier le statut d'abonnement - ne pas afficher le badge si annulé/suspendu
     if (recruiter.subscription_status !== 'active' && recruiter.subscription_status !== 'trialing') {
-      console.log('🚫 [Layout] Abonnement non actif, badge non affiché:', recruiter.subscription_status);
       return null;
     }
     
     const planInfo = getPlanInfo();
     const planType = recruiter.plan_type;
     
-    console.log('✅ [Layout] Recruteur trouvé:', {
-      planType,
-      planInfo,
-      subscription_status: recruiter.subscription_status,
-      recruiterData: recruiter
-    });
-    
     switch (planType) {
       case 'starter':
-        console.log('🚀 [Layout] Affichage badge Starter');
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-green-600 text-white rounded-full shadow-lg">
             <span className="text-green-200">🚀</span>
@@ -157,7 +134,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           </span>
         );
       case 'max':
-        console.log('⭐ [Layout] Affichage badge Max');
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-lg">
             <span className="text-purple-100">⭐</span>
@@ -165,7 +141,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           </span>
         );
       case 'premium':
-        console.log('👑 [Layout] Affichage badge Premium');
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full shadow-lg">
             <span className="text-yellow-100">👑</span>
@@ -173,10 +148,8 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           </span>
         );
       case 'custom':
-        console.log('🚫 [Layout] Plan custom (annulé) - pas de badge');
         return null;
       default:
-        console.log('❓ [Layout] Plan inconnu:', planType);
         return null;
     }
   };

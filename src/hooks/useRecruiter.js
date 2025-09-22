@@ -13,40 +13,23 @@ export const useRecruiter = () => {
   const [error, setError] = useState(null);
 
   const loadRecruiterData = useCallback(async () => {
-    console.log('🔍 [useRecruiter] loadRecruiterData appelé');
-    console.log('   - isAuthenticated:', isAuthenticated);
-    console.log('   - isRecruiter:', isRecruiter);
-    console.log('   - user?.id:', user?.id);
-    console.log('   - user?.email:', user?.email);
-    console.log('   - user?.user_metadata:', user?.user_metadata);
-
     if (!isAuthenticated || !isRecruiter || !user?.id) {
-      console.log('❌ [useRecruiter] Conditions non remplies, arrêt du chargement');
       setLoading(false);
       return;
     }
-
-    console.log('✅ [useRecruiter] Conditions remplies, démarrage du chargement');
     setLoading(true);
     setError(null);
     try {
-      console.log('📡 [useRecruiter] Récupération du profil...');
       const profile = await fetchRecruiterProfile();
-      console.log('✅ [useRecruiter] Profil récupéré:', profile);
       setRecruiter(profile);
 
-      console.log('📊 [useRecruiter] Récupération des stats...');
       const recruiterStats = await fetchRecruiterStats(profile.id);
-      console.log('✅ [useRecruiter] Stats récupérées:', recruiterStats);
       setStats(recruiterStats);
 
-      console.log('🔐 [useRecruiter] Récupération des permissions...');
       const recruiterPermissions = await fetchRecruiterPermissions(profile.id);
-      console.log('✅ [useRecruiter] Permissions récupérées:', recruiterPermissions);
       setPermissions(recruiterPermissions);
 
     } catch (err) {
-      console.error("❌ [useRecruiter] Erreur lors du chargement:", err);
       setError(err);
     } finally {
       setLoading(false);
@@ -58,27 +41,19 @@ export const useRecruiter = () => {
   }, [loadRecruiterData]);
 
   const getPlanInfo = useCallback(() => {
-    console.log('🔍 [getPlanInfo] recruiter:', recruiter);
-    console.log('🔍 [getPlanInfo] recruiter.plan_type:', recruiter?.plan_type);
-    
     if (!recruiter) {
-      console.log('❌ [getPlanInfo] Pas de données recruteur, retour plan par défaut');
       return { name: 'N/A', maxJobPosts: 0, maxCandidateContacts: 0, maxFeaturedJobs: 0 };
     }
     
     // Map plan_type to display name and limits
     switch (recruiter.plan_type) {
       case 'starter':
-        console.log('✅ [getPlanInfo] Plan Starter détecté');
         return { name: 'Starter', maxJobPosts: 5, maxCandidateContacts: 100, maxFeaturedJobs: 1 };
       case 'max':
-        console.log('✅ [getPlanInfo] Plan Max détecté');
         return { name: 'Max', maxJobPosts: 50, maxCandidateContacts: 1000, maxFeaturedJobs: 5 };
       case 'premium':
-        console.log('✅ [getPlanInfo] Plan Premium détecté');
         return { name: 'Premium', maxJobPosts: 200, maxCandidateContacts: 5000, maxFeaturedJobs: 20 };
       default:
-        console.log('⚠️ [getPlanInfo] Plan inconnu:', recruiter.plan_type, 'retour plan gratuit');
         return { name: 'Gratuit', maxJobPosts: 0, maxCandidateContacts: 0, maxFeaturedJobs: 0 };
     }
   }, [recruiter]);
