@@ -186,7 +186,33 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           <nav className="ml-8 hidden md:flex items-center gap-6 text-gray-600">
             {isAuthenticated ? (
               <>
-                {/* Liens déplacés dans Mon profil: Talents, Offres, Forum */}
+                {/* Nouveaux liens Landing */}
+                <NavLink 
+                  to="/" 
+                  className={({ isActive }) => 
+                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive 
+                        ? 'text-blue-600 bg-blue-50 font-medium' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`
+                  }
+                >
+                  <List className="w-4 h-4" />
+                  Talents
+                </NavLink>
+                <NavLink 
+                  to="/recruiters" 
+                  className={({ isActive }) => 
+                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive 
+                        ? 'text-blue-600 bg-blue-50 font-medium' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`
+                  }
+                >
+                  <Users className="w-4 h-4" />
+                  Recruteur
+                </NavLink>
                 <NavLink 
                   to="/pricing" 
                   className={({ isActive }) => 
@@ -204,6 +230,32 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               </>
             ) : (
               <>
+                <NavLink 
+                  to="/" 
+                  className={({ isActive }) => 
+                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive 
+                        ? 'text-blue-600 bg-blue-50 font-medium' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`
+                  }
+                >
+                  <List className="w-4 h-4" />
+                  Talents
+                </NavLink>
+                <NavLink 
+                  to="/recruiters" 
+                  className={({ isActive }) => 
+                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive 
+                        ? 'text-blue-600 bg-blue-50 font-medium' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`
+                  }
+                >
+                  <Users className="w-4 h-4" />
+                  Recruteur
+                </NavLink>
                 <Link 
                   to="/login" 
                   className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
@@ -330,6 +382,34 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               <nav className="space-y-2">
                 {isAuthenticated ? (
                   <>
+                    <NavLink 
+                      to="/" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) => 
+                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                          isActive 
+                            ? 'text-blue-600 bg-blue-50 font-medium' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`
+                      }
+                    >
+                      <List className="w-5 h-5" />
+                      Talents
+                    </NavLink>
+                    <NavLink 
+                      to="/recruiters" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) => 
+                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                          isActive 
+                            ? 'text-blue-600 bg-blue-50 font-medium' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`
+                      }
+                    >
+                      <Users className="w-5 h-5" />
+                      Recruteur
+                    </NavLink>
                     {/* Liens déplacés dans Mon profil pour les utilisateurs connectés */}
                     <NavLink 
                       to="/pricing" 
@@ -349,6 +429,22 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   </>
                 ) : (
                   <>
+                    <Link 
+                      to="/" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      <List className="w-5 h-5" />
+                      Talents
+                    </Link>
+                    <Link 
+                      to="/recruiters" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      <Users className="w-5 h-5" />
+                      Recruteur
+                    </Link>
                     <Link 
                       to="/login" 
                       onClick={() => setIsMobileMenuOpen(false)}
