@@ -257,7 +257,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
                     >
                       <User className="w-4 h-4" />
-                      Mon profil
+                      Dashboard
                     </Link>
                     {getPlanBadge(candidatePlan)}
                   </div>
@@ -398,7 +398,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                           className="flex items-center gap-3 px-4 py-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
                         >
                           <User className="w-5 h-5" />
-                          Mon profil
+                          Dashboard
                         </Link>
                         <div className="px-4">
                           {getPlanBadge(candidatePlan)}
