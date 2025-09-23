@@ -64,20 +64,26 @@ class ClientLogger {
 
     const formattedMessage = formatMessage(level, message, meta);
     
-    // Console du navigateur désactivée pour la production
-    // Les logs sont uniquement stockés en mémoire pour debug
+    // Afficher aussi dans la console en développement
     if (isClient && process.env.NODE_ENV === 'development') {
-      switch (level) {
-        case 'error':
-          break;
-        case 'warn':
-          break;
-        case 'info':
-          break;
-        case 'debug':
-          break;
-        default:
-      }
+      try {
+        switch (level) {
+          case 'error':
+            console.error(formattedMessage);
+            break;
+          case 'warn':
+            console.warn(formattedMessage);
+            break;
+          case 'info':
+            console.info(formattedMessage);
+            break;
+          case 'debug':
+            console.debug(formattedMessage);
+            break;
+          default:
+            console.log(formattedMessage);
+        }
+      } catch (_) {}
     }
 
     // Stocker en mémoire pour debug
