@@ -6,10 +6,12 @@ import { usePermissions } from "../hooks/usePermissions";
 import { useRecruiter } from "../hooks/useRecruiter";
 
 export default function PricingPage() {
-  const [selectedTab, setSelectedTab] = useState('candidates');
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter } = usePermissions();
   const { recruiter, getPlanInfo } = useRecruiter();
+  
+  // Si l'utilisateur est un recruteur, afficher automatiquement l'onglet recruteurs
+  const [selectedTab, setSelectedTab] = useState(isRecruiter ? 'recruiters' : 'candidates');
 
   const recruiterPlans = [
     {

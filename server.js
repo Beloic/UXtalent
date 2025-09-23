@@ -3380,12 +3380,12 @@ app.get('/api/recruiters/me', requireRole(['recruiter', 'admin']), async (req, r
           company: req.user?.user_metadata?.company || '',
           phone: req.user?.user_metadata?.phone || '',
           website: req.user?.user_metadata?.website || '',
-          planType: 'starter',
-          subscriptionStatus: 'active',
-          subscriptionStartDate: new Date().toISOString(),
-          subscriptionEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          status: 'active',
-          notes: 'Profil auto-créé lors du premier appel à /api/recruiters/me.'
+          planType: undefined, // Aucun plan défini tant qu'ils n'ont pas payé
+          subscriptionStatus: 'pending', // En attente de paiement
+          subscriptionStartDate: null,
+          subscriptionEndDate: null,
+          status: 'pending', // Compte en attente jusqu'au paiement
+          notes: 'Profil auto-créé lors du premier appel à /api/recruiters/me. En attente de paiement.'
         };
         recruiter = await createRecruiter(recruiterData);
       } catch (createError) {

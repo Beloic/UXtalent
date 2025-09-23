@@ -130,6 +130,11 @@ export default function RegisterPage() {
           setTimeout(() => {
             navigate('/my-profile/profile')
           }, 2000)
+        } else if (formData.role === 'recruiter') {
+          setSuccess('Compte créé ! Vous allez être redirigé vers notre page de tarification pour choisir votre plan.')
+          setTimeout(() => {
+            navigate('/pricing')
+          }, 2000)
         } else {
           setSuccess('Compte créé ! Vérifiez votre email pour confirmer votre inscription.')
           setTimeout(() => {
