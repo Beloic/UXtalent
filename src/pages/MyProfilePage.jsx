@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown, Clock, XCircle, Mail } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import CandidatesListPage from './CandidatesListPage';
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -53,6 +54,7 @@ export default function MyProfilePage() {
   // Déterminer l'onglet actif basé sur l'URL
   const getActiveTabFromPath = () => {
     const path = location.pathname;
+    if (path.includes('/talents')) return 'talents';
     if (path.includes('/stats')) return 'stats';
     if (path.includes('/plan')) return 'plan';
     if (path.includes('/offer')) return 'offer';
@@ -67,6 +69,9 @@ export default function MyProfilePage() {
       switch (tabName) {
         case 'view':
           navigate('/my-profile/profile');
+          break;
+        case 'talents':
+          navigate('/my-profile/talents');
           break;
         case 'stats':
           navigate('/my-profile/stats');
@@ -1373,6 +1378,17 @@ export default function MyProfilePage() {
                     Profil
                   </button>
                   <button
+                    onClick={() => navigateToTab('talents')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'talents'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Users className="w-5 h-5" />
+                    Talents
+                  </button>
+                  <button
                     onClick={() => navigateToTab('stats')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'stats'
@@ -1973,6 +1989,24 @@ export default function MyProfilePage() {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+          {activeTab === 'talents' && (
+            <motion.div
+              key="talents"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="min-h-screen bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 py-8">
+                  {/* Injecte la page Talents dans l'onglet */}
+                  <div className="bg-white rounded-2xl shadow-xl p-2 border border-white/20 backdrop-blur-sm">
+                    <CandidatesListPage />
                   </div>
                 </div>
               </div>

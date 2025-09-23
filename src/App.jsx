@@ -182,6 +182,15 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        <Route path="/my-profile/talents" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<ProfileLoadingSpinner />}>
+                <MyProfilePage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
         <Route path="/my-profile/stats" element={
           <Layout>
             <ProtectedRoute>
@@ -201,6 +210,15 @@ export default function App() {
           </Layout>
         } />
         <Route path="/my-profile/offer" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<ProfileLoadingSpinner />}>
+                <MyProfilePage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/my-profile/forum" element={
           <Layout>
             <ProtectedRoute>
               <Suspense fallback={<ProfileLoadingSpinner />}>
