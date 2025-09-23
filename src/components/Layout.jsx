@@ -197,7 +197,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     }`
                   }
                 >
-                  <List className="w-4 h-4" />
+                  <Users className="w-4 h-4" />
                   Talents
                 </NavLink>
                 <NavLink 
@@ -210,7 +210,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     }`
                   }
                 >
-                  <Users className="w-4 h-4" />
+                  <Briefcase className="w-4 h-4" />
                   Recruteur
                 </NavLink>
                 <NavLink 
@@ -240,7 +240,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     }`
                   }
                 >
-                  <List className="w-4 h-4" />
+                  <Users className="w-4 h-4" />
                   Talents
                 </NavLink>
                 <NavLink 
@@ -253,14 +253,14 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     }`
                   }
                 >
-                  <Users className="w-4 h-4" />
+                  <Briefcase className="w-4 h-4" />
                   Recruteur
                 </NavLink>
                 <Link 
                   to="/login" 
                   className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 >
-                  <List className="w-4 h-4" />
+                  <Users className="w-4 h-4" />
                   Talents
                 </Link>
                 <Link 
@@ -393,7 +393,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                         }`
                       }
                     >
-                      <List className="w-5 h-5" />
+                      <Users className="w-5 h-5" />
                       Talents
                     </NavLink>
                     <NavLink 
@@ -407,7 +407,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                         }`
                       }
                     >
-                      <Users className="w-5 h-5" />
+                      <Briefcase className="w-5 h-5" />
                       Recruteur
                     </NavLink>
                     {/* Liens déplacés dans Mon profil pour les utilisateurs connectés */}
@@ -434,7 +434,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                     >
-                      <List className="w-5 h-5" />
+                      <Users className="w-5 h-5" />
                       Talents
                     </Link>
                     <Link 
@@ -442,7 +442,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                     >
-                      <Users className="w-5 h-5" />
+                      <Briefcase className="w-5 h-5" />
                       Recruteur
                     </Link>
                     <Link 
@@ -450,7 +450,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                     >
-                      <List className="w-5 h-5" />
+                      <Users className="w-5 h-5" />
                       Talents
                     </Link>
                     <Link 
