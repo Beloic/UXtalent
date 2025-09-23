@@ -142,25 +142,9 @@ export default function App() {
           </PublicRoute>
         } />
         
-        {/* Routes protégées - Accessibles uniquement aux utilisateurs connectés */}
-        <Route path="/candidates" element={
-          <Layout>
-            <ProtectedRoute>
-              <Suspense fallback={<CandidatesLoadingSpinner />}>
-                <CandidatesListPage />
-              </Suspense>
-            </ProtectedRoute>
-          </Layout>
-        } />
-        <Route path="/candidates/:id" element={
-          <Layout>
-            <ProtectedRoute>
-              <Suspense fallback={<PageLoadingSpinner message="Chargement du profil candidat..." />}>
-                <CandidateDetailPage />
-              </Suspense>
-            </ProtectedRoute>
-          </Layout>
-        } />
+        {/* Redirections permanentes des anciennes routes Candidates */}
+        <Route path="/candidates" element={<Navigate to="/my-profile/talent" replace />} />
+        <Route path="/candidates/:id" element={<Navigate to="/my-profile/candidates/:id" replace />} />
         {/* Route supprimée: /candidates/suggestions (système de suggestions pour candidats désactivé) */}
         <Route path="/add-profile" element={
           <Layout>
