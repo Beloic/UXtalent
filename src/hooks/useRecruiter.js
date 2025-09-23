@@ -59,14 +59,16 @@ export const useRecruiter = () => {
     // Utiliser le système d'abonnement au lieu des permissions
     return recruiter?.subscription_status === 'active' && 
            recruiter?.status !== 'suspended' && 
-           recruiter?.status !== 'pending';
+           recruiter?.status !== 'pending' &&
+           recruiter?.subscription_status !== 'inactive';
   }, [recruiter]);
 
   const canContactCandidate = useCallback(() => {
     // Utiliser le système d'abonnement au lieu des permissions
     return recruiter?.subscription_status === 'active' && 
            recruiter?.status !== 'suspended' && 
-           recruiter?.status !== 'pending';
+           recruiter?.status !== 'pending' &&
+           recruiter?.subscription_status !== 'inactive';
   }, [recruiter]);
 
 

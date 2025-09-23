@@ -3381,7 +3381,7 @@ app.get('/api/recruiters/me', requireRole(['recruiter', 'admin']), async (req, r
           phone: req.user?.user_metadata?.phone || '',
           website: req.user?.user_metadata?.website || '',
           planType: undefined, // Aucun plan défini tant qu'ils n'ont pas payé
-          subscriptionStatus: 'pending', // En attente de paiement
+          subscriptionStatus: 'inactive', // En attente de paiement (utilise 'inactive' car 'pending' n'est pas autorisé)
           subscriptionStartDate: null,
           subscriptionEndDate: null,
           status: 'pending', // Compte en attente jusqu'au paiement

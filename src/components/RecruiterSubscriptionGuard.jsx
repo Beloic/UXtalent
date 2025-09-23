@@ -21,7 +21,7 @@ export const RecruiterSubscriptionGuard = ({
   // Vérifier si l'abonnement est annulé, suspendu ou en attente de paiement
   const isSubscriptionCancelled = recruiter?.subscription_status === 'cancelled' || 
                                   recruiter?.subscription_status === 'expired' ||
-                                  recruiter?.subscription_status === 'pending' ||
+                                  recruiter?.subscription_status === 'inactive' ||
                                   recruiter?.status === 'suspended' ||
                                   recruiter?.status === 'pending';
   
@@ -44,12 +44,12 @@ export const RecruiterSubscriptionGuard = ({
             <Lock className="w-8 h-8 text-red-600" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {recruiter?.status === 'pending' || recruiter?.subscription_status === 'pending' 
+            {recruiter?.status === 'pending' || recruiter?.subscription_status === 'inactive' 
               ? 'Paiement requis' 
               : 'Accès suspendu'}
           </h1>
           <p className="text-gray-600 mb-4">
-            {recruiter?.status === 'pending' || recruiter?.subscription_status === 'pending'
+            {recruiter?.status === 'pending' || recruiter?.subscription_status === 'inactive'
               ? 'Votre compte est en attente de paiement. Veuillez choisir un plan pour accéder à toutes les fonctionnalités.'
               : 'Votre abonnement a été annulé. Vous n\'avez plus accès aux fonctionnalités premium.'}
           </p>
@@ -59,13 +59,13 @@ export const RecruiterSubscriptionGuard = ({
           <div className="flex items-center gap-2 mb-2">
             <AlertCircle className="w-5 h-5 text-red-600" />
             <span className="text-red-800 font-semibold">
-              {recruiter?.status === 'pending' || recruiter?.subscription_status === 'pending' 
+              {recruiter?.status === 'pending' || recruiter?.subscription_status === 'inactive' 
                 ? 'Paiement en attente' 
                 : 'Abonnement annulé'}
             </span>
           </div>
           <p className="text-red-700 text-sm">
-            Statut: {recruiter?.subscription_status === 'pending' || recruiter?.status === 'pending' ? 'En attente de paiement' :
+            Statut: {recruiter?.subscription_status === 'inactive' || recruiter?.status === 'pending' ? 'En attente de paiement' :
                      recruiter?.subscription_status === 'cancelled' ? 'Annulé' : 
                      recruiter?.subscription_status === 'expired' ? 'Expiré' : 
                      'Suspendu'}
@@ -83,7 +83,7 @@ export const RecruiterSubscriptionGuard = ({
             className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
           >
             <CreditCard className="w-5 h-5" />
-            {recruiter?.status === 'pending' || recruiter?.subscription_status === 'pending' 
+            {recruiter?.status === 'pending' || recruiter?.subscription_status === 'inactive' 
               ? 'Choisir mon plan' 
               : 'Renouveler mon abonnement'}
           </Link>
@@ -114,7 +114,7 @@ export const SubscriptionBasedContent = ({
 }) => {
   const isSubscriptionCancelled = recruiter?.subscription_status === 'cancelled' || 
                                   recruiter?.subscription_status === 'expired' ||
-                                  recruiter?.subscription_status === 'pending' ||
+                                  recruiter?.subscription_status === 'inactive' ||
                                   recruiter?.status === 'suspended' ||
                                   recruiter?.status === 'pending';
   
@@ -129,7 +129,7 @@ export const SubscriptionBasedContent = ({
 export const useSubscriptionStatus = (recruiter) => {
   const isSubscriptionCancelled = recruiter?.subscription_status === 'cancelled' || 
                                   recruiter?.subscription_status === 'expired' ||
-                                  recruiter?.subscription_status === 'pending' ||
+                                  recruiter?.subscription_status === 'inactive' ||
                                   recruiter?.status === 'suspended' ||
                                   recruiter?.status === 'pending';
   
