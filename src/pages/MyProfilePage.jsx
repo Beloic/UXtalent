@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown, Clock, XCircle, Mail } from 'lucide-react';
+import { Users, User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown, Clock, XCircle, Mail } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import CandidatesListPage from './CandidatesListPage';
 import { supabase } from '../lib/supabase';
@@ -11,6 +11,8 @@ import { usePermissions } from '../hooks/usePermissions';
 import { useRecruiter } from '../hooks/useRecruiter';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 import { supabaseAdmin } from '../lib/supabase';
+import JobsPage from './JobsPage';
+import ForumPage from './ForumPage';
 
 export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();
@@ -55,6 +57,8 @@ export default function MyProfilePage() {
   const getActiveTabFromPath = () => {
     const path = location.pathname;
     if (path.includes('/talents')) return 'talents';
+    if (path.includes('/offers')) return 'offers';
+    if (path.includes('/forum')) return 'forum';
     if (path.includes('/stats')) return 'stats';
     if (path.includes('/plan')) return 'plan';
     if (path.includes('/offer')) return 'offer';
@@ -78,6 +82,12 @@ export default function MyProfilePage() {
           break;
         case 'plan':
           navigate('/my-profile/plan');
+          break;
+        case 'offers':
+          navigate('/my-profile/offers');
+          break;
+        case 'forum':
+          navigate('/my-profile/forum');
           break;
         default:
           navigate('/my-profile/profile');
@@ -1389,6 +1399,28 @@ export default function MyProfilePage() {
                     Talents
                   </button>
                   <button
+                    onClick={() => navigateToTab('offers')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'offers'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Briefcase className="w-5 h-5" />
+                    Offres
+                  </button>
+                  <button
+                    onClick={() => navigateToTab('forum')}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
+                      activeTab === 'forum'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <MessageSquare className="w-5 h-5" />
+                    Forum
+                  </button>
+                  <button
                     onClick={() => navigateToTab('stats')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'stats'
@@ -2007,6 +2039,40 @@ export default function MyProfilePage() {
                   {/* Injecte la page Talents dans l'onglet */}
                   <div className="bg-white rounded-2xl shadow-xl p-2 border border-white/20 backdrop-blur-sm">
                     <CandidatesListPage />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+          {activeTab === 'offers' && (
+            <motion.div
+              key="offers"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="min-h-screen bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 py-8">
+                  <div className="bg-white rounded-2xl shadow-xl p-2 border border-white/20 backdrop-blur-sm">
+                    <JobsPage />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+          {activeTab === 'forum' && (
+            <motion.div
+              key="forum"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="min-h-screen bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 py-8">
+                  <div className="bg-white rounded-2xl shadow-xl p-2 border border-white/20 backdrop-blur-sm">
+                    <ForumPage />
                   </div>
                 </div>
               </div>

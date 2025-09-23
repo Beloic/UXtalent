@@ -218,6 +218,15 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        <Route path="/my-profile/offers" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<ProfileLoadingSpinner />}>
+                <MyProfilePage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
         <Route path="/my-profile/forum" element={
           <Layout>
             <ProtectedRoute>
