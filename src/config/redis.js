@@ -8,6 +8,7 @@ const REDIS_PASSWORD = process.env.REDIS_PASSWORD || null;
 const UPSTASH_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
 const UPSTASH_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const IS_UPSTASH = !!(UPSTASH_REST_URL && UPSTASH_REST_TOKEN);
+const DISABLE_REDIS = String(process.env.DISABLE_REDIS || '').toLowerCase() === 'true';
 
 // État global de Redis
 let redisConnectionAttempts = 0;
@@ -17,7 +18,28 @@ let redisDisabled = false; // RÉACTIVÉ
 // Configuration pour Upstash vs Redis classique
 let redisClient;
 
-if (IS_UPSTASH) {
+if (DISABLE_REDIS) {
+  // Mode désactivé: client mock no-op
+  redisClient = {
+    isOpen: false,
+    isConnected: false,
+    async connect() { logger.warn('⚠️ Redis désactivé (DISABLE_REDIS=true)'); return false; },
+    async disconnect() { logger.warn('⚠️ Redis désactivé (DISABLE_REDIS=true)'); },
+    async ping() { return false; },
+    async get() { return null; },
+    async set() { return false; },
+    async setEx() { return false; },
+    async setex() { return false; },
+    async del() { return false; },
+    async exists() { return 0; },
+    async ttl() { return -1; },
+    async expire() { return false; },
+    async keys() { return []; },
+    async dbSize() { return 0; },
+    async info() { return ''; },
+    async flushDb() { return false; }
+  };
+} else if (IS_UPSTASH) {
   // Utiliser le client Upstash REST API
   redisClient = new UpstashClient(UPSTASH_REST_URL, UPSTASH_REST_TOKEN);
 } else {
@@ -45,8 +67,8 @@ if (IS_UPSTASH) {
   redisClient = createClient(redisOptions);
 }
 
-// Gestionnaires d'événements Redis (seulement pour Redis classique)
-if (!IS_UPSTASH) {
+// Gestionnaires d'événements Redis (seulement pour Redis classique et non désactivé)
+if (!IS_UPSTASH && !DISABLE_REDIS) {
   redisClient.on('error', (err) => {
     redisConnectionAttempts++;
     logger.error('❌ Redis Client Error:', { 
@@ -88,7 +110,7 @@ if (!IS_UPSTASH) {
 export const connectRedis = async () => {
   try {
     // Si Redis est désactivé, ne pas essayer de se connecter
-    if (redisDisabled) {
+    if (DISABLE_REDIS || redisDisabled) {
       logger.warn('⚠️ Redis désactivé, fonctionnement en mode dégradé');
       return false;
     }
@@ -135,7 +157,7 @@ export const disconnectRedis = async () => {
 export const checkRedisHealth = async () => {
   try {
     // Si Redis est désactivé, retourner false
-    if (redisDisabled) {
+    if (DISABLE_REDIS || redisDisabled) {
       return false;
     }
 
@@ -199,7 +221,7 @@ export const resetRedis = () => {
 
 // Fonction pour vérifier si Redis est disponible
 export const isRedisAvailable = () => {
-  return !redisDisabled && redisClient.isOpen;
+  return !DISABLE_REDIS && !redisDisabled && redisClient.isOpen;
 };
 
 export { redisClient };
