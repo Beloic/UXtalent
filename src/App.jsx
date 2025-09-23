@@ -204,6 +204,15 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        <Route path="/my-profile/offer/:id" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement de l'offre d'emploi..." />}>
+                <JobDetailPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
         <Route path="/my-profile/offers" element={
           <Layout>
             <ProtectedRoute>
