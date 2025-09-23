@@ -182,7 +182,8 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
-        <Route path="/my-profile/talents" element={
+        {/* Alias: /my-profile/talent et /my-profile/talents pointent vers le même contenu */}
+        <Route path="/my-profile/talent" element={
           <Layout>
             <ProtectedRoute>
               <Suspense fallback={<ProfileLoadingSpinner />}>
@@ -191,6 +192,7 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        <Route path="/my-profile/talents" element={<Navigate to="/my-profile/talent" replace />} />
         <Route path="/my-profile/stats" element={
           <Layout>
             <ProtectedRoute>
@@ -241,6 +243,16 @@ export default function App() {
             <ProtectedRoute>
               <Suspense fallback={<PageLoadingSpinner message="Chargement des statistiques..." />}>
                 <ProfileStatsPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
+        {/* Détail candidat accessible sous my-profile */}
+        <Route path="/my-profile/candidates/:id" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du profil candidat..." />}>
+                <CandidateDetailPage />
               </Suspense>
             </ProtectedRoute>
           </Layout>
