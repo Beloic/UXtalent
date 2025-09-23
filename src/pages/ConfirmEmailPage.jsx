@@ -26,7 +26,13 @@ export default function ConfirmEmailPage() {
       navigate('/login')
       return
     }
-    navigate('/my-profile/profile')
+    
+    // Rediriger selon le rôle après vérification d'email
+    if (user?.user_metadata?.role === 'recruiter') {
+      navigate('/pricing')
+    } else {
+      navigate('/my-profile/profile')
+    }
   }, [user, navigate])
 
   const handleResendEmail = async () => {
