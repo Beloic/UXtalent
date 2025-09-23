@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect } from "react";
 import { Routes, Route, Navigate, useParams, useNavigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ProfileCacheProvider } from "./contexts/ProfileCacheContext";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -70,7 +71,8 @@ const CandidatesLoadingSpinner = () => (
 export default function App() {
   return (
     <AuthProvider>
-      <Routes>
+      <ProfileCacheProvider>
+        <Routes>
         {/* Route publique - Landing Page pour les visiteurs non connectés */}
         <Route path="/" element={
           <PublicRoute>
@@ -338,7 +340,8 @@ export default function App() {
             </div>
           </Layout>
         } />
-      </Routes>
+        </Routes>
+      </ProfileCacheProvider>
     </AuthProvider>
   );
 }// Force redeploy Tue Sep 16 16:06:43 CEST 2025

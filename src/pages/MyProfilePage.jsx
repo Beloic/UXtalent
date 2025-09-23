@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useProfileCache } from '../contexts/ProfileCacheContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown, Clock, XCircle, Mail } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -18,6 +19,13 @@ export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();
   const { isRecruiter, isCandidate } = usePermissions();
   const { recruiter, permissions, loading: recruiterLoading, getPlanInfo, canPostJob, canContactCandidate, getRemainingJobPosts } = useRecruiter();
+  const { 
+    getCachedData, 
+    updateProfileCache, 
+    setCacheLoading, 
+    isCacheValid, 
+    forceReload 
+  } = useProfileCache();
   const location = useLocation();
 
   // Helper function pour gérer les compétences de manière sécurisée
@@ -72,6 +80,8 @@ export default function MyProfilePage() {
     if (isCandidate) {
       switch (tabName) {
         case 'view':
+          // Forcer le rechargement quand on clique sur l'onglet profil
+          forceReload();
           navigate('/my-profile/profile');
           break;
         case 'talents':
@@ -356,7 +366,19 @@ export default function MyProfilePage() {
 
   const loadExistingProfile = useCallback(async () => {
     try {
+      // Vérifier d'abord si on a des données en cache valides
+      const cachedData = getCachedData();
+      if (cachedData && activeTab !== 'profile') {
+        // Si on a des données en cache et qu'on n'est pas sur l'onglet profil,
+        // utiliser les données du cache sans recharger
+        setFormData(cachedData.formData);
+        setCandidateStatus(cachedData.candidateStatus);
+        setCandidatePlan(cachedData.candidatePlan);
+        return;
+      }
+
       setIsLoadingProfile(true);
+      setCacheLoading(true);
       
       // Essayer d'abord l'API Vercel, puis fallback vers Supabase direct
       const apiUrl = buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`);
@@ -449,6 +471,13 @@ export default function MyProfilePage() {
         
         setFormData(newFormData);
         setMessage('✅ Profil chargé avec succès (via Supabase direct)');
+        
+        // Mettre à jour le cache avec les nouvelles données
+        updateProfileCache({
+          formData: newFormData,
+          candidateStatus: status,
+          candidatePlan: plan
+        });
         return;
       }
       
@@ -517,6 +546,13 @@ export default function MyProfilePage() {
           setFormData(newFormData);
           setMessage('✅ Profil chargé avec succès');
           
+          // Mettre à jour le cache avec les nouvelles données
+          updateProfileCache({
+            formData: newFormData,
+            candidateStatus: status,
+            candidatePlan: existingCandidate.plan || 'free'
+          });
+          
           // Faire disparaître le message après 3 secondes
           setTimeout(() => {
             setMessage('');
@@ -551,8 +587,9 @@ export default function MyProfilePage() {
       assignDefaultValues();
     } finally {
       setIsLoadingProfile(false);
+      setCacheLoading(false);
     }
-  }, [user]);
+  }, [user, activeTab, getCachedData, updateProfileCache, setCacheLoading]);
 
   useEffect(() => {
     if (user) {
@@ -564,7 +601,7 @@ export default function MyProfilePage() {
         email: user.email || ''
       }));
 
-      // Charger le profil depuis la base de données
+      // Charger le profil depuis la base de données seulement si nécessaire
       loadExistingProfile();
     } else {
       // Si pas d'utilisateur, assigner les valeurs par défaut pour l'affichage
