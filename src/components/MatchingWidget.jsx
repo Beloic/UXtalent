@@ -90,7 +90,7 @@ const MatchingWidget = ({
     if (!targetId) {
       return;
     }
-    navigate(`/candidates/${targetId}`);
+    navigate(`/my-profile/talent/${targetId}`);
   };
 
   if (loading) {

@@ -167,7 +167,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
       {/* Top nav */}
       {!hideTopBar && (
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-lg">
-        <div className="mx-auto max-w-7xl px-4 py-4 flex items-center gap-3">
+        <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 font-bold text-gray-900">
             <motion.div 
               initial={{ rotate: -10, scale: .9 }} 
@@ -185,10 +185,23 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             </div>
           </Link>
           {/* Navigation Desktop */}
-          <nav className="ml-8 hidden md:flex items-center gap-6 text-gray-600">
+          <nav className="hidden md:flex items-center gap-6 text-gray-600">
             {isAuthenticated ? (
               <>
-                {/* Liens principaux pour utilisateurs connectés (sans /candidates) */}
+                {/* Liens principaux pour utilisateurs connectés */}
+                <NavLink 
+                  to="/" 
+                  className={({ isActive }) => 
+                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive 
+                        ? 'text-blue-600 bg-blue-50 font-medium' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`
+                  }
+                >
+                  <Users className="w-4 h-4" />
+                  Talents
+                </NavLink>
                 <NavLink 
                   to="/recruiters" 
                   className={({ isActive }) => 
@@ -265,7 +278,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           </button>
           
           {/* Actions Desktop */}
-          <div className="ml-auto hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               <div className="flex items-center gap-3">
                 
@@ -350,7 +363,20 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               <nav className="space-y-2">
                 {isAuthenticated ? (
                   <>
-                    {/* Lien /candidates retiré pour utilisateurs connectés */}
+                    <NavLink 
+                      to="/" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={({ isActive }) => 
+                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                          isActive 
+                            ? 'text-blue-600 bg-blue-50 font-medium' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`
+                      }
+                    >
+                      <Users className="w-5 h-5" />
+                      Talents
+                    </NavLink>
                     <NavLink 
                       to="/recruiters" 
                       onClick={() => setIsMobileMenuOpen(false)}
@@ -365,7 +391,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       <Briefcase className="w-5 h-5" />
                       Recruteur
                     </NavLink>
-                    {/* Liens déplacés dans Mon profil pour les utilisateurs connectés */}
                     <NavLink 
                       to="/pricing" 
                       onClick={() => setIsMobileMenuOpen(false)}
