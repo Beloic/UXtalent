@@ -222,15 +222,7 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
-        <Route path="/profile-stats" element={
-          <Layout>
-            <ProtectedRoute>
-              <Suspense fallback={<PageLoadingSpinner message="Chargement des statistiques..." />}>
-                <ProfileStatsPage />
-              </Suspense>
-            </ProtectedRoute>
-          </Layout>
-        } />
+        <Route path="/profile-stats" element={<Navigate to="/my-profile/stats" replace />} />
         {/* Détail candidat accessible sous my-profile */}
         <Route path="/my-profile/candidates/:id" element={
           <Layout>
@@ -297,51 +289,11 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
-        <Route path="/forum" element={
-          <Layout>
-            <ProtectedRoute>
-              <Suspense fallback={<PageLoadingSpinner message="Chargement du forum..." />}>
-                <ForumPage />
-              </Suspense>
-            </ProtectedRoute>
-          </Layout>
-        } />
-        <Route path="/forum/:id" element={
-          <Layout>
-            <ProtectedRoute>
-              <Suspense fallback={<PageLoadingSpinner message="Chargement du post..." />}>
-                <ForumPostPage />
-              </Suspense>
-            </ProtectedRoute>
-          </Layout>
-        } />
-        <Route path="/jobs" element={
-          <Layout>
-            <ProtectedRoute>
-              <Suspense fallback={<PageLoadingSpinner message="Chargement des offres d'emploi..." />}>
-                <JobsPage />
-              </Suspense>
-            </ProtectedRoute>
-          </Layout>
-        } />
-        <Route path="/jobs/new" element={
-          <Layout>
-            <ProtectedRoute>
-              <Suspense fallback={<PageLoadingSpinner message="Chargement du formulaire de publication..." />}>
-                <PublishJobPage />
-              </Suspense>
-            </ProtectedRoute>
-          </Layout>
-        } />
-        <Route path="/jobs/:id" element={
-          <Layout>
-            <ProtectedRoute>
-              <Suspense fallback={<PageLoadingSpinner message="Chargement de l'offre d'emploi..." />}>
-                <JobDetailPage />
-              </Suspense>
-            </ProtectedRoute>
-          </Layout>
-        } />
+        <Route path="/forum" element={<Navigate to="/my-profile/forum" replace />} />
+        <Route path="/forum/:id" element={<Navigate to="/my-profile/forum" replace />} />
+        <Route path="/jobs" element={<Navigate to="/my-profile/offers" replace />} />
+        <Route path="/jobs/new" element={<Navigate to="/my-profile/offer" replace />} />
+        <Route path="/jobs/:id" element={<Navigate to="/my-profile/offers" replace />} />
         
         {/* Route Admin supprimée */}
         
