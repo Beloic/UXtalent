@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import { Routes, Route, Navigate, useParams, useNavigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -35,6 +35,18 @@ const ForumPostPage = lazy(() => import("./pages/ForumPostPage"));
 const JobsPage = lazy(() => import("./pages/JobsPage"));
 const JobDetailPage = lazy(() => import("./pages/JobDetailPage"));
 const PublishJobPage = lazy(() => import("./pages/PublishJobPage"));
+
+// Composant de redirection pour les candidats
+const CandidateRedirect = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    navigate(`/my-profile/talent/${id}`, { replace: true });
+  }, [id, navigate]);
+  
+  return null;
+};
 
 // Composants de chargement spécialisés pour différents contextes
 const PageLoadingSpinner = ({ message }) => (
@@ -144,7 +156,15 @@ export default function App() {
         
         {/* Redirections permanentes des anciennes routes Candidates */}
         <Route path="/candidates" element={<Navigate to="/my-profile/talent" replace />} />
-        <Route path="/candidates/:id" element={<Navigate to="/my-profile/talent/:id" replace />} />
+        <Route path="/candidates/:id" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Redirection..." />}>
+                <CandidateRedirect />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
         {/* Route supprimée: /candidates/suggestions (système de suggestions pour candidats désactivé) */}
         <Route path="/add-profile" element={
           <Layout>
