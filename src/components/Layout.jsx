@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield, Menu, X, Bug } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
@@ -16,6 +17,8 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   const [hasProfile, setHasProfile] = useState(null);
   const [candidatePlan, setCandidatePlan] = useState('free');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Charger le chatbot Crisp
   useEffect(() => {
@@ -86,6 +89,15 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
       window.removeEventListener('planUpdated', handlePlanUpdate);
     };
   }, [isAuthenticated, user]);
+
+  // Rediriger automatiquement tout utilisateur connecté vers my-profile/profile
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (!location.pathname.startsWith('/my-profile')) {
+        navigate('/my-profile/profile', { replace: true });
+      }
+    }
+  }, [isAuthenticated, location.pathname, navigate]);
 
   // Fonction pour obtenir le badge de plan candidat
   const getPlanBadge = (plan) => {
