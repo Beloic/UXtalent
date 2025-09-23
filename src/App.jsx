@@ -20,6 +20,7 @@ import LegalPage from "./pages/LegalPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import FAQPage from "./pages/FAQPage";
 import PricingPage from "./pages/PricingPage";
+import RecruiterPricingLanding from "./pages/RecruiterPricingLanding";
 
 // Composants lourds - chargés de manière paresseuse
 const CandidatesListPage = lazy(() => import("./pages/CandidatesListPage"));
@@ -129,6 +130,14 @@ export default function App() {
               <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
                 <PricingPage />
               </div>
+            </Layout>
+          </PublicRoute>
+        } />
+        <Route path="/pricing/recruiters" element={
+          <PublicRoute>
+            {/* Landing dédiée sans top bar */}
+            <Layout hideFooter={true} hideTopBar={true}>
+              <RecruiterPricingLanding />
             </Layout>
           </PublicRoute>
         } />
