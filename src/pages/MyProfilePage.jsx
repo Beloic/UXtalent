@@ -1130,7 +1130,7 @@ export default function MyProfilePage() {
           >
             <div className="flex items-center gap-4 mb-6">
               <Link 
-                to="/candidates" 
+                to="/my-profile/talent" 
                 className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -1178,7 +1178,7 @@ export default function MyProfilePage() {
           >
             <div className="flex items-center gap-4 mb-6">
               <Link 
-                to="/candidates" 
+                to="/my-profile/talent" 
                 className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -1243,7 +1243,7 @@ export default function MyProfilePage() {
           >
             <div className="flex items-center gap-4 mb-6">
               <Link 
-                to="/candidates" 
+                to="/my-profile/talent" 
                 className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -1365,7 +1365,7 @@ export default function MyProfilePage() {
         >
           <div className="flex items-center justify-between gap-4 mb-6">
             <Link 
-              to="/candidates" 
+              to="/my-profile/talent" 
               className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -1494,7 +1494,7 @@ export default function MyProfilePage() {
                         <div className="absolute top-4 right-4 flex items-center gap-3">
                           {/* Bouton pour voir le profil public */}
                           <Link 
-                            to={`/candidates/${formData.id}`}
+                            to={`/my-profile/talent/${formData.id}`}
                             className="inline-flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-all duration-200 shadow-md hover:shadow-lg"
                             title="Voir mon profil public"
                           >

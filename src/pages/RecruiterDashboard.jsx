@@ -706,7 +706,7 @@ export default function RecruiterDashboard() {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Accès refusé</h1>
           <p className="text-gray-600 mb-6">Cette page est réservée aux recruteurs.</p>
           <Link 
-            to="/candidates" 
+            to="/my-profile/talent" 
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
           >
             Voir les candidats
@@ -728,7 +728,7 @@ export default function RecruiterDashboard() {
           >
             <div className="flex items-center justify-between gap-4 mb-6">
               <Link 
-                to="/candidates" 
+                to="/my-profile/talent" 
                 className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -898,7 +898,7 @@ export default function RecruiterDashboard() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun favori pour le moment</h3>
                     <p className="text-gray-600 mb-6">Commencez par ajouter des candidats à vos favoris depuis la liste des candidats.</p>
                     <Link 
-                      to="/candidates" 
+                      to="/my-profile/talent" 
                       className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
                     >
                       <Users className="w-5 h-5" />
@@ -1064,7 +1064,7 @@ export default function RecruiterDashboard() {
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun candidat pour les rendez-vous</h3>
                     <p className="text-gray-600 mb-6">Les candidats apparaîtront ici une fois qu'ils seront ajoutés.</p>
                     <Link 
-                      to="/candidates" 
+                      to="/my-profile/talent" 
                       className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
                     >
                       <Users className="w-5 h-5" />

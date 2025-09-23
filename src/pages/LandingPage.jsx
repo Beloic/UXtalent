@@ -638,7 +638,7 @@ export default function LandingPage() {
               <ul className="space-y-2 text-gray-400">
                 <li><Link to="/register" className="hover:text-white transition-colors">Créer un compte</Link></li>
                 <li><Link to="/login" className="hover:text-white transition-colors">Se connecter</Link></li>
-                <li><Link to="/candidates" className="hover:text-white transition-colors">Voir les profils</Link></li>
+                <li><Link to="/login" className="hover:text-white transition-colors">Voir les profils</Link></li>
               </ul>
             </div>
             <div>
@@ -647,7 +647,7 @@ export default function LandingPage() {
                 <li><Link to="/recruiters" className="hover:text-white transition-colors">Découvrir la plateforme</Link></li>
                 <li><Link to="/register" className="hover:text-white transition-colors">S'inscrire</Link></li>
                 <li><Link to="/login" className="hover:text-white transition-colors">Connexion</Link></li>
-                <li><Link to="/candidates" className="hover:text-white transition-colors">Rechercher</Link></li>
+                <li><Link to="/login" className="hover:text-white transition-colors">Rechercher</Link></li>
               </ul>
             </div>
             <div>
