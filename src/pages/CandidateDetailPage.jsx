@@ -21,6 +21,7 @@ import {
   BarChart3
 } from "lucide-react";
 import { useCandidate } from "../services/candidatesApi";
+import ProfileTabs from "../components/ProfileTabs";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
@@ -444,7 +445,7 @@ export default function CandidateDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header avec bouton retour */}
+        {/* Header avec bouton retour et onglets */}
         <div className="mb-8">
           <Link 
             to="/my-profile/talent" 
@@ -453,6 +454,9 @@ export default function CandidateDetailPage() {
             <ArrowLeft className="w-4 h-4" />
             Retour à la liste
           </Link>
+          <div className="mt-6">
+            <ProfileTabs />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
