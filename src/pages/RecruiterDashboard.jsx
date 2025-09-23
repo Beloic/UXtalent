@@ -996,7 +996,7 @@ export default function RecruiterDashboard() {
                             
                             <div className="flex items-center gap-2">
                               <button 
-                                onClick={() => navigate(`/candidates/${candidate.id}`)}
+                                onClick={() => navigate(`/my-profile/talent/${candidate.id}`)}
                                 className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-colors font-medium"
                               >
                                 <Eye className="w-4 h-4" />
@@ -1367,7 +1367,7 @@ export default function RecruiterDashboard() {
                                             }
                                             return (
                                               <Link 
-                                                to={`/candidates/${candidateId}`}
+                                                to={`/my-profile/talent/${candidateId}`}
                                                 className="px-3 py-1 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1 flex-shrink-0"
                                               >
                                                 <Eye className="w-3 h-3" />

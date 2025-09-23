@@ -144,7 +144,7 @@ export default function App() {
         
         {/* Redirections permanentes des anciennes routes Candidates */}
         <Route path="/candidates" element={<Navigate to="/my-profile/talent" replace />} />
-        <Route path="/candidates/:id" element={<Navigate to="/my-profile/candidates/:id" replace />} />
+        <Route path="/candidates/:id" element={<Navigate to="/my-profile/talent/:id" replace />} />
         {/* Route supprimée: /candidates/suggestions (système de suggestions pour candidats désactivé) */}
         <Route path="/add-profile" element={
           <Layout>
@@ -232,8 +232,8 @@ export default function App() {
           </Layout>
         } />
         <Route path="/profile-stats" element={<Navigate to="/my-profile/stats" replace />} />
-        {/* Détail candidat accessible sous my-profile */}
-        <Route path="/my-profile/candidates/:id" element={
+        {/* Détail candidat accessible sous my-profile/talent/ID */}
+        <Route path="/my-profile/talent/:id" element={
           <Layout>
             <ProtectedRoute>
               <Suspense fallback={<PageLoadingSpinner message="Chargement du profil candidat..." />}>
