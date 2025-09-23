@@ -56,7 +56,7 @@ export default function MyProfilePage() {
   // Déterminer l'onglet actif basé sur l'URL
   const getActiveTabFromPath = () => {
     const path = location.pathname;
-    if (path.includes('/talents')) return 'talents';
+    if (path.includes('/talent')) return 'talents';
     if (path.includes('/offers')) return 'offers';
     if (path.includes('/forum')) return 'forum';
     if (path.includes('/stats')) return 'stats';
@@ -75,7 +75,7 @@ export default function MyProfilePage() {
           navigate('/my-profile/profile');
           break;
         case 'talents':
-          navigate('/my-profile/talents');
+          navigate('/my-profile/talent');
           break;
         case 'stats':
           navigate('/my-profile/stats');
