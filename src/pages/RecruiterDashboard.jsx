@@ -1254,7 +1254,7 @@ export default function RecruiterDashboard() {
                                     <Pause className="w-4 h-4" />
                                   </button>
                                   <button
-                                    onClick={() => navigate(`/jobs/${job.id}`)}
+                                    onClick={() => navigate(`/my-profile/offer/${job.id}`)}
                                     className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center gap-2"
                                   >
                                     <ExternalLink className="w-4 h-4" />
@@ -1288,7 +1288,7 @@ export default function RecruiterDashboard() {
                                     <Play className="w-4 h-4" />
                                   </button>
                                   <button
-                                    onClick={() => navigate(`/jobs/${job.id}`)}
+                                    onClick={() => navigate(`/my-profile/offer/${job.id}`)}
                                     className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center gap-2"
                                   >
                                     <ExternalLink className="w-4 h-4" />
