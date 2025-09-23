@@ -49,10 +49,9 @@ export default function CandidatesListPage() {
   const hasActiveFilters = remote.length || experience.length || location.length || salaryRange.length || q;
 
 
-  return (
-    <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 py-8">
+  const content = (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-8">
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Sidebar filters */}
@@ -249,7 +248,18 @@ export default function CandidatesListPage() {
           </section>
         </div>
       </div>
-      </div>
-    </RecruiterSubscriptionGuard>
+    </div>
   );
+
+  // Appliquer le guard d'abonnement uniquement pour les recruteurs
+  if (isRecruiter) {
+    return (
+      <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
+        {content}
+      </RecruiterSubscriptionGuard>
+    );
+  }
+
+  // Les candidats et visiteurs authentifiés non-recruteurs voient la page sans guard
+  return content;
 }

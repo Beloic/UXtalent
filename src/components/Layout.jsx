@@ -188,7 +188,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               <>
                 {/* Nouveaux liens Landing */}
                 <NavLink 
-                  to="/" 
+                  to="/candidates" 
                   className={({ isActive }) => 
                     `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
                       isActive 
@@ -383,7 +383,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 {isAuthenticated ? (
                   <>
                     <NavLink 
-                      to="/" 
+                      to="/candidates" 
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={({ isActive }) => 
                         `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
