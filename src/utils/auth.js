@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import logger from '../logger/clientLogger';
 
 /**
  * Utilitaire pour récupérer un token d'authentification valide
@@ -45,21 +46,65 @@ export async function getAuthToken() {
  */
 export async function authenticatedFetch(url, options = {}) {
   const { token, error, user } = await getAuthToken();
-  
+
+  const method = (options.method || 'GET').toUpperCase();
+  const requestId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const start = performance.now ? performance.now() : Date.now();
+
   if (error || !token) {
+    logger.error('auth.fetch.token_error', { url, method, error, requestId });
     throw new Error(`Authentification échouée: ${error}`);
   }
 
   const headers = {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json',
+    'X-Request-Id': requestId,
     ...options.headers
   };
 
-  return fetch(url, {
-    ...options,
-    headers
-  });
+  try {
+    const res = await fetch(url, { ...options, headers });
+    const durationMs = (performance.now ? performance.now() : Date.now()) - start;
+
+    logger.info('auth.fetch.response', {
+      url,
+      method,
+      status: res.status,
+      ok: res.ok,
+      durationMs: Math.round(durationMs),
+      requestId
+    });
+
+    if (!res.ok) {
+      // Essayer de lire un corps JSON/texte pour enrichir le log (sans jeter si erreur de parsing)
+      let responseBodySnippet = null;
+      try {
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const data = await res.clone().json();
+          responseBodySnippet = JSON.stringify(data).slice(0, 500);
+        } else {
+          const text = await res.clone().text();
+          responseBodySnippet = text.slice(0, 500);
+        }
+      } catch (_) {}
+
+      logger.error('auth.fetch.http_error', {
+        url,
+        method,
+        status: res.status,
+        requestId,
+        responseBodySnippet
+      });
+    }
+
+    return res;
+  } catch (e) {
+    const durationMs = (performance.now ? performance.now() : Date.now()) - start;
+    logger.error('auth.fetch.network_error', { url, method, error: e.message, durationMs: Math.round(durationMs), requestId });
+    throw e;
+  }
 }
 
 /**

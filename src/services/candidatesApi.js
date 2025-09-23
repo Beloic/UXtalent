@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { authenticatedFetch } from '../utils/auth';
+import logger from '../logger/clientLogger';
 import { buildApiUrl } from '../config/api';
 
 
@@ -143,6 +144,17 @@ export async function updateCandidate(id, candidateData) {
   });
 
   if (!response.ok) {
+    // Log enrichi pour diagnostiquer les PATCH/PUT
+    let errorPayload = null;
+    try {
+      const ct = response.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        errorPayload = await response.clone().json();
+      } else {
+        errorPayload = await response.clone().text();
+      }
+    } catch (_) {}
+    logger.error('candidates.update.error', { id, status: response.status, errorPayload });
     throw new Error(`Erreur HTTP: ${response.status}`);
   }
 
