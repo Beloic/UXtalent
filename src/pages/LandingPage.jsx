@@ -609,40 +609,7 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            {/* Informations pratiques */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                <div className="text-white font-semibold">Candidature gratuite</div>
-                <div className="text-blue-200 text-sm">Aucun frais d'inscription</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <Clock className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                <div className="text-white font-semibold">Réponse rapide</div>
-                <div className="text-blue-200 text-sm">Sous 7 jours ouvrés</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <Shield className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                <div className="text-white font-semibold">Données sécurisées</div>
-                <div className="text-blue-200 text-sm">Confidentialité garantie</div>
-              </div>
-            </div>
-
-            {/* Contact */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <p className="text-white mb-4">
-                <strong>Des questions ?</strong> Notre équipe est là pour vous aider :
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="mailto:hello@loicbernard.com"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl hover:bg-gray-100 transition-all duration-200"
-                >
-                  <Mail className="w-5 h-5" />
-                  Contact
-                </a>
-              </div>
-            </div>
+            
           </motion.div>
         </div>
       </section>
