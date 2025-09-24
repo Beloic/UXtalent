@@ -397,9 +397,6 @@ export default function LandingPage() {
                 <p className="text-gray-700 leading-relaxed group-hover:text-gray-600 transition-colors">
                   {feature.desc}
                 </p>
-
-                {/* Accent décoratif */}
-                <div className={`mt-6 h-1 ${feature.iconBg} rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300`}></div>
               </div>
             ))}
           </div>
