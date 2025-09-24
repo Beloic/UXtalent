@@ -182,16 +182,16 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
     <div className="min-h-screen bg-gray-50">
       {/* Top nav */}
       {!hideTopBar && (
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-xl glass">
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-xl glass">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 font-bold text-gray-900">
             <motion.div 
               initial={{ rotate: -10, scale: .9 }} 
               animate={{ rotate: 0, scale: 1 }} 
               transition={{ type: 'spring', stiffness: 260, damping: 18 }} 
-              className="p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-xl shadow-blue-200 hover:scale-110 transition-all duration-300"
+              className="p-2 rounded-2xl bg-white shadow-xl shadow-blue-200 hover:scale-110 transition-all duration-300"
             >
-              <Users className="w-6 h-6 text-white" />
+              <img src="/logo.png" alt="UX Talent" className="w-8 h-8 rounded-xl" />
             </motion.div>
             <div className="flex items-center gap-2">
               <span className="text-xl">UX Talent</span>
@@ -622,7 +622,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
       <main>{children}</main>
 
       {!hideFooter && (
-        <footer className="bg-white/80 backdrop-blur-sm border-t border-white/20 mt-16">
+      <footer className="bg-white/80 backdrop-blur-sm border-t border-white/20 mt-16">
         <div className="mx-auto max-w-7xl px-4 py-12">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
