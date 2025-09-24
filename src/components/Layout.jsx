@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield, Menu, X, Bug, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,6 +18,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
   const [isSolutionsMobileOpen, setIsSolutionsMobileOpen] = useState(false);
+  const solutionsRef = useRef(null);
 
   // Charger le chatbot Crisp
   useEffect(() => {
@@ -36,6 +37,19 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
       if (crispScript) {
         crispScript.remove();
       }
+    };
+  }, []);
+
+  // Fermer le menu Solutions au clic en dehors (desktop)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (solutionsRef.current && !solutionsRef.current.contains(event.target)) {
+        setIsSolutionsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -193,8 +207,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 {/* Liens principaux pour utilisateurs connectés */}
                 <div 
                   className="relative"
-                  onMouseEnter={() => setIsSolutionsOpen(true)}
-                  onMouseLeave={() => setIsSolutionsOpen(false)}
+                  ref={solutionsRef}
                 >
                   <button 
                     type="button"
