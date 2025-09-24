@@ -341,6 +341,12 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     <Link 
                       to="/my-profile/profile" 
                       className="inline-flex items-center gap-2 px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
+                      onClick={() => {
+                        try {
+                          console.log('[NAV] Dashboard Candidat cliqué');
+                          console.time('[DASHBOARD-CANDIDATE] total');
+                        } catch {}
+                      }}
                     >
                       <User className="w-4 h-4" />
                       Dashboard
@@ -355,6 +361,12 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     <Link 
                       to="/recruiter-dashboard" 
                       className="inline-flex items-center gap-2 px-4 py-2 text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl transition-all duration-200"
+                      onClick={() => {
+                        try {
+                          console.log('[NAV] Dashboard Recruteur cliqué');
+                          console.time('[DASHBOARD-RECRUITER] total');
+                        } catch {}
+                      }}
                     >
                       <Users className="w-4 h-4" />
                       Dashboard

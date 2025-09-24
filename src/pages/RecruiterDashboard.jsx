@@ -142,14 +142,17 @@ export default function RecruiterDashboard() {
   // Charger les offres du recruteur
   const loadMyJobs = async () => {
     try {
+      console.time('[RD] loadMyJobs');
       setLoadingJobs(true);
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
       if (!token) {
+        console.warn('[RD] loadMyJobs: pas de token');
         return;
       }
 
+      console.log('[RD] GET', buildApiUrl('/api/jobs'));
       const response = await fetch(buildApiUrl('/api/jobs'), {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -158,14 +161,18 @@ export default function RecruiterDashboard() {
 
       if (response.ok) {
         const jobsData = await response.json();
+        console.log('[RD] loadMyJobs: OK', { count: jobsData?.length ?? 0 });
         setMyJobs(jobsData);
         
         // Charger les candidatures pour chaque offre
         await loadApplicationsForJobs(jobsData, token);
       } else {
+        console.error('[RD] loadMyJobs: HTTP', response.status);
       }
     } catch (error) {
+      console.error('[RD] loadMyJobs: error', error?.message);
     } finally {
+      console.timeEnd('[RD] loadMyJobs');
       setLoadingJobs(false);
     }
   };
@@ -173,12 +180,15 @@ export default function RecruiterDashboard() {
   // Charger les candidatures pour les offres
   const loadApplicationsForJobs = async (jobs, token) => {
     try {
+      console.time('[RD] loadApplicationsForJobs');
       setLoadingApplications(true);
       const applicationsData = {};
       
       for (const job of jobs) {
         try {
-          const response = await fetch(buildApiUrl(`/api/candidates/?action=get_job_applications&jobId=${job.id}`), {
+          const url = buildApiUrl(`/api/candidates/?action=get_job_applications&jobId=${job.id}`);
+          console.log('[RD] GET', url);
+          const response = await fetch(url, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -187,18 +197,23 @@ export default function RecruiterDashboard() {
           if (response.ok) {
             const result = await response.json();
             applicationsData[job.id] = result.applications || [];
+            console.log('[RD] applications job', job.id, applicationsData[job.id].length);
           } else if (response.status === 503) {
             // Table applications non trouvée
             applicationsData[job.id] = [];
+            console.warn('[RD] applications 503 pour job', job.id);
           }
         } catch (error) {
           applicationsData[job.id] = [];
+          console.error('[RD] applications error pour job', job.id, error?.message);
         }
       }
       
       setJobApplications(applicationsData);
     } catch (error) {
+      console.error('[RD] loadApplicationsForJobs: error', error?.message);
     } finally {
+      console.timeEnd('[RD] loadApplicationsForJobs');
       setLoadingApplications(false);
     }
   };
@@ -206,10 +221,15 @@ export default function RecruiterDashboard() {
   // Charger les rendez-vous depuis l'API
   const loadAppointmentsData = useCallback(async () => {
     try {
+      console.time('[RD] loadAppointments');
       const appointmentsData = await loadAppointments();
       setAppointments(appointmentsData);
+      console.log('[RD] loadAppointments: OK', { count: appointmentsData?.length ?? 0 });
     } catch (error) {
       setAppointments([]);
+      console.error('[RD] loadAppointments: error', error?.message);
+    } finally {
+      console.timeEnd('[RD] loadAppointments');
     }
   }, []);
 
@@ -218,6 +238,7 @@ export default function RecruiterDashboard() {
     if (!user) return;
     
     try {
+      console.time('[RD] loadFavorites');
       setLoading(true);
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
@@ -231,13 +252,17 @@ export default function RecruiterDashboard() {
       if (response.ok) {
         const data = await response.json();
         setFavorites(data);
+        console.log('[RD] loadFavorites: OK', { count: Array.isArray(data) ? data.length : 0 });
       } else {
         const errorData = await response.json().catch(() => ({ error: 'Erreur inconnue' }));
         setMessage('❌ Erreur lors du chargement des favoris');
+        console.error('[RD] loadFavorites: HTTP', response.status, errorData);
       }
     } catch (error) {
       setMessage('❌ Erreur lors du chargement des favoris');
+      console.error('[RD] loadFavorites: error', error?.message);
     } finally {
+      console.timeEnd('[RD] loadFavorites');
       setLoading(false);
     }
   }, [user]);
@@ -394,6 +419,7 @@ export default function RecruiterDashboard() {
     if (!user) return;
     
     try {
+      console.time('[RD] loadCandidates');
       setCandidatesLoading(true);
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
@@ -407,10 +433,14 @@ export default function RecruiterDashboard() {
       if (response.ok) {
         const data = await response.json();
         setCandidates(data);
+        console.log('[RD] loadCandidates: OK', { count: Array.isArray(data) ? data.length : 0 });
       } else {
+        console.error('[RD] loadCandidates: HTTP', response.status);
       }
     } catch (error) {
+      console.error('[RD] loadCandidates: error', error?.message);
     } finally {
+      console.timeEnd('[RD] loadCandidates');
       setCandidatesLoading(false);
     }
   }, [user]);
@@ -493,6 +523,7 @@ export default function RecruiterDashboard() {
     if (user && isRecruiter) {
       // Vérifier le statut d'abonnement avant de charger les données
       if (recruiter?.subscription_status === 'active' || recruiter?.subscription_status === 'trialing') {
+        console.log('[RD] mount: chargement initial');
         loadFavorites();
         loadCandidates();
         loadAppointmentsData();
@@ -509,6 +540,7 @@ export default function RecruiterDashboard() {
       // Vérifier le statut d'abonnement avant de charger les données
       if (recruiter?.subscription_status === 'active' || recruiter?.subscription_status === 'trialing') {
         setRefreshing(true);
+        console.log('[RD] onglet actif', activeTab);
         
         // Recharger les rendez-vous à chaque changement d'onglet
         loadAppointmentsData();
