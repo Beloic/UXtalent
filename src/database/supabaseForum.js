@@ -243,58 +243,59 @@ export const getCategories = async () => {
 // Like/Unlike un post
 export const togglePostLike = async (postId, userId) => {
   try {
-    // Vérifier si l'utilisateur a déjà liké
-    const { data: existingLike, error: checkError } = await supabase
-      .from('forum_post_likes')
-      .select('id')
-      .eq('post_id', postId)
-      .eq('user_id', userId)
+    // Récupérer le post actuel
+    const { data: post, error: fetchError } = await supabase
+      .from('forum_posts')
+      .select('likes, liked_by')
+      .eq('id', postId)
       .single();
 
-    if (checkError && checkError.code !== 'PGRST116') {
-      throw checkError;
+    if (fetchError) {
+      throw fetchError;
     }
 
-    if (existingLike) {
+    const currentLikes = post.likes || 0;
+    const currentLikedBy = post.liked_by || [];
+
+    // Vérifier si l'utilisateur a déjà liké
+    const userHasLiked = currentLikedBy.includes(userId);
+
+    if (userHasLiked) {
       // Supprimer le like
-      await supabase
-        .from('forum_post_likes')
-        .delete()
-        .eq('post_id', postId)
-        .eq('user_id', userId);
+      const newLikedBy = currentLikedBy.filter(id => id !== userId);
+      const newLikes = Math.max(currentLikes - 1, 0);
 
-      // Décrémenter le compteur
-      const { data: post } = await supabase
+      const { error: updateError } = await supabase
         .from('forum_posts')
-        .select('likes')
-        .eq('id', postId)
-        .single();
-
-      await supabase
-        .from('forum_posts')
-        .update({ likes: Math.max((post?.likes || 0) - 1, 0) })
+        .update({ 
+          likes: newLikes,
+          liked_by: newLikedBy
+        })
         .eq('id', postId);
 
-      return { success: true, likes: Math.max((post?.likes || 0) - 1, 0), isLiked: false };
+      if (updateError) {
+        throw updateError;
+      }
+
+      return { success: true, likes: newLikes, isLiked: false };
     } else {
       // Ajouter le like
-      await supabase
-        .from('forum_post_likes')
-        .insert([{ post_id: postId, user_id: userId }]);
+      const newLikedBy = [...currentLikedBy, userId];
+      const newLikes = currentLikes + 1;
 
-      // Incrémenter le compteur
-      const { data: post } = await supabase
+      const { error: updateError } = await supabase
         .from('forum_posts')
-        .select('likes')
-        .eq('id', postId)
-        .single();
-
-      await supabase
-        .from('forum_posts')
-        .update({ likes: (post?.likes || 0) + 1 })
+        .update({ 
+          likes: newLikes,
+          liked_by: newLikedBy
+        })
         .eq('id', postId);
 
-      return { success: true, likes: (post?.likes || 0) + 1, isLiked: true };
+      if (updateError) {
+        throw updateError;
+      }
+
+      return { success: true, likes: newLikes, isLiked: true };
     }
   } catch (error) {
     throw error;
@@ -304,58 +305,59 @@ export const togglePostLike = async (postId, userId) => {
 // Like/Unlike une réponse
 export const toggleReplyLike = async (replyId, userId) => {
   try {
-    // Vérifier si l'utilisateur a déjà liké
-    const { data: existingLike, error: checkError } = await supabase
-      .from('forum_reply_likes')
-      .select('id')
-      .eq('reply_id', replyId)
-      .eq('user_id', userId)
+    // Récupérer la réponse actuelle
+    const { data: reply, error: fetchError } = await supabase
+      .from('forum_replies')
+      .select('likes, liked_by')
+      .eq('id', replyId)
       .single();
 
-    if (checkError && checkError.code !== 'PGRST116') {
-      throw checkError;
+    if (fetchError) {
+      throw fetchError;
     }
 
-    if (existingLike) {
+    const currentLikes = reply.likes || 0;
+    const currentLikedBy = reply.liked_by || [];
+
+    // Vérifier si l'utilisateur a déjà liké
+    const userHasLiked = currentLikedBy.includes(userId);
+
+    if (userHasLiked) {
       // Supprimer le like
-      await supabase
-        .from('forum_reply_likes')
-        .delete()
-        .eq('reply_id', replyId)
-        .eq('user_id', userId);
+      const newLikedBy = currentLikedBy.filter(id => id !== userId);
+      const newLikes = Math.max(currentLikes - 1, 0);
 
-      // Décrémenter le compteur
-      const { data: reply } = await supabase
+      const { error: updateError } = await supabase
         .from('forum_replies')
-        .select('likes')
-        .eq('id', replyId)
-        .single();
-
-      await supabase
-        .from('forum_replies')
-        .update({ likes: Math.max((reply?.likes || 0) - 1, 0) })
+        .update({ 
+          likes: newLikes,
+          liked_by: newLikedBy
+        })
         .eq('id', replyId);
 
-      return { success: true, likes: Math.max((reply?.likes || 0) - 1, 0), isLiked: false };
+      if (updateError) {
+        throw updateError;
+      }
+
+      return { success: true, likes: newLikes, isLiked: false };
     } else {
       // Ajouter le like
-      await supabase
-        .from('forum_reply_likes')
-        .insert([{ reply_id: replyId, user_id: userId }]);
+      const newLikedBy = [...currentLikedBy, userId];
+      const newLikes = currentLikes + 1;
 
-      // Incrémenter le compteur
-      const { data: reply } = await supabase
+      const { error: updateError } = await supabase
         .from('forum_replies')
-        .select('likes')
-        .eq('id', replyId)
-        .single();
-
-      await supabase
-        .from('forum_replies')
-        .update({ likes: (reply?.likes || 0) + 1 })
+        .update({ 
+          likes: newLikes,
+          liked_by: newLikedBy
+        })
         .eq('id', replyId);
 
-      return { success: true, likes: (reply?.likes || 0) + 1, isLiked: true };
+      if (updateError) {
+        throw updateError;
+      }
+
+      return { success: true, likes: newLikes, isLiked: true };
     }
   } catch (error) {
     throw error;

@@ -20,6 +20,20 @@ export default function ForumPostPage() {
   const [editingReply, setEditingReply] = useState(null);
   const [editReplyContent, setEditReplyContent] = useState('');
 
+  // Fonction pour vérifier si l'utilisateur a liké un post
+  const hasUserLikedPost = (post) => {
+    if (!user || !post.liked_by) return false;
+    const userId = user.email || 'anonymous';
+    return Array.isArray(post.liked_by) && post.liked_by.includes(userId);
+  };
+
+  // Fonction pour vérifier si l'utilisateur a liké une réponse
+  const hasUserLikedReply = (reply) => {
+    if (!user || !reply.liked_by) return false;
+    const userId = user.email || 'anonymous';
+    return Array.isArray(reply.liked_by) && reply.liked_by.includes(userId);
+  };
+
   // Fonction utilitaire pour formater les dates
   const formatTimeAgo = (dateString) => {
     const now = new Date();
@@ -364,14 +378,14 @@ export default function ForumPostPage() {
             <button
               onClick={handleLikePost}
               className={`flex items-center gap-1 transition-colors hover:scale-105 ${
-                likedPosts.has(id) 
+                hasUserLikedPost(post) 
                   ? 'text-red-500 hover:text-red-600' 
                   : 'text-gray-500 hover:text-red-500'
               }`}
             >
               <Heart 
                 className={`w-4 h-4 ${
-                  likedPosts.has(id) ? 'fill-current' : ''
+                  hasUserLikedPost(post) ? 'fill-current' : ''
                 }`} 
               />
               {post.likes || 0} likes
@@ -513,14 +527,14 @@ export default function ForumPostPage() {
                         <button
                           onClick={() => handleLikeReply(reply.id)}
                           className={`flex items-center gap-1 transition-colors hover:scale-105 ${
-                            likedReplies.has(reply.id) 
+                            hasUserLikedReply(reply) 
                               ? 'text-red-500 hover:text-red-600' 
                               : 'text-gray-500 hover:text-red-500'
                           }`}
                         >
                           <Heart 
                             className={`w-4 h-4 ${
-                              likedReplies.has(reply.id) ? 'fill-current' : ''
+                              hasUserLikedReply(reply) ? 'fill-current' : ''
                             }`} 
                           />
                           {reply.likes || 0} likes

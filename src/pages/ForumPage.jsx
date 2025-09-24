@@ -29,6 +29,20 @@ export default function ForumPage() {
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [likedReplies, setLikedReplies] = useState(new Set());
 
+  // Fonction pour vérifier si l'utilisateur a liké un post
+  const hasUserLikedPost = (post) => {
+    if (!user || !post.liked_by) return false;
+    const userId = user.email || 'anonymous';
+    return Array.isArray(post.liked_by) && post.liked_by.includes(userId);
+  };
+
+  // Fonction pour vérifier si l'utilisateur a liké une réponse
+  const hasUserLikedReply = (reply) => {
+    if (!user || !reply.liked_by) return false;
+    const userId = user.email || 'anonymous';
+    return Array.isArray(reply.liked_by) && reply.liked_by.includes(userId);
+  };
+
   // Charger les données du forum
   useEffect(() => {
     const loadData = async () => {
@@ -524,14 +538,14 @@ export default function ForumPage() {
                           <button 
                             onClick={(e) => handleLikePost(post.id, e)}
                             className={`flex items-center gap-1 transition-colors hover:scale-105 ${
-                              likedPosts.has(post.id) 
+                              hasUserLikedPost(post) 
                                 ? 'text-red-500 hover:text-red-600' 
                                 : 'text-gray-500 hover:text-red-500'
                             }`}
                           >
                             <Heart 
                               className={`w-4 h-4 ${
-                                likedPosts.has(post.id) ? 'fill-current' : ''
+                                hasUserLikedPost(post) ? 'fill-current' : ''
                               }`} 
                             />
                             {post.likes || 0} likes
