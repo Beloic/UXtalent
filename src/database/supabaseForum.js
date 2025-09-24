@@ -243,14 +243,11 @@ export const getCategories = async () => {
 // Fonction pour convertir un email en ID numérique
 const emailToUserId = (email) => {
   if (!email) return 0;
-  // Créer un hash simple de l'email pour obtenir un ID numérique
-  let hash = 0;
-  for (let i = 0; i < email.length; i++) {
-    const char = email.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convertir en entier 32-bit
-  }
-  return Math.abs(hash);
+  const userIdHash = email.split('').reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0);
+    return a & a;
+  }, 0);
+  return Math.abs(userIdHash) % 10000; // ID entre 0 et 9999
 };
 
 // Like/Unlike un post
