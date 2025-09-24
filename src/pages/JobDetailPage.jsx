@@ -21,7 +21,6 @@ import {
   Send
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import ProfileTabs from "../components/ProfileTabs";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
 import { buildApiUrl } from "../config/api";
@@ -406,9 +405,6 @@ export default function JobDetailPage() {
             <ArrowLeft className="w-4 h-4" />
             Retour aux offres
           </Link>
-          <div className="mt-6">
-            <ProfileTabs />
-          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">

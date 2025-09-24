@@ -21,7 +21,6 @@ import {
   BarChart3
 } from "lucide-react";
 import { useCandidate } from "../services/candidatesApi";
-import ProfileTabs from "../components/ProfileTabs";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
@@ -454,9 +453,6 @@ export default function CandidateDetailPage() {
             <ArrowLeft className="w-4 h-4" />
             Retour à la liste
           </Link>
-          <div className="mt-6">
-            <ProfileTabs />
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
