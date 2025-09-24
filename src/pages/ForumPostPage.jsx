@@ -272,12 +272,13 @@ export default function ForumPostPage() {
     }
     
     const currentUserId = emailToUserId(user.email || 'anonymous');
-    const isOwner = reply.author_id === currentUserId;
+    const replyAuthorId = parseInt(reply.author_id); // Convertir en nombre
+    const isOwner = currentUserId === replyAuthorId;
     
     console.log('isReplyOwner debug:', {
       userEmail: user.email,
       currentUserId,
-      replyAuthorId: reply.author_id,
+      replyAuthorId,
       isOwner,
       reply: reply
     });
