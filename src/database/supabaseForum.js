@@ -3,17 +3,26 @@ import { createClient } from '@supabase/supabase-js';
 // Configuration Supabase - Utilisation des variables d'environnement
 // Côté serveur: utiliser process.env uniquement
 // Côté client: import.meta.env sera disponible via Vite
-const supabaseUrl = typeof import.meta !== 'undefined' && import.meta.env 
+let supabaseUrl = typeof import.meta !== 'undefined' && import.meta.env 
   ? import.meta.env.VITE_SUPABASE_URL 
   : process.env.VITE_SUPABASE_URL;
-const supabaseKey = typeof import.meta !== 'undefined' && import.meta.env 
+let supabaseKey = typeof import.meta !== 'undefined' && import.meta.env 
   ? import.meta.env.VITE_SUPABASE_ANON_KEY 
   : process.env.VITE_SUPABASE_ANON_KEY;
 
 // Vérification que les variables d'environnement sont définies
 if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Variables d\'environnement Supabase manquantes dans supabaseForum.js');
-  throw new Error('Configuration Supabase incomplète - vérifiez vos variables d\'environnement');
+  console.warn('⚠️ Variables d\'environnement Supabase manquantes dans supabaseForum.js - Mode développement');
+  
+  // En mode développement, utiliser des valeurs par défaut
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('🔧 Mode développement - Utilisation de valeurs par défaut');
+    supabaseUrl = 'https://ktfdrwpvofxuktnunukv.supabase.co';
+    supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5NzQ4NzQsImV4cCI6MjA1MDU1MDg3NH0.placeholder';
+  } else {
+    console.error('❌ Variables d\'environnement Supabase manquantes dans supabaseForum.js');
+    throw new Error('Configuration Supabase incomplète - vérifiez vos variables d\'environnement');
+  }
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
