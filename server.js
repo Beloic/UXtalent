@@ -268,8 +268,11 @@ const checkReplyOwnership = (reply, userEmail) => {
   const stableUserId = generateStableUserId(userEmail);
   const legacyUserId = generateTempUserId(userEmail);
   
+  // Convertir replyAuthorId en nombre pour la comparaison
+  const replyAuthorId = parseInt(reply.author_id);
+  
   // Essayer d'abord avec la nouvelle logique, puis avec l'ancienne
-  return reply.author_id === stableUserId || reply.author_id === legacyUserId;
+  return replyAuthorId === stableUserId || replyAuthorId === legacyUserId;
 };
 
 // Import du middleware de rôles
