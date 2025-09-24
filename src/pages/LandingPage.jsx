@@ -181,45 +181,7 @@ export default function LandingPage() {
             {/* Badge et paragraphe introductif supprimés à la demande */}
           </motion.div>
 
-          {/* Stats avec meilleur design */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-            {[
-              { number: "85%", label: "Taux de saturation", subtitle: "Du marché français", icon: "📊", color: "slate" },
-              { number: "200+", label: "Candidats par poste", subtitle: "En moyenne", icon: "👥", color: "blue" },
-              { number: "3 mois", label: "Recherche moyenne", subtitle: "Pour trouver un poste", icon: "⏰", color: "indigo" },
-              { number: "70%", label: "Échec des candidatures", subtitle: "Sans réseau", icon: "💔", color: "violet" }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="relative group"
-              >
-                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/30 text-center h-full card-transition hover:shadow-2xl">
-                  <div className="text-3xl mb-3">{stat.icon}</div>
-                  <div className={`text-4xl font-bold mb-2 ${
-                    stat.color === 'slate' ? 'text-slate-600' : 
-                    stat.color === 'blue' ? 'text-blue-600' : 
-                    stat.color === 'indigo' ? 'text-indigo-600' : 'text-violet-600'
-                  }`}>
-                    {stat.number}
-                  </div>
-                  <div className="text-gray-900 font-semibold mb-1">{stat.label}</div>
-                  <div className="text-gray-600 text-sm">{stat.subtitle}</div>
-                  
-                  {/* Effet de glow au hover */}
-                  <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 ${
-                    stat.color === 'slate' ? 'bg-slate-500' : 
-                    stat.color === 'blue' ? 'bg-blue-500' : 
-                    stat.color === 'indigo' ? 'bg-indigo-500' : 'bg-violet-500'
-                  }`}></div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {/* Blocs de statistiques supprimés à la demande */}
 
           {/* Section explicative restructurée */}
           <motion.div
@@ -232,9 +194,7 @@ export default function LandingPage() {
             <div className="p-8 md:p-12">
               {/* Titre centré avec icône */}
               <div className="text-center mb-12">
-                <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                  Pourquoi cette concurrence acharnée ?
-                </h3>
+                {/* Titre supprimé à la demande */}
                 {/* Texte explicatif supprimé à la demande */}
               </div>
               
