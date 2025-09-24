@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -49,6 +49,10 @@ import { loadAppointments } from '../services/appointmentsApi';
 import { RecruitersApiService } from '../services/recruitersApi';
 import { buildApiUrl } from '../config/api';
 
+// Chargement paresseux des pages pour rester dans le Dashboard
+const CandidatesListPage = lazy(() => import('./CandidatesListPage'));
+const JobsPage = lazy(() => import('./JobsPage'));
+
 export default function RecruiterDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -60,6 +64,8 @@ export default function RecruiterDashboard() {
     if (location.pathname.startsWith('/recruiter-dashboard/myjobs')) return 'myjobs';
     if (location.pathname.startsWith('/recruiter-dashboard/matching')) return 'matching';
     if (location.pathname.startsWith('/recruiter-dashboard/plan')) return 'plan';
+    if (location.pathname.startsWith('/recruiter-dashboard/talent')) return 'talent';
+    if (location.pathname.startsWith('/recruiter-dashboard/offers')) return 'offers';
     return 'favorites';
   };
   const activeTab = getActiveTabFromPath();
@@ -739,14 +745,18 @@ export default function RecruiterDashboard() {
               <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 flex">
                 <button
                   onClick={() => navigate('/recruiter-dashboard/talent')}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 text-gray-600 hover:text-gray-900`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'talent' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900'
+                  }`}
                 >
                   <Users className="w-4 h-4" />
                   Talents
                 </button>
                 <button
                   onClick={() => navigate('/recruiter-dashboard/offers')}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 text-gray-600 hover:text-gray-900`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'offers' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900'
+                  }`}
                 >
                   <Briefcase className="w-4 h-4" />
                   Offres
@@ -866,6 +876,33 @@ export default function RecruiterDashboard() {
 
           {/* Contenu des onglets */}
           <AnimatePresence mode="wait">
+            {activeTab === 'talent' && (
+              <motion.div 
+                key="talent"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: 0.2 }}
+              >
+                <Suspense fallback={<div className="p-8 text-center">Chargement des talents...</div>}>
+                  <CandidatesListPage />
+                </Suspense>
+              </motion.div>
+            )}
+
+            {activeTab === 'offers' && (
+              <motion.div 
+                key="offers"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: 0.2 }}
+              >
+                <Suspense fallback={<div className="p-8 text-center">Chargement des offres...</div>}>
+                  <JobsPage />
+                </Suspense>
+              </motion.div>
+            )}
             {activeTab === 'favorites' && (
               <RecruiterSubscriptionGuard recruiter={recruiter} loading={recruiterLoading}>
                 <motion.div 

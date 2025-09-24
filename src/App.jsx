@@ -315,8 +315,8 @@ export default function App() {
         <Route path="/recruiter-dashboard/talent" element={
           <Layout>
             <ProtectedRoute>
-              <Suspense fallback={<CandidatesLoadingSpinner />}>
-                <CandidatesListPage />
+              <Suspense fallback={<DashboardLoadingSpinner />}>
+                <RecruiterDashboard />
               </Suspense>
             </ProtectedRoute>
           </Layout>
@@ -324,8 +324,8 @@ export default function App() {
         <Route path="/recruiter-dashboard/offers" element={
           <Layout>
             <ProtectedRoute>
-              <Suspense fallback={<PageLoadingSpinner message="Chargement des offres..." />}>
-                <JobsPage />
+              <Suspense fallback={<DashboardLoadingSpinner />}>
+                <RecruiterDashboard />
               </Suspense>
             </ProtectedRoute>
           </Layout>
