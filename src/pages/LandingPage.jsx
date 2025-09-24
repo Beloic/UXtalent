@@ -363,7 +363,7 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
             >
-              Conçue pour accélérer votre recherche : mettez votre profil en lumière et recevez des opportunités réellement pertinentes.
+              Conçu pour mettre en lumière le profil des meilleurs talents
             </motion.p>
           </motion.div>
 
