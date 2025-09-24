@@ -263,6 +263,15 @@ const generateStableUserId = (email) => {
   return generateTempUserId(normalized);
 };
 
+// Fonction pour vérifier les permissions avec fallback
+const checkReplyOwnership = (reply, userEmail) => {
+  const stableUserId = generateStableUserId(userEmail);
+  const legacyUserId = generateTempUserId(userEmail);
+  
+  // Essayer d'abord avec la nouvelle logique, puis avec l'ancienne
+  return reply.author_id === stableUserId || reply.author_id === legacyUserId;
+};
+
 // Import du middleware de rôles
 import { 
   requireRole, 
@@ -2225,13 +2234,16 @@ app.delete('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req
     
     // Vérifier que l'utilisateur est l'auteur de la réponse
     const currentUserId = generateStableUserId(req.user.email);
+    const isOwner = checkReplyOwnership(reply, req.user.email);
+    
     logger.info('Vérification des permissions', { 
       currentUserId, 
       replyAuthorId: reply.author_id,
-      isOwner: reply.author_id === currentUserId
+      isOwner,
+      userEmail: req.user.email
     });
     
-    if (reply.author_id !== currentUserId) {
+    if (!isOwner) {
       logger.warn('Tentative de suppression non autorisée', { 
         currentUserId, 
         replyAuthorId: reply.author_id,
@@ -2288,13 +2300,16 @@ app.put('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, r
     
     // Vérifier que l'utilisateur est l'auteur de la réponse
     const currentUserId = generateStableUserId(req.user.email);
+    const isOwner = checkReplyOwnership(reply, req.user.email);
+    
     logger.info('Vérification des permissions pour modification', { 
       currentUserId, 
       replyAuthorId: reply.author_id,
-      isOwner: reply.author_id === currentUserId
+      isOwner,
+      userEmail: req.user.email
     });
     
-    if (reply.author_id !== currentUserId) {
+    if (!isOwner) {
       logger.warn('Tentative de modification non autorisée', { 
         currentUserId, 
         replyAuthorId: reply.author_id,
