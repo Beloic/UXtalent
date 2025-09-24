@@ -173,6 +173,7 @@ export default function MyProfilePage() {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [message, setMessage] = useState('');
   const [candidateStatus, setCandidateStatus] = useState(null); // 'approved', 'rejected', 'pending', 'new', null
+  const [profileLoadError, setProfileLoadError] = useState(null); // Message d'erreur de chargement
   const [isEditingRejected, setIsEditingRejected] = useState(false); // Mode édition pour candidats rejetés
   const [isEditingNew, setIsEditingNew] = useState(false); // Mode édition pour candidats nouveaux
   const [userPlan, setUserPlan] = useState('free');
@@ -383,6 +384,8 @@ export default function MyProfilePage() {
 
   const loadExistingProfile = useCallback(async () => {
     try {
+      // Réinitialiser l'erreur avant un nouveau chargement
+      setProfileLoadError(null);
       // Vérifier d'abord si on a des données en cache valides
       const cachedData = getCachedData();
       if (cachedData && activeTab !== 'profile') {
@@ -450,6 +453,7 @@ export default function MyProfilePage() {
             return;
           }
           setMessage(`❌ Erreur: ${error.message}`);
+          setProfileLoadError(error.message || 'Erreur inconnue');
           return;
         }
         
@@ -588,6 +592,7 @@ export default function MyProfilePage() {
       } else if (response) {
         const errorText = await response.text();
         setMessage(`❌ Erreur lors du chargement: ${response.status}`);
+        setProfileLoadError(`Statut ${response.status}`);
       }
     } catch (error) {
       // Gestion spéciale pour les erreurs de parsing JSON
@@ -596,12 +601,8 @@ export default function MyProfilePage() {
       } else {
         setMessage(`❌ Erreur: ${error.message}`);
       }
-      
-      // En cas d'erreur réseau, considérer comme nouveau candidat
-      setCandidateStatus('new');
-      setFormData(prev => ({ ...prev, id: null }));
-      // Assigner les valeurs par défaut réalistes pour le nouveau candidat
-      assignDefaultValues();
+      // En cas d'erreur réseau/serveur, NE PAS afficher l'UI "new" par défaut
+      setProfileLoadError(error.message || 'Erreur inconnue');
     } finally {
       setIsLoadingProfile(false);
       setCacheLoading(false);
@@ -1166,6 +1167,24 @@ export default function MyProfilePage() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Chargement de votre profil...</h1>
           <p className="text-gray-600">Récupération de vos informations</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Affichage erreur de chargement (ne pas montrer l'UI "new" dans ce cas)
+  if (profileLoadError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
+          <h2 className="text-xl font-semibold text-red-800 mb-2">Impossible de charger votre profil</h2>
+          <p className="text-red-700 mb-4">{typeof profileLoadError === 'string' ? profileLoadError : 'Une erreur est survenue.'}</p>
+          <button
+            onClick={() => loadExistingProfile()}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl font-semibold"
+          >
+            Réessayer
+          </button>
         </div>
       </div>
     );
