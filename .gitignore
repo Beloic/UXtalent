@@ -175,3 +175,6 @@ env.production
 env.development
 env.staging
 .vercel
+
+# Ignore SSH keys
+ssh-keys/
