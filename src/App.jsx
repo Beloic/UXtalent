@@ -322,9 +322,33 @@ export default function App() {
         } />
         <Route path="/forum" element={<Navigate to="/my-profile/forum" replace />} />
         <Route path="/forum/:id" element={<Navigate to="/my-profile/forum" replace />} />
-        <Route path="/jobs" element={<Navigate to="/my-profile/offers" replace />} />
-        <Route path="/jobs/new" element={<Navigate to="/my-profile/offer" replace />} />
-        <Route path="/jobs/:id" element={<Navigate to="/my-profile/offers" replace />} />
+        <Route path="/jobs" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement des offres..." />}>
+                <JobsPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/jobs/new" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du formulaire de publication..." />}>
+                <PublishJobPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/jobs/:id" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement de l'offre..." />}>
+                <JobDetailPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
         
         {/* Route Admin supprimée */}
         
