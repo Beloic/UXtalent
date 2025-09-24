@@ -28,6 +28,21 @@ export default function MyProfilePage() {
   } = useProfileCache();
   const location = useLocation();
 
+  // Rediriger les recruteurs qui arrivent sur des pages profil candidat
+  useEffect(() => {
+    if (isRecruiter) {
+      const path = location.pathname || '';
+      const isCandidateProfileSection = (
+        path.startsWith('/my-profile/profile') ||
+        path.startsWith('/my-profile/talent') ||
+        path.startsWith('/my-profile/stats')
+      );
+      if (isCandidateProfileSection) {
+        navigate('/recruiter-dashboard/myjobs', { replace: true });
+      }
+    }
+  }, [isRecruiter, location.pathname, navigate]);
+
   // Helper function pour gérer les compétences de manière sécurisée
   const getSkillsArray = (skills) => {
     if (!skills) return [];
