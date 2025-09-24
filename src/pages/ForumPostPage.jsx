@@ -266,10 +266,23 @@ export default function ForumPostPage() {
   };
 
   const isReplyOwner = (reply) => {
-    if (!user || !reply) return false;
-    // Utiliser la même logique que pour les likes - convertir l'email en ID numérique
+    if (!user || !reply) {
+      console.log('isReplyOwner: user ou reply manquant', { user: !!user, reply: !!reply });
+      return false;
+    }
+    
     const currentUserId = emailToUserId(user.email || 'anonymous');
-    return reply.author_id === currentUserId;
+    const isOwner = reply.author_id === currentUserId;
+    
+    console.log('isReplyOwner debug:', {
+      userEmail: user.email,
+      currentUserId,
+      replyAuthorId: reply.author_id,
+      isOwner,
+      reply: reply
+    });
+    
+    return isOwner;
   };
 
   if (isLoading) {
@@ -512,6 +525,7 @@ export default function ForumPostPage() {
                             </button>
                           </div>
                         )}
+                        {console.log('Rendering buttons for reply:', reply.id, 'isOwner:', isReplyOwner(reply))}
                       </div>
                       {editingReply === reply.id ? (
                         <div className="space-y-3">
