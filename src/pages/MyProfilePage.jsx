@@ -365,10 +365,14 @@ export default function MyProfilePage() {
   }, [isAuthenticated, user, candidatePlan]);
 
   const loadExistingProfile = useCallback(async () => {
+    // Ne charger depuis le réseau que lorsque l'onglet Profil est actif
+    if (activeTab !== 'view') {
+      return;
+    }
     try {
       // Vérifier d'abord si on a des données en cache valides
       const cachedData = getCachedData();
-      if (cachedData && activeTab !== 'profile') {
+      if (cachedData && activeTab !== 'view') {
         // Si on a des données en cache et qu'on n'est pas sur l'onglet profil,
         // utiliser les données du cache sans recharger
         setFormData(cachedData.formData);
@@ -601,13 +605,15 @@ export default function MyProfilePage() {
         email: user.email || ''
       }));
 
-      // Charger le profil depuis la base de données seulement si nécessaire
-      loadExistingProfile();
+      // Charger le profil uniquement quand l'onglet Profil est actif
+      if (activeTab === 'view') {
+        loadExistingProfile();
+      }
     } else {
       // Si pas d'utilisateur, assigner les valeurs par défaut pour l'affichage
       assignDefaultValues();
     }
-  }, [user, loadExistingProfile]);
+  }, [user, activeTab, loadExistingProfile]);
 
   // Assigner les valeurs par défaut dès que l'utilisateur est connecté et qu'aucun profil n'existe
   useEffect(() => {
