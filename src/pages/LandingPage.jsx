@@ -241,9 +241,7 @@ export default function LandingPage() {
                 <h3 className="text-3xl font-bold text-gray-900 mb-4">
                   Pourquoi cette concurrence acharnée ?
                 </h3>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Trois facteurs majeurs expliquent cette difficulté croissante à trouver un emploi en UX/UI
-                </p>
+                {/* Texte explicatif supprimé à la demande */}
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -316,9 +314,7 @@ export default function LandingPage() {
                     <div className="space-y-3">
                       {[
                         "✅ Évaluation par des designers seniors",
-                        "✅ Critères transparents et équitables", 
-                        "✅ Accès privilégié aux recruteurs",
-                        "✅ Sortez du lot dans la masse"
+                        "✅ Critères transparents et équitables"
                       ].map((benefit, index) => (
                         <motion.div
                           key={index}
