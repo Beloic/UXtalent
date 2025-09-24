@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { supabase, supabaseAdmin } from './src/lib/supabase.js';
 import { redisClient, connectRedis, checkRedisHealth } from './src/config/redis.js';
 import Stripe from 'stripe';
+import rateLimit from 'express-rate-limit';
 import { 
   loadCandidates,
   getCandidateStats, 
@@ -98,6 +99,41 @@ const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SEC
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Confiance proxy (Render/Heroku) pour limiter par IP réelle
+app.set('trust proxy', 1);
+
+// Garde environnement: refuser les valeurs par défaut en production
+if (process.env.NODE_ENV === 'production') {
+  const missing = [];
+  if (!process.env.ADMIN_TOKEN_SECRET) missing.push('ADMIN_TOKEN_SECRET');
+  if (!process.env.VITE_SUPABASE_URL) missing.push('VITE_SUPABASE_URL');
+  if (!process.env.VITE_SUPABASE_ANON_KEY) missing.push('VITE_SUPABASE_ANON_KEY');
+  if (!process.env.SUPABASE_SERVICE_KEY) missing.push('SUPABASE_SERVICE_KEY');
+  if (!process.env.STRIPE_SECRET_KEY) missing.push('STRIPE_SECRET_KEY');
+  if (!process.env.STRIPE_WEBHOOK_SECRET) missing.push('STRIPE_WEBHOOK_SECRET');
+  if (missing.length > 0) {
+    logger.error('Configuration manquante en production', { missing });
+    throw new Error(`Variables d'environnement manquantes en production: ${missing.join(', ')}`);
+  }
+}
+
+// Rate limiting global
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 1000, // plafond large mais protecteur
+  standardHeaders: true,
+  legacyHeaders: false
+});
+app.use(globalLimiter);
+
+// Rate limiting strict pour endpoints sensibles
+const strictLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 min
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // Initialiser Redis au démarrage
 (async () => {
   try {
@@ -162,7 +198,7 @@ app.use(helmet({
 }));
 
 // Webhook Stripe - doit être AVANT express.json() pour les webhooks
-app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+app.use('/api/stripe/webhook', strictLimiter, express.raw({ type: 'application/json' }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -232,9 +268,8 @@ import {
 // Middleware d'authentification (maintenant géré par requireRole)
 const authenticateUser = async (req, res, next) => {
   try {
-    console.log('🔐 [AUTH] Middleware d\'authentification appelé');
-    console.log('🔐 [AUTH] URL:', req.url);
-    console.log('🔐 [AUTH] Method:', req.method);
+    // Logs réduits pour éviter l'exposition d'informations
+    console.log('🔐 [AUTH] Requête', { method: req.method, url: req.url });
     
     const authHeader = req.headers.authorization;
     console.log('🔐 [AUTH] Authorization header:', authHeader ? 'Présent' : 'Absent');
@@ -245,7 +280,9 @@ const authenticateUser = async (req, res, next) => {
     }
 
     const token = authHeader.substring(7);
-    console.log('🔐 [AUTH] Token extrait:', token.substring(0, 20) + '...');
+    // Ne jamais logger un token complet
+    const masked = token.length > 8 ? token.slice(0, 4) + '...' + token.slice(-4) : '***';
+    console.log('🔐 [AUTH] Token reçu:', masked);
     
     const { data: { user }, error } = await supabase.auth.getUser(token);
 
