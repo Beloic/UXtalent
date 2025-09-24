@@ -212,7 +212,13 @@ export default function ForumPage() {
         setPosts(prevPosts => 
           prevPosts.map(post => 
             post.id === postId 
-              ? { ...post, likes: result.likes }
+              ? { 
+                  ...post, 
+                  likes: result.likes,
+                  liked_by: result.isLiked 
+                    ? [...(post.liked_by || []), emailToUserId(userId)]
+                    : (post.liked_by || []).filter(id => id !== emailToUserId(userId))
+                }
               : post
           )
         );

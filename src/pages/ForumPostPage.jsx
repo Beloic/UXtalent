@@ -89,10 +89,13 @@ export default function ForumPostPage() {
           return newSet;
         });
 
-        // Mettre à jour le post
+        // Mettre à jour le post avec les nouvelles données
         setPost(prev => ({
           ...prev,
-          likes: result.likes
+          likes: result.likes,
+          liked_by: result.isLiked 
+            ? [...(prev.liked_by || []), emailToUserId(userId)]
+            : (prev.liked_by || []).filter(id => id !== emailToUserId(userId))
         }));
       }
     } catch (error) {
@@ -135,7 +138,13 @@ export default function ForumPostPage() {
           ...prev,
           replies: prev.replies.map(reply => 
             reply.id === replyId 
-              ? { ...reply, likes: result.likes }
+              ? { 
+                  ...reply, 
+                  likes: result.likes,
+                  liked_by: result.isLiked 
+                    ? [...(reply.liked_by || []), emailToUserId(userId)]
+                    : (reply.liked_by || []).filter(id => id !== emailToUserId(userId))
+                }
               : reply
           )
         }));
@@ -260,7 +269,8 @@ export default function ForumPostPage() {
 
   const isReplyOwner = (reply) => {
     if (!user || !reply) return false;
-    const currentUserId = user.email ? user.email.split('@')[0] : 'anonymous';
+    // Utiliser la même logique que pour les likes - convertir l'email en ID numérique
+    const currentUserId = emailToUserId(user.email || 'anonymous');
     return reply.author_id === currentUserId;
   };
 
