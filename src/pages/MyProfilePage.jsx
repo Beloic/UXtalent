@@ -1350,17 +1350,6 @@ export default function MyProfilePage() {
 
           {/* Bouton pour modifier le profil */}
           <div className="text-center">
-            {/* Bouton de test simple */}
-            <div className="mb-4">
-              <button
-                onClick={() => {
-                  alert('Bouton de test fonctionne !');
-                }}
-                className="px-4 py-2 bg-red-500 text-white rounded mr-4"
-              >
-                Test Simple
-              </button>
-            </div>
             
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -2466,34 +2455,12 @@ export default function MyProfilePage() {
                 </div>
               )}
 
-              {/* Bouton de test temporaire - toujours visible */}
-              <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-4">
-                <h4 className="text-lg font-bold text-yellow-800 mb-2">🔍 Debug Info DÉTAILLÉ</h4>
-                <div className="text-sm text-yellow-700 space-y-1">
-                  <p><strong>candidateStatus:</strong> "{candidateStatus || 'null'}" (type: {typeof candidateStatus})</p>
-                  <p><strong>formData.id:</strong> "{formData.id || 'null'}" (type: {typeof formData.id})</p>
-                  <p><strong>user.email:</strong> {user?.email || 'null'}</p>
-                  <p><strong>isLoadingProfile:</strong> {isLoadingProfile ? 'true' : 'false'}</p>
-                  <p><strong>isEditingNew:</strong> {isEditingNew ? 'true' : 'false'}</p>
-                  <p><strong>Backend URL:</strong> {user?.email ? buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}`) : 'N/A'}</p>
-                  <hr className="my-2" />
-                  <p><strong>Conditions:</strong></p>
-                  <p>• !formData.id: {!formData.id ? 'TRUE ✅' : 'FALSE ❌'}</p>
-                  <p>• candidateStatus === 'new': {candidateStatus === 'new' ? 'TRUE ✅' : 'FALSE ❌'}</p>
-                  <p>• candidateStatus === 'pending': {candidateStatus === 'pending' ? 'TRUE ✅' : 'FALSE ❌'}</p>
-                  <p>• candidateStatus === 'rejected': {candidateStatus === 'rejected' ? 'TRUE ✅' : 'FALSE ❌'}</p>
-                  <p>• isEditingNew: {isEditingNew ? 'TRUE ✅' : 'FALSE ❌'}</p>
-                  <hr className="my-2" />
-                  <p><strong>RÉSULTAT FINAL - Should show button:</strong> <span className="font-bold text-lg">{(candidateStatus === 'new' || candidateStatus === null) ? 'YES ✅' : 'NO ❌'}</span></p>
-                </div>
-              </div>
 
               {/* Bouton "Envoyer mon profil" pour les candidats non approuvés */}
               {(() => {
                 // Logique : afficher le bouton pour les profils qui peuvent envoyer/modifier
                 const shouldShow = candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected';
                 
-                // Logs supplémentaires pour debug
                 return shouldShow;
               })()}
               
@@ -2514,30 +2481,6 @@ export default function MyProfilePage() {
                 return null;
               })()}
               
-              {/* BOUTON TEST TEMPORAIRE - TOUJOURS VISIBLE */}
-              <div className="mt-8 bg-red-500 text-white rounded-2xl p-8 border border-red-600">
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold mb-4">🚨 BOUTON TEST TEMPORAIRE</h3>
-                  <p className="mb-4">Ce bouton devrait TOUJOURS être visible pour debug</p>
-                  <button
-                    onClick={handleSubmit}
-                    disabled={isLoading}
-                    className="bg-white text-red-500 font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto"
-                  >
-                    {isLoading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
-                        Envoi en cours...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-5 h-5" />
-                        TEST - Envoyer mon profil pour examen
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
 
               {(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') && (
                 <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm">
