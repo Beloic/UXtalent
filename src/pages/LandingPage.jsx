@@ -238,9 +238,6 @@ export default function LandingPage() {
             <div className="p-8 md:p-12">
               {/* Titre centré avec icône */}
               <div className="text-center mb-12">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-100 rounded-2xl mb-6">
-                  <span className="text-2xl">📈</span>
-                </div>
                 <h3 className="text-3xl font-bold text-gray-900 mb-4">
                   Pourquoi cette concurrence acharnée ?
                 </h3>
