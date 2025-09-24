@@ -347,44 +347,59 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Grille de fonctionnalités simplifiée */}
+          {/* Grille de fonctionnalités stylée */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { 
                 icon: <Eye className="w-8 h-8" />, 
                 title: "Visibilité dans l'annuaire", 
-                desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur"
+                desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur",
+                color: "blue",
+                bgGradient: "from-blue-50 to-blue-100",
+                iconBg: "bg-blue-500",
+                accent: "border-blue-200"
               },
               { 
                 icon: <Users className="w-8 h-8" />, 
                 title: "Forum communautaire exclusif", 
-                desc: "Réseau privé de designers pour partager expériences et conseils"
+                desc: "Réseau privé de designers pour partager expériences et conseils",
+                color: "purple",
+                bgGradient: "from-purple-50 to-purple-100",
+                iconBg: "bg-purple-500",
+                accent: "border-purple-200"
               },
               { 
                 icon: <Briefcase className="w-8 h-8" />, 
                 title: "Offres d'emploi exclusives", 
-                desc: "Accès prioritaire aux meilleures opportunités avant publication"
+                desc: "Accès prioritaire aux meilleures opportunités avant publication",
+                color: "green",
+                bgGradient: "from-green-50 to-green-100",
+                iconBg: "bg-green-500",
+                accent: "border-green-200"
               }
             ].map((feature, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className={`bg-gradient-to-br ${feature.bgGradient} rounded-2xl p-8 shadow-lg border-2 ${feature.accent} hover:shadow-xl hover:-translate-y-2 hover:scale-105 transition-all duration-300 group`}
               >
-                {/* Icône simple */}
-                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
-                  <div className="text-blue-600">
+                {/* Icône colorée */}
+                <div className={`w-16 h-16 ${feature.iconBg} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
+                  <div className="text-white">
                     {feature.icon}
                   </div>
                 </div>
 
                 {/* Contenu */}
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors">
                   {feature.title}
                 </h3>
                 
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-700 leading-relaxed group-hover:text-gray-600 transition-colors">
                   {feature.desc}
                 </p>
+
+                {/* Accent décoratif */}
+                <div className={`mt-6 h-1 ${feature.iconBg} rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300`}></div>
               </div>
             ))}
           </div>
