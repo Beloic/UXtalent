@@ -353,8 +353,7 @@ export default function LandingPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              Fonctionnalités de la
-              <span className="text-blue-600"> plateforme</span>
+              Booste ta visibilité auprès des recruteurs
             </h2>
             
             <motion.p
@@ -372,31 +371,13 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {[
               { 
-                icon: <UserCheck className="w-8 h-8" />, 
-                title: "Profil candidat complet", 
-                desc: "Mettez en valeur vos projets et compétences avec un portfolio interactif",
-                gradient: "from-blue-500 to-cyan-500",
-                bgGradient: "from-blue-50 to-cyan-50",
-                shadowColor: "shadow-blue-500/20",
-                delay: 0.1
-              },
-              { 
                 icon: <Globe className="w-8 h-8" />, 
                 title: "Visibilité dans l'annuaire", 
                 desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur",
                 gradient: "from-purple-500 to-pink-500",
                 bgGradient: "from-purple-50 to-pink-50",
                 shadowColor: "shadow-purple-500/20",
-                delay: 0.2
-              },
-              { 
-                icon: <Mail className="w-8 h-8" />, 
-                title: "Contact par les recruteurs", 
-                desc: "Système de messagerie sécurisé pour des échanges professionnels",
-                gradient: "from-green-500 to-emerald-500",
-                bgGradient: "from-green-50 to-emerald-50",
-                shadowColor: "shadow-green-500/20",
-                delay: 0.3
+                delay: 0.1
               },
               { 
                 icon: <Users className="w-8 h-8" />, 
@@ -405,7 +386,7 @@ export default function LandingPage() {
                 gradient: "from-orange-500 to-red-500",
                 bgGradient: "from-orange-50 to-red-50",
                 shadowColor: "shadow-orange-500/20",
-                delay: 0.4
+                delay: 0.2
               },
               { 
                 icon: <Award className="w-8 h-8" />, 
@@ -414,7 +395,7 @@ export default function LandingPage() {
                 gradient: "from-yellow-500 to-orange-500",
                 bgGradient: "from-yellow-50 to-orange-50",
                 shadowColor: "shadow-yellow-500/20",
-                delay: 0.5
+                delay: 0.3
               },
               { 
                 icon: <BarChart2 className="w-8 h-8" />, 
@@ -423,7 +404,7 @@ export default function LandingPage() {
                 gradient: "from-indigo-500 to-purple-500",
                 bgGradient: "from-indigo-50 to-purple-50",
                 shadowColor: "shadow-indigo-500/20",
-                delay: 0.6
+                delay: 0.4
               }
             ].map((feature, i) => (
               <motion.div
@@ -524,131 +505,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Section CTA spectaculaire et moderne */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            viewport={{ once: true }}
-            className="relative"
-          >
-            {/* Container principal avec effets visuels avancés */}
-            <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-3xl overflow-hidden shadow-2xl">
-              {/* Effet de grille animée en arrière-plan */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute inset-0" style={{
-                  backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
-                  backgroundSize: '30px 30px'
-                }}></div>
-              </div>
-              
-              {/* Cercles décoratifs flottants */}
-              <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-float"></div>
-              <div className="absolute bottom-10 left-10 w-24 h-24 bg-blue-300/20 rounded-full blur-xl animate-float" style={{animationDelay: '1s'}}></div>
-              <div className="absolute top-1/2 left-1/3 w-16 h-16 bg-purple-300/15 rounded-full blur-lg animate-float" style={{animationDelay: '2s'}}></div>
-
-              <div className="relative z-10 text-center p-12 md:p-16">
-                {/* Icône centrale avec animation */}
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  whileInView={{ scale: 1, rotate: 0 }}
-                  transition={{ duration: 0.8, delay: 0.8, type: "spring", stiffness: 100 }}
-                  viewport={{ once: true }}
-                  className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full mb-8 shadow-lg relative"
-                >
-                  <Target className="w-10 h-10 text-white" />
-                  
-                  {/* Anneaux pulsants autour de l'icône */}
-                  <div className="absolute -inset-4 border-2 border-white/30 rounded-full animate-ping"></div>
-                  <div className="absolute -inset-8 border border-white/20 rounded-full animate-pulse"></div>
-                </motion.div>
-
-                <motion.h3
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.9 }}
-                  viewport={{ once: true }}
-                  className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight"
-                >
-                  Recevez vos premières recommandations
-                  <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
-                    personnalisées
-                  </span>
-                </motion.h3>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 1 }}
-                  viewport={{ once: true }}
-                  className="text-blue-100 text-xl mb-8 max-w-3xl mx-auto leading-relaxed"
-                >
-                  Rejoignez notre communauté exclusive de designers et transformez votre carrière avec un accompagnement sur-mesure.
-                </motion.p>
-
-                {/* CTA Button avec effets avancés */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: 1.1 }}
-                  viewport={{ once: true }}
-                  className="mb-8"
-                >
-                  <Link 
-                    to="/register" 
-                    className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-700 font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden"
-                  >
-                    {/* Effet de brillance animé sur le bouton */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                    
-                    {/* Contenu du bouton */}
-                    <div className="relative z-10 flex items-center gap-3">
-                      <div className="p-2 bg-blue-600/10 rounded-full group-hover:bg-blue-600/20 transition-colors">
-                        <Users className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" />
-                    </div>
-                      <span>Créer mon profil gratuit</span>
-                      <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
-                    </div>
-
-                    {/* Cercle d'effet au survol */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-100 scale-110 transition-all duration-500"></div>
-                  </Link>
-          </motion.div>
-
-                {/* Statistiques de confiance */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 1.2 }}
-                  viewport={{ once: true }}
-                  className="grid grid-cols-1 md:grid-cols-3 gap-6"
-                >
-                  {[
-                    { icon: <CheckCircle className="w-6 h-6" />, text: "100% gratuit", subtext: "Aucun frais caché" },
-                    { icon: <Shield className="w-6 h-6" />, text: "Données sécurisées", subtext: "Confidentialité garantie" },
-                    { icon: <Clock className="w-6 h-6" />, text: "Activation immédiate", subtext: "Profil en ligne en 5 min" }
-                  ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 15 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 1.3 + i * 0.1 }}
-            viewport={{ once: true }}
-                      className="flex items-center gap-3 text-blue-100"
-                    >
-                      <div className="flex-shrink-0 text-green-300">
-                        {item.icon}
-                      </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-white">{item.text}</div>
-                        <div className="text-sm text-blue-200">{item.subtext}</div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
+          
         </div>
       </section>
 
