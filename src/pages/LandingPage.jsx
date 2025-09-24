@@ -22,7 +22,10 @@ import {
   Palette,
   Code,
   UserCheck,
-  X
+  X,
+  Bell,
+  Search,
+  BarChart2
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -308,7 +311,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pourquoi rejoindre notre pool */}
+      {/* Fonctionnalités de la plateforme */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
@@ -319,102 +322,55 @@ export default function LandingPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Pourquoi rejoindre notre pool de talents ?
+              Fonctionnalités de la plateforme
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Face à la concurrence rude du marché, nous vous offrons un avantage décisif : 
-              une sélection rigoureuse par des designers seniors qui connaissent les exigences du terrain.
+              Des outils concrets pour accélérer les mises en relation et améliorer la qualité des matches.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Avantages pour les candidats */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-blue-100 rounded-xl">
-                  <Users className="w-8 h-8 text-blue-600" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { icon: <Bell className="w-6 h-6" />, title: "Alertes intelligentes", desc: "Notifications quand un poste correspond à vos critères" },
+              { icon: <Search className="w-6 h-6" />, title: "Matching intelligent", desc: "Analyse multi-signaux pour des recommandations pertinentes" },
+              { icon: <Shield className="w-6 h-6" />, title: "Profils vérifiés", desc: "Contrôles qualité pour garantir la fiabilité des profils" },
+              { icon: <Heart className="w-6 h-6" />, title: "Favoris & notes", desc: "Sauvegardez, annotez et classez les profils facilement" },
+              { icon: <Briefcase className="w-6 h-6" />, title: "Dashboard recruteur", desc: "Suivez vos favoris, rendez-vous et réponses en un coup d’œil" },
+              { icon: <BarChart2 className="w-6 h-6" />, title: "Analytique de recherche", desc: "Insights sur la tension du marché et les mots-clés efficaces" },
+            ].map((f, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: i * 0.05 }}
+                viewport={{ once: true }}
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-xl hover:shadow-2xl card-transition"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mb-4">
+                  {f.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Pour les Designers</h3>
-              </div>
-              
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong className="text-gray-900">Validation par des experts seniors</strong>
-                    <p className="text-gray-600 text-sm">Évaluation rigoureuse par des designers expérimentés</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong className="text-gray-900">Avantage concurrentiel décisif</strong>
-                    <p className="text-gray-600 text-sm">Sortez du lot dans un marché saturé</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong className="text-gray-900">Accès privilégié aux recruteurs</strong>
-                    <p className="text-gray-600 text-sm">Entreprises qui font confiance à notre sélection</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong className="text-gray-900">Mentorat et conseils experts</strong>
-                    <p className="text-gray-600 text-sm">Guidance par des professionnels du secteur</p>
-                  </div>
-                </li>
-              </ul>
-            </motion.div>
-
-            {/* Processus de sélection */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-blue-100 rounded-xl">
-                  <UserCheck className="w-8 h-8 text-blue-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Processus de validation</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">1</div>
-                  <div>
-                    <strong className="text-gray-900">Candidature en ligne</strong>
-                    <p className="text-gray-600 text-sm">Remplissez votre profil détaillé</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">2</div>
-                  <div>
-                    <strong className="text-gray-900">Validation par notre comité d'experts</strong>
-                    <p className="text-gray-600 text-sm">Analyse experte de votre portfolio selon une grille objective</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">3</div>
-                  <div>
-                    <strong className="text-gray-900">Intégration au pool sélectif</strong>
-                    <p className="text-gray-600 text-sm">Accès aux opportunités premium</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{f.title}</h3>
+                <p className="text-gray-600">{f.desc}</p>
+              </motion.div>
+            ))}
           </div>
+
+          {/* Bandeau CTA simple */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="mt-12 bg-blue-50 border border-blue-100 rounded-2xl p-6 text-center"
+          >
+            <p className="text-gray-700">Essayez la plateforme et recevez vos premières recommandations.</p>
+            <div className="mt-4">
+              <Link to="/register" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all">
+                <Users className="w-5 h-5" />
+                Créer mon compte gratuit
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
