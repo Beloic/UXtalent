@@ -4113,9 +4113,13 @@ async function getProfileViewsByDay(candidateId) {
 // Fonction pour récupérer les vues par période (pour les graphiques)
 async function getProfileViewsByPeriod(candidateId, period = 'week', offset = 0) {
   try {
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() - (offset * 7)); // offset en semaines
+    // Inclure la journée courante en utilisant demain 00:00 comme borne supérieure exclusive
+    const now = new Date();
+    const endDate = new Date(now);
+    endDate.setHours(0, 0, 0, 0);
+    endDate.setDate(endDate.getDate() + 1 - (offset * 7)); // appliquer l'offset par semaines
     
+    // Déterminer la date de début alignée à 00:00
     let startDate = new Date(endDate);
     if (period === 'week') {
       startDate.setDate(startDate.getDate() - 7);
@@ -4124,6 +4128,7 @@ async function getProfileViewsByPeriod(candidateId, period = 'week', offset = 0)
     } else if (period === 'year') {
       startDate.setFullYear(startDate.getFullYear() - 1);
     }
+    startDate.setHours(0, 0, 0, 0);
     
     const { data, error } = await supabase
       .from('profile_tracking')
