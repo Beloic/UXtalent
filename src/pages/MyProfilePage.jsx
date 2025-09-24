@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useProfileCache } from '../contexts/ProfileCacheContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, User, Save, ArrowLeft, ArrowRight, Check, BarChart3, Settings, Eye, Calendar, ChevronLeft, ChevronRight, DollarSign, Camera, MapPin, Briefcase, Globe, Linkedin, Github, ExternalLink, TrendingUp, MessageSquare, X, AlertCircle, Edit, Star, CheckCircle, Pencil, Check as CheckIcon, X as XIcon, Crown, Clock, XCircle, Mail } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import CandidatesListPage from './CandidatesListPage';
+// Pages lourdes chargées en lazy pour éviter les cycles et gros bundles
+const CandidatesListPage = lazy(() => import('./CandidatesListPage'));
 import { supabase } from '../lib/supabase';
 import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -12,8 +13,8 @@ import { usePermissions } from '../hooks/usePermissions';
 import { useRecruiter } from '../hooks/useRecruiter';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 import { supabaseAdmin } from '../lib/supabase';
-import JobsPage from './JobsPage';
-import ForumPage from './ForumPage';
+const JobsPage = lazy(() => import('./JobsPage'));
+const ForumPage = lazy(() => import('./ForumPage'));
 
 export default function MyProfilePage() {
   const { user, isAuthenticated } = useAuth();
@@ -27,6 +28,7 @@ export default function MyProfilePage() {
     forceReload 
   } = useProfileCache();
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Rediriger les recruteurs qui arrivent sur des pages profil candidat
   useEffect(() => {
@@ -74,7 +76,7 @@ export default function MyProfilePage() {
     if (typeof value === 'number') return value.toString();
     return String(value);
   };
-  const navigate = useNavigate();
+  
   
   // Déterminer l'onglet actif basé sur l'URL
   const getActiveTabFromPath = () => {
@@ -2079,7 +2081,9 @@ export default function MyProfilePage() {
                 <div className="max-w-7xl mx-auto px-4 py-8">
                   {/* Injecte la page Talents dans l'onglet */}
                   <div className="bg-white rounded-2xl shadow-xl p-2 border border-white/20 backdrop-blur-sm">
-                    <CandidatesListPage />
+                    <Suspense fallback={<div className="p-6 text-center">Chargement des talents...</div>}>
+                      <CandidatesListPage />
+                    </Suspense>
                   </div>
                 </div>
               </div>
@@ -2096,7 +2100,9 @@ export default function MyProfilePage() {
               <div className="min-h-screen bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 py-8">
                   <div className="bg-white rounded-2xl shadow-xl p-2 border border-white/20 backdrop-blur-sm">
-                    <JobsPage />
+                    <Suspense fallback={<div className="p-6 text-center">Chargement des offres...</div>}>
+                      <JobsPage />
+                    </Suspense>
                   </div>
                 </div>
               </div>
@@ -2113,7 +2119,9 @@ export default function MyProfilePage() {
               <div className="min-h-screen bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 py-8">
                   <div className="bg-white rounded-2xl shadow-xl p-2 border border-white/20 backdrop-blur-sm">
-                    <ForumPage />
+                    <Suspense fallback={<div className="p-6 text-center">Chargement du forum...</div>}>
+                      <ForumPage />
+                    </Suspense>
                   </div>
                 </div>
               </div>
