@@ -925,6 +925,8 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
         }
         
         console.log('✅ [APPLICATION] Offre trouvée, recruiter_id:', job.recruiter_id);
+        const fallbackRecruiterId = '00000000-0000-0000-0000-000000000000';
+        const effectiveRecruiterId = job.recruiter_id || fallbackRecruiterId;
 
         // Vérifier si le candidat a déjà postulé
         const { data: existingApplication, error: checkError } = await supabaseAdmin
@@ -961,7 +963,7 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
         console.log('📝 [APPLICATION] Données à insérer:', {
           job_id: jobId,
           candidate_id: candidateId,
-          recruiter_id: job.recruiter_id,
+          recruiter_id: effectiveRecruiterId,
           first_name: firstName,
           last_name: lastName,
           candidate_email: candidateInfo.email,
@@ -975,7 +977,7 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
         const insertData = {
           job_id: jobId,
           candidate_id: candidateId,
-          recruiter_id: job.recruiter_id,
+          recruiter_id: effectiveRecruiterId,
           first_name: firstName,
           last_name: lastName,
           candidate_email: candidateInfo.email,
@@ -2891,12 +2893,15 @@ app.post('/api/applications', requireRole(['candidate']), async (req, res) => {
     const lastName = nameParts.slice(1).join(' ') || '';
 
     // Créer la candidature
+    const fallbackRecruiterId = '00000000-0000-0000-0000-000000000000';
+    const effectiveRecruiterId = job.recruiter_id || fallbackRecruiterId;
+
     const { data: application, error: insertError } = await supabaseAdmin
       .from('applications')
       .insert({
         job_id: jobId,
         candidate_id: candidateId,
-        recruiter_id: job.recruiter_id,
+        recruiter_id: effectiveRecruiterId,
         status: 'pending',
         first_name: firstName,
         last_name: lastName,
