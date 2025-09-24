@@ -240,9 +240,25 @@ export const getCategories = async () => {
   }
 };
 
+// Fonction pour convertir un email en ID numérique
+const emailToUserId = (email) => {
+  if (!email) return 0;
+  // Créer un hash simple de l'email pour obtenir un ID numérique
+  let hash = 0;
+  for (let i = 0; i < email.length; i++) {
+    const char = email.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convertir en entier 32-bit
+  }
+  return Math.abs(hash);
+};
+
 // Like/Unlike un post
 export const togglePostLike = async (postId, userId) => {
   try {
+    // Convertir l'email en ID numérique
+    const numericUserId = emailToUserId(userId);
+    
     // Récupérer le post actuel
     const { data: post, error: fetchError } = await supabase
       .from('forum_posts')
@@ -258,11 +274,11 @@ export const togglePostLike = async (postId, userId) => {
     const currentLikedBy = post.liked_by || [];
 
     // Vérifier si l'utilisateur a déjà liké
-    const userHasLiked = currentLikedBy.includes(userId);
+    const userHasLiked = currentLikedBy.includes(numericUserId);
 
     if (userHasLiked) {
       // Supprimer le like
-      const newLikedBy = currentLikedBy.filter(id => id !== userId);
+      const newLikedBy = currentLikedBy.filter(id => id !== numericUserId);
       const newLikes = Math.max(currentLikes - 1, 0);
 
       const { error: updateError } = await supabase
@@ -280,7 +296,7 @@ export const togglePostLike = async (postId, userId) => {
       return { success: true, likes: newLikes, isLiked: false };
     } else {
       // Ajouter le like
-      const newLikedBy = [...currentLikedBy, userId];
+      const newLikedBy = [...currentLikedBy, numericUserId];
       const newLikes = currentLikes + 1;
 
       const { error: updateError } = await supabase
@@ -305,6 +321,9 @@ export const togglePostLike = async (postId, userId) => {
 // Like/Unlike une réponse
 export const toggleReplyLike = async (replyId, userId) => {
   try {
+    // Convertir l'email en ID numérique
+    const numericUserId = emailToUserId(userId);
+    
     // Récupérer la réponse actuelle
     const { data: reply, error: fetchError } = await supabase
       .from('forum_replies')
@@ -320,11 +339,11 @@ export const toggleReplyLike = async (replyId, userId) => {
     const currentLikedBy = reply.liked_by || [];
 
     // Vérifier si l'utilisateur a déjà liké
-    const userHasLiked = currentLikedBy.includes(userId);
+    const userHasLiked = currentLikedBy.includes(numericUserId);
 
     if (userHasLiked) {
       // Supprimer le like
-      const newLikedBy = currentLikedBy.filter(id => id !== userId);
+      const newLikedBy = currentLikedBy.filter(id => id !== numericUserId);
       const newLikes = Math.max(currentLikes - 1, 0);
 
       const { error: updateError } = await supabase
@@ -342,7 +361,7 @@ export const toggleReplyLike = async (replyId, userId) => {
       return { success: true, likes: newLikes, isLiked: false };
     } else {
       // Ajouter le like
-      const newLikedBy = [...currentLikedBy, userId];
+      const newLikedBy = [...currentLikedBy, numericUserId];
       const newLikes = currentLikes + 1;
 
       const { error: updateError } = await supabase

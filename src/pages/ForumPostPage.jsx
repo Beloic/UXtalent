@@ -20,17 +20,29 @@ export default function ForumPostPage() {
   const [editingReply, setEditingReply] = useState(null);
   const [editReplyContent, setEditReplyContent] = useState('');
 
+  // Fonction pour convertir un email en ID numérique (même logique que backend)
+  const emailToUserId = (email) => {
+    if (!email) return 0;
+    let hash = 0;
+    for (let i = 0; i < email.length; i++) {
+      const char = email.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  };
+
   // Fonction pour vérifier si l'utilisateur a liké un post
   const hasUserLikedPost = (post) => {
     if (!user || !post.liked_by) return false;
-    const userId = user.email || 'anonymous';
+    const userId = emailToUserId(user.email || 'anonymous');
     return Array.isArray(post.liked_by) && post.liked_by.includes(userId);
   };
 
   // Fonction pour vérifier si l'utilisateur a liké une réponse
   const hasUserLikedReply = (reply) => {
     if (!user || !reply.liked_by) return false;
-    const userId = user.email || 'anonymous';
+    const userId = emailToUserId(user.email || 'anonymous');
     return Array.isArray(reply.liked_by) && reply.liked_by.includes(userId);
   };
 
