@@ -115,11 +115,11 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             Premium
           </span>
         );
-      case 'pro':
+      case 'elite':
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full shadow-lg">
             <span className="text-amber-100">⭐</span>
-            Pro
+            Elite
           </span>
         );
       default:

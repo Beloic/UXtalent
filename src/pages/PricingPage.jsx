@@ -110,7 +110,7 @@ export default function PricingPage() {
       features: [
         "🚀 Mise en avant maximale - toujours en tête de liste",
         "Tout du Premium",
-        "Badge Pro exclusif",
+        "Badge Elite exclusif",
         "Statistiques avancées",
         "Accès aux offres d'emploi exclusives",
         "Support VIP",
@@ -153,7 +153,7 @@ export default function PricingPage() {
     const planMapping = {
       'Gratuit': 'free',
       'Premium': 'premium',
-      'Pro': 'pro'
+      'Elite': 'elite'
     };
     
     return planMapping[planName] === currentPlan;

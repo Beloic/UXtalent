@@ -16,9 +16,9 @@ const PremiumBadge = ({ plan, size = 'default' }) => {
       iconColor: 'text-yellow-600',
       shadow: 'shadow-yellow-100'
     },
-    pro: {
+    elite: {
       icon: Crown,
-      text: 'Pro',
+      text: 'Elite',
       gradient: 'from-purple-500 to-indigo-600',
       bgGradient: 'from-purple-50 to-indigo-50',
       borderColor: 'border-purple-200',

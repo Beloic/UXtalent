@@ -5,7 +5,7 @@ export default function Badge({ children, variant = "default" }) {
   const variants = {
     default: "bg-blue-100 text-blue-800",
     premium: "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border border-purple-200",
-    pro: "bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-800 border border-orange-200"
+    elite: "bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-800 border border-orange-200"
   };
 
   return (
@@ -28,7 +28,7 @@ export function ProBadge() {
   return (
     <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-800 border border-orange-200 px-3 py-1.5 text-xs font-bold">
       <Star className="w-3 h-3" />
-      Pro
+      Elite
     </span>
   );
 }
