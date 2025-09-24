@@ -311,6 +311,43 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        {/* Routes supplémentaires sous /recruiter-dashboard pour rester dans le scope dashboard */}
+        <Route path="/recruiter-dashboard/talent" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<CandidatesLoadingSpinner />}>
+                <CandidatesListPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/recruiter-dashboard/offers" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement des offres..." />}>
+                <JobsPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/recruiter-dashboard/offers/new" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du formulaire de publication..." />}>
+                <PublishJobPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
+        <Route path="/recruiter-dashboard/offer/:id" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement de l'offre..." />}>
+                <JobDetailPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
         <Route path="/recruiter/search-analysis/:searchId" element={
           <Layout>
             <ProtectedRoute>
