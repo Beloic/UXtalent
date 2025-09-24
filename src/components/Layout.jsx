@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield, Menu, X, Bug } from "lucide-react";
+import { Users, UserPlus, LogIn, LogOut, User, Settings, List, MessageSquare, CreditCard, Crown, Star, Briefcase, Shield, Menu, X, Bug, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
@@ -16,6 +16,8 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   const [hasProfile, setHasProfile] = useState(null);
   const [candidatePlan, setCandidatePlan] = useState('free');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
+  const [isSolutionsMobileOpen, setIsSolutionsMobileOpen] = useState(false);
 
   // Charger le chatbot Crisp
   useEffect(() => {
@@ -189,32 +191,51 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             {isAuthenticated ? (
               <>
                 {/* Liens principaux pour utilisateurs connectés */}
-                <NavLink 
-                  to="/" 
-                  className={({ isActive }) => 
-                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-                      isActive 
-                        ? 'text-blue-600 bg-blue-50 font-medium' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`
-                  }
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setIsSolutionsOpen(true)}
+                  onMouseLeave={() => setIsSolutionsOpen(false)}
                 >
-                  <Users className="w-4 h-4" />
-                  Talents
-                </NavLink>
-                <NavLink 
-                  to="/recruiters" 
-                  className={({ isActive }) => 
-                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-                      isActive 
-                        ? 'text-blue-600 bg-blue-50 font-medium' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`
-                  }
-                >
-                  <Briefcase className="w-4 h-4" />
-                  Recruteur
-                </NavLink>
+                  <button 
+                    type="button"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    onClick={() => setIsSolutionsOpen((v) => !v)}
+                  >
+                    <List className="w-4 h-4" />
+                    Solutions
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isSolutionsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isSolutionsOpen && (
+                    <div className="absolute left-0 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-xl p-2">
+                      <NavLink 
+                        to="/" 
+                        className={({ isActive }) => 
+                          `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                            isActive 
+                              ? 'text-blue-600 bg-blue-50 font-medium' 
+                              : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                          }`
+                        }
+                      >
+                        <Users className="w-4 h-4" />
+                        Talents
+                      </NavLink>
+                      <NavLink 
+                        to="/recruiters" 
+                        className={({ isActive }) => 
+                          `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                            isActive 
+                              ? 'text-blue-600 bg-blue-50 font-medium' 
+                              : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                          }`
+                        }
+                      >
+                        <Briefcase className="w-4 h-4" />
+                        Recruteur
+                      </NavLink>
+                    </div>
+                  )}
+                </div>
                 <NavLink 
                   to="/pricing" 
                   className={({ isActive }) => 
@@ -232,32 +253,51 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               </>
             ) : (
               <>
-                <NavLink 
-                  to="/" 
-                  className={({ isActive }) => 
-                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-                      isActive 
-                        ? 'text-blue-600 bg-blue-50 font-medium' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`
-                  }
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setIsSolutionsOpen(true)}
+                  onMouseLeave={() => setIsSolutionsOpen(false)}
                 >
-                  <Users className="w-4 h-4" />
-                  Talents
-                </NavLink>
-                <NavLink 
-                  to="/recruiters" 
-                  className={({ isActive }) => 
-                    `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-                      isActive 
-                        ? 'text-blue-600 bg-blue-50 font-medium' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`
-                  }
-                >
-                  <Briefcase className="w-4 h-4" />
-                  Recruteur
-                </NavLink>
+                  <button 
+                    type="button"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    onClick={() => setIsSolutionsOpen((v) => !v)}
+                  >
+                    <List className="w-4 h-4" />
+                    Solutions
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isSolutionsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isSolutionsOpen && (
+                    <div className="absolute left-0 mt-2 w-56 rounded-xl border border-gray-200 bg-white shadow-xl p-2">
+                      <NavLink 
+                        to="/" 
+                        className={({ isActive }) => 
+                          `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                            isActive 
+                              ? 'text-blue-600 bg-blue-50 font-medium' 
+                              : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                          }`
+                        }
+                      >
+                        <Users className="w-4 h-4" />
+                        Talents
+                      </NavLink>
+                      <NavLink 
+                        to="/recruiters" 
+                        className={({ isActive }) => 
+                          `flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                            isActive 
+                              ? 'text-blue-600 bg-blue-50 font-medium' 
+                              : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                          }`
+                        }
+                      >
+                        <Briefcase className="w-4 h-4" />
+                        Recruteur
+                      </NavLink>
+                    </div>
+                  )}
+                </div>
                 <Link 
                   to="/pricing" 
                   className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
@@ -363,34 +403,51 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               <nav className="space-y-2">
                 {isAuthenticated ? (
                   <>
-                    <NavLink 
-                      to="/" 
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={({ isActive }) => 
-                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                          isActive 
-                            ? 'text-blue-600 bg-blue-50 font-medium' 
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                        }`
-                      }
-                    >
-                      <Users className="w-5 h-5" />
-                      Talents
-                    </NavLink>
-                    <NavLink 
-                      to="/recruiters" 
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={({ isActive }) => 
-                        `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                          isActive 
-                            ? 'text-blue-600 bg-blue-50 font-medium' 
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                        }`
-                      }
-                    >
-                      <Briefcase className="w-5 h-5" />
-                      Recruteur
-                    </NavLink>
+                    <div className="rounded-xl border border-gray-200">
+                      <button 
+                        type="button"
+                        className="w-full flex items-center justify-between gap-2 px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-xl"
+                        onClick={() => setIsSolutionsMobileOpen((v) => !v)}
+                      >
+                        <span className="flex items-center gap-2">
+                          <List className="w-5 h-5" />
+                          Solutions
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform ${isSolutionsMobileOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      {isSolutionsMobileOpen && (
+                        <div className="px-2 pb-2">
+                          <NavLink 
+                            to="/" 
+                            onClick={() => { setIsMobileMenuOpen(false); setIsSolutionsMobileOpen(false); }}
+                            className={({ isActive }) => 
+                              `mt-2 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
+                                isActive 
+                                  ? 'text-blue-600 bg-blue-50 font-medium' 
+                                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                              }`
+                            }
+                          >
+                            <Users className="w-5 h-5" />
+                            Talents
+                          </NavLink>
+                          <NavLink 
+                            to="/recruiters" 
+                            onClick={() => { setIsMobileMenuOpen(false); setIsSolutionsMobileOpen(false); }}
+                            className={({ isActive }) => 
+                              `mt-2 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
+                                isActive 
+                                  ? 'text-blue-600 bg-blue-50 font-medium' 
+                                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                              }`
+                            }
+                          >
+                            <Briefcase className="w-5 h-5" />
+                            Recruteur
+                          </NavLink>
+                        </div>
+                      )}
+                    </div>
                     <NavLink 
                       to="/pricing" 
                       onClick={() => setIsMobileMenuOpen(false)}
@@ -409,22 +466,39 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   </>
                 ) : (
                   <>
-                    <Link 
-                      to="/" 
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    >
-                      <Users className="w-5 h-5" />
-                      Talents
-                    </Link>
-                    <Link 
-                      to="/recruiters" 
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    >
-                      <Briefcase className="w-5 h-5" />
-                      Recruteur
-                    </Link>
+                    <div className="rounded-xl border border-gray-200">
+                      <button 
+                        type="button"
+                        className="w-full flex items-center justify-between gap-2 px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-xl"
+                        onClick={() => setIsSolutionsMobileOpen((v) => !v)}
+                      >
+                        <span className="flex items-center gap-2">
+                          <List className="w-5 h-5" />
+                          Solutions
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform ${isSolutionsMobileOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      {isSolutionsMobileOpen && (
+                        <div className="px-2 pb-2">
+                          <Link 
+                            to="/" 
+                            onClick={() => { setIsMobileMenuOpen(false); setIsSolutionsMobileOpen(false); }}
+                            className="mt-2 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                          >
+                            <Users className="w-5 h-5" />
+                            Talents
+                          </Link>
+                          <Link 
+                            to="/recruiters" 
+                            onClick={() => { setIsMobileMenuOpen(false); setIsSolutionsMobileOpen(false); }}
+                            className="mt-2 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                          >
+                            <Briefcase className="w-5 h-5" />
+                            Recruteur
+                          </Link>
+                        </div>
+                      )}
+                    </div>
                     <Link 
                       to="/pricing" 
                       onClick={() => setIsMobileMenuOpen(false)}
