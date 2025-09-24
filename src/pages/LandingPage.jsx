@@ -158,11 +158,11 @@ export default function LandingPage() {
       </section>
 
       {/* Section Réalité du Marché - Améliorée */}
-      <section className="relative py-20 bg-gradient-to-br from-red-50 via-orange-50 to-amber-50 overflow-hidden">
+      <section className="relative py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden">
         {/* Éléments décoratifs */}
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-10 right-10 w-20 h-20 bg-red-200 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-          <div className="absolute bottom-20 left-10 w-16 h-16 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute top-10 right-10 w-20 h-20 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute bottom-20 left-10 w-16 h-16 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4">
@@ -174,13 +174,13 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <div className="inline-flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full font-medium text-sm mb-6">
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-full font-medium text-sm mb-6">
+              <span className="w-2 h-2 bg-slate-500 rounded-full animate-pulse"></span>
               Réalité du marché 2025
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
               Le marché UX/UI est 
-              <span className="text-red-600"> hautement concurrentiel</span>
+              <span className="text-indigo-600"> hautement concurrentiel</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Voici les chiffres qui révèlent pourquoi il est si difficile de décrocher un poste en design aujourd'hui.
@@ -190,10 +190,10 @@ export default function LandingPage() {
           {/* Stats avec meilleur design */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             {[
-              { number: "85%", label: "Taux de saturation", subtitle: "Du marché français", icon: "📊", color: "red" },
-              { number: "200+", label: "Candidats par poste", subtitle: "En moyenne", icon: "👥", color: "orange" },
-              { number: "3 mois", label: "Recherche moyenne", subtitle: "Pour trouver un poste", icon: "⏰", color: "amber" },
-              { number: "70%", label: "Échec des candidatures", subtitle: "Sans réseau", icon: "❌", color: "red" }
+              { number: "85%", label: "Taux de saturation", subtitle: "Du marché français", icon: "📊", color: "slate" },
+              { number: "200+", label: "Candidats par poste", subtitle: "En moyenne", icon: "👥", color: "blue" },
+              { number: "3 mois", label: "Recherche moyenne", subtitle: "Pour trouver un poste", icon: "⏰", color: "indigo" },
+              { number: "70%", label: "Échec des candidatures", subtitle: "Sans réseau", icon: "💔", color: "violet" }
             ].map((stat, index) => (
               <motion.div
                 key={index}
@@ -207,8 +207,9 @@ export default function LandingPage() {
                 <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/30 text-center h-full card-transition hover:shadow-2xl">
                   <div className="text-3xl mb-3">{stat.icon}</div>
                   <div className={`text-4xl font-bold mb-2 ${
-                    stat.color === 'red' ? 'text-red-600' : 
-                    stat.color === 'orange' ? 'text-orange-600' : 'text-amber-600'
+                    stat.color === 'slate' ? 'text-slate-600' : 
+                    stat.color === 'blue' ? 'text-blue-600' : 
+                    stat.color === 'indigo' ? 'text-indigo-600' : 'text-violet-600'
                   }`}>
                     {stat.number}
                   </div>
@@ -217,8 +218,9 @@ export default function LandingPage() {
                   
                   {/* Effet de glow au hover */}
                   <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 ${
-                    stat.color === 'red' ? 'bg-red-500' : 
-                    stat.color === 'orange' ? 'bg-orange-500' : 'bg-amber-500'
+                    stat.color === 'slate' ? 'bg-slate-500' : 
+                    stat.color === 'blue' ? 'bg-blue-500' : 
+                    stat.color === 'indigo' ? 'bg-indigo-500' : 'bg-violet-500'
                   }`}></div>
                 </div>
               </motion.div>
@@ -236,8 +238,8 @@ export default function LandingPage() {
             <div className="p-8 md:p-12">
               {/* Titre centré avec icône */}
               <div className="text-center mb-12">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-2xl mb-6">
-                  <span className="text-2xl">⚠️</span>
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-100 rounded-2xl mb-6">
+                  <span className="text-2xl">📈</span>
                 </div>
                 <h3 className="text-3xl font-bold text-gray-900 mb-4">
                   Pourquoi cette concurrence acharnée ?
@@ -252,22 +254,22 @@ export default function LandingPage() {
                 <div className="space-y-6">
                   {[
                     {
-                      icon: "📈",
+                      icon: "📊",
                       title: "Saturation du marché",
                       description: "Explosion du nombre de designers face à une croissance limitée des postes qualifiés",
-                      color: "red"
+                      color: "slate"
                     },
                     {
                       icon: "🎯",
                       title: "Critères de sélection élevés", 
                       description: "Les entreprises recherchent des profils de plus en plus spécialisés et expérimentés",
-                      color: "orange"
+                      color: "blue"
                     },
                     {
                       icon: "🤝",
                       title: "Importance cruciale du réseau",
                       description: "80% des emplois ne sont jamais publiés et se font par recommandation",
-                      color: "amber"
+                      color: "indigo"
                     }
                   ].map((problem, index) => (
                     <motion.div
@@ -279,8 +281,8 @@ export default function LandingPage() {
                       className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors"
                     >
                       <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-xl ${
-                        problem.color === 'red' ? 'bg-red-100' :
-                        problem.color === 'orange' ? 'bg-orange-100' : 'bg-amber-100'
+                        problem.color === 'slate' ? 'bg-slate-100' :
+                        problem.color === 'blue' ? 'bg-blue-100' : 'bg-indigo-100'
                       }`}>
                         {problem.icon}
                       </div>
