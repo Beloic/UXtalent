@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import des animations personnalisées */
-@import './styles/animations.css';
+/* Import des animations personnalisées déplacé dans main.jsx pour éviter l'erreur PostCSS */
 
 :root {
   --card-bg: rgba(15, 23, 42, 0.7);
