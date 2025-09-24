@@ -157,127 +157,202 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section Concurrence et Marché */}
-      <section className="py-20 bg-red-50">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* Section Réalité du Marché - Améliorée */}
+      <section className="relative py-20 bg-gradient-to-br from-red-50 via-orange-50 to-amber-50 overflow-hidden">
+        {/* Éléments décoratifs */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 right-10 w-20 h-20 bg-red-200 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute bottom-20 left-10 w-16 h-16 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4">
+          {/* Header avec meilleur spacing */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              La réalité du marché UX/UI en 2025
+            <div className="inline-flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full font-medium text-sm mb-6">
+              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+              Réalité du marché 2025
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Le marché UX/UI est 
+              <span className="text-red-600"> hautement concurrentiel</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
-              Le marché du design UX/UI est devenu extrêmement concurrentiel.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Voici les chiffres qui révèlent pourquoi il est si difficile de décrocher un poste en design aujourd'hui.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
-            >
-              <div className="text-4xl font-bold text-red-600 mb-2">85%</div>
-              <div className="text-gray-900 font-semibold mb-2">Taux de saturation</div>
-              <div className="text-gray-600 text-sm">Du marché français</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
-            >
-              <div className="text-4xl font-bold text-red-600 mb-2">200+</div>
-              <div className="text-gray-900 font-semibold mb-2">Candidats par poste</div>
-              <div className="text-gray-600 text-sm">En moyenne</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
-            >
-              <div className="text-4xl font-bold text-red-600 mb-2">3 mois</div>
-              <div className="text-gray-900 font-semibold mb-2">Recherche moyenne</div>
-              <div className="text-gray-600 text-sm">Pour trouver un poste</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
-            >
-              <div className="text-4xl font-bold text-red-600 mb-2">70%</div>
-              <div className="text-gray-900 font-semibold mb-2">Échec des candidatures</div>
-              <div className="text-gray-600 text-sm">Sans réseau</div>
-            </motion.div>
+          {/* Stats avec meilleur design */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+            {[
+              { number: "85%", label: "Taux de saturation", subtitle: "Du marché français", icon: "📊", color: "red" },
+              { number: "200+", label: "Candidats par poste", subtitle: "En moyenne", icon: "👥", color: "orange" },
+              { number: "3 mois", label: "Recherche moyenne", subtitle: "Pour trouver un poste", icon: "⏰", color: "amber" },
+              { number: "70%", label: "Échec des candidatures", subtitle: "Sans réseau", icon: "❌", color: "red" }
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="relative group"
+              >
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/30 text-center h-full card-transition hover:shadow-2xl">
+                  <div className="text-3xl mb-3">{stat.icon}</div>
+                  <div className={`text-4xl font-bold mb-2 ${
+                    stat.color === 'red' ? 'text-red-600' : 
+                    stat.color === 'orange' ? 'text-orange-600' : 'text-amber-600'
+                  }`}>
+                    {stat.number}
+                  </div>
+                  <div className="text-gray-900 font-semibold mb-1">{stat.label}</div>
+                  <div className="text-gray-600 text-sm">{stat.subtitle}</div>
+                  
+                  {/* Effet de glow au hover */}
+                  <div className={`absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 ${
+                    stat.color === 'red' ? 'bg-red-500' : 
+                    stat.color === 'orange' ? 'bg-orange-500' : 'bg-amber-500'
+                  }`}></div>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
+          {/* Section explicative restructurée */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
+            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/30 overflow-hidden"
           >
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Pourquoi la concurrence est-elle si rude ?
-              </h3>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-0.5">
-                    <span className="text-red-600 text-sm font-bold">!</span>
-                  </div>
-                  <div>
-                    <strong className="text-gray-900">Saturation du marché</strong>
-                    <p className="text-gray-600 text-sm">Trop de designers pour trop peu de postes qualifiés</p>
-                  </div>
+            <div className="p-8 md:p-12">
+              {/* Titre centré avec icône */}
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-2xl mb-6">
+                  <span className="text-2xl">⚠️</span>
                 </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-0.5">
-                    <span className="text-red-600 text-sm font-bold">!</span>
-                  </div>
-                  <div>
-                    <strong className="text-gray-900">Critères de sélection élevés</strong>
-                    <p className="text-gray-600 text-sm">Les entreprises sont de plus en plus exigeantes</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-0.5">
-                    <span className="text-red-600 text-sm font-bold">!</span>
-                  </div>
-                  <div>
-                    <strong className="text-gray-900">Importance du réseau</strong>
-                    <p className="text-gray-600 text-sm">Sans réseau, vos chances sont drastiquement réduites</p>
-                  </div>
-                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                  Pourquoi cette concurrence acharnée ?
+                </h3>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Trois facteurs majeurs expliquent cette difficulté croissante à trouver un emploi en UX/UI
+                </p>
               </div>
               
-              <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
-                <h4 className="text-lg font-bold text-blue-900 mb-3">
-                  Notre solution : La validation par l'expertise
-                </h4>
-                <p className="text-blue-800 text-sm mb-4">
-                  Notre comité d'experts UX/UI seniors valide chaque profil selon des critères transparents et objectifs. 
-                  Seuls les meilleurs rejoignent notre pool, garantissant aux recruteurs la qualité qu'ils recherchent.
-                </p>
-                <div className="flex items-center gap-2 text-blue-700">
-                  <Shield className="w-5 h-5" />
-                  <span className="text-sm font-semibold">Validation par notre comité d'experts</span>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                {/* Problèmes à gauche */}
+                <div className="space-y-6">
+                  {[
+                    {
+                      icon: "📈",
+                      title: "Saturation du marché",
+                      description: "Explosion du nombre de designers face à une croissance limitée des postes qualifiés",
+                      color: "red"
+                    },
+                    {
+                      icon: "🎯",
+                      title: "Critères de sélection élevés", 
+                      description: "Les entreprises recherchent des profils de plus en plus spécialisés et expérimentés",
+                      color: "orange"
+                    },
+                    {
+                      icon: "🤝",
+                      title: "Importance cruciale du réseau",
+                      description: "80% des emplois ne sont jamais publiés et se font par recommandation",
+                      color: "amber"
+                    }
+                  ].map((problem, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors"
+                    >
+                      <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-xl ${
+                        problem.color === 'red' ? 'bg-red-100' :
+                        problem.color === 'orange' ? 'bg-orange-100' : 'bg-amber-100'
+                      }`}>
+                        {problem.icon}
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-900 mb-2">{problem.title}</h4>
+                        <p className="text-gray-600 leading-relaxed">{problem.description}</p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
+                
+                {/* Solution à droite */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  viewport={{ once: true }}
+                  className="relative"
+                >
+                  <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white shadow-2xl">
+                    <div className="text-center mb-6">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4">
+                        <Shield className="w-8 h-8" />
+                      </div>
+                      <h4 className="text-2xl font-bold mb-3">
+                        Notre solution : La validation par l'expertise
+                      </h4>
+                    </div>
+                    
+                    <p className="text-blue-100 text-lg leading-relaxed mb-6">
+                      Notre comité d'experts UX/UI seniors <strong className="text-white">valide chaque profil</strong> selon des critères transparents et objectifs. 
+                    </p>
+                    
+                    <div className="space-y-3">
+                      {[
+                        "✅ Évaluation par des designers seniors",
+                        "✅ Critères transparents et équitables", 
+                        "✅ Accès privilégié aux recruteurs",
+                        "✅ Sortez du lot dans la masse"
+                      ].map((benefit, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+                          viewport={{ once: true }}
+                          className="flex items-center gap-3 text-blue-100"
+                        >
+                          <span className="text-green-300 font-bold">{benefit.split(' ')[0]}</span>
+                          <span>{benefit.substring(2)}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                    
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 1 }}
+                      viewport={{ once: true }}
+                      className="mt-8 pt-6 border-t border-white/20"
+                    >
+                      <div className="flex items-center justify-center gap-2 text-green-300 font-semibold">
+                        <Shield className="w-5 h-5" />
+                        <span>Validation par notre comité d'experts</span>
+                      </div>
+                    </motion.div>
+                  </div>
+                  
+                  {/* Éléments décoratifs */}
+                  <div className="absolute -top-4 -right-4 w-8 h-8 bg-blue-200 rounded-full opacity-60 animate-float"></div>
+                  <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-indigo-200 rounded-full opacity-40 animate-float" style={{animationDelay: '1s'}}></div>
+                </motion.div>
               </div>
             </div>
           </motion.div>
