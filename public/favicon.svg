@@ -1,14 +1,25 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle -->
-  <circle cx="16" cy="16" r="16" fill="#3B82F6"/>
-  
-  <!-- UX/UI Design elements -->
-  <!-- User icon (simplified) -->
-  <circle cx="16" cy="12" r="3" fill="white"/>
-  <path d="M8 24c0-4 3.5-7 8-7s8 3 8 7" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
-  
-  <!-- Design elements -->
-  <rect x="20" y="8" width="4" height="2" rx="1" fill="white" opacity="0.8"/>
-  <rect x="20" y="11" width="6" height="2" rx="1" fill="white" opacity="0.6"/>
-  <rect x="20" y="14" width="5" height="2" rx="1" fill="white" opacity="0.4"/>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="12" y1="8" x2="52" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <filter id="s" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#93C5FD" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <!-- Fond arrondi avec dégradé bleu comme le logo header -->
+  <rect x="6" y="6" width="52" height="52" rx="14" fill="url(#g)" filter="url(#s)"/>
+
+  <!-- Icône Users simplifiée en blanc (style lucide) -->
+  <!-- Tête utilisateur principale -->
+  <circle cx="32" cy="26" r="6" fill="white"/>
+  <!-- Corps principal -->
+  <path d="M18 46c0-7 6.5-12 14-12s14 5 14 12" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <!-- Second utilisateur (gauche) -->
+  <circle cx="22" cy="28" r="3" fill="white" opacity="0.9"/>
+  <path d="M14 44c0-4 3.5-7 8-8" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+  <!-- Second utilisateur (droite) -->
+  <circle cx="42" cy="28" r="3" fill="white" opacity="0.9"/>
+  <path d="M50 44c0-4-3.5-7-8-8" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
 </svg>
