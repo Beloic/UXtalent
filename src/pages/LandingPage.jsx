@@ -209,9 +209,9 @@ export default function LandingPage() {
                       color: "slate"
                     },
                     {
-                      icon: "🎯",
-                      title: "Critères de sélection élevés", 
-                      description: "Les entreprises recherchent des profils de plus en plus spécialisés et expérimentés",
+                      icon: "🧠",
+                      title: "Incertitude du marché et IA", 
+                      description: "Volatilité économique et automatisation accrue complexifient l'embauche et la visibilité des profils",
                       color: "blue"
                     },
                     {
