@@ -2196,20 +2196,40 @@ app.delete('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req
   try {
     const { id, replyId } = req.params;
     
+    logger.info('Tentative de suppression de réponse', { 
+      postId: id, 
+      replyId, 
+      user: req.user?.email,
+      userId: generateTempUserId(req.user.email)
+    });
+    
     // Récupérer la réponse pour vérifier les permissions
     const post = await getPostById(parseInt(id));
     if (!post) {
+      logger.warn('Post non trouvé pour suppression', { postId: id });
       return res.status(404).json({ error: 'Post non trouvé' });
     }
     
     const reply = post.replies?.find(r => r.id === parseInt(replyId));
     if (!reply) {
+      logger.warn('Réponse non trouvée pour suppression', { postId: id, replyId });
       return res.status(404).json({ error: 'Réponse non trouvée' });
     }
     
     // Vérifier que l'utilisateur est l'auteur de la réponse
     const currentUserId = generateTempUserId(req.user.email);
+    logger.info('Vérification des permissions', { 
+      currentUserId, 
+      replyAuthorId: reply.author_id,
+      isOwner: reply.author_id === currentUserId
+    });
+    
     if (reply.author_id !== currentUserId) {
+      logger.warn('Tentative de suppression non autorisée', { 
+        currentUserId, 
+        replyAuthorId: reply.author_id,
+        user: req.user?.email
+      });
       return res.status(403).json({ error: 'Vous ne pouvez supprimer que vos propres réponses' });
     }
     
@@ -2219,6 +2239,7 @@ app.delete('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req
       logger.info('Réponse supprimée avec succès', { replyId, user: req.user?.email });
       res.json({ message: 'Réponse supprimée avec succès' });
     } else {
+      logger.warn('Échec de la suppression en base', { replyId });
       res.status(404).json({ error: 'Réponse non trouvée' });
     }
   } catch (error) {
@@ -2233,6 +2254,14 @@ app.put('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, r
     const { id, replyId } = req.params;
     const { content } = req.body;
     
+    logger.info('Tentative de modification de réponse', { 
+      postId: id, 
+      replyId, 
+      user: req.user?.email,
+      userId: generateTempUserId(req.user.email),
+      contentLength: content?.length
+    });
+    
     if (!content) {
       return res.status(400).json({ error: 'Le contenu de la réponse est requis' });
     }
@@ -2240,17 +2269,30 @@ app.put('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, r
     // Récupérer la réponse pour vérifier les permissions
     const post = await getPostById(parseInt(id));
     if (!post) {
+      logger.warn('Post non trouvé pour modification', { postId: id });
       return res.status(404).json({ error: 'Post non trouvé' });
     }
     
     const reply = post.replies?.find(r => r.id === parseInt(replyId));
     if (!reply) {
+      logger.warn('Réponse non trouvée pour modification', { postId: id, replyId });
       return res.status(404).json({ error: 'Réponse non trouvée' });
     }
     
     // Vérifier que l'utilisateur est l'auteur de la réponse
     const currentUserId = generateTempUserId(req.user.email);
+    logger.info('Vérification des permissions pour modification', { 
+      currentUserId, 
+      replyAuthorId: reply.author_id,
+      isOwner: reply.author_id === currentUserId
+    });
+    
     if (reply.author_id !== currentUserId) {
+      logger.warn('Tentative de modification non autorisée', { 
+        currentUserId, 
+        replyAuthorId: reply.author_id,
+        user: req.user?.email
+      });
       return res.status(403).json({ error: 'Vous ne pouvez modifier que vos propres réponses' });
     }
     
@@ -2264,6 +2306,7 @@ app.put('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, r
       .single();
     
     if (error) {
+      logger.error('Erreur Supabase lors de la modification', { error: error.message });
       throw error;
     }
     

@@ -3,17 +3,29 @@ import { buildApiUrl } from '../config/api';
 
 // Obtenir le token d'authentification
 const getAuthToken = async () => {
-  const { data: { session }, error } = await supabase.auth.getSession();
-  
-  if (error) {
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    
+    if (error) {
+      console.error('Erreur lors de la récupération de la session:', error);
+      return null;
+    }
+    
+    if (!session) {
+      console.log('Aucune session active');
+      return null;
+    }
+    
+    if (!session.access_token) {
+      console.log('Token d\'accès manquant');
+      return null;
+    }
+    
+    return session.access_token;
+  } catch (error) {
+    console.error('Erreur dans getAuthToken:', error);
     return null;
   }
-  
-  if (!session) {
-    return null;
-  }
-  
-  return session.access_token;
 };
 
 // Récupérer les posts du forum
@@ -268,13 +280,19 @@ export const likeReply = async (replyId) => {
 // Modifier une réponse
 export const updateForumReply = async (postId, replyId, content) => {
   try {
+    console.log('Tentative de modification de réponse', { postId, replyId, contentLength: content?.length });
+    
     const token = await getAuthToken();
+    console.log('Token récupéré:', token ? 'présent' : 'absent');
     
     if (!token) {
       throw new Error('Vous devez être connecté pour modifier une réponse');
     }
     
-    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`), {
+    const url = buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`);
+    console.log('URL de modification:', url);
+    
+    const response = await fetch(url, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -283,13 +301,19 @@ export const updateForumReply = async (postId, replyId, content) => {
       body: JSON.stringify({ content })
     });
     
+    console.log('Réponse reçue:', { status: response.status, ok: response.ok });
+    
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('Erreur de modification:', errorData);
       throw new Error(errorData.error || `Erreur HTTP: ${response.status}`);
     }
     
-    return await response.json();
+    const result = await response.json();
+    console.log('Modification réussie:', result);
+    return result;
   } catch (error) {
+    console.error('Erreur dans updateForumReply:', error);
     throw error;
   }
 };
@@ -297,26 +321,38 @@ export const updateForumReply = async (postId, replyId, content) => {
 // Supprimer une réponse
 export const deleteForumReply = async (postId, replyId) => {
   try {
+    console.log('Tentative de suppression de réponse', { postId, replyId });
+    
     const token = await getAuthToken();
+    console.log('Token récupéré:', token ? 'présent' : 'absent');
     
     if (!token) {
       throw new Error('Vous devez être connecté pour supprimer une réponse');
     }
     
-    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`), {
+    const url = buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`);
+    console.log('URL de suppression:', url);
+    
+    const response = await fetch(url, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
     
+    console.log('Réponse reçue:', { status: response.status, ok: response.ok });
+    
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('Erreur de suppression:', errorData);
       throw new Error(errorData.error || `Erreur HTTP: ${response.status}`);
     }
     
-    return await response.json();
+    const result = await response.json();
+    console.log('Suppression réussie:', result);
+    return result;
   } catch (error) {
+    console.error('Erreur dans deleteForumReply:', error);
     throw error;
   }
 };
