@@ -20,7 +20,7 @@ export default function PublishJobPage() {
           {/* Titre et sous-texte supprimés selon demande */}
         </div>
         <PublishJobForm onJobPublished={() => {
-          navigate('/recruiter-dashboard?tab=myjobs');
+          navigate('/recruiter-dashboard/myjobs');
         }} />
     </div>
   );

@@ -231,7 +231,7 @@ export default function CandidateCard({ candidate, compact = false }) {
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
           {candidate.id ? (
             <Link
-              to={`/my-profile/talent/${candidate.id}`}
+              to={isRecruiter ? `/recruiter-dashboard/talent/${candidate.id}` : `/my-profile/talent/${candidate.id}`}
               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm w-full sm:w-auto justify-center"
             >
               Voir le profil

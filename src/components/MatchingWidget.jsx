@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePermissions } from '../hooks/usePermissions';
 import { TrendingUp, Eye, MapPin } from 'lucide-react';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 import { authenticatedFetch } from '../utils/auth';
@@ -19,6 +20,7 @@ const MatchingWidget = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { isRecruiter } = usePermissions();
 
   useEffect(() => {
     if ((type === 'candidates' && jobId) || (type === 'jobs' && candidateId)) {
@@ -90,7 +92,7 @@ const MatchingWidget = ({
     if (!targetId) {
       return;
     }
-    navigate(`/my-profile/talent/${targetId}`);
+    navigate(isRecruiter ? `/recruiter-dashboard/talent/${targetId}` : `/my-profile/talent/${targetId}`);
   };
 
   if (loading) {

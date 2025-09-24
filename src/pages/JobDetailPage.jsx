@@ -77,6 +77,16 @@ export default function JobDetailPage() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const { isRecruiter, isCandidate } = usePermissions();
 
+  // Déterminer l'URL de retour selon le rôle
+  const getBackUrl = () => {
+    if (isRecruiter) {
+      return "/recruiter-dashboard/myjobs";
+    } else if (isCandidate) {
+      return "/my-profile/offers";
+    }
+    return "/my-profile/offers"; // Par défaut
+  };
+
   // Fonction pour postuler à l'offre
   const applyToJob = async () => {
     if (!job) {
@@ -348,7 +358,7 @@ export default function JobDetailPage() {
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Offre non trouvée</h1>
           <p className="text-gray-600 mb-6">Cette offre d'emploi n'existe pas ou a été supprimée.</p>
           <Link 
-            to="/my-profile/offers" 
+            to={getBackUrl()} 
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -377,7 +387,7 @@ export default function JobDetailPage() {
               Réessayer
             </button>
             <Link 
-              to="/my-profile/offers" 
+              to={getBackUrl()} 
               className="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -399,7 +409,7 @@ export default function JobDetailPage() {
           className="mb-8"
         >
           <Link 
-            to="/my-profile/offers" 
+            to={getBackUrl()} 
             className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-white rounded-xl transition-all duration-200 mb-6 bg-white/50 backdrop-blur-sm"
           >
             <ArrowLeft className="w-4 h-4" />

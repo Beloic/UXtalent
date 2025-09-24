@@ -321,6 +321,16 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        {/* Détail candidat sous le dashboard recruteur */}
+        <Route path="/recruiter-dashboard/talent/:id" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du profil candidat..." />}>
+                <CandidateDetailPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
         <Route path="/recruiter-dashboard/offers" element={
           <Layout>
             <ProtectedRoute>
