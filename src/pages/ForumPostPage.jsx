@@ -22,8 +22,9 @@ export default function ForumPostPage() {
 
   // Fonction pour convertir un email en ID numérique (même logique que backend)
   const emailToUserId = (email) => {
-    if (!email) return 0;
-    const userIdHash = email.split('').reduce((a, b) => {
+    const normalized = (email || '').toLowerCase().trim();
+    if (!normalized) return 0;
+    const userIdHash = normalized.split('').reduce((a, b) => {
       a = ((a << 5) - a) + b.charCodeAt(0);
       return a & a;
     }, 0);

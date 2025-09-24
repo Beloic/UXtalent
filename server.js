@@ -249,11 +249,18 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // Fonction utilitaire pour générer un ID entier temporaire basé sur l'email
 const generateTempUserId = (email) => {
-  const userIdHash = email.split('').reduce((a, b) => {
+  const safeEmail = (email || '').split('').reduce((acc, ch) => acc + ch, '');
+  const userIdHash = safeEmail.split('').reduce((a, b) => {
     a = ((a << 5) - a) + b.charCodeAt(0);
     return a & a;
   }, 0);
   return Math.abs(userIdHash) % 10000; // ID entre 0 et 9999
+};
+
+// Générateur d'ID stable (compatibilité casse et espaces)
+const generateStableUserId = (email) => {
+  const normalized = (email || '').toLowerCase().trim();
+  return generateTempUserId(normalized);
 };
 
 // Import du middleware de rôles
