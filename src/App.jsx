@@ -264,6 +264,15 @@ export default function App() {
             </ProtectedRoute>
           </Layout>
         } />
+        <Route path="/my-profile/forum/:id" element={
+          <Layout>
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoadingSpinner message="Chargement du post..." /> }>
+                <ForumPostPage />
+              </Suspense>
+            </ProtectedRoute>
+          </Layout>
+        } />
         <Route path="/profile-stats" element={<Navigate to="/my-profile/stats" replace />} />
         {/* Détail candidat accessible sous my-profile/talent/ID */}
         <Route path="/my-profile/talent/:id" element={
@@ -379,7 +388,7 @@ export default function App() {
           </Layout>
         } />
         <Route path="/forum" element={<Navigate to="/my-profile/forum" replace />} />
-        <Route path="/forum/:id" element={<Navigate to="/my-profile/forum" replace />} />
+        <Route path="/forum/:id" element={<Navigate to="/my-profile/forum/:id" replace />} />
         <Route path="/jobs" element={<Navigate to="/recruiter-dashboard/offers" replace />} />
         <Route path="/jobs/new" element={<Navigate to="/recruiter-dashboard/offers/new" replace />} />
         <Route path="/jobs/:id" element={<Navigate to="/recruiter-dashboard/offer/:id" replace />} />
