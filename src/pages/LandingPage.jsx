@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, 
   Briefcase, 
@@ -32,6 +32,19 @@ export default function LandingPage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const phrases = [
+    "Trop de profils se perdent dans la masse — le vôtre mérite d’être remarqué.",
+    "Dans un marché saturé, on vous aide à sortir du lot.",
+    "Le marché déborde, mais nous vous faisons une place de choix."
+  ];
+  const [phraseIndex, setPhraseIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPhraseIndex((i) => (i + 1) % phrases.length);
+    }, 3500);
+    return () => clearInterval(id);
+  }, []);
 
   const handleEmailSubmit = (e) => {
     e.preventDefault();
@@ -78,10 +91,20 @@ export default function LandingPage() {
               <span className="text-blue-600"> UX UI ?</span>
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
-              <strong className="text-gray-900">UX Talent</strong> est une plate-forme qui propose un vivier de talents sélectionné et validé par une équipe de Designer seniors. 
-              Dans un marché saturé où la concurrence est rude, nous vous offrons un avantage décisif.
-            </p>
+            <div className="mb-6 sm:mb-8 max-w-4xl mx-auto px-4 sm:px-0 min-h-[56px] sm:min-h-[64px] md:min-h-[72px] relative">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={phraseIndex}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.45 }}
+                  className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed text-center"
+                >
+                  {phrases[phraseIndex]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
 
             {/* CTA Principal */}
             <div className="flex justify-center mb-8 sm:mb-12 px-4 sm:px-0">
