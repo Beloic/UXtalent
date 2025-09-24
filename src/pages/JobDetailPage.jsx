@@ -20,7 +20,7 @@ import {
   Twitter,
   Send
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
 import { buildApiUrl } from "../config/api";
@@ -68,6 +68,7 @@ const formatJobText = (text) => {
 
 export default function JobDetailPage() {
   const { id } = useParams();
+  const location = useLocation();
   const [job, setJob] = useState(null);
   const [relatedJobs, setRelatedJobs] = useState([]);
   const [isApplying, setIsApplying] = useState(false);
@@ -77,14 +78,14 @@ export default function JobDetailPage() {
   const [currentUserId, setCurrentUserId] = useState(null);
   const { isRecruiter, isCandidate } = usePermissions();
 
-  // Déterminer l'URL de retour selon le rôle
+  // Déterminer l'URL de retour selon le rôle et l'onglet d'origine
   const getBackUrl = () => {
     if (isRecruiter) {
-      return "/recruiter-dashboard/myjobs";
-    } else if (isCandidate) {
-      return "/my-profile/offers";
+      const fromTab = location.state?.fromTab;
+      if (fromTab === 'offers') return '/recruiter-dashboard/offers';
+      return '/recruiter-dashboard/myjobs';
     }
-    return "/my-profile/offers"; // Par défaut
+    return '/my-profile/offers';
   };
 
   // Fonction pour postuler à l'offre
