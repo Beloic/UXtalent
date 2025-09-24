@@ -368,72 +368,295 @@ export default function LandingPage() {
             </motion.p>
           </motion.div>
 
-          {/* Grille de fonctionnalités cohérente */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {/* Blocs animés de dashboard style */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            
+            {/* Bloc Visibilité & Analytics */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/50 shadow-xl hover:shadow-2xl transition-all duration-500"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Visibilité maximisée</h3>
+                <div className="flex items-center gap-2 text-sm text-green-600 font-medium">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  En temps réel
+                </div>
+              </div>
+              
+              <p className="text-gray-600 mb-6">Votre profil affiché aux bons recruteurs au bon moment</p>
+              
+              {/* Metrics animées */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700">Profils vus cette semaine</span>
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    viewport={{ once: true }}
+                    className="flex items-center gap-2"
+                  >
+                    <motion.span 
+                      className="text-2xl font-bold text-blue-600"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 1, delay: 0.6 }}
+                    >
+                      {/* Animation de compteur */}
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 2, delay: 0.8 }}
+                      >
+                        147
+                      </motion.span>
+                    </motion.span>
+                    <span className="text-sm text-green-600 font-medium">+23%</span>
+                  </motion.div>
+                </div>
+                
+                {/* Barre de progression animée */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Startups</span>
+                    <span className="text-gray-900 font-medium">67%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "67%" }}
+                      transition={{ duration: 1.5, delay: 1 }}
+                      viewport={{ once: true }}
+                      className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full"
+                    ></motion.div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Scale-ups</span>
+                    <span className="text-gray-900 font-medium">33%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "33%" }}
+                      transition={{ duration: 1.5, delay: 1.2 }}
+                      viewport={{ once: true }}
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+                    ></motion.div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Mini graphique */}
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                  <span>Tendance 7 derniers jours</span>
+                  <TrendingUp className="w-4 h-4 text-green-500" />
+                </div>
+                <div className="flex items-end gap-1 h-12">
+                  {[40, 65, 45, 80, 60, 90, 75].map((height, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ height: 0 }}
+                      whileInView={{ height: `${height}%` }}
+                      transition={{ duration: 0.8, delay: 1.4 + i * 0.1 }}
+                      viewport={{ once: true }}
+                      className="bg-gradient-to-t from-blue-500 to-cyan-400 rounded-sm flex-1"
+                    ></motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Bloc Recommandations & Matching */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/50 shadow-xl hover:shadow-2xl transition-all duration-500"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Matching intelligent</h3>
+                <div className="w-3 h-3 bg-blue-500 rounded-full animate-ping"></div>
+              </div>
+              
+              <p className="text-gray-600 mb-6">IA qui trouve les opportunités parfaites pour votre profil</p>
+              
+              {/* Score de compatibilité */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-gray-700 font-medium">Score de compatibilité moyen</span>
+                  <Target className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex items-center gap-4">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{ duration: 0.8, delay: 0.6 }}
+                    viewport={{ once: true }}
+                    className="text-4xl font-bold text-blue-600"
+                  >
+                    89%
+                  </motion.div>
+                  <div className="flex-1">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "89%" }}
+                      transition={{ duration: 1.5, delay: 0.8 }}
+                      viewport={{ once: true }}
+                      className="h-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    ></motion.div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Statistiques d'engagement */}
+              <div className="grid grid-cols-2 gap-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                  viewport={{ once: true }}
+                  className="text-center p-4 bg-blue-50 rounded-xl"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{ duration: 0.6, delay: 1 }}
+                    className="text-2xl font-bold text-blue-600 mb-1"
+                  >
+                    24
+                  </motion.div>
+                  <div className="text-sm text-gray-600">Contacts reçus</div>
+                  <div className="text-xs text-green-600 font-medium">Cette semaine</div>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1 }}
+                  viewport={{ once: true }}
+                  className="text-center p-4 bg-purple-50 rounded-xl"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{ duration: 0.6, delay: 1.2 }}
+                    className="text-2xl font-bold text-purple-600 mb-1"
+                  >
+                    8
+                  </motion.div>
+                  <div className="text-sm text-gray-600">Entretiens</div>
+                  <div className="text-xs text-purple-600 font-medium">Planifiés</div>
+                </motion.div>
+              </div>
+              
+              {/* Indicateurs de performance */}
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Taux de réponse</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-gray-900">92%</span>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      transition={{ duration: 0.4, delay: 1.4 }}
+                      viewport={{ once: true }}
+                      className="w-2 h-2 bg-green-500 rounded-full"
+                    ></motion.div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Grille des fonctionnalités complémentaires */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {[
               { 
                 icon: <UserCheck className="w-6 h-6" />, 
-                title: "Profil candidat complet", 
-                desc: "Mettez en valeur vos projets et compétences",
+                title: "Profil optimisé", 
+                metric: "100%",
+                desc: "Complétude garantie",
+                color: "blue",
                 delay: 0.1
               },
               { 
-                icon: <Globe className="w-6 h-6" />, 
-                title: "Visibilité dans l'annuaire", 
-                desc: "Trouvez plus d'opportunités grâce à l'exposition",
+                icon: <Mail className="w-6 h-6" />, 
+                title: "Contacts qualifiés", 
+                metric: "24/sem",
+                desc: "Moyenne actuelle",
+                color: "green",
                 delay: 0.2
               },
               { 
-                icon: <Mail className="w-6 h-6" />, 
-                title: "Contact par les recruteurs", 
-                desc: "Recevez des prises de contact qualifiées",
+                icon: <Users className="w-6 h-6" />, 
+                title: "Forum actif", 
+                metric: "50+",
+                desc: "Designers connectés",
+                color: "purple",
                 delay: 0.3
               },
               { 
-                icon: <Users className="w-6 h-6" />, 
-                title: "Accès au forum communautaire", 
-                desc: "Échanges, entraide et retours entre pairs",
-                delay: 0.4
-              },
-              { 
                 icon: <Award className="w-6 h-6" />, 
-                title: "Offres d'emploi exclusives", 
-                desc: "Candidatures en avant‑première",
-                delay: 0.5
-              },
-              { 
-                icon: <BarChart2 className="w-6 h-6" />, 
-                title: "Analytics personnalisés", 
-                desc: "Suivez vos performances et optimisez votre profil",
-                delay: 0.6
+                title: "Offres exclusives", 
+                metric: "15/mois",
+                desc: "Nouvelles opportunités",
+                color: "orange",
+                delay: 0.4
               }
             ].map((feature, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: feature.delay }}
                 viewport={{ once: true }}
                 whileHover={{ 
-                  y: -4,
+                  y: -8,
+                  scale: 1.02,
                   transition: { duration: 0.2 } 
                 }}
-                className="group"
+                className="group bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-                  {/* Icône */}
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600/10 text-blue-700 mb-4 group-hover:bg-blue-600/20 transition-colors">
-                    {feature.icon}
-                  </div>
-
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-700 transition-colors">
-                    {feature.title}
-                  </h3>
-                  
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.desc}
-                  </p>
+                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4 transition-all duration-300 ${
+                  feature.color === 'blue' ? 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' :
+                  feature.color === 'green' ? 'bg-green-100 text-green-600 group-hover:bg-green-600 group-hover:text-white' :
+                  feature.color === 'purple' ? 'bg-purple-100 text-purple-600 group-hover:bg-purple-600 group-hover:text-white' :
+                  'bg-orange-100 text-orange-600 group-hover:bg-orange-600 group-hover:text-white'
+                }`}>
+                  {feature.icon}
                 </div>
+
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  transition={{ duration: 0.6, delay: feature.delay + 0.2 }}
+                  viewport={{ once: true }}
+                  className={`text-3xl font-bold mb-2 ${
+                    feature.color === 'blue' ? 'text-blue-600' :
+                    feature.color === 'green' ? 'text-green-600' :
+                    feature.color === 'purple' ? 'text-purple-600' :
+                    'text-orange-600'
+                  }`}
+                >
+                  {feature.metric}
+                </motion.div>
+
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
+                  {feature.title}
+                </h3>
+                
+                <p className="text-gray-600 text-sm">
+                  {feature.desc}
+                </p>
               </motion.div>
             ))}
           </div>
