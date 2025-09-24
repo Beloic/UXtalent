@@ -739,16 +739,22 @@ export default function RecruiterDashboard() {
               <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 flex">
                 <button
                   onClick={() => navigate('/recruiter-dashboard/favorites')}
-                  disabled={refreshing}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 text-gray-600 hover:text-gray-900 ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'favorites'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
                 >
                   <Users className="w-4 h-4" />
                   Talents
                 </button>
                 <button
                   onClick={() => navigate('/recruiter-dashboard/myjobs')}
-                  disabled={refreshing}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 text-gray-600 hover:text-gray-900 ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    activeTab === 'myjobs'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
                 >
                   <Briefcase className="w-4 h-4" />
                   Offres
