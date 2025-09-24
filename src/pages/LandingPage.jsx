@@ -174,17 +174,11 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-full font-medium text-sm mb-6">
-              <span className="w-2 h-2 bg-slate-500 rounded-full animate-pulse"></span>
-              Réalité du marché 2025
-            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
               Le marché UX/UI est 
               <span className="text-indigo-600"> hautement concurrentiel</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Voici les chiffres qui révèlent pourquoi il est si difficile de décrocher un poste en design aujourd'hui.
-            </p>
+            {/* Badge et paragraphe introductif supprimés à la demande */}
           </motion.div>
 
           {/* Stats avec meilleur design */}
