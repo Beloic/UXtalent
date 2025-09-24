@@ -205,7 +205,7 @@ export default function LandingPage() {
                     {
                       icon: "📊",
                       title: "Saturation du marché",
-                      description: "Explosion du nombre de designers face à une croissance limitée des postes qualifiés",
+                      description: "Une moyenne de plus de 200 candidats par poste dès le lendemain de la publication",
                       color: "slate"
                     },
                     {
