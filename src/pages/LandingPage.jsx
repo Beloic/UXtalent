@@ -388,55 +388,7 @@ export default function LandingPage() {
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { 
-                icon: <Bell className="w-6 h-6" />, 
-                title: "Alertes d'offres pertinentes", 
-                desc: "Soyez notifié dès qu'une mission ou un poste matche votre profil"
-              },
-              { 
-                icon: <Search className="w-6 h-6" />, 
-                title: "Recommandations personnalisées", 
-                desc: "Matching multi‑signaux basé sur vos compétences, votre séniorité et vos préférences"
-              },
-              { 
-                icon: <Shield className="w-6 h-6" />, 
-                title: "Profil vérifié par des experts", 
-                desc: "Validation par un comité UX/UI senior pour booster votre crédibilité"
-              },
-              { 
-                icon: <Heart className="w-6 h-6" />, 
-                title: "Favoris et notes", 
-                desc: "Suivez vos pistes, annotez les offres et organisez vos relances"
-              },
-              { 
-                icon: <Briefcase className="w-6 h-6" />, 
-                title: "Suivi de candidatures", 
-                desc: "Gardez une vue claire sur vos envois, entretiens et réponses"
-              },
-              { 
-                icon: <BarChart2 className="w-6 h-6" />, 
-                title: "Analytique de recherche perso", 
-                desc: "Mots‑clés efficaces et tendances du marché pour optimiser votre profil"
-              },
-            ].map((f, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: i * 0.05 }}
-                viewport={{ once: true }}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all card-transition ring-1 ring-inset ring-white/40"
-              >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center mb-4 shadow-sm">
-                  {f.icon}
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{f.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{f.desc}</p>
-              </motion.div>
-            ))}
-          </div>
+          {/* Liste détaillée des fonctionnalités supprimée */}
 
           {/* Bandeau CTA simple */}
           <motion.div
