@@ -350,6 +350,44 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
+          {/* Mise en avant principale des bénéfices candidats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="mb-10"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {[
+                { icon: <UserCheck className="w-5 h-5" />, title: "Profil candidat complet", desc: "Mettez en valeur vos projets et compétences" },
+                { icon: <Globe className="w-5 h-5" />, title: "Visibilité dans l'annuaire", desc: "Trouvez plus d'opportunités grâce à l'exposition" },
+                { icon: <Mail className="w-5 h-5" />, title: "Contact par les recruteurs", desc: "Recevez des prises de contact qualifiées" },
+                { icon: <Users className="w-5 h-5" />, title: "Accès au forum communautaire", desc: "Échanges, entraide et retours entre pairs" },
+                { icon: <Award className="w-5 h-5" />, title: "Offres d'emploi exclusives", desc: "Candidatures en avant‑première" },
+              ].map((b, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.05 * i }}
+                  viewport={{ once: true }}
+                  className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 border border-white/50 shadow-md hover:shadow-lg transition-all"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-blue-600/10 text-blue-700 flex items-center justify-center">
+                      {b.icon}
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-gray-900">{b.title}</div>
+                      <div className="text-xs text-gray-600 mt-0.5">{b.desc}</div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { 
