@@ -407,16 +407,8 @@ export default function LandingPage() {
 
 
       {/* Processus transparent */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Arrière-plan avec dégradé et formes géométriques */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50"></div>
-        <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-200/40 to-indigo-300/40 rounded-full blur-xl"></div>
-          <div className="absolute bottom-20 right-10 w-48 h-48 bg-gradient-to-br from-purple-200/40 to-pink-300/40 rounded-full blur-xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-br from-emerald-200/40 to-teal-300/40 rounded-full blur-xl"></div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-4 relative z-10">
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -424,41 +416,38 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl mb-6 shadow-xl">
-              <Eye className="w-10 h-10 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-6 shadow-lg">
+              <Eye className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Un processus transparent et équitable
             </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Nous croyons en la transparence et l'équité. Chaque candidature est validée 
               par notre comité d'experts selon des critères transparents et objectifs.
             </p>
           </motion.div>
 
-          {/* Cartes métriques améliorées */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          {/* Cartes métriques simplifiées */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
             {[
               {
                 icon: Clock,
                 metric: "7 jours",
                 description: "Délai de réponse moyen",
-                gradient: "from-blue-500 to-cyan-500",
-                bgGradient: "from-blue-50 to-cyan-50"
+                color: "blue"
               },
               {
                 icon: Heart,
                 metric: "Gratuit",
                 description: "Candidature sans frais",
-                gradient: "from-emerald-500 to-teal-500",
-                bgGradient: "from-emerald-50 to-teal-50"
+                color: "green"
               },
               {
                 icon: Mail,
                 metric: "Feedback",
                 description: "Retour personnalisé",
-                gradient: "from-purple-500 to-pink-500",
-                bgGradient: "from-purple-50 to-pink-50"
+                color: "purple"
               }
             ].map((item, index) => (
               <motion.div
@@ -466,94 +455,86 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
-                whileHover={{ 
-                  scale: 1.05,
-                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)"
-                }}
                 viewport={{ once: true }}
-                className={`bg-gradient-to-br ${item.bgGradient} p-8 rounded-3xl border border-white/60 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer`}
+                className="bg-white p-6 rounded-xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
               >
-                <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br ${item.gradient} rounded-2xl mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300`}>
-                  <item.icon className="w-8 h-8 text-white" />
+                <div className={`inline-flex items-center justify-center w-12 h-12 bg-${item.color}-500 rounded-xl mb-4`}>
+                  <item.icon className="w-6 h-6 text-white" />
                 </div>
-                <div className={`text-3xl font-bold bg-gradient-to-r ${item.gradient} bg-clip-text text-transparent mb-3`}>
+                <div className={`text-2xl font-bold text-${item.color}-600 mb-2`}>
                   {item.metric}
                 </div>
-                <div className="text-gray-700 font-medium text-lg">
+                <div className="text-gray-600 font-medium">
                   {item.description}
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* Section critères modernisée */}
+          {/* Section critères simplifiée */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             viewport={{ once: true }}
-            className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 border border-white/60 shadow-2xl"
+            className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg"
           >
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl mb-4 shadow-lg">
-                <Award className="w-8 h-8 text-white" />
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-600 rounded-xl mb-4">
+                <Award className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
                 Critères de validation transparents
               </h3>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              <p className="text-gray-600 max-w-2xl mx-auto">
                 Chaque profil est évalué selon ces 4 critères objectifs et mesurables
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 {
                   icon: Palette,
                   title: "Portfolio de qualité et diversité",
                   description: "Évaluation de vos réalisations créatives",
-                  gradient: "from-blue-500 to-indigo-600"
+                  color: "blue"
                 },
                 {
                   icon: Briefcase,
                   title: "Expérience professionnelle pertinente",
                   description: "Analyse de votre parcours professionnel",
-                  gradient: "from-emerald-500 to-green-600"
+                  color: "green"
                 },
                 {
                   icon: Zap,
                   title: "Passion et engagement pour le design",
                   description: "Votre motivation et vision créative",
-                  gradient: "from-purple-500 to-violet-600"
+                  color: "purple"
                 },
                 {
                   icon: TrendingUp,
                   title: "Potentiel d'évolution et d'adaptation",
                   description: "Capacité d'apprentissage et croissance",
-                  gradient: "from-orange-500 to-red-500"
+                  color: "orange"
                 }
               ].map((criterion, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ 
-                    scale: 1.02,
-                    boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.1)"
-                  }}
                   viewport={{ once: true }}
-                  className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  className="bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md transition-all duration-300"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className={`flex-shrink-0 w-12 h-12 bg-gradient-to-br ${criterion.gradient} rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
-                      <criterion.icon className="w-6 h-6 text-white" />
+                  <div className="flex items-start gap-3">
+                    <div className={`flex-shrink-0 w-10 h-10 bg-${criterion.color}-500 rounded-lg flex items-center justify-center`}>
+                      <criterion.icon className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-gray-800 transition-colors">
+                      <h4 className="font-semibold text-gray-900 mb-1">
                         {criterion.title}
                       </h4>
-                      <p className="text-gray-600 text-sm leading-relaxed">
+                      <p className="text-gray-600 text-sm">
                         {criterion.description}
                       </p>
                     </div>
@@ -562,18 +543,18 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* Badge de confiance */}
+            {/* Badge de confiance simplifié */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.6 }}
               viewport={{ once: true }}
-              className="mt-10 text-center"
+              className="mt-8 text-center"
             >
-              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 rounded-full shadow-xl font-semibold">
-                <Shield className="w-5 h-5" />
+              <div className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-full font-medium">
+                <Shield className="w-4 h-4" />
                 <span>Processus certifié et transparent</span>
-                <CheckCircle className="w-5 h-5" />
+                <CheckCircle className="w-4 h-4" />
               </div>
             </motion.div>
           </motion.div>
