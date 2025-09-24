@@ -397,15 +397,7 @@ export default function LandingPage() {
                 shadowColor: "shadow-yellow-500/20",
                 delay: 0.3
               },
-              { 
-                icon: <BarChart2 className="w-8 h-8" />, 
-                title: "Analytics avancés", 
-                desc: "Tableau de bord personnalisé pour optimiser votre recherche",
-                gradient: "from-indigo-500 to-purple-500",
-                bgGradient: "from-indigo-50 to-purple-50",
-                shadowColor: "shadow-indigo-500/20",
-                delay: 0.4
-              }
+              
             ].map((feature, i) => (
               <motion.div
                 key={i}
