@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import des animations personnalisées */
+@import './styles/animations.css';
+
 :root {
   --card-bg: rgba(15, 23, 42, 0.7);
 }

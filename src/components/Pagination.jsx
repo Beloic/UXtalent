@@ -47,7 +47,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       <button 
         onClick={prev} 
         disabled={page === 1}
-        className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white/80 backdrop-blur-sm px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white/80 backdrop-blur-sm px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105"
       >
         <ChevronLeft className="h-4 w-4" /> 
         Précédent
@@ -56,15 +56,15 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       <div className="flex items-center gap-1">
         {getPageNumbers().map((pageNum, index) => (
           pageNum === '...' ? (
-            <span key={index} className="px-3 py-2 text-gray-500">...</span>
+            <span key={index} className="px-3 py-2 text-gray-500 animate-pulse">...</span>
           ) : (
             <button
               key={index}
               onClick={() => onPageChange(pageNum)}
-              className={`px-3 py-2 text-sm font-medium rounded-xl transition-all ${
+              className={`px-3 py-2 text-sm font-medium rounded-xl transition-all duration-300 hover:scale-110 transform ${
                 page === pageNum
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-xl shadow-blue-200'
+                  : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700 hover:shadow-lg bg-white/80 backdrop-blur-sm'
               }`}
             >
               {pageNum}
@@ -76,7 +76,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
       <button 
         onClick={next} 
         disabled={page === totalPages}
-        className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white/80 backdrop-blur-sm px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white/80 backdrop-blur-sm px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105"
       >
         Suivant 
         <ChevronRight className="h-4 w-4" />

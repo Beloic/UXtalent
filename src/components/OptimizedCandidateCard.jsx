@@ -94,14 +94,14 @@ export default function OptimizedCandidateCard({ candidate, compact = false, isF
 
   // Style aligné sur la carte d'offre (JobCard)
   const getCardStyles = () => {
-    const base = "group relative bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 transition-all duration-300";
+    const base = "group relative bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20 transition-all duration-300 card-transition";
     
     // Styles normaux pour tous les utilisateurs
     if (candidate.planType === 'premium') {
-      return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-blue-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 cursor-pointer`;
+      return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-blue-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 cursor-pointer shadow-glow`;
     }
     if (candidate.planType === 'elite') {
-      return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-amber-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 cursor-pointer`;
+      return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-amber-200/50 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 cursor-pointer shadow-glow-purple`;
     }
     return `${base} hover:shadow-2xl hover:scale-[1.02] hover:border-blue-200/50 cursor-pointer`;
   };
@@ -127,7 +127,7 @@ export default function OptimizedCandidateCard({ candidate, compact = false, isF
         <div className="flex items-start gap-0">
           {/* Colonne gauche: Avatar avec lazy loading */}
           <div className="flex flex-col items-start gap-2 w-24">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-gray-100 shadow">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-gray-100 shadow-elegant hover:shadow-glow transition-all duration-300">
               {candidate.photo && !imageError ? (
                 <img
                   ref={imgRef}

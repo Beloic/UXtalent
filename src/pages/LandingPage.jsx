@@ -39,7 +39,13 @@ export default function LandingPage() {
   return (
     <div className="bg-white">
       {/* Hero Section - Version Professionnelle */}
-      <section className="relative overflow-hidden bg-gray-50">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute top-40 right-20 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+          <div className="absolute -top-8 left-20 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+        </div>
         <div className="relative max-w-7xl mx-auto px-4 py-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -120,7 +126,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-center bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100"
+                className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 hover:shadow-2xl hover:scale-105 transition-all duration-300 card-transition"
               >
                 <div className="text-3xl font-bold text-blue-600 mb-2">50+</div>
                 <div className="text-gray-900 font-semibold">Designers vérifiés</div>
@@ -130,7 +136,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="text-center bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100"
+                className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 hover:shadow-2xl hover:scale-105 transition-all duration-300 card-transition"
               >
                 <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
                 <div className="text-gray-900 font-semibold">Entreprises partenaires</div>
@@ -140,7 +146,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="text-center bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100"
+                className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 hover:shadow-2xl hover:scale-105 transition-all duration-300 card-transition"
               >
                 <div className="text-3xl font-bold text-blue-600 mb-2">7 jours</div>
                 <div className="text-gray-900 font-semibold">Délai de réponse</div>

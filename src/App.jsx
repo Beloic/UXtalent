@@ -23,6 +23,7 @@ import PrivacyPage from "./pages/PrivacyPage";
 import FAQPage from "./pages/FAQPage";
 import PricingPage from "./pages/PricingPage";
 import RecruiterPricingLanding from "./pages/RecruiterPricingLanding";
+import CandidateLandingPreview from "./pages/CandidateLandingPreview";
 
 // Composants lourds - chargés de manière paresseuse
 const CandidatesListPage = lazy(() => import("./pages/CandidatesListPage"));
@@ -89,6 +90,15 @@ export default function App() {
           <PublicRoute>
             <Layout hideFooter={true}>
               <LandingPage />
+            </Layout>
+          </PublicRoute>
+        } />
+
+        {/* Prévisualisation UI Landing Candidat - route locale */}
+        <Route path="/preview/candidate-landing" element={
+          <PublicRoute>
+            <Layout hideFooter={true} hideTopBar={true}>
+              <CandidateLandingPreview />
             </Layout>
           </PublicRoute>
         } />

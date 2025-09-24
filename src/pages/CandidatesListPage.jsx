@@ -50,13 +50,13 @@ export default function CandidatesListPage() {
 
 
   const content = (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Sidebar filters */}
           <aside className="lg:col-span-4 space-y-6">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20 card-transition hover:shadow-2xl">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                   <Filter className="w-5 h-5 text-blue-600" /> 
@@ -205,7 +205,7 @@ export default function CandidatesListPage() {
             {loading ? (
               <div className="grid grid-cols-1 gap-4">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 animate-pulse">
+                  <div key={i} className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20 animate-pulse animate-shimmer">
                     <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
                     <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
                     <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
@@ -231,7 +231,7 @@ export default function CandidatesListPage() {
                   );
                 })}
                 {paged.length === 0 && (
-                  <div className="col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center shadow-xl border border-white/20">
+                  <div className="col-span-2 bg-white/80 backdrop-blur-sm rounded-3xl p-12 text-center shadow-xl border border-white/20 card-transition">
                     <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun candidat trouvé</h3>
                     <p className="text-gray-500">Essayez de modifier vos critères de recherche</p>

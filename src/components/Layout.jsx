@@ -182,14 +182,14 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
     <div className="min-h-screen bg-gray-50">
       {/* Top nav */}
       {!hideTopBar && (
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-lg">
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-xl glass">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 font-bold text-gray-900">
             <motion.div 
               initial={{ rotate: -10, scale: .9 }} 
               animate={{ rotate: 0, scale: 1 }} 
               transition={{ type: 'spring', stiffness: 260, damping: 18 }} 
-              className="p-3 rounded-2xl bg-blue-600 shadow-lg"
+              className="p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-xl shadow-blue-200 hover:scale-110 transition-all duration-300"
             >
               <Users className="w-6 h-6 text-white" />
             </motion.div>
@@ -402,7 +402,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 </Link>
                 <Link 
                   to="/register" 
-                  className="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-200 hover:scale-105"
+                  className="inline-flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl shadow-xl shadow-blue-200 hover:shadow-2xl transition-all duration-300 hover:scale-105 btn-modern"
                 >
                   <UserPlus className="w-4 h-4" />
                   Inscription
