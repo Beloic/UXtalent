@@ -738,7 +738,7 @@ export default function RecruiterDashboard() {
               {/* Onglets de navigation */}
               <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-200 flex">
                 <button
-                  onClick={() => navigate('/my-profile/talent')}
+                  onClick={() => navigate('/recruiter-dashboard/favorites')}
                   disabled={refreshing}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 text-gray-600 hover:text-gray-900 ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
@@ -746,7 +746,7 @@ export default function RecruiterDashboard() {
                   Talents
                 </button>
                 <button
-                  onClick={() => navigate('/my-profile/offers')}
+                  onClick={() => navigate('/recruiter-dashboard/myjobs')}
                   disabled={refreshing}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 text-gray-600 hover:text-gray-900 ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
