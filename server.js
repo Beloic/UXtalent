@@ -1885,7 +1885,7 @@ app.post('/api/forum/posts', authenticateUser, async (req, res) => {
       author: req.user.user_metadata?.first_name && req.user.user_metadata?.last_name 
         ? `${req.user.user_metadata.first_name} ${req.user.user_metadata.last_name}`
         : req.user.email?.split('@')[0] || 'Utilisateur',
-      author_id: generateTempUserId(req.user.email), // Utiliser un ID entier temporaire
+      author_id: generateStableUserId(req.user.email), // Utiliser un ID entier temporaire
       author_avatar: req.user.user_metadata?.first_name && req.user.user_metadata?.last_name 
         ? `${req.user.user_metadata.first_name[0]}${req.user.user_metadata.last_name[0]}`
         : req.user.email?.split('@')[0]?.substring(0, 2).toUpperCase() || 'U'
@@ -1971,7 +1971,7 @@ app.post('/api/forum/posts/:id/replies', authenticateUser, async (req, res) => {
       author: req.user.user_metadata?.first_name && req.user.user_metadata?.last_name 
         ? `${req.user.user_metadata.first_name} ${req.user.user_metadata.last_name}`
         : req.user.email?.split('@')[0] || 'Utilisateur',
-      author_id: generateTempUserId(req.user.email),
+      author_id: generateStableUserId(req.user.email),
       author_avatar: req.user.user_metadata?.first_name && req.user.user_metadata?.last_name 
         ? `${req.user.user_metadata.first_name[0]}${req.user.user_metadata.last_name[0]}`
         : req.user.email?.split('@')[0]?.substring(0, 2).toUpperCase() || 'U'
@@ -2224,7 +2224,7 @@ app.delete('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req
     }
     
     // Vérifier que l'utilisateur est l'auteur de la réponse
-    const currentUserId = generateTempUserId(req.user.email);
+    const currentUserId = generateStableUserId(req.user.email);
     logger.info('Vérification des permissions', { 
       currentUserId, 
       replyAuthorId: reply.author_id,
@@ -2265,7 +2265,7 @@ app.put('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, r
       postId: id, 
       replyId, 
       user: req.user?.email,
-      userId: generateTempUserId(req.user.email),
+      userId: generateStableUserId(req.user.email),
       contentLength: content?.length
     });
     
@@ -2287,7 +2287,7 @@ app.put('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, r
     }
     
     // Vérifier que l'utilisateur est l'auteur de la réponse
-    const currentUserId = generateTempUserId(req.user.email);
+    const currentUserId = generateStableUserId(req.user.email);
     logger.info('Vérification des permissions pour modification', { 
       currentUserId, 
       replyAuthorId: reply.author_id,
@@ -2401,7 +2401,7 @@ app.post('/api/forum/posts/demo', async (req, res) => {
         category: postData.category || 'Général',
         tags: postData.tags || [],
         author: postData.author || 'Utilisateur Demo',
-        author_id: generateTempUserId('demo@example.com'),
+        author_id: generateStableUserId('demo@example.com'),
         author_avatar: postData.author_avatar || 'UD',
         views: 0,
         likes: 0,
@@ -2439,7 +2439,7 @@ app.post('/api/forum/posts/:id/replies/demo', async (req, res) => {
         post_id: parseInt(id),
         content: replyData.content,
         author: replyData.author || 'Utilisateur Demo',
-        author_id: generateTempUserId('demo@example.com'),
+        author_id: generateStableUserId('demo@example.com'),
         author_avatar: replyData.author_avatar || 'UD',
         likes: 0,
         liked_by: []
