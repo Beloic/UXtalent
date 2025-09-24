@@ -2464,22 +2464,7 @@ export default function MyProfilePage() {
                 return shouldShow;
               })()}
               
-              {/* Message si le bouton ne s'affiche pas */}
-              {(() => {
-                const shouldShow = candidateStatus === 'new';
-                if (!shouldShow) {
-                  return (
-                    <div className="mt-8 bg-red-50 border border-red-200 rounded-2xl p-4 mb-4">
-                      <h4 className="text-lg font-bold text-red-800 mb-2">❌ BOUTON MASQUÉ</h4>
-                      <p className="text-sm text-red-700">
-                        Le bouton "Envoyer mon profil" n'est pas affiché car aucune condition n'est remplie.
-                        <br />Votre statut semble être "{candidateStatus}" et vous avez un ID: "{formData.id}"
-                      </p>
-                    </div>
-                  );
-                }
-                return null;
-              })()}
+             {/* Message debug supprimé */}
               
 
               {(!formData.id || candidateStatus === 'new' || candidateStatus === 'pending' || candidateStatus === 'rejected') && (
@@ -2563,27 +2548,7 @@ export default function MyProfilePage() {
                 </div>
               )}
 
-              {/* BOUTON SIMPLE SANS CONDITION - TOUJOURS VISIBLE */}
-              <div className="mt-8 bg-blue-600 text-white rounded-2xl p-8 text-center">
-                <h3 className="text-2xl font-bold mb-4">Envoyer mon profil pour examen</h3>
-                <button
-                  onClick={handleSubmit}
-                  disabled={isLoading}
-                  className="bg-white text-blue-600 font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-3 mx-auto"
-                >
-                  {isLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                      Envoi en cours...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-5 h-5" />
-                      Envoyer mon profil pour examen
-                    </>
-                  )}
-                </button>
-              </div>
+             {/* Bouton toujours visible supprimé (doublon) */}
             </motion.div>
           )}
 
