@@ -371,7 +371,7 @@ export default function LandingPage() {
               { 
                 icon: <Briefcase className="w-8 h-8" />, 
                 title: "Offres d'emploi exclusives", 
-                desc: "Accès prioritaire aux meilleures opportunités avant publication",
+                desc: "Accès direct à des offres uniques et vérifiées",
                 color: "green",
                 bgGradient: "from-green-50 to-green-100",
                 iconBg: "bg-green-500",
