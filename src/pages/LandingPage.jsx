@@ -334,8 +334,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Fonctionnalités de la plateforme */}
-      <section className="py-20 bg-gray-50">
+      {/* Fonctionnalités de la plateforme - orientées candidats */}
+      <section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -344,22 +344,44 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Fonctionnalités de la plateforme
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Des outils concrets pour accélérer les mises en relation et améliorer la qualité des matches.
+            <h2 className="text-4xl font-bold text-gray-900 mb-3">Fonctionnalités de la plateforme</h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+              Pensée pour votre recherche d'emploi: gagnez en visibilité et recevez des opportunités vraiment pertinentes.
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: <Bell className="w-6 h-6" />, title: "Alertes intelligentes", desc: "Notifications quand un poste correspond à vos critères" },
-              { icon: <Search className="w-6 h-6" />, title: "Matching intelligent", desc: "Analyse multi-signaux pour des recommandations pertinentes" },
-              { icon: <Shield className="w-6 h-6" />, title: "Profils vérifiés", desc: "Contrôles qualité pour garantir la fiabilité des profils" },
-              { icon: <Heart className="w-6 h-6" />, title: "Favoris & notes", desc: "Sauvegardez, annotez et classez les profils facilement" },
-              { icon: <Briefcase className="w-6 h-6" />, title: "Dashboard recruteur", desc: "Suivez vos favoris, rendez-vous et réponses en un coup d’œil" },
-              { icon: <BarChart2 className="w-6 h-6" />, title: "Analytique de recherche", desc: "Insights sur la tension du marché et les mots-clés efficaces" },
+              { 
+                icon: <Bell className="w-6 h-6" />, 
+                title: "Alertes d'offres pertinentes", 
+                desc: "Soyez notifié dès qu'une mission ou un poste matche votre profil"
+              },
+              { 
+                icon: <Search className="w-6 h-6" />, 
+                title: "Recommandations personnalisées", 
+                desc: "Matching multi‑signaux basé sur vos compétences, votre séniorité et vos préférences"
+              },
+              { 
+                icon: <Shield className="w-6 h-6" />, 
+                title: "Profil vérifié par des experts", 
+                desc: "Validation par un comité UX/UI senior pour booster votre crédibilité"
+              },
+              { 
+                icon: <Heart className="w-6 h-6" />, 
+                title: "Favoris et notes", 
+                desc: "Suivez vos pistes, annotez les offres et organisez vos relances"
+              },
+              { 
+                icon: <Briefcase className="w-6 h-6" />, 
+                title: "Suivi de candidatures", 
+                desc: "Gardez une vue claire sur vos envois, entretiens et réponses"
+              },
+              { 
+                icon: <BarChart2 className="w-6 h-6" />, 
+                title: "Analytique de recherche perso", 
+                desc: "Mots‑clés efficaces et tendances du marché pour optimiser votre profil"
+              },
             ].map((f, i) => (
               <motion.div
                 key={i}
@@ -367,13 +389,13 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.05 }}
                 viewport={{ once: true }}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-xl hover:shadow-2xl card-transition"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all card-transition ring-1 ring-inset ring-white/40"
               >
-                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center mb-4 shadow-sm">
                   {f.icon}
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{f.title}</h3>
-                <p className="text-gray-600">{f.desc}</p>
+                <p className="text-gray-600 leading-relaxed">{f.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -384,13 +406,13 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="mt-12 bg-blue-50 border border-blue-100 rounded-2xl p-6 text-center"
+            className="mt-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-center shadow-xl"
           >
-            <p className="text-gray-700">Essayez la plateforme et recevez vos premières recommandations.</p>
+            <p className="text-white text-lg">Recevez vos premières recommandations personnalisées.</p>
             <div className="mt-4">
-              <Link to="/register" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all">
+              <Link to="/register" className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-700 font-semibold rounded-xl shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all">
                 <Users className="w-5 h-5" />
-                Créer mon compte gratuit
+                Créer mon profil gratuit
               </Link>
             </div>
           </motion.div>
