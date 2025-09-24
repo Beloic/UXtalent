@@ -334,170 +334,60 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Fonctionnalités de la plateforme - Design cohérent */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50">
-        {/* Éléments décoratifs subtils */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-          <div className="absolute top-40 right-20 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-20 left-1/2 w-32 h-32 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4">
-          {/* Header moderne mais cohérent */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+      {/* Fonctionnalités de la plateforme - Design simplifié et cohérent */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Header simple */}
+          <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
               Booste ta visibilité auprès des recruteurs
             </h2>
-            
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
-            >
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Conçu pour mettre en lumière le profil des meilleurs talents
-            </motion.p>
-          </motion.div>
+            </p>
+          </div>
 
-          {/* Grille de fonctionnalités ultra-moderne */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {/* Grille de fonctionnalités simplifiée */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { 
-                icon: <Globe className="w-8 h-8" />, 
+                icon: <Eye className="w-8 h-8" />, 
                 title: "Visibilité dans l'annuaire", 
-                desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur",
-                gradient: "from-purple-500 to-pink-500",
-                bgGradient: "from-purple-50 to-pink-50",
-                shadowColor: "shadow-purple-500/20",
-                delay: 0.1
+                desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur"
               },
               { 
                 icon: <Users className="w-8 h-8" />, 
                 title: "Forum communautaire exclusif", 
-                desc: "Réseau privé de designers pour partager expériences et conseils",
-                gradient: "from-orange-500 to-red-500",
-                bgGradient: "from-orange-50 to-red-50",
-                shadowColor: "shadow-orange-500/20",
-                delay: 0.2
+                desc: "Réseau privé de designers pour partager expériences et conseils"
               },
               { 
-                icon: <Award className="w-8 h-8" />, 
+                icon: <Briefcase className="w-8 h-8" />, 
                 title: "Offres d'emploi exclusives", 
-                desc: "Accès prioritaire aux meilleures opportunités avant publication",
-                gradient: "from-yellow-500 to-orange-500",
-                bgGradient: "from-yellow-50 to-orange-50",
-                shadowColor: "shadow-yellow-500/20",
-                delay: 0.3
-              },
-              
+                desc: "Accès prioritaire aux meilleures opportunités avant publication"
+              }
             ].map((feature, i) => (
-              <motion.div
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ 
-                  duration: 0.7, 
-                  delay: feature.delay,
-                  type: "spring",
-                  stiffness: 100
-                }}
-                viewport={{ once: true }}
-                whileHover={{ 
-                  y: -12,
-                  scale: 1.03,
-                  transition: { duration: 0.3, type: "spring", stiffness: 300 } 
-                }}
-                className="group relative"
+                className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
-                {/* Effet de lueur en arrière-plan */}
-                <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-10 blur-xl transition-all duration-500 rounded-3xl`}></div>
-                
-                {/* Container principal */}
-                <div className={`relative bg-gradient-to-br ${feature.bgGradient} backdrop-blur-sm rounded-3xl p-8 border border-white/60 shadow-xl ${feature.shadowColor} hover:shadow-2xl transition-all duration-500 h-full overflow-hidden`}>
-                  
-                  {/* Effet de brillance sur hover */}
-                  <div className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:left-[100%] transition-all duration-1000"></div>
-                  </div>
-                  
-                  {/* Icône avec effet gradient */}
-                  <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
-                    whileInView={{ scale: 1, rotate: 0 }}
-                    transition={{ duration: 0.6, delay: feature.delay + 0.2, type: "spring" }}
-                    viewport={{ once: true }}
-                    className={`relative inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${feature.gradient} mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300`}
-                  >
-                    <div className="text-white">
-                      {feature.icon}
-                    </div>
-                    
-                    {/* Cercles décoratifs autour de l'icône */}
-                    <div className="absolute -inset-2 rounded-full border-2 border-transparent bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  </motion.div>
-
-                  {/* Contenu */}
-                  <div className="relative z-10">
-                    <motion.h3 
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: feature.delay + 0.3 }}
-                      viewport={{ once: true }}
-                      className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors"
-                    >
-                      {feature.title}
-                    </motion.h3>
-                    
-                    <motion.p 
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: feature.delay + 0.4 }}
-                      viewport={{ once: true }}
-                      className="text-gray-700 leading-relaxed group-hover:text-gray-600 transition-colors"
-                    >
-                      {feature.desc}
-                    </motion.p>
-
-                    {/* Barre de progression décorative */}
-                    <div className="mt-6 w-full h-1 bg-gray-200/50 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: "100%" }}
-                        transition={{ duration: 1.5, delay: feature.delay + 0.6, ease: "easeOut" }}
-                        viewport={{ once: true }}
-                        className={`h-full bg-gradient-to-r ${feature.gradient} rounded-full relative`}
-                      >
-                        {/* Effet de brillance sur la barre */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
-                      </motion.div>
-                    </div>
-                  </div>
-
-                  {/* Éléments décoratifs */}
-                  <div className="absolute top-4 right-4 w-8 h-8 bg-white/10 rounded-full opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
-                  <div className="absolute bottom-4 left-4 w-6 h-6 bg-white/5 rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
-                  
-                  {/* Pattern décoratif en arrière-plan */}
-                  <div className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
-                    <div className="absolute inset-0" style={{
-                      backgroundImage: `radial-gradient(circle at 20px 20px, currentColor 1px, transparent 0)`,
-                      backgroundSize: '40px 40px'
-                    }}></div>
+                {/* Icône simple */}
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                  <div className="text-blue-600">
+                    {feature.icon}
                   </div>
                 </div>
-              </motion.div>
+
+                {/* Contenu */}
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  {feature.title}
+                </h3>
+                
+                <p className="text-gray-600 leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
             ))}
           </div>
-
-          
         </div>
       </section>
 
