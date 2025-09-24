@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, MessageSquare, Heart, Reply, Clock, Users, Tag } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Heart, Reply, Clock, Users, Tag, Edit, Trash2 } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getForumPost, addForumReply, likePost, likeReply } from '../services/forumApi';
+import { getForumPost, addForumReply, likePost, likeReply, updateForumReply, deleteForumReply } from '../services/forumApi';
 import { buildApiUrl } from '../config/api';
 
 export default function ForumPostPage() {
@@ -17,6 +17,8 @@ export default function ForumPostPage() {
   const [message, setMessage] = useState('');
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [likedReplies, setLikedReplies] = useState(new Set());
+  const [editingReply, setEditingReply] = useState(null);
+  const [editReplyContent, setEditReplyContent] = useState('');
 
   // Fonction utilitaire pour formater les dates
   const formatTimeAgo = (dateString) => {
@@ -53,7 +55,7 @@ export default function ForumPostPage() {
         // Mettre à jour l'état local
         setLikedPosts(prev => {
           const newSet = new Set(prev);
-          if (result.liked) {
+          if (result.isLiked) {
             newSet.add(id);
           } else {
             newSet.delete(id);
@@ -94,7 +96,7 @@ export default function ForumPostPage() {
         // Mettre à jour l'état local
         setLikedReplies(prev => {
           const newSet = new Set(prev);
-          if (result.liked) {
+          if (result.isLiked) {
             newSet.add(replyId);
           } else {
             newSet.delete(replyId);
@@ -179,6 +181,63 @@ export default function ForumPostPage() {
     }
   };
 
+  const handleEditReply = (reply) => {
+    setEditingReply(reply.id);
+    setEditReplyContent(reply.content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingReply(null);
+    setEditReplyContent('');
+  };
+
+  const handleSaveEdit = async (replyId) => {
+    if (!editReplyContent.trim()) {
+      setMessage('Le contenu de la réponse ne peut pas être vide');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await updateForumReply(id, replyId, editReplyContent);
+      setMessage('Réponse modifiée avec succès !');
+      
+      // Recharger le post pour avoir les modifications
+      await loadPost();
+      setEditingReply(null);
+      setEditReplyContent('');
+    } catch (error) {
+      setMessage(error.message || 'Erreur lors de la modification de la réponse');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteReply = async (replyId) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette réponse ?')) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await deleteForumReply(id, replyId);
+      setMessage('Réponse supprimée avec succès !');
+      
+      // Recharger le post pour avoir les modifications
+      await loadPost();
+    } catch (error) {
+      setMessage(error.message || 'Erreur lors de la suppression de la réponse');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const isReplyOwner = (reply) => {
+    if (!user || !reply) return false;
+    const currentUserId = user.email ? user.email.split('@')[0] : 'anonymous';
+    return reply.author_id === currentUserId;
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -198,7 +257,7 @@ export default function ForumPostPage() {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Post non trouvé</h1>
           <p className="text-gray-600 mb-6">Cette discussion n'existe pas ou a été supprimée.</p>
           <Link 
-            to="/forum" 
+            to="/my-profile/forum" 
             className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -216,7 +275,7 @@ export default function ForumPostPage() {
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-6">
             <Link 
-              to="/forum" 
+              to="/my-profile/forum" 
               className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -392,17 +451,64 @@ export default function ForumPostPage() {
                       {reply.author_avatar || reply.authorAvatar || 'U'}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-sm font-medium text-gray-900">{reply.author || 'Utilisateur'}</span>
-                        <span className="text-sm text-gray-500">•</span>
-                        <span className="text-sm text-gray-500 flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {reply.created_at || reply.createdAt ? formatTimeAgo(reply.created_at || reply.createdAt) : 'Récemment'}
-                        </span>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-900">{reply.author || 'Utilisateur'}</span>
+                          <span className="text-sm text-gray-500">•</span>
+                          <span className="text-sm text-gray-500 flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {reply.created_at || reply.createdAt ? formatTimeAgo(reply.created_at || reply.createdAt) : 'Récemment'}
+                          </span>
+                        </div>
+                        {isReplyOwner(reply) && (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleEditReply(reply)}
+                              className="p-1 text-gray-400 hover:text-indigo-600 transition-colors"
+                              title="Modifier la réponse"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteReply(reply.id)}
+                              className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                              title="Supprimer la réponse"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
                       </div>
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                        {reply.content || 'Contenu non disponible'}
-                      </p>
+                      {editingReply === reply.id ? (
+                        <div className="space-y-3">
+                          <textarea
+                            value={editReplyContent}
+                            onChange={(e) => setEditReplyContent(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                            rows={3}
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleSaveEdit(reply.id)}
+                              disabled={isSubmitting}
+                              className="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                            >
+                              Sauvegarder
+                            </button>
+                            <button
+                              onClick={handleCancelEdit}
+                              disabled={isSubmitting}
+                              className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {reply.content || 'Contenu non disponible'}
+                        </p>
+                      )}
                       <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
                         <button
                           onClick={() => handleLikeReply(reply.id)}

@@ -174,7 +174,7 @@ export default function ForumPage() {
         // Mettre à jour l'état local
         setLikedPosts(prev => {
           const newSet = new Set(prev);
-          if (result.liked) {
+          if (result.isLiked) {
             newSet.add(postId);
           } else {
             newSet.delete(postId);
@@ -221,7 +221,7 @@ export default function ForumPage() {
         // Mettre à jour l'état local
         setLikedReplies(prev => {
           const newSet = new Set(prev);
-          if (result.liked) {
+          if (result.isLiked) {
             newSet.add(replyId);
           } else {
             newSet.delete(replyId);

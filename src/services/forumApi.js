@@ -264,3 +264,59 @@ export const likeReply = async (replyId) => {
     throw error;
   }
 };
+
+// Modifier une réponse
+export const updateForumReply = async (postId, replyId, content) => {
+  try {
+    const token = await getAuthToken();
+    
+    if (!token) {
+      throw new Error('Vous devez être connecté pour modifier une réponse');
+    }
+    
+    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ content })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `Erreur HTTP: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Supprimer une réponse
+export const deleteForumReply = async (postId, replyId) => {
+  try {
+    const token = await getAuthToken();
+    
+    if (!token) {
+      throw new Error('Vous devez être connecté pour supprimer une réponse');
+    }
+    
+    const response = await fetch(buildApiUrl(`/api/forum/posts/${postId}/replies/${replyId}`), {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `Erreur HTTP: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};

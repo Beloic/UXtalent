@@ -2195,6 +2195,24 @@ app.get('/api/candidates/:candidateId/stats', async (req, res) => {
 app.delete('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, res) => {
   try {
     const { id, replyId } = req.params;
+    
+    // Récupérer la réponse pour vérifier les permissions
+    const post = await getPostById(parseInt(id));
+    if (!post) {
+      return res.status(404).json({ error: 'Post non trouvé' });
+    }
+    
+    const reply = post.replies?.find(r => r.id === parseInt(replyId));
+    if (!reply) {
+      return res.status(404).json({ error: 'Réponse non trouvée' });
+    }
+    
+    // Vérifier que l'utilisateur est l'auteur de la réponse
+    const currentUserId = generateTempUserId(req.user.email);
+    if (reply.author_id !== currentUserId) {
+      return res.status(403).json({ error: 'Vous ne pouvez supprimer que vos propres réponses' });
+    }
+    
     const deleted = await deleteReply(parseInt(id), parseInt(replyId));
     
     if (deleted) {
@@ -2206,6 +2224,54 @@ app.delete('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req
   } catch (error) {
     logger.error('Erreur lors de la suppression de la réponse', { error: error.message });
     res.status(500).json({ error: 'Erreur lors de la suppression de la réponse' });
+  }
+});
+
+// PUT /api/forum/posts/:id/replies/:replyId - Modifier une réponse
+app.put('/api/forum/posts/:id/replies/:replyId', authenticateUser, async (req, res) => {
+  try {
+    const { id, replyId } = req.params;
+    const { content } = req.body;
+    
+    if (!content) {
+      return res.status(400).json({ error: 'Le contenu de la réponse est requis' });
+    }
+    
+    // Récupérer la réponse pour vérifier les permissions
+    const post = await getPostById(parseInt(id));
+    if (!post) {
+      return res.status(404).json({ error: 'Post non trouvé' });
+    }
+    
+    const reply = post.replies?.find(r => r.id === parseInt(replyId));
+    if (!reply) {
+      return res.status(404).json({ error: 'Réponse non trouvée' });
+    }
+    
+    // Vérifier que l'utilisateur est l'auteur de la réponse
+    const currentUserId = generateTempUserId(req.user.email);
+    if (reply.author_id !== currentUserId) {
+      return res.status(403).json({ error: 'Vous ne pouvez modifier que vos propres réponses' });
+    }
+    
+    // Mettre à jour la réponse dans la base de données
+    const { data, error } = await supabase
+      .from('forum_replies')
+      .update({ content })
+      .eq('id', parseInt(replyId))
+      .eq('post_id', parseInt(id))
+      .select()
+      .single();
+    
+    if (error) {
+      throw error;
+    }
+    
+    logger.info('Réponse modifiée avec succès', { replyId, user: req.user?.email });
+    res.json({ message: 'Réponse modifiée avec succès', reply: data });
+  } catch (error) {
+    logger.error('Erreur lors de la modification de la réponse', { error: error.message });
+    res.status(500).json({ error: 'Erreur lors de la modification de la réponse' });
   }
 });
 
