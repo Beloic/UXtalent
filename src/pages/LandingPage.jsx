@@ -33,16 +33,16 @@ export default function LandingPage() {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const phrases = [
-    "Trop de profils se perdent dans la masse — le vôtre mérite d’être remarqué.",
-    "Dans un marché saturé, on vous aide à sortir du lot.",
-    "Le marché déborde, mais nous vous faisons une place de choix."
+    "Trop de profils se perdent dans la masse — le tien mérite d’être remarqué.",
+    "Dans un marché saturé, on t’aide à sortir du lot.",
+    "Le marché déborde, mais nous te faisons une place de choix."
   ];
   const [phraseIndex, setPhraseIndex] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
       setPhraseIndex((i) => (i + 1) % phrases.length);
-    }, 3500);
+    }, 4000);
     return () => clearInterval(id);
   }, []);
 
