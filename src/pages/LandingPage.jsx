@@ -368,320 +368,286 @@ export default function LandingPage() {
             </motion.p>
           </motion.div>
 
-          {/* Blocs animés de dashboard style */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            
-            {/* Bloc Visibilité & Analytics */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/50 shadow-xl hover:shadow-2xl transition-all duration-500"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Visibilité maximisée</h3>
-                <div className="flex items-center gap-2 text-sm text-green-600 font-medium">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  En temps réel
-                </div>
-              </div>
-              
-              <p className="text-gray-600 mb-6">Votre profil affiché aux bons recruteurs au bon moment</p>
-              
-              {/* Metrics animées */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-700">Profils vus cette semaine</span>
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    viewport={{ once: true }}
-                    className="flex items-center gap-2"
-                  >
-                    <motion.span 
-                      className="text-2xl font-bold text-blue-600"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      transition={{ duration: 1, delay: 0.6 }}
-                    >
-                      {/* Animation de compteur */}
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ duration: 2, delay: 0.8 }}
-                      >
-                        147
-                      </motion.span>
-                    </motion.span>
-                    <span className="text-sm text-green-600 font-medium">+23%</span>
-                  </motion.div>
-                </div>
-                
-                {/* Barre de progression animée */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Startups</span>
-                    <span className="text-gray-900 font-medium">67%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: "67%" }}
-                      transition={{ duration: 1.5, delay: 1 }}
-                      viewport={{ once: true }}
-                      className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full"
-                    ></motion.div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Scale-ups</span>
-                    <span className="text-gray-900 font-medium">33%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: "33%" }}
-                      transition={{ duration: 1.5, delay: 1.2 }}
-                      viewport={{ once: true }}
-                      className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
-                    ></motion.div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Mini graphique */}
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                  <span>Tendance 7 derniers jours</span>
-                  <TrendingUp className="w-4 h-4 text-green-500" />
-                </div>
-                <div className="flex items-end gap-1 h-12">
-                  {[40, 65, 45, 80, 60, 90, 75].map((height, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ height: 0 }}
-                      whileInView={{ height: `${height}%` }}
-                      transition={{ duration: 0.8, delay: 1.4 + i * 0.1 }}
-                      viewport={{ once: true }}
-                      className="bg-gradient-to-t from-blue-500 to-cyan-400 rounded-sm flex-1"
-                    ></motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Bloc Recommandations & Matching */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 border border-white/50 shadow-xl hover:shadow-2xl transition-all duration-500"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Matching intelligent</h3>
-                <div className="w-3 h-3 bg-blue-500 rounded-full animate-ping"></div>
-              </div>
-              
-              <p className="text-gray-600 mb-6">IA qui trouve les opportunités parfaites pour votre profil</p>
-              
-              {/* Score de compatibilité */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-gray-700 font-medium">Score de compatibilité moyen</span>
-                  <Target className="w-5 h-5 text-blue-600" />
-                </div>
-                <div className="flex items-center gap-4">
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    transition={{ duration: 0.8, delay: 0.6 }}
-                    viewport={{ once: true }}
-                    className="text-4xl font-bold text-blue-600"
-                  >
-                    89%
-                  </motion.div>
-                  <div className="flex-1">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: "89%" }}
-                      transition={{ duration: 1.5, delay: 0.8 }}
-                      viewport={{ once: true }}
-                      className="h-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
-                    ></motion.div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Statistiques d'engagement */}
-              <div className="grid grid-cols-2 gap-4">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                  viewport={{ once: true }}
-                  className="text-center p-4 bg-blue-50 rounded-xl"
-                >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    transition={{ duration: 0.6, delay: 1 }}
-                    className="text-2xl font-bold text-blue-600 mb-1"
-                  >
-                    24
-                  </motion.div>
-                  <div className="text-sm text-gray-600">Contacts reçus</div>
-                  <div className="text-xs text-green-600 font-medium">Cette semaine</div>
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 1 }}
-                  viewport={{ once: true }}
-                  className="text-center p-4 bg-purple-50 rounded-xl"
-                >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    transition={{ duration: 0.6, delay: 1.2 }}
-                    className="text-2xl font-bold text-purple-600 mb-1"
-                  >
-                    8
-                  </motion.div>
-                  <div className="text-sm text-gray-600">Entretiens</div>
-                  <div className="text-xs text-purple-600 font-medium">Planifiés</div>
-                </motion.div>
-              </div>
-              
-              {/* Indicateurs de performance */}
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Taux de réponse</span>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-900">92%</span>
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      whileInView={{ scale: 1 }}
-                      transition={{ duration: 0.4, delay: 1.4 }}
-                      viewport={{ once: true }}
-                      className="w-2 h-2 bg-green-500 rounded-full"
-                    ></motion.div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Grille des fonctionnalités complémentaires */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {/* Grille de fonctionnalités ultra-moderne */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {[
               { 
-                icon: <UserCheck className="w-6 h-6" />, 
-                title: "Profil optimisé", 
-                metric: "100%",
-                desc: "Complétude garantie",
-                color: "blue",
+                icon: <UserCheck className="w-8 h-8" />, 
+                title: "Profil candidat complet", 
+                desc: "Mettez en valeur vos projets et compétences avec un portfolio interactif",
+                gradient: "from-blue-500 to-cyan-500",
+                bgGradient: "from-blue-50 to-cyan-50",
+                shadowColor: "shadow-blue-500/20",
                 delay: 0.1
               },
               { 
-                icon: <Mail className="w-6 h-6" />, 
-                title: "Contacts qualifiés", 
-                metric: "24/sem",
-                desc: "Moyenne actuelle",
-                color: "green",
+                icon: <Globe className="w-8 h-8" />, 
+                title: "Visibilité dans l'annuaire", 
+                desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur",
+                gradient: "from-purple-500 to-pink-500",
+                bgGradient: "from-purple-50 to-pink-50",
+                shadowColor: "shadow-purple-500/20",
                 delay: 0.2
               },
               { 
-                icon: <Users className="w-6 h-6" />, 
-                title: "Forum actif", 
-                metric: "50+",
-                desc: "Designers connectés",
-                color: "purple",
+                icon: <Mail className="w-8 h-8" />, 
+                title: "Contact par les recruteurs", 
+                desc: "Système de messagerie sécurisé pour des échanges professionnels",
+                gradient: "from-green-500 to-emerald-500",
+                bgGradient: "from-green-50 to-emerald-50",
+                shadowColor: "shadow-green-500/20",
                 delay: 0.3
               },
               { 
-                icon: <Award className="w-6 h-6" />, 
-                title: "Offres exclusives", 
-                metric: "15/mois",
-                desc: "Nouvelles opportunités",
-                color: "orange",
+                icon: <Users className="w-8 h-8" />, 
+                title: "Forum communautaire exclusif", 
+                desc: "Réseau privé de designers pour partager expériences et conseils",
+                gradient: "from-orange-500 to-red-500",
+                bgGradient: "from-orange-50 to-red-50",
+                shadowColor: "shadow-orange-500/20",
                 delay: 0.4
+              },
+              { 
+                icon: <Award className="w-8 h-8" />, 
+                title: "Offres d'emploi exclusives", 
+                desc: "Accès prioritaire aux meilleures opportunités avant publication",
+                gradient: "from-yellow-500 to-orange-500",
+                bgGradient: "from-yellow-50 to-orange-50",
+                shadowColor: "shadow-yellow-500/20",
+                delay: 0.5
+              },
+              { 
+                icon: <BarChart2 className="w-8 h-8" />, 
+                title: "Analytics avancés", 
+                desc: "Tableau de bord personnalisé pour optimiser votre recherche",
+                gradient: "from-indigo-500 to-purple-500",
+                bgGradient: "from-indigo-50 to-purple-50",
+                shadowColor: "shadow-indigo-500/20",
+                delay: 0.6
               }
             ].map((feature, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: feature.delay }}
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ 
+                  duration: 0.7, 
+                  delay: feature.delay,
+                  type: "spring",
+                  stiffness: 100
+                }}
                 viewport={{ once: true }}
                 whileHover={{ 
-                  y: -8,
-                  scale: 1.02,
-                  transition: { duration: 0.2 } 
+                  y: -12,
+                  scale: 1.03,
+                  transition: { duration: 0.3, type: "spring", stiffness: 300 } 
                 }}
-                className="group bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="group relative"
               >
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4 transition-all duration-300 ${
-                  feature.color === 'blue' ? 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' :
-                  feature.color === 'green' ? 'bg-green-100 text-green-600 group-hover:bg-green-600 group-hover:text-white' :
-                  feature.color === 'purple' ? 'bg-purple-100 text-purple-600 group-hover:bg-purple-600 group-hover:text-white' :
-                  'bg-orange-100 text-orange-600 group-hover:bg-orange-600 group-hover:text-white'
-                }`}>
-                  {feature.icon}
-                </div>
-
-                <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  transition={{ duration: 0.6, delay: feature.delay + 0.2 }}
-                  viewport={{ once: true }}
-                  className={`text-3xl font-bold mb-2 ${
-                    feature.color === 'blue' ? 'text-blue-600' :
-                    feature.color === 'green' ? 'text-green-600' :
-                    feature.color === 'purple' ? 'text-purple-600' :
-                    'text-orange-600'
-                  }`}
-                >
-                  {feature.metric}
-                </motion.div>
-
-                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
-                  {feature.title}
-                </h3>
+                {/* Effet de lueur en arrière-plan */}
+                <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-10 blur-xl transition-all duration-500 rounded-3xl`}></div>
                 
-                <p className="text-gray-600 text-sm">
-                  {feature.desc}
-                </p>
+                {/* Container principal */}
+                <div className={`relative bg-gradient-to-br ${feature.bgGradient} backdrop-blur-sm rounded-3xl p-8 border border-white/60 shadow-xl ${feature.shadowColor} hover:shadow-2xl transition-all duration-500 h-full overflow-hidden`}>
+                  
+                  {/* Effet de brillance sur hover */}
+                  <div className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:left-[100%] transition-all duration-1000"></div>
+                  </div>
+                  
+                  {/* Icône avec effet gradient */}
+                  <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    transition={{ duration: 0.6, delay: feature.delay + 0.2, type: "spring" }}
+                    viewport={{ once: true }}
+                    className={`relative inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${feature.gradient} mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300`}
+                  >
+                    <div className="text-white">
+                      {feature.icon}
+                    </div>
+                    
+                    {/* Cercles décoratifs autour de l'icône */}
+                    <div className="absolute -inset-2 rounded-full border-2 border-transparent bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  </motion.div>
+
+                  {/* Contenu */}
+                  <div className="relative z-10">
+                    <motion.h3 
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: feature.delay + 0.3 }}
+                      viewport={{ once: true }}
+                      className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors"
+                    >
+                      {feature.title}
+                    </motion.h3>
+                    
+                    <motion.p 
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: feature.delay + 0.4 }}
+                      viewport={{ once: true }}
+                      className="text-gray-700 leading-relaxed group-hover:text-gray-600 transition-colors"
+                    >
+                      {feature.desc}
+                    </motion.p>
+
+                    {/* Barre de progression décorative */}
+                    <div className="mt-6 w-full h-1 bg-gray-200/50 rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "100%" }}
+                        transition={{ duration: 1.5, delay: feature.delay + 0.6, ease: "easeOut" }}
+                        viewport={{ once: true }}
+                        className={`h-full bg-gradient-to-r ${feature.gradient} rounded-full relative`}
+                      >
+                        {/* Effet de brillance sur la barre */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Éléments décoratifs */}
+                  <div className="absolute top-4 right-4 w-8 h-8 bg-white/10 rounded-full opacity-50 group-hover:opacity-80 transition-opacity duration-300"></div>
+                  <div className="absolute bottom-4 left-4 w-6 h-6 bg-white/5 rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
+                  
+                  {/* Pattern décoratif en arrière-plan */}
+                  <div className="absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
+                    <div className="absolute inset-0" style={{
+                      backgroundImage: `radial-gradient(circle at 20px 20px, currentColor 1px, transparent 0)`,
+                      backgroundSize: '40px 40px'
+                    }}></div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
 
-          {/* Section CTA simple et cohérente */}
+          {/* Section CTA spectaculaire et moderne */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            {/* Container principal avec effets visuels avancés */}
+            <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-3xl overflow-hidden shadow-2xl">
+              {/* Effet de grille animée en arrière-plan */}
+              <div className="absolute inset-0 opacity-20">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
+                  backgroundSize: '30px 30px'
+                }}></div>
+              </div>
+              
+              {/* Cercles décoratifs flottants */}
+              <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-float"></div>
+              <div className="absolute bottom-10 left-10 w-24 h-24 bg-blue-300/20 rounded-full blur-xl animate-float" style={{animationDelay: '1s'}}></div>
+              <div className="absolute top-1/2 left-1/3 w-16 h-16 bg-purple-300/15 rounded-full blur-lg animate-float" style={{animationDelay: '2s'}}></div>
+
+              <div className="relative z-10 text-center p-12 md:p-16">
+                {/* Icône centrale avec animation */}
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  whileInView={{ scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.8, delay: 0.8, type: "spring", stiffness: 100 }}
+                  viewport={{ once: true }}
+                  className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full mb-8 shadow-lg relative"
+                >
+                  <Target className="w-10 h-10 text-white" />
+                  
+                  {/* Anneaux pulsants autour de l'icône */}
+                  <div className="absolute -inset-4 border-2 border-white/30 rounded-full animate-ping"></div>
+                  <div className="absolute -inset-8 border border-white/20 rounded-full animate-pulse"></div>
+                </motion.div>
+
+                <motion.h3
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.9 }}
+                  viewport={{ once: true }}
+                  className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight"
+                >
+                  Recevez vos premières recommandations
+                  <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                    personnalisées
+                  </span>
+                </motion.h3>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1 }}
+                  viewport={{ once: true }}
+                  className="text-blue-100 text-xl mb-8 max-w-3xl mx-auto leading-relaxed"
+                >
+                  Rejoignez notre communauté exclusive de designers et transformez votre carrière avec un accompagnement sur-mesure.
+                </motion.p>
+
+                {/* CTA Button avec effets avancés */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 1.1 }}
+                  viewport={{ once: true }}
+                  className="mb-8"
+                >
+                  <Link 
+                    to="/register" 
+                    className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-blue-700 font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden"
+                  >
+                    {/* Effet de brillance animé sur le bouton */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    
+                    {/* Contenu du bouton */}
+                    <div className="relative z-10 flex items-center gap-3">
+                      <div className="p-2 bg-blue-600/10 rounded-full group-hover:bg-blue-600/20 transition-colors">
+                        <Users className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" />
+                    </div>
+                      <span>Créer mon profil gratuit</span>
+                      <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                    </div>
+
+                    {/* Cercle d'effet au survol */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-100 scale-110 transition-all duration-500"></div>
+                  </Link>
+          </motion.div>
+
+                {/* Statistiques de confiance */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+                  transition={{ duration: 0.6, delay: 1.2 }}
+                  viewport={{ once: true }}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                >
+                  {[
+                    { icon: <CheckCircle className="w-6 h-6" />, text: "100% gratuit", subtext: "Aucun frais caché" },
+                    { icon: <Shield className="w-6 h-6" />, text: "Données sécurisées", subtext: "Confidentialité garantie" },
+                    { icon: <Clock className="w-6 h-6" />, text: "Activation immédiate", subtext: "Profil en ligne en 5 min" }
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 1.3 + i * 0.1 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-center shadow-xl"
-          >
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Recevez vos premières recommandations personnalisées
-            </h3>
-            <p className="text-blue-100 text-lg mb-6 max-w-2xl mx-auto">
-              Rejoignez notre communauté de designers et transformez votre carrière dès aujourd'hui.
-            </p>
-            <Link 
-              to="/register" 
-              className="inline-flex items-center gap-2 px-8 py-3 bg-white text-blue-700 font-semibold rounded-xl shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all duration-200"
-            >
-              <Users className="w-5 h-5" />
-              Créer mon profil gratuit
-            </Link>
+                      className="flex items-center gap-3 text-blue-100"
+                    >
+                      <div className="flex-shrink-0 text-green-300">
+                        {item.icon}
+                      </div>
+                      <div className="text-left">
+                        <div className="font-semibold text-white">{item.text}</div>
+                        <div className="text-sm text-blue-200">{item.subtext}</div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
