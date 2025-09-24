@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect } from "react";
 import { Routes, Route, Navigate, useParams, useNavigate } from "react-router-dom";
+import { usePermissions } from "./hooks/usePermissions";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProfileCacheProvider } from "./contexts/ProfileCacheContext";
 import Layout from "./components/Layout";
@@ -47,6 +48,16 @@ const CandidateRedirect = () => {
   }, [id, navigate]);
   
   return null;
+};
+
+// Route intelligente pour /my-profile/offer/:id: redirige les recruteurs vers /recruiter-dashboard/offer/:id
+const OfferRoute = () => {
+  const { id } = useParams();
+  const { isRecruiter } = usePermissions();
+  if (isRecruiter) {
+    return <Navigate to={`/recruiter-dashboard/offer/${id}`} replace />;
+  }
+  return <JobDetailPage />;
 };
 
 // Composants de chargement spécialisés pour différents contextes
@@ -230,7 +241,7 @@ export default function App() {
           <Layout>
             <ProtectedRoute>
               <Suspense fallback={<PageLoadingSpinner message="Chargement de l'offre d'emploi..." />}>
-                <JobDetailPage />
+                <OfferRoute />
               </Suspense>
             </ProtectedRoute>
           </Layout>
