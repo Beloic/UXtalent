@@ -171,6 +171,45 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
     }
   };
 
+  // Fonction générique pour obtenir le badge de plan pour tous les utilisateurs
+  const getUserPlanBadge = () => {
+    // Pour les recruteurs
+    if (isRecruiter && recruiter) {
+      return getRecruiterPlanBadge();
+    }
+    
+    // Pour les candidats
+    if (isCandidate && candidatePlan && candidatePlan !== 'free') {
+      switch (candidatePlan) {
+        case 'pro':
+          return (
+            <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-lg">
+              <span className="text-blue-100">💎</span>
+              Pro
+            </span>
+          );
+        case 'premium':
+          return (
+            <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full shadow-lg">
+              <span className="text-yellow-100">👑</span>
+              Premium
+            </span>
+          );
+        case 'elite':
+          return (
+            <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full shadow-lg">
+              <span className="text-purple-100">⭐</span>
+              Elite
+            </span>
+          );
+        default:
+          return null;
+      }
+    }
+    
+    return null;
+  };
+
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -379,7 +418,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       <User className="w-4 h-4" />
                       Dashboard
                     </Link>
-                    {getPlanBadge(candidatePlan)}
+                    {getUserPlanBadge()}
                   </div>
                 </ConditionalRender>
                 
@@ -473,6 +512,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   </span>
                 </div>
               )}
+              {getUserPlanBadge()}
               <button
                 onClick={signOut}
                 className="inline-flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200"
@@ -653,7 +693,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                           Dashboard
                         </Link>
                         <div className="px-4">
-                          {getPlanBadge(candidatePlan)}
+                          {getUserPlanBadge()}
                         </div>
                       </div>
                     </ConditionalRender>
@@ -675,6 +715,9 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       </div>
                     </ConditionalRender>
                     
+                    <div className="px-4 mb-2">
+                      {getUserPlanBadge()}
+                    </div>
                     <button
                       onClick={() => {
                         handleSignOut();
