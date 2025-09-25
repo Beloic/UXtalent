@@ -29,12 +29,35 @@ export default function LandingPage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [currentScreenshot, setCurrentScreenshot] = useState(0);
   const phrases = [
-    "Trop de profils se perdent dans la masse — le tien mérite d’être remarqué.",
-    "Dans un marché saturé, on t’aide à sortir du lot.",
+    "Trop de profils se perdent dans la masse — le tien mérite d'être remarqué.",
+    "Dans un marché saturé, on t'aide à sortir du lot.",
     "Le marché déborde, mais nous te faisons une place de choix."
   ];
   const [phraseIndex, setPhraseIndex] = useState(0);
+
+  // Données des screenshots
+  const screenshots = [
+    "141shots_so.png",
+    "462shots_so.png", 
+    "852shots_so.png"
+  ];
+
+  const screenshotDescriptions = [
+    {
+      title: "Profil Designer Optimisé",
+      description: "Mettez en valeur votre portfolio avec une présentation professionnelle et structurée qui attire l'attention des recruteurs."
+    },
+    {
+      title: "Recherche Intelligente",
+      description: "Trouvez facilement les offres qui correspondent à vos compétences grâce à notre moteur de recherche avancé."
+    },
+    {
+      title: "Communauté Active",
+      description: "Rejoignez le forum exclusif pour échanger avec d'autres designers et bénéficier de conseils d'experts."
+    }
+  ];
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -42,6 +65,14 @@ export default function LandingPage() {
     }, 4000);
     return () => clearInterval(id);
   }, []);
+
+  // Rotation automatique des screenshots
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCurrentScreenshot((i) => (i + 1) % screenshots.length);
+    }, 5000);
+    return () => clearInterval(id);
+  }, [screenshots.length]);
 
   const handleEmailSubmit = (e) => {
     e.preventDefault();
@@ -389,8 +420,111 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section Compétences recherchées supprimée à la demande */}
+      {/* Section Découvrez la plateforme */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Découvrez la plateforme en action
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Explorez l'interface intuitive qui met en valeur votre profil et facilite vos connexions avec les recruteurs
+            </p>
+          </motion.div>
 
+          {/* Carousel des screenshots */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl border border-gray-200">
+              {/* Navigation du carousel */}
+              <div className="flex justify-center mb-8">
+                <div className="flex flex-wrap justify-center gap-2 bg-white rounded-full p-2 shadow-lg max-w-full">
+                  {[
+                    { id: 0, label: "Profil", icon: "👤", shortLabel: "Profil" },
+                    { id: 1, label: "Recherche", icon: "🔍", shortLabel: "Jobs" },
+                    { id: 2, label: "Forum", icon: "💬", shortLabel: "Forum" }
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setCurrentScreenshot(tab.id)}
+                      className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-200 ${
+                        currentScreenshot === tab.id
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span className="text-sm">{tab.icon}</span>
+                      <span className="text-xs sm:text-sm font-medium hidden sm:inline">{tab.label}</span>
+                      <span className="text-xs sm:text-sm font-medium sm:hidden">{tab.shortLabel}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Container des screenshots */}
+              <div className="relative overflow-hidden rounded-2xl bg-white shadow-2xl">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentScreenshot}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.5 }}
+                    className="relative"
+                  >
+                    <img
+                      src={`/screenshots/${screenshots[currentScreenshot]}`}
+                      alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
+                      className="w-full h-auto object-contain"
+                    />
+                    
+                    {/* Overlay avec annotations */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4">
+                        <div className="bg-white/90 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-lg">
+                          <h4 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">
+                            {screenshotDescriptions[currentScreenshot].title}
+                          </h4>
+                          <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                            {screenshotDescriptions[currentScreenshot].description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Indicateurs de progression */}
+              <div className="flex justify-center mt-6 space-x-2">
+                {screenshots.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentScreenshot(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                      currentScreenshot === index
+                        ? 'bg-blue-600 scale-125'
+                        : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Processus transparent */}
       <section className="py-20 bg-gray-50">
