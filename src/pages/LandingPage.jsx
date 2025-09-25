@@ -212,7 +212,7 @@ export default function LandingPage() {
             className="text-center mb-20"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              <span className="text-blue-600">Un marché très concurrentiel</span>
+              <span className="text-gray-900">Un marché très </span><span className="text-blue-600">concurrentiel</span>
             </h2>
             {/* Badge et paragraphe introductif supprimés à la demande */}
           </motion.div>
