@@ -46,16 +46,16 @@ export default function LandingPage() {
 
   const screenshotDescriptions = [
     {
-      title: "Profil Designer Optimisé",
-      description: "Mettez en valeur votre portfolio avec une présentation professionnelle et structurée qui attire l'attention des recruteurs."
+      title: "Annuaire des Talents",
+      description: "Découvrez notre sélection de designers UX/UI validés par nos experts, avec des profils détaillés et des portfolios de qualité."
     },
     {
-      title: "Recherche Intelligente",
-      description: "Trouvez facilement les offres qui correspondent à vos compétences grâce à notre moteur de recherche avancé."
+      title: "Offres d'Emploi Exclusives",
+      description: "Accédez à des offres d'emploi vérifiées et exclusives, publiées par des entreprises partenaires de qualité."
     },
     {
-      title: "Communauté Active",
-      description: "Rejoignez le forum exclusif pour échanger avec d'autres designers et bénéficier de conseils d'experts."
+      title: "Statistiques et Analytics",
+      description: "Suivez les tendances du marché UX/UI avec nos analyses et statistiques détaillées sur l'emploi dans le secteur."
     }
   ];
 
@@ -445,9 +445,9 @@ export default function LandingPage() {
               <div className="flex justify-center mb-6">
                 <div className="flex flex-wrap justify-center gap-2 bg-white rounded-full p-2 shadow-md max-w-full">
                   {[
-                    { id: 0, label: "Profil", icon: "👤", shortLabel: "Profil" },
-                    { id: 1, label: "Recherche", icon: "🔍", shortLabel: "Jobs" },
-                    { id: 2, label: "Forum", icon: "💬", shortLabel: "Forum" }
+                    { id: 0, label: "Talents", icon: "👤", shortLabel: "Talents" },
+                    { id: 1, label: "Offres", icon: "🔍", shortLabel: "Offres" },
+                    { id: 2, label: "Statistiques", icon: "📊", shortLabel: "Stats" }
                   ].map((tab) => (
                     <button
                       key={tab.id}
