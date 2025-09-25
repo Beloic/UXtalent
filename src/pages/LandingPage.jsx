@@ -414,7 +414,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section Découvrez la plateforme - Design premium */}
-      <section className="relative py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden">
+      <section id="features" className="relative py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden">
         {/* Éléments décoratifs modernes */}
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-20 left-1/4 w-72 h-72 bg-gradient-to-r from-blue-300 to-purple-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
