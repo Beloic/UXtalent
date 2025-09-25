@@ -196,6 +196,11 @@ export default function MyProfilePage() {
     setTimeout(() => setMessage(''), 5000);
   };
 
+  // États pour l'édition inline
+  const [editingField, setEditingField] = useState(null);
+  const [tempValue, setTempValue] = useState('');
+  const [isSavingInline, setIsSavingInline] = useState(false);
+
   // Fonction pour charger les statistiques du profil
   const loadProfileStats = useCallback(async () => {
     if (!user) return;
