@@ -183,11 +183,64 @@ export default function MyProfilePage() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancellationInfo, setCancellationInfo] = useState(null);
   
-  const handlePhotoChange = (photoData) => {
+  const handlePhotoChange = async (photoData) => {
     setFormData(prev => ({
       ...prev,
       photo: photoData
     }));
+
+    // Si une nouvelle photo a été uploadée, sauvegarder automatiquement
+    if (photoData?.existing && user) {
+      try {
+        const session = await supabase.auth.getSession();
+        const token = session.data.session?.access_token;
+        
+        if (!token) {
+          setMessage('❌ Erreur d\'authentification. Veuillez vous reconnecter.');
+          return;
+        }
+
+        // Préparer les données pour la mise à jour
+        const updateData = {
+          photo: photoData.existing
+        };
+
+        // Déterminer l'URL selon si le profil existe déjà
+        const url = formData.id 
+          ? buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`)
+          : buildApiUrl(`${API_ENDPOINTS.CANDIDATES}`);
+        const method = formData.id ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(updateData)
+        });
+
+        if (response.ok) {
+          setMessage('✅ Photo de profil mise à jour avec succès');
+          setTimeout(() => setMessage(''), 3000);
+          
+          // Mettre à jour le cache
+          updateProfileCache({
+            formData: { ...formData, photo: photoData },
+            candidateStatus: candidateStatus
+          });
+        } else {
+          const errorData = await response.json();
+          console.error('Erreur lors de la sauvegarde de la photo:', errorData);
+          setMessage('❌ Erreur lors de la sauvegarde de la photo');
+          setTimeout(() => setMessage(''), 5000);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la sauvegarde de la photo:', error);
+        setMessage('❌ Erreur lors de la sauvegarde de la photo');
+        setTimeout(() => setMessage(''), 5000);
+      }
+    }
   };
 
   const handlePhotoError = (error) => {
