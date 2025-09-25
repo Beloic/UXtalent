@@ -447,23 +447,23 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/50 overflow-hidden max-w-4xl mx-auto">
-              <div className="p-6">
+            <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg border border-white/50 overflow-hidden max-w-2xl mx-auto">
+              <div className="p-4">
                 <div className="relative">
                   {/* Browser mockup */}
-                  <div className="bg-gray-100 rounded-t-xl p-3 border-b border-gray-200">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                      <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                      <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                      <div className="flex-1 bg-white rounded-lg px-3 py-1 ml-3 text-sm text-gray-500">
+                  <div className="bg-gray-100 rounded-t-lg p-2 border-b border-gray-200">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <div className="flex-1 bg-white rounded px-2 py-1 ml-2 text-xs text-gray-500">
                         uxtalent.fr/{currentScreenshot === 0 ? 'talents' : currentScreenshot === 1 ? 'jobs' : 'analytics'}
                       </div>
                     </div>
                   </div>
                   
                   {/* Screenshot container avec animations et tooltip */}
-                  <div className="relative bg-white rounded-b-xl shadow-xl overflow-hidden min-h-[400px] lg:min-h-[450px] group">
+                  <div className="relative bg-white rounded-b-lg shadow-lg overflow-hidden min-h-[300px] lg:min-h-[350px] group">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentScreenshot}
@@ -485,15 +485,15 @@ export default function LandingPage() {
                     </AnimatePresence>
 
                     {/* Tooltip de description au survol - repositionné en bas */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-end justify-center opacity-0 group-hover:opacity-100 pb-8">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/50 max-w-sm mx-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                        <div className="flex items-start gap-2 mb-2">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                          <h4 className="font-bold text-gray-900 text-base">
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-end justify-center opacity-0 group-hover:opacity-100 pb-4">
+                      <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-xl border border-white/50 max-w-xs mx-3 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <div className="flex items-start gap-2 mb-1">
+                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5"></div>
+                          <h4 className="font-bold text-gray-900 text-sm">
                             {screenshotDescriptions[currentScreenshot].title}
                           </h4>
                         </div>
-                        <p className="text-gray-600 text-sm leading-relaxed">
+                        <p className="text-gray-600 text-xs leading-relaxed">
                           {screenshotDescriptions[currentScreenshot].description}
                         </p>
                       </div>
@@ -503,16 +503,16 @@ export default function LandingPage() {
                   {/* Navigation arrows */}
                   <button
                     onClick={() => setCurrentScreenshot((prev) => (prev - 1 + screenshots.length) % screenshots.length)}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:shadow-2xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
                   >
-                    <ArrowRight className="w-5 h-5 text-gray-700 rotate-180 group-hover:text-blue-600 transition-colors" />
+                    <ArrowRight className="w-4 h-4 text-gray-700 rotate-180 group-hover:text-blue-600 transition-colors" />
                   </button>
                   
                   <button
                     onClick={() => setCurrentScreenshot((prev) => (prev + 1) % screenshots.length)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:shadow-2xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
                   >
-                    <ArrowRight className="w-5 h-5 text-gray-700 group-hover:text-blue-600 transition-colors" />
+                    <ArrowRight className="w-4 h-4 text-gray-700 group-hover:text-blue-600 transition-colors" />
                   </button>
                 </div>
               </div>
