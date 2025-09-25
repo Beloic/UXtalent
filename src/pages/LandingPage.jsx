@@ -9,14 +9,11 @@ import {
   CheckCircle, 
   Globe, 
   Award,
-  Clock,
   TrendingUp,
   Shield,
   Zap,
-  Heart,
   Target,
   Play,
-  Mail,
   Calendar,
   Eye,
   Palette,
@@ -147,7 +144,7 @@ export default function LandingPage() {
             </div>
 
             {/* Stats professionnelles */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto px-4 sm:px-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto px-4 sm:px-0">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -167,16 +164,6 @@ export default function LandingPage() {
                 <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
                 <div className="text-gray-900 font-semibold">Entreprises partenaires</div>
                 <div className="text-gray-500 text-sm mt-1">Startups et scale-ups</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 hover:shadow-2xl hover:scale-105 transition-all duration-300 card-transition"
-              >
-                <div className="text-3xl font-bold text-blue-600 mb-2">7 jours</div>
-                <div className="text-gray-900 font-semibold">Délai de réponse</div>
-                <div className="text-gray-500 text-sm mt-1">Maximum garanti</div>
               </motion.div>
             </div>
           </motion.div>
@@ -428,48 +415,6 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* Cartes métriques simplifiées */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-            {[
-              {
-                icon: Clock,
-                metric: "7 jours",
-                description: "Délai de réponse moyen",
-                color: "blue"
-              },
-              {
-                icon: Heart,
-                metric: "Gratuit",
-                description: "Candidature sans frais",
-                color: "green"
-              },
-              {
-                icon: Mail,
-                metric: "Feedback",
-                description: "Retour personnalisé",
-                color: "purple"
-              }
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className="bg-white p-6 rounded-xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 text-center"
-              >
-                <div className={`inline-flex items-center justify-center w-12 h-12 bg-${item.color}-500 rounded-xl mb-4`}>
-                  <item.icon className="w-6 h-6 text-white" />
-                </div>
-                <div className={`text-2xl font-bold text-${item.color}-600 mb-2`}>
-                  {item.metric}
-                </div>
-                <div className="text-gray-600 font-medium">
-                  {item.description}
-                </div>
-              </motion.div>
-            ))}
-          </div>
 
           {/* Section critères simplifiée */}
           <motion.div
