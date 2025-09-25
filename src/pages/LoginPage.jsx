@@ -34,7 +34,7 @@ export default function LoginPage() {
     setSuccess('')
 
     try {
-      const { error } = await signIn(email, password)
+      const { data, error } = await signIn(email, password)
       
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
