@@ -47,7 +47,7 @@ export default function LandingPage() {
   const screenshotDescriptions = [
     {
       title: "Annuaire des Talents",
-      description: "Découvrez notre sélection de designers UX/UI validés par nos experts, avec des profils détaillés et des portfolios de qualité."
+      description: "Votre profil est mis en avant au sein d'un vivier de talents"
     },
     {
       title: "Offres d'Emploi Exclusives",
