@@ -346,8 +346,8 @@ export default function RecruiterLandingPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Découvrez la plateforme en 
-              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"> action</span>
+              Des talents disponible 
+              <span className="text-green-600">immédiatement</span>
             </h2>
           </motion.div>
 
