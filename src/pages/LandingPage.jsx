@@ -413,111 +413,252 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Section Découvrez la plateforme */}
-      <section className="py-8 bg-white">
-        <div className="max-w-5xl mx-auto px-4">
-          {/* Header */}
+      {/* Section Découvrez la plateforme - Design premium */}
+      <section className="relative py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-hidden">
+        {/* Éléments décoratifs modernes */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-20 left-1/4 w-72 h-72 bg-gradient-to-r from-blue-300 to-purple-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+          <div className="absolute bottom-20 right-1/4 w-64 h-64 bg-gradient-to-r from-indigo-300 to-pink-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-cyan-200 to-blue-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header premium */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-6"
+            className="text-center mb-20"
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">
-              Découvrez la plateforme en action
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mb-6 shadow-xl">
+              <Eye className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Découvrez la plateforme en 
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> action</span>
             </h2>
-            <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-light">
               Explorez l'interface intuitive qui met en valeur votre profil
             </p>
           </motion.div>
 
-          {/* Carousel des screenshots */}
+          {/* Container principal premium */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-md border border-gray-200">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
-                {/* Navigation et description à gauche */}
-                <div className="lg:col-span-1 space-y-6">
-                  {/* Navigation du carousel */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Explorez les fonctionnalités</h3>
-                    <div className="space-y-2">
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
+                {/* Sidebar navigation premium */}
+                <div className="lg:col-span-4 bg-gradient-to-br from-gray-50 to-slate-100 p-8 lg:p-10">
+                  <div className="space-y-8">
+                    {/* Titre sidebar */}
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3">Explorez les fonctionnalités</h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">Découvrez chaque aspect de votre expérience sur UX Talent</p>
+                    </div>
+
+                    {/* Navigation premium */}
+                    <div className="space-y-3">
                       {[
-                        { id: 0, label: "Talents", icon: "👤", shortLabel: "Talents" },
-                        { id: 1, label: "Offres", icon: "🔍", shortLabel: "Offres" },
-                        { id: 2, label: "Statistiques", icon: "📊", shortLabel: "Stats" }
+                        { 
+                          id: 0, 
+                          label: "Talents", 
+                          icon: <Users className="w-6 h-6" />, 
+                          description: "Annuaire des Talents",
+                          gradient: "from-blue-500 to-cyan-500"
+                        },
+                        { 
+                          id: 1, 
+                          label: "Offres", 
+                          icon: <Search className="w-6 h-6" />, 
+                          description: "Recherche d'opportunités",
+                          gradient: "from-green-500 to-emerald-500"
+                        },
+                        { 
+                          id: 2, 
+                          label: "Statistiques", 
+                          icon: <BarChart2 className="w-6 h-6" />, 
+                          description: "Analytics détaillées",
+                          gradient: "from-purple-500 to-pink-500"
+                        }
                       ].map((tab) => (
-                        <button
+                        <motion.button
                           key={tab.id}
                           onClick={() => setCurrentScreenshot(tab.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`w-full group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 text-left ${
                             currentScreenshot === tab.id
-                              ? 'bg-blue-600 text-white shadow-md'
-                              : 'bg-white text-gray-600 hover:bg-gray-50 shadow-sm'
+                              ? `bg-gradient-to-r ${tab.gradient} text-white shadow-xl shadow-blue-500/25`
+                              : 'bg-white text-gray-700 hover:bg-gray-50 shadow-lg hover:shadow-xl border border-gray-100'
                           }`}
                         >
-                          <span className="text-lg">{tab.icon}</span>
-                          <div className="font-medium">{tab.label}</div>
-                        </button>
+                          <div className="relative z-10 flex items-center gap-4">
+                            <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                              currentScreenshot === tab.id
+                                ? 'bg-white/20 backdrop-blur-sm'
+                                : 'bg-gray-100 group-hover:bg-gray-200'
+                            }`}>
+                              <div className={currentScreenshot === tab.id ? 'text-white' : 'text-gray-600'}>
+                                {tab.icon}
+                              </div>
+                            </div>
+                            <div className="flex-1">
+                              <div className={`font-bold text-lg mb-1 ${
+                                currentScreenshot === tab.id ? 'text-white' : 'text-gray-900'
+                              }`}>
+                                {tab.label}
+                              </div>
+                              <div className={`text-sm ${
+                                currentScreenshot === tab.id ? 'text-white/80' : 'text-gray-500'
+                              }`}>
+                                {tab.description}
+                              </div>
+                            </div>
+                            {currentScreenshot === tab.id && (
+                              <div className="text-white/80">
+                                <ArrowRight className="w-5 h-5" />
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Indicateur actif */}
+                          {currentScreenshot === tab.id && (
+                            <motion.div
+                              layoutId="activeTab"
+                              className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-2xl"
+                              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                            />
+                          )}
+                        </motion.button>
                       ))}
                     </div>
-                  </div>
 
-                  {/* Description détaillée */}
-                  <div className="bg-white rounded-lg p-4 shadow-sm">
-                    <h4 className="font-semibold text-gray-900 mb-2">
-                      {screenshotDescriptions[currentScreenshot].title}
-                    </h4>
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      {screenshotDescriptions[currentScreenshot].description}
-                    </p>
+                    {/* Description détaillée premium */}
+                    <motion.div
+                      key={currentScreenshot}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
+                    >
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                        <h4 className="font-bold text-gray-900 text-lg">
+                          {screenshotDescriptions[currentScreenshot].title}
+                        </h4>
+                      </div>
+                      <p className="text-gray-600 leading-relaxed">
+                        {screenshotDescriptions[currentScreenshot].description}
+                      </p>
+                    </motion.div>
                   </div>
                 </div>
 
-                {/* Screenshot à droite */}
-                <div className="lg:col-span-2 relative">
-                  <div className="relative overflow-hidden rounded-lg bg-white shadow-lg">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={currentScreenshot}
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.5 }}
-                        className="relative"
-                      >
-                        <img
-                          src={`/screenshots/${screenshots[currentScreenshot]}`}
-                          alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
-                          className="w-full h-auto object-contain rounded-lg min-h-[400px] lg:min-h-[500px]"
-                        />
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
-                  
-                  {/* Indicateurs de progression */}
-                  <div className="flex justify-center mt-4 space-x-2">
-                    {screenshots.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentScreenshot(index)}
-                        className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                          currentScreenshot === index
-                            ? 'bg-blue-600 scale-110'
-                            : 'bg-gray-300 hover:bg-gray-400'
-                        }`}
-                      />
-                    ))}
+                {/* Zone d'affichage premium */}
+                <div className="lg:col-span-8 p-8 lg:p-10">
+                  <div className="relative">
+                    {/* Browser mockup */}
+                    <div className="bg-gray-100 rounded-t-2xl p-4 border-b border-gray-200">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <div className="flex-1 bg-white rounded-lg px-4 py-2 ml-4 text-sm text-gray-500">
+                          uxtalent.fr/{currentScreenshot === 0 ? 'talents' : currentScreenshot === 1 ? 'jobs' : 'analytics'}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Screenshot container avec animations */}
+                    <div className="relative bg-white rounded-b-2xl shadow-2xl overflow-hidden min-h-[500px] lg:min-h-[600px]">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={currentScreenshot}
+                          initial={{ opacity: 0, scale: 0.95, rotateY: -10 }}
+                          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                          exit={{ opacity: 0, scale: 0.95, rotateY: 10 }}
+                          transition={{ duration: 0.6, ease: "easeOut" }}
+                          className="relative h-full"
+                        >
+                          <img
+                            src={`/screenshots/${screenshots[currentScreenshot]}`}
+                            alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
+                            className="w-full h-full object-cover object-top"
+                          />
+                          
+                          {/* Overlay gradient pour l'effet premium */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent pointer-events-none"></div>
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                    
+                    {/* Indicateurs de progression premium */}
+                    <div className="flex justify-center mt-8 space-x-3">
+                      {screenshots.map((_, index) => (
+                        <motion.button
+                          key={index}
+                          onClick={() => setCurrentScreenshot(index)}
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.9 }}
+                          className={`relative w-4 h-4 rounded-full transition-all duration-300 ${
+                            currentScreenshot === index
+                              ? 'bg-blue-600 shadow-lg'
+                              : 'bg-gray-300 hover:bg-gray-400'
+                          }`}
+                        >
+                          {currentScreenshot === index && (
+                            <motion.div
+                              layoutId="activeIndicator"
+                              className="absolute inset-0 bg-blue-600 rounded-full"
+                              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                            />
+                          )}
+                        </motion.button>
+                      ))}
+                    </div>
+
+                    {/* Navigation arrows premium */}
+                    <button
+                      onClick={() => setCurrentScreenshot((prev) => (prev - 1 + screenshots.length) % screenshots.length)}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:shadow-2xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
+                    >
+                      <ArrowRight className="w-5 h-5 text-gray-700 rotate-180 group-hover:text-blue-600 transition-colors" />
+                    </button>
+                    
+                    <button
+                      onClick={() => setCurrentScreenshot((prev) => (prev + 1) % screenshots.length)}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:shadow-2xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
+                    >
+                      <ArrowRight className="w-5 h-5 text-gray-700 group-hover:text-blue-600 transition-colors" />
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
+          </motion.div>
+
+          {/* CTA Section premium */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-center mt-16"
+          >
+            <Link
+              to="/register"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
+            >
+              <Users className="w-6 h-6" />
+              Créer mon profil maintenant
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </motion.div>
         </div>
       </section>
