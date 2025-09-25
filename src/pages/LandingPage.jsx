@@ -88,7 +88,7 @@ export default function LandingPage() {
               <span className="text-blue-600"> UX UI ?</span>
             </h1>
             
-            <div className="mb-4 sm:mb-6 max-w-4xl mx-auto px-4 sm:px-0 min-h-[56px] sm:min-h-[64px] md:min-h-[72px] relative">
+            <div className="mb-4 max-w-4xl mx-auto px-4 sm:px-0 min-h-[56px] sm:min-h-[64px] md:min-h-[72px] relative">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={phraseIndex}
@@ -104,7 +104,7 @@ export default function LandingPage() {
             </div>
 
             {/* CTA Principal */}
-            <div className="flex justify-center mb-8 sm:mb-12 px-4 sm:px-0">
+            <div className="flex justify-center mb-12 px-4 sm:px-0">
               <Link
                 to="/register"
                 className="group inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 bg-blue-600 text-white font-semibold text-base sm:text-lg rounded-lg sm:rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-200"
@@ -403,9 +403,6 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-6 shadow-lg">
-              <Eye className="w-8 h-8 text-white" />
-            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Un processus transparent et équitable
             </h2>
