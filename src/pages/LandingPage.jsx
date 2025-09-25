@@ -88,7 +88,7 @@ export default function LandingPage() {
               <span className="text-blue-600"> UX UI ?</span>
             </h1>
             
-            <div className="mb-6 sm:mb-8 max-w-4xl mx-auto px-4 sm:px-0 min-h-[56px] sm:min-h-[64px] md:min-h-[72px] relative">
+            <div className="mb-4 sm:mb-6 max-w-4xl mx-auto px-4 sm:px-0 min-h-[56px] sm:min-h-[64px] md:min-h-[72px] relative">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={phraseIndex}
