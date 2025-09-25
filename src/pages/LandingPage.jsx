@@ -752,8 +752,7 @@ export default function LandingPage() {
               Prêt à sortir du lot dans un marché saturé ?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Rejoignez notre pool de Designer validé dès maintenant. 
-              Dans un marché où la concurrence est rude, obtenez l'avantage décisif.
+              Rejoignez notre vivier de talents dès maintenant.
             </p>
             
             {/* CTA Principal */}
