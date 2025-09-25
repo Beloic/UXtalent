@@ -183,10 +183,18 @@ export default function MyProfilePage() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancellationInfo, setCancellationInfo] = useState(null);
   
-  // États pour l'édition inline
-  const [editingField, setEditingField] = useState(null);
-  const [tempValue, setTempValue] = useState('');
-  const [isSavingInline, setIsSavingInline] = useState(false);
+  const handlePhotoChange = (photoData) => {
+    setFormData(prev => ({
+      ...prev,
+      photo: photoData
+    }));
+  };
+
+  const handlePhotoError = (error) => {
+    console.error('Erreur upload photo:', error);
+    setMessage(`❌ Erreur lors de l'upload de la photo: ${error}`);
+    setTimeout(() => setMessage(''), 5000);
+  };
 
   // Fonction pour charger les statistiques du profil
   const loadProfileStats = useCallback(async () => {
@@ -1587,51 +1595,12 @@ export default function MyProfilePage() {
                         <div className="flex items-start gap-6 mb-8">
                           {/* Photo de profil */}
                           <div className="relative">
-                            {formData.photo?.existing || formData.photo?.preview ? (
-                              <img
-                                src={formData.photo.existing || formData.photo.preview}
-                                alt={`Photo de ${formData.name}`}
-                                className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
-                                onError={(e) => {
-                                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&size=96&background=6366f1&color=ffffff&bold=true`;
-                                }}
-                              />
-                            ) : (
-                              <img
-                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&size=96&background=6366f1&color=ffffff&bold=true`}
-                                alt={`Avatar de ${formData.name}`}
-                                className="w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl"
-                              />
-                            )}
-                            
-                            {/* Bouton d'import de photo */}
-                            <button
-                              onClick={() => {
-                                const input = document.createElement('input');
-                                input.type = 'file';
-                                input.accept = 'image/*';
-                                input.onchange = (e) => {
-                                  const file = e.target.files[0];
-                                  if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = (event) => {
-                                      setFormData(prev => ({
-                                        ...prev,
-                                        photo: {
-                                          file: file,
-                                          preview: event.target.result
-                                        }
-                                      }));
-                                    };
-                                    reader.readAsDataURL(file);
-                                  }
-                                };
-                                input.click();
-                              }}
-                              className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-white"
-                            >
-                              <Camera className="w-4 h-4" />
-                            </button>
+                            <ProfilePhotoUpload
+                              userId={user?.id}
+                              currentPhoto={formData.photo?.existing || formData.photo?.preview}
+                              onPhotoChange={handlePhotoChange}
+                              onError={handlePhotoError}
+                            />
                           </div>
                           
                           <div className="flex-1">

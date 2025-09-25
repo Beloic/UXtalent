@@ -189,9 +189,6 @@ user = "env(MAILJET_API_KEY)"
 pass = "env(MAILJET_SECRET_KEY)"
 admin_email = "env(MAILJET_FROM_EMAIL)"
 sender_name = "UX Jobs Pro"
-# Enable detailed SMTP logging for debugging
-enable_starttls_auto = true
-authentication = "plain"
 
 # Uncomment to customize email template
 # [auth.email.template.invite]

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { buildApiUrl } from "../config/api";
+import ProfilePhotoUpload from "../components/ProfilePhotoUpload";
 
 export default function AddProfilePage() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ export default function AddProfilePage() {
     email: "",
     salary: "",
     languages: [],
-    photo: ""
+    photo: null // Changé pour gérer l'upload de fichier
   });
   const [currentSkill, setCurrentSkill] = useState("");
   const [currentLanguage, setCurrentLanguage] = useState("");
@@ -66,6 +67,18 @@ export default function AddProfilePage() {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handlePhotoChange = (photoData) => {
+    setFormData(prev => ({
+      ...prev,
+      photo: photoData
+    }));
+  };
+
+  const handlePhotoError = (error) => {
+    console.error('Erreur upload photo:', error);
+    // Vous pouvez ajouter une notification d'erreur ici
   };
 
   const addSkill = () => {
@@ -107,12 +120,18 @@ export default function AddProfilePage() {
     setIsSubmitting(true);
 
     try {
+      // Préparer les données pour l'envoi
+      const candidateData = {
+        ...formData,
+        photo: formData.photo?.existing || formData.photo?.preview || null
+      };
+
       const response = await fetch(buildApiUrl('/api/candidates/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(candidateData),
       });
 
       if (response.ok) {
@@ -121,8 +140,13 @@ export default function AddProfilePage() {
           navigate('/candidates');
         }, 2000);
       } else {
+        const errorData = await response.json();
+        console.error('Erreur lors de la création du profil:', errorData);
+        alert('Erreur lors de la création du profil. Veuillez réessayer.');
       }
     } catch (error) {
+      console.error('Erreur lors de la soumission:', error);
+      alert('Erreur lors de la soumission. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
     }
@@ -455,22 +479,12 @@ export default function AddProfilePage() {
               <Camera className="w-5 h-5" />
               Photo de profil
             </h2>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                URL de votre photo
-              </label>
-              <input
-                type="url"
-                name="photo"
-                value={formData.photo}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                placeholder="https://exemple.com/photo.jpg"
-              />
-              <p className="text-sm text-gray-500 mt-2">
-                Optionnel. Si vous ne fournissez pas de photo, vos initiales seront affichées.
-              </p>
-            </div>
+            <ProfilePhotoUpload
+              userId={user?.id}
+              currentPhoto={formData.photo?.existing || formData.photo?.preview}
+              onPhotoChange={handlePhotoChange}
+              onError={handlePhotoError}
+            />
           </div>
 
           {/* Bouton de soumission */}
