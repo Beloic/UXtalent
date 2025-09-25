@@ -435,7 +435,7 @@ export default function LandingPage() {
               Accélère tes recherches
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              des fonctionnalités pour booster votre profil
+              Des fonctionnalités pour booster votre profil
             </p>
           </motion.div>
 
