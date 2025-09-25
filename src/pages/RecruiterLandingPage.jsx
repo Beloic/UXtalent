@@ -36,8 +36,7 @@ export default function RecruiterLandingPage() {
   // Données des screenshots pour les recruteurs
   const screenshots = [
     "141shots_so.png",
-    "462shots_so.png", 
-    "852shots_so.png"
+    "462shots_so.png"
   ];
 
   const screenshotDescriptions = [
@@ -48,10 +47,6 @@ export default function RecruiterLandingPage() {
     {
       title: "Recherche et Filtres Avancés",
       description: "Trouvez rapidement les profils qui correspondent à vos critères avec nos outils de recherche intelligents"
-    },
-    {
-      title: "Dashboard et Analytics",
-      description: "Suivez vos recrutements et analysez les performances avec notre tableau de bord complet"
     }
   ];
 
@@ -362,12 +357,6 @@ export default function RecruiterLandingPage() {
                           label: "Recherche", 
                           icon: <Search className="w-6 h-6" />, 
                           gradient: "from-blue-500 to-cyan-500"
-                        },
-                        { 
-                          id: 2, 
-                          label: "Dashboard", 
-                          icon: <BarChart2 className="w-6 h-6" />, 
-                          gradient: "from-purple-500 to-pink-500"
                         }
                       ].map((tab) => (
                         <motion.button
@@ -448,7 +437,7 @@ export default function RecruiterLandingPage() {
                         <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
                         <div className="w-3 h-3 bg-green-400 rounded-full"></div>
                         <div className="flex-1 bg-white rounded-lg px-4 py-2 ml-4 text-sm text-gray-500">
-                          uxtalent.fr/{currentScreenshot === 0 ? 'talents' : currentScreenshot === 1 ? 'search' : 'dashboard'}
+                          uxtalent.fr/{currentScreenshot === 0 ? 'talents' : 'search'}
                         </div>
                       </div>
                     </div>
