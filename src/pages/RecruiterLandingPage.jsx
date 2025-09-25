@@ -33,11 +33,10 @@ export default function RecruiterLandingPage() {
   ];
   const [phraseIndex, setPhraseIndex] = useState(0);
 
-  // Données des screenshots (mêmes visuels que la page candidat)
+  // Données des screenshots (visuels recruteurs d'origine)
   const screenshots = [
-    "vivier.png",
-    "Jobs.png",
-    "stats.png"
+    "141shots_so.png",
+    "462shots_so.png"
   ];
 
   const screenshotDescriptions = [
@@ -338,7 +337,7 @@ export default function RecruiterLandingPage() {
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
+          {/* Header adapté recruteurs */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -347,11 +346,9 @@ export default function RecruiterLandingPage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Accélère tes recherches
+              Découvrez la plateforme en 
+              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"> action</span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Des fonctionnalités pensées pour booster votre profil.
-            </p>
           </motion.div>
 
           {/* Carousel simplifié */}
