@@ -442,8 +442,8 @@ export default function LandingPage() {
           >
             <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-md border border-gray-200">
               {/* Navigation du carousel */}
-              <div className="flex justify-center mb-4">
-                <div className="flex flex-wrap justify-center gap-1 bg-white rounded-full p-1 shadow-sm max-w-full">
+              <div className="flex justify-center mb-6">
+                <div className="flex flex-wrap justify-center gap-2 bg-white rounded-full p-2 shadow-md max-w-full">
                   {[
                     { id: 0, label: "Profil", icon: "👤", shortLabel: "Profil" },
                     { id: 1, label: "Recherche", icon: "🔍", shortLabel: "Jobs" },
@@ -452,15 +452,15 @@ export default function LandingPage() {
                     <button
                       key={tab.id}
                       onClick={() => setCurrentScreenshot(tab.id)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-full transition-all duration-200 ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
                         currentScreenshot === tab.id
-                          ? 'bg-blue-600 text-white shadow-sm'
+                          ? 'bg-blue-600 text-white shadow-md'
                           : 'text-gray-600 hover:bg-gray-100'
                       }`}
                     >
-                      <span className="text-xs">{tab.icon}</span>
-                      <span className="text-xs font-medium hidden sm:inline">{tab.label}</span>
-                      <span className="text-xs font-medium sm:hidden">{tab.shortLabel}</span>
+                      <span className="text-sm">{tab.icon}</span>
+                      <span className="text-sm font-medium hidden sm:inline">{tab.label}</span>
+                      <span className="text-sm font-medium sm:hidden">{tab.shortLabel}</span>
                     </button>
                   ))}
                 </div>
@@ -480,7 +480,7 @@ export default function LandingPage() {
                     <img
                       src={`/screenshots/${screenshots[currentScreenshot]}`}
                       alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
-                      className="w-full h-auto object-contain"
+                      className="w-full h-auto object-contain max-h-96 sm:max-h-[28rem]"
                     />
                     
                     {/* Overlay avec annotations */}
