@@ -187,113 +187,144 @@ export default function RecruiterLandingPage() {
         </div>
       </section>
 
-      {/* Pourquoi choisir notre plateforme */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* Section Réalité du Marché - Version Recruteur */}
+      <section className="relative py-20 bg-gradient-to-br from-slate-50 via-green-50 to-emerald-50 overflow-hidden">
+        {/* Éléments décoratifs */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 right-10 w-20 h-20 bg-green-200 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+          <div className="absolute bottom-20 left-10 w-16 h-16 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4">
+          {/* Header avec meilleur spacing */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Pourquoi choisir UX Talent ?
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              <span className="text-green-600">Un marché très concurrentiel</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Nous avons créé une plateforme qui simplifie le recrutement UX/UI 
-              en vous connectant directement avec les meilleurs talents.
-            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Avantages pour les recruteurs */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-green-100 rounded-xl">
-                  <Building2 className="w-8 h-8 text-green-600" />
+          {/* Section explicative restructurée */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/30 overflow-hidden"
+          >
+            <div className="p-8 md:p-12">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                {/* Problèmes à gauche */}
+                <div className="space-y-6">
+                  {[
+                    {
+                      icon: "📊",
+                      title: "Saturation du marché",
+                      description: "Une moyenne de plus de 200 candidats par poste dès le lendemain de la publication",
+                      color: "slate"
+                    },
+                    {
+                      icon: "🧠",
+                      title: "Incertitude du marché et IA", 
+                      description: "Volatilité économique et automatisation accrue complexifient l'embauche et la visibilité des profils",
+                      color: "green"
+                    },
+                    {
+                      icon: "🤝",
+                      title: "Importance cruciale du réseau",
+                      description: "80% des emplois ne sont jamais publiés et se font par recommandation",
+                      color: "emerald"
+                    }
+                  ].map((problem, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                      className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors"
+                    >
+                      <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-xl ${
+                        problem.color === 'slate' ? 'bg-slate-100' :
+                        problem.color === 'green' ? 'bg-green-100' : 'bg-emerald-100'
+                      }`}>
+                        {problem.icon}
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-900 mb-2">{problem.title}</h4>
+                        <p className="text-gray-600 leading-relaxed">{problem.description}</p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Pour les Recruteurs</h3>
+                
+                {/* Solution à droite */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  viewport={{ once: true }}
+                  className="relative"
+                >
+                  <div className="bg-gradient-to-br from-green-600 to-emerald-700 rounded-3xl p-8 text-white shadow-2xl">
+                    <div className="text-center mb-6">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4">
+                        <Shield className="w-8 h-8" />
+                      </div>
+                      <h4 className="text-2xl font-bold mb-3">
+                        Notre solution : La validation par l'expertise
+                      </h4>
+                    </div>
+                    
+                    <p className="text-green-100 text-lg leading-relaxed mb-6">
+                      Notre comité d'experts UX/UI seniors <strong className="text-white">valide chaque profil</strong> selon des critères transparents et objectifs. 
+                    </p>
+                    
+                    <div className="space-y-3">
+                      {[
+                        "✅ Évaluation par des designers seniors",
+                        "✅ Critères transparents et équitables"
+                      ].map((benefit, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+                          viewport={{ once: true }}
+                          className="flex items-center gap-3 text-green-100"
+                        >
+                          <span className="text-green-300 font-bold">{benefit.split(' ')[0]}</span>
+                          <span>{benefit.substring(2)}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                    
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 1 }}
+                      viewport={{ once: true }}
+                      className="mt-8 pt-6 border-t border-white/20"
+                    >
+                      <div className="flex items-center justify-center gap-2 text-green-300 font-semibold">
+                        <Shield className="w-5 h-5" />
+                        <span>Validation par notre comité d'experts</span>
+                      </div>
+                    </motion.div>
+                  </div>
+                  
+                  {/* Éléments décoratifs */}
+                  <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-200 rounded-full opacity-60 animate-float"></div>
+                  <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-emerald-200 rounded-full opacity-40 animate-float" style={{animationDelay: '1s'}}></div>
+                </motion.div>
               </div>
-              
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong className="text-gray-900">Accès au vivier de talents</strong>
-                    <p className="text-gray-600 text-sm">Designers pré-sélectionnés et vérifiés</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong className="text-gray-900">Recherche et filtres</strong>
-                    <p className="text-gray-600 text-sm">Recherche par nom, compétences, expérience et localisation</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong className="text-gray-900">Matching intelligent</strong>
-                    <p className="text-gray-600 text-sm">Algorithme de matching pour trouver les meilleurs candidats selon vos critères</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <strong className="text-gray-900">Calendrier des entretiens</strong>
-                    <p className="text-gray-600 text-sm">Planifiez et gérez vos entretiens directement dans la plateforme</p>
-                  </div>
-                </li>
-              </ul>
-            </motion.div>
-
-            {/* Processus simplifié */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 bg-green-100 rounded-xl">
-                  <Zap className="w-8 h-8 text-green-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">Processus simplifié</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">1</div>
-                  <div>
-                    <strong className="text-gray-900">Inscription rapide</strong>
-                    <p className="text-gray-600 text-sm">Créez votre compte en 2 minutes</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">2</div>
-                  <div>
-                    <strong className="text-gray-900">Recherche et filtrage</strong>
-                    <p className="text-gray-600 text-sm">Trouvez les profils qui correspondent à vos besoins</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mt-0.5">3</div>
-                  <div>
-                    <strong className="text-gray-900">Contact direct</strong>
-                    <p className="text-gray-600 text-sm">Échangez directement avec les candidats</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
