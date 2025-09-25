@@ -463,12 +463,7 @@ export default function LandingPage() {
                           }`}
                         >
                           <span className="text-lg">{tab.icon}</span>
-                          <div>
-                            <div className="font-medium">{tab.label}</div>
-                            <div className="text-xs opacity-75">
-                              {screenshotDescriptions[tab.id].description}
-                            </div>
-                          </div>
+                          <div className="font-medium">{tab.label}</div>
                         </button>
                       ))}
                     </div>
