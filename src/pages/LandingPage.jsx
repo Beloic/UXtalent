@@ -586,31 +586,6 @@ export default function LandingPage() {
                         </motion.div>
                       </AnimatePresence>
                     </div>
-                    
-                    {/* Indicateurs de progression premium */}
-                    <div className="flex justify-center mt-8 space-x-3">
-                      {screenshots.map((_, index) => (
-                        <motion.button
-                          key={index}
-                          onClick={() => setCurrentScreenshot(index)}
-                          whileHover={{ scale: 1.2 }}
-                          whileTap={{ scale: 0.9 }}
-                          className={`relative w-4 h-4 rounded-full transition-all duration-300 ${
-                            currentScreenshot === index
-                              ? 'bg-blue-600 shadow-lg'
-                              : 'bg-gray-300 hover:bg-gray-400'
-                          }`}
-                        >
-                          {currentScreenshot === index && (
-                            <motion.div
-                              layoutId="activeIndicator"
-                              className="absolute inset-0 bg-blue-600 rounded-full"
-                              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                            />
-                          )}
-                        </motion.button>
-                      ))}
-                    </div>
 
                     {/* Navigation arrows premium */}
                     <button
