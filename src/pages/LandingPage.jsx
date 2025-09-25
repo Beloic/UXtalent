@@ -441,9 +441,9 @@ export default function LandingPage() {
             className="relative"
           >
             <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-md border border-gray-200">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
                 {/* Navigation et description à gauche */}
-                <div className="space-y-6">
+                <div className="lg:col-span-1 space-y-6">
                   {/* Navigation du carousel */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900">Explorez les fonctionnalités</h3>
@@ -486,7 +486,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Screenshot à droite */}
-                <div className="relative">
+                <div className="lg:col-span-2 relative">
                   <div className="relative overflow-hidden rounded-lg bg-white shadow-lg">
                     <AnimatePresence mode="wait">
                       <motion.div
@@ -500,7 +500,7 @@ export default function LandingPage() {
                         <img
                           src={`/screenshots/${screenshots[currentScreenshot]}`}
                           alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
-                          className="w-full h-auto object-contain rounded-lg"
+                          className="w-full h-auto object-contain rounded-lg min-h-[400px] lg:min-h-[500px]"
                         />
                       </motion.div>
                     </AnimatePresence>
