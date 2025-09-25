@@ -33,10 +33,11 @@ export default function RecruiterLandingPage() {
   ];
   const [phraseIndex, setPhraseIndex] = useState(0);
 
-  // Données des screenshots pour les recruteurs
+  // Données des screenshots (mêmes visuels que la page candidat)
   const screenshots = [
-    "141shots_so.png",
-    "462shots_so.png"
+    "vivier.png",
+    "Jobs.png",
+    "stats.png"
   ];
 
   const screenshotDescriptions = [
@@ -328,31 +329,32 @@ export default function RecruiterLandingPage() {
         </div>
       </section>
 
-      {/* Section Découvrez la plateforme - Design premium */}
+      {/* Section Screenshots simplifiée (identique à la page candidat) */}
       <section id="features" className="relative py-24 bg-gradient-to-br from-slate-50 via-green-50 to-emerald-50 overflow-hidden">
-        {/* Éléments décoratifs modernes */}
         <div className="absolute inset-0 opacity-30">
           <div className="absolute top-20 left-1/4 w-72 h-72 bg-gradient-to-r from-green-300 to-emerald-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
           <div className="absolute bottom-20 right-1/4 w-64 h-64 bg-gradient-to-r from-emerald-300 to-teal-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-green-200 to-emerald-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header premium */}
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Découvrez la plateforme en 
-              <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"> action</span>
+              Accélère tes recherches
             </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Des fonctionnalités pensées pour booster votre profil.
+            </p>
           </motion.div>
 
-          {/* Container principal premium */}
+          {/* Carousel simplifié */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -360,175 +362,72 @@ export default function RecruiterLandingPage() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-                {/* Sidebar navigation premium */}
-                <div className="lg:col-span-4 bg-gradient-to-br from-gray-50 to-slate-100 p-8 lg:p-10">
-                  <div className="space-y-8">
-                    {/* Titre sidebar */}
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-3">Explorez les fonctionnalités</h3>
-                      <p className="text-gray-600 text-sm leading-relaxed">Découvrez chaque aspect de votre expérience sur UX Talent</p>
-                    </div>
-
-                    {/* Navigation premium */}
-                    <div className="space-y-3">
-                      {[
-                        { 
-                          id: 0, 
-                          label: "Talents", 
-                          icon: <Users className="w-6 h-6" />, 
-                          gradient: "from-green-500 to-emerald-500"
-                        },
-                        { 
-                          id: 1, 
-                          label: "Recherche", 
-                          icon: <Search className="w-6 h-6" />, 
-                          gradient: "from-blue-500 to-cyan-500"
-                        }
-                      ].map((tab) => (
-                        <motion.button
-                          key={tab.id}
-                          onClick={() => setCurrentScreenshot(tab.id)}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={`w-full group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 text-left ${
-                            currentScreenshot === tab.id
-                              ? `bg-gradient-to-r ${tab.gradient} text-white shadow-xl shadow-green-500/25`
-                              : 'bg-white text-gray-700 hover:bg-gray-50 shadow-lg hover:shadow-xl border border-gray-100'
-                          }`}
-                        >
-                          <div className="relative z-10 flex items-center gap-4">
-                            <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                              currentScreenshot === tab.id
-                                ? 'bg-white/20 backdrop-blur-sm'
-                                : 'bg-gray-100 group-hover:bg-gray-200'
-                            }`}>
-                              <div className={currentScreenshot === tab.id ? 'text-white' : 'text-gray-600'}>
-                                {tab.icon}
-                              </div>
-                            </div>
-                            <div className="flex-1">
-                              <div className={`font-bold text-lg ${
-                                currentScreenshot === tab.id ? 'text-white' : 'text-gray-900'
-                              }`}>
-                                {tab.label}
-                              </div>
-                            </div>
-                            {currentScreenshot === tab.id && (
-                              <div className="text-white/80">
-                                <ArrowRight className="w-5 h-5" />
-                              </div>
-                            )}
-                          </div>
-                          
-                          {/* Indicateur actif */}
-                          {currentScreenshot === tab.id && (
-                            <motion.div
-                              layoutId="activeTab"
-                              className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 rounded-2xl"
-                              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                            />
-                          )}
-                        </motion.button>
-                      ))}
-                    </div>
-
-                    {/* Description détaillée premium */}
-                    <motion.div
-                      key={currentScreenshot}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
-                    >
-                      <div className="flex items-start gap-3 mb-4">
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                        <h4 className="font-bold text-gray-900 text-lg">
-                          {screenshotDescriptions[currentScreenshot].title}
-                        </h4>
+            <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg border border-white/50 overflow-hidden max-w-3xl mx-auto">
+              <div>
+                <div className="relative">
+                  <div className="bg-gray-100 rounded-t-lg p-2 border-b border-gray-200">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <div className="flex-1 bg-white rounded px-2 py-1 ml-2 text-xs text-gray-500">
+                        uxtalent.fr/{currentScreenshot === 0 ? 'talents' : currentScreenshot === 1 ? 'jobs' : 'analytics'}
                       </div>
-                      <p className="text-gray-600 leading-relaxed">
-                        {screenshotDescriptions[currentScreenshot].description}
-                      </p>
-                    </motion.div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Zone d'affichage premium */}
-                <div className="lg:col-span-8 p-8 lg:p-10">
-                  <div className="relative">
-                    {/* Browser mockup */}
-                    <div className="bg-gray-100 rounded-t-2xl p-4 border-b border-gray-200">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                        <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                        <div className="flex-1 bg-white rounded-lg px-4 py-2 ml-4 text-sm text-gray-500">
-                          uxtalent.fr/{currentScreenshot === 0 ? 'talents' : 'search'}
+                  <div className="relative bg-white rounded-b-lg shadow-lg overflow-hidden min-h-[330px] lg:min-h-[385px] group">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentScreenshot}
+                        initial={{ opacity: 0, scale: 0.95, rotateY: -10 }}
+                        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, rotateY: 10 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        className="relative h-full"
+                      >
+                        <img
+                          src={`/screenshots/${screenshots[currentScreenshot]}`}
+                          alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
+                          className="w-full h-full object-cover object-top"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent pointer-events-none"></div>
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Tooltip bas */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-end justify-center opacity-0 group-hover:opacity-100 pb-4">
+                      <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-xl border border-white/50 max-w-xs mx-3 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        <div className="flex items-start gap-2 mb-1">
+                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5"></div>
+                          <h4 className="font-bold text-gray-900 text-sm">
+                            {screenshotDescriptions[currentScreenshot].title}
+                          </h4>
                         </div>
+                        <p className="text-gray-600 text-xs leading-relaxed">
+                          {screenshotDescriptions[currentScreenshot].description}
+                        </p>
                       </div>
                     </div>
-                    
-                    {/* Screenshot container avec animations */}
-                    <div className="relative bg-white rounded-b-2xl shadow-2xl overflow-hidden min-h-[500px] lg:min-h-[600px]">
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={currentScreenshot}
-                          initial={{ opacity: 0, scale: 0.95, rotateY: -10 }}
-                          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                          exit={{ opacity: 0, scale: 0.95, rotateY: 10 }}
-                          transition={{ duration: 0.6, ease: "easeOut" }}
-                          className="relative h-full"
-                        >
-                          <img
-                            src={`/screenshots/${screenshots[currentScreenshot]}`}
-                            alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
-                            className="w-full h-full object-cover object-top"
-                          />
-                          
-                          {/* Overlay gradient pour l'effet premium */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent pointer-events-none"></div>
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
-
-                    {/* Navigation arrows premium */}
-                    <button
-                      onClick={() => setCurrentScreenshot((prev) => (prev - 1 + screenshots.length) % screenshots.length)}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:shadow-2xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
-                    >
-                      <ArrowRight className="w-5 h-5 text-gray-700 rotate-180 group-hover:text-green-600 transition-colors" />
-                    </button>
-                    
-                    <button
-                      onClick={() => setCurrentScreenshot((prev) => (prev + 1) % screenshots.length)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:shadow-2xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
-                    >
-                      <ArrowRight className="w-5 h-5 text-gray-700 group-hover:text-green-600 transition-colors" />
-                    </button>
                   </div>
+
+                  {/* Flèches */}
+                  <button
+                    onClick={() => setCurrentScreenshot((prev) => (prev - 1 + screenshots.length) % screenshots.length)}
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
+                  >
+                    <ArrowRight className="w-4 h-4 text-gray-700 rotate-180 group-hover:text-green-600 transition-colors" />
+                  </button>
+                  
+                  <button
+                    onClick={() => setCurrentScreenshot((prev) => (prev + 1) % screenshots.length)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
+                  >
+                    <ArrowRight className="w-4 h-4 text-gray-700 group-hover:text-green-600 transition-colors" />
+                  </button>
                 </div>
               </div>
             </div>
-          </motion.div>
-
-          {/* CTA Section premium */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
-            className="text-center mt-16"
-          >
-            <Link
-              to="/register"
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
-            >
-              <Building2 className="w-6 h-6" />
-              Accéder au vivier de talents
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </Link>
           </motion.div>
         </div>
       </section>
