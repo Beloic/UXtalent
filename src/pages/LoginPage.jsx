@@ -46,8 +46,24 @@ export default function LoginPage() {
         }
       } else {
         setSuccess('Connexion réussie !')
+        
+        // Déterminer la redirection selon le rôle de l'utilisateur
+        const userRole = data?.user?.user_metadata?.role
+        let redirectPath = from
+        
+        if (!location.state?.from?.pathname) {
+          // Si pas de redirection spécifique, rediriger selon le rôle
+          if (userRole === 'recruiter') {
+            redirectPath = '/recruiter-dashboard/talent'
+          } else if (userRole === 'candidate') {
+            redirectPath = '/my-profile/profile'
+          } else {
+            redirectPath = '/candidates'
+          }
+        }
+        
         setTimeout(() => {
-          navigate(from, { replace: true })
+          navigate(redirectPath, { replace: true })
         }, 1000)
       }
     } catch (err) {

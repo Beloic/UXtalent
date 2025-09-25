@@ -29,7 +29,7 @@ export default function ConfirmEmailPage() {
     
     // Rediriger selon le rôle après vérification d'email
     if (user?.user_metadata?.role === 'recruiter') {
-      navigate('/pricing/recruiters')
+      navigate('/recruiter-dashboard/talent')
     } else {
       navigate('/my-profile/profile')
     }
