@@ -55,7 +55,7 @@ export default function LandingPage() {
     },
     {
       title: "Statistiques et Analytics",
-      description: "Suivez les tendances du marché UX/UI avec nos analyses et statistiques détaillées sur l'emploi dans le secteur."
+      description: "Statistiques détaillées de votre profil"
     }
   ];
 
