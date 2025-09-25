@@ -438,9 +438,6 @@ export default function LandingPage() {
               Découvrez la plateforme en 
               <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> action</span>
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-light">
-              Explorez l'interface intuitive qui met en valeur votre profil
-            </p>
           </motion.div>
 
           {/* Container principal premium */}
@@ -469,21 +466,18 @@ export default function LandingPage() {
                           id: 0, 
                           label: "Talents", 
                           icon: <Users className="w-6 h-6" />, 
-                          description: "Annuaire des Talents",
                           gradient: "from-blue-500 to-cyan-500"
                         },
                         { 
                           id: 1, 
                           label: "Offres", 
                           icon: <Search className="w-6 h-6" />, 
-                          description: "Recherche d'opportunités",
                           gradient: "from-green-500 to-emerald-500"
                         },
                         { 
                           id: 2, 
                           label: "Statistiques", 
                           icon: <BarChart2 className="w-6 h-6" />, 
-                          description: "Analytics détaillées",
                           gradient: "from-purple-500 to-pink-500"
                         }
                       ].map((tab) => (
@@ -509,15 +503,10 @@ export default function LandingPage() {
                               </div>
                             </div>
                             <div className="flex-1">
-                              <div className={`font-bold text-lg mb-1 ${
+                              <div className={`font-bold text-lg ${
                                 currentScreenshot === tab.id ? 'text-white' : 'text-gray-900'
                               }`}>
                                 {tab.label}
-                              </div>
-                              <div className={`text-sm ${
-                                currentScreenshot === tab.id ? 'text-white/80' : 'text-gray-500'
-                              }`}>
-                                {tab.description}
                               </div>
                             </div>
                             {currentScreenshot === tab.id && (
