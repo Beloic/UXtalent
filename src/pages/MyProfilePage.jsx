@@ -1605,6 +1605,7 @@ export default function MyProfilePage() {
                               currentPhoto={formData.photo?.existing || formData.photo?.preview}
                               onPhotoChange={handlePhotoChange}
                               onError={handlePhotoError}
+                              compact={true}
                             />
                           </div>
                           
