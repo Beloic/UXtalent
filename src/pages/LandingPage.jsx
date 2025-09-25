@@ -467,7 +467,7 @@ export default function LandingPage() {
               </div>
 
               {/* Container des screenshots */}
-              <div className="relative overflow-hidden rounded-lg bg-white shadow-md">
+              <div className="relative overflow-hidden rounded-lg bg-white shadow-md max-w-sm mx-auto">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentScreenshot}
