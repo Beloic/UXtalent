@@ -442,6 +442,49 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
       </header>
       )}
 
+      {/* Barre de navigation simplifiée pour utilisateurs connectés */}
+      {!hideTopBar && isAuthenticated && (
+        <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
+          <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
+            <Link to={isCandidate ? "/my-profile" : "/recruiter-dashboard"} className="flex items-center gap-3 font-bold text-gray-900">
+              <motion.div 
+                initial={{ rotate: -10, scale: .9 }} 
+                animate={{ rotate: 0, scale: 1 }} 
+                transition={{ type: 'spring', stiffness: 260, damping: 18 }} 
+                className="p-2 rounded-xl bg-white shadow-lg shadow-blue-100 hover:scale-105 transition-all duration-300"
+              >
+                <img src="/logo.png" alt="UX Talent" className="w-6 h-6 rounded-lg" />
+              </motion.div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">UX Talent</span>
+                <span className="px-2 py-1 text-xs font-semibold text-orange-600 bg-orange-100 rounded-full border border-orange-200">
+                  Alpha
+                </span>
+              </div>
+            </Link>
+            
+            {/* Actions utilisateur connecté */}
+            <div className="flex items-center gap-3">
+              {user && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <User className="w-4 h-4" />
+                  <span className="hidden sm:inline">
+                    {user.user_metadata?.first_name || user.email?.split('@')[0] || 'Utilisateur'}
+                  </span>
+                </div>
+              )}
+              <button
+                onClick={signOut}
+                className="inline-flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Déconnexion</span>
+              </button>
+            </div>
+          </div>
+        </header>
+      )}
+
       {/* Menu Mobile */}
       <AnimatePresence>
         {isMobileMenuOpen && (
