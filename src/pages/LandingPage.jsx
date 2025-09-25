@@ -474,7 +474,7 @@ export default function LandingPage() {
                         className="relative h-full"
                       >
                         <img
-                          src={`/${screenshots[currentScreenshot]}`}
+                          src={`/screenshots/${screenshots[currentScreenshot]}`}
                           alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
                           className="w-full h-full object-cover object-top"
                         />
