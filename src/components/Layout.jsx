@@ -249,6 +249,20 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                     </div>
                   )}
                 </div>
+                <a 
+                  href="#features" 
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const element = document.getElementById('features');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                >
+                  <Eye className="w-4 h-4" />
+                  Features
+                </a>
                 <NavLink 
                   to="/pricing" 
                   className={({ isActive }) => 
@@ -487,6 +501,21 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                         </div>
                       )}
                     </div>
+                    <a 
+                      href="#features" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsMobileMenuOpen(false);
+                        const element = document.getElementById('features');
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      <Eye className="w-5 h-5" />
+                      Features
+                    </a>
                     <NavLink 
                       to="/pricing" 
                       onClick={() => setIsMobileMenuOpen(false)}
