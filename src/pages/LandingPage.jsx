@@ -460,7 +460,7 @@ export default function LandingPage() {
                   icon: TrendingUp,
                   title: "Potentiel d'évolution et d'adaptation",
                   description: "Capacité d'apprentissage et croissance",
-                  color: "orange"
+                  color: "indigo"
                 }
               ].map((criterion, index) => (
                 <motion.div
