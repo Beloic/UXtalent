@@ -363,7 +363,7 @@ export default function LandingPage() {
               { 
                 icon: <Eye className="w-8 h-8" />, 
                 title: "Visibilité dans l'annuaire", 
-                desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur",
+                desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur.",
                 color: "blue",
                 bgGradient: "from-blue-50 to-blue-100",
                 iconBg: "bg-blue-500",
@@ -372,7 +372,7 @@ export default function LandingPage() {
               { 
                 icon: <Users className="w-8 h-8" />, 
                 title: "Forum communautaire exclusif", 
-                desc: "Réseau privé de designers pour partager expériences et conseils",
+                desc: "Réseau privé de designers pour partager expériences et conseils.",
                 color: "purple",
                 bgGradient: "from-purple-50 to-purple-100",
                 iconBg: "bg-purple-500",
@@ -381,7 +381,7 @@ export default function LandingPage() {
               { 
                 icon: <Briefcase className="w-8 h-8" />, 
                 title: "Offres d'emploi exclusives", 
-                desc: "Accès direct à des offres uniques et vérifiées",
+                desc: "Accès direct à des offres uniques et vérifiées.",
                 color: "green",
                 bgGradient: "from-green-50 to-green-100",
                 iconBg: "bg-green-500",
