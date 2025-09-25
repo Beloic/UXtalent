@@ -16,10 +16,13 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   const [hasProfile, setHasProfile] = useState(null);
   const [candidatePlan, setCandidatePlan] = useState('free');
   const [userDisplayName, setUserDisplayName] = useState(null);
+  const [userProfilePhoto, setUserProfilePhoto] = useState(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
   const [isSolutionsMobileOpen, setIsSolutionsMobileOpen] = useState(false);
   const solutionsRef = useRef(null);
+  const userMenuRef = useRef(null);
 
   // Charger le chatbot Crisp
   useEffect(() => {
@@ -41,11 +44,14 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
     };
   }, []);
 
-  // Fermer le menu Solutions au clic en dehors (desktop)
+  // Fermer les menus au clic en dehors
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (solutionsRef.current && !solutionsRef.current.contains(event.target)) {
         setIsSolutionsOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -78,8 +84,9 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           if (userProfile) {
             const plan = userProfile.plan || userProfile.planType || userProfile.plan_type || 'free';
             setCandidatePlan(plan);
-            // Charger le nom d'affichage depuis le profil
+            // Charger le nom d'affichage et la photo depuis le profil
             setUserDisplayName(userProfile.name || userProfile.first_name || null);
+            setUserProfilePhoto(userProfile.photo || userProfile.profilePhoto || null);
           }
         } else if (response.status === 404) {
           // Si 404, cela signifie qu'il n'y a pas encore de profils dans la base
@@ -512,24 +519,102 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               </div>
             </Link>
             
-            {/* Actions utilisateur connecté */}
-            <div className="flex items-center gap-3">
-              {user && (
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">
-                    {userDisplayName || user.user_metadata?.first_name || user.email?.split('@')[0] || 'Utilisateur'}
-                  </span>
-                </div>
-              )}
-              {getUserPlanBadge()}
+            {/* Menu utilisateur avec avatar */}
+            <div className="relative" ref={userMenuRef}>
               <button
-                onClick={signOut}
-                className="inline-flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200"
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-all duration-200"
               >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Déconnexion</span>
+                {userProfilePhoto ? (
+                  <img
+                    src={userProfilePhoto}
+                    alt="Photo de profil"
+                    className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                    <User className="w-5 h-5 text-gray-600" />
+                  </div>
+                )}
+                <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
               </button>
+
+              {/* Menu déroulant */}
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50"
+                  >
+                    {/* En-tête du menu */}
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <div className="flex items-center gap-3">
+                        {userProfilePhoto ? (
+                          <img
+                            src={userProfilePhoto}
+                            alt="Photo de profil"
+                            className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
+                            <User className="w-6 h-6 text-gray-600" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {userDisplayName || user.user_metadata?.first_name || user.email?.split('@')[0] || 'Utilisateur'}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                      {getUserPlanBadge() && (
+                        <div className="mt-2 flex justify-center">
+                          {getUserPlanBadge()}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Options du menu */}
+                    <div className="py-1">
+                      <Link
+                        to="/my-profile"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <User className="w-4 h-4" />
+                        Mon profil
+                      </Link>
+                      
+                      {isRecruiter && (
+                        <Link
+                          to="/recruiter-dashboard"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                          <Users className="w-4 h-4" />
+                          Dashboard recruteur
+                        </Link>
+                      )}
+                      
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          signOut();
+                        }}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Déconnexion
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </header>
@@ -725,9 +810,45 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                       </div>
                     </ConditionalRender>
                     
-                    <div className="px-4 mb-2">
-                      {getUserPlanBadge()}
+                    {/* Section utilisateur mobile */}
+                    <div className="px-4 py-3 border-b border-gray-200">
+                      <div className="flex items-center gap-3">
+                        {userProfilePhoto ? (
+                          <img
+                            src={userProfilePhoto}
+                            alt="Photo de profil"
+                            className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                            <User className="w-5 h-5 text-gray-600" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {userDisplayName || user.user_metadata?.first_name || user.email?.split('@')[0] || 'Utilisateur'}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                      {getUserPlanBadge() && (
+                        <div className="mt-2 flex justify-center">
+                          {getUserPlanBadge()}
+                        </div>
+                      )}
                     </div>
+                    
+                    <Link
+                      to="/my-profile"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
+                    >
+                      <User className="w-5 h-5" />
+                      Mon profil
+                    </Link>
+                    
                     <button
                       onClick={() => {
                         handleSignOut();
