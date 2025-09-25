@@ -447,7 +447,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg border border-white/50 overflow-hidden max-w-2xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg border border-white/50 overflow-hidden max-w-3xl mx-auto">
               <div>
                 <div className="relative">
                   {/* Browser mockup */}
@@ -463,7 +463,7 @@ export default function LandingPage() {
                   </div>
                   
                   {/* Screenshot container avec animations et tooltip */}
-                  <div className="relative bg-white rounded-b-lg shadow-lg overflow-hidden min-h-[300px] lg:min-h-[350px] group">
+                  <div className="relative bg-white rounded-b-lg shadow-lg overflow-hidden min-h-[330px] lg:min-h-[385px] group">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentScreenshot}
