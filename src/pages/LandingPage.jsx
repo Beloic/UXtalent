@@ -472,7 +472,12 @@ export default function LandingPage() {
                   className="bg-gray-50 p-5 rounded-xl border border-gray-100 hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start gap-3">
-                    <div className={`flex-shrink-0 w-10 h-10 bg-${criterion.color}-500 rounded-lg flex items-center justify-center`}>
+                    <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
+                      criterion.color === 'blue' ? 'bg-blue-500' :
+                      criterion.color === 'green' ? 'bg-green-500' :
+                      criterion.color === 'purple' ? 'bg-purple-500' :
+                      criterion.color === 'indigo' ? 'bg-indigo-500' : 'bg-gray-500'
+                    }`}>
                       <criterion.icon className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
