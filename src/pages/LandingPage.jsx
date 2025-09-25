@@ -358,10 +358,10 @@ export default function LandingPage() {
           </div>
 
           {/* Grille de fonctionnalités stylée */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { 
-                icon: <Eye className="w-10 h-10" />, 
+                icon: <Eye className="w-8 h-8" />, 
                 title: "Visibilité dans l'annuaire", 
                 desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur.",
                 color: "blue",
@@ -370,7 +370,7 @@ export default function LandingPage() {
                 accent: "border-blue-200"
               },
               { 
-                icon: <Users className="w-10 h-10" />, 
+                icon: <Users className="w-8 h-8" />, 
                 title: "Forum communautaire exclusif", 
                 desc: "Réseau privé de designers pour partager expériences et conseils.",
                 color: "purple",
@@ -379,7 +379,7 @@ export default function LandingPage() {
                 accent: "border-purple-200"
               },
               { 
-                icon: <Briefcase className="w-10 h-10" />, 
+                icon: <Briefcase className="w-8 h-8" />, 
                 title: "Offres d'emploi exclusives", 
                 desc: "Accès direct à des offres uniques et vérifiées.",
                 color: "green",
@@ -390,10 +390,10 @@ export default function LandingPage() {
             ].map((feature, i) => (
               <div
                 key={i}
-                className={`bg-gradient-to-br ${feature.bgGradient} rounded-2xl p-10 shadow-lg border-2 ${feature.accent} hover:shadow-xl hover:-translate-y-2 hover:scale-105 transition-all duration-300 group`}
+                className={`bg-gradient-to-br ${feature.bgGradient} rounded-2xl p-8 shadow-lg border-2 ${feature.accent} hover:shadow-xl hover:-translate-y-2 hover:scale-105 transition-all duration-300 group`}
               >
                 {/* Icône colorée */}
-                <div className={`w-18 h-18 ${feature.iconBg} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
+                <div className={`w-16 h-16 ${feature.iconBg} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
                   <div className="text-white">
                     {feature.icon}
                   </div>
