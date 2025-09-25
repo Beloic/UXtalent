@@ -15,6 +15,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   const { recruiter, getPlanInfo } = useRecruiter();
   const [hasProfile, setHasProfile] = useState(null);
   const [candidatePlan, setCandidatePlan] = useState('free');
+  const [userDisplayName, setUserDisplayName] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSolutionsOpen, setIsSolutionsOpen] = useState(false);
   const [isSolutionsMobileOpen, setIsSolutionsMobileOpen] = useState(false);
@@ -77,6 +78,8 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
           if (userProfile) {
             const plan = userProfile.plan || userProfile.planType || userProfile.plan_type || 'free';
             setCandidatePlan(plan);
+            // Charger le nom d'affichage depuis le profil
+            setUserDisplayName(userProfile.name || userProfile.first_name || null);
           }
         } else if (response.status === 404) {
           // Si 404, cela signifie qu'il n'y a pas encore de profils dans la base
@@ -96,10 +99,17 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
       setCandidatePlan(event.detail.plan || event.detail.planType || 'free');
     };
 
+    // Écouter les changements de nom depuis d'autres composants
+    const handleNameUpdate = (event) => {
+      setUserDisplayName(event.detail.name || null);
+    };
+
     window.addEventListener('planUpdated', handlePlanUpdate);
+    window.addEventListener('nameUpdated', handleNameUpdate);
 
     return () => {
       window.removeEventListener('planUpdated', handlePlanUpdate);
+      window.removeEventListener('nameUpdated', handleNameUpdate);
     };
   }, [isAuthenticated, user]);
 
@@ -508,7 +518,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <User className="w-4 h-4" />
                   <span className="hidden sm:inline">
-                    {user.user_metadata?.first_name || user.email?.split('@')[0] || 'Utilisateur'}
+                    {userDisplayName || user.user_metadata?.first_name || user.email?.split('@')[0] || 'Utilisateur'}
                   </span>
                 </div>
               )}

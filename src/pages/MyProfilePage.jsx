@@ -731,6 +731,18 @@ export default function MyProfilePage() {
         setMessage('✅ Champ mis à jour avec succès');
         setTimeout(() => setMessage(''), 3000);
         
+        // Émettre un événement pour notifier les autres composants
+        window.dispatchEvent(new CustomEvent('profileUpdated', {
+          detail: { field: editingField, value: tempValue }
+        }));
+        
+        // Si c'est le nom qui est mis à jour, émettre un événement spécial
+        if (editingField === 'name') {
+          window.dispatchEvent(new CustomEvent('nameUpdated', {
+            detail: { name: tempValue }
+          }));
+        }
+        
         // Ne pas recharger automatiquement la page - les données sont déjà mises à jour localement
       } else {
         const errorText = await response.text();
@@ -1124,6 +1136,11 @@ export default function MyProfilePage() {
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
         }
+        
+        // Émettre un événement pour notifier les autres composants du changement de nom
+        window.dispatchEvent(new CustomEvent('nameUpdated', {
+          detail: { name: candidateData.name }
+        }));
         
         // Faire disparaître le message après 5 secondes pour les nouveaux profils
         setTimeout(() => {
