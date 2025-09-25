@@ -159,7 +159,7 @@ export default function LandingPage() {
                     />
                   ))}
                 </div>
-                <span className="text-xs sm:text-sm">+50 designers actifs</span>
+                <span className="text-xs sm:text-sm">+24 designers actifs</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
@@ -175,7 +175,7 @@ export default function LandingPage() {
                 transition={{ delay: 0.4 }}
                 className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 hover:shadow-2xl hover:scale-105 transition-all duration-300 card-transition"
               >
-                <div className="text-3xl font-bold text-blue-600 mb-2">50+</div>
+                <div className="text-3xl font-bold text-blue-600 mb-2">24+</div>
                 <div className="text-gray-900 font-semibold">Designers vérifiés</div>
                 <div className="text-gray-500 text-sm mt-1">Communauté sélective</div>
               </motion.div>
@@ -185,7 +185,7 @@ export default function LandingPage() {
                 transition={{ delay: 0.5 }}
                 className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-white/30 hover:shadow-2xl hover:scale-105 transition-all duration-300 card-transition"
               >
-                <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
+                <div className="text-3xl font-bold text-blue-600 mb-2">4</div>
                 <div className="text-gray-900 font-semibold">Entreprises partenaires</div>
                 <div className="text-gray-500 text-sm mt-1">Startups et scale-ups</div>
               </motion.div>
@@ -752,7 +752,7 @@ export default function LandingPage() {
               Prêt à sortir du lot dans un marché saturé ?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Rejoignez notre pool sélectif de designers validés par des experts seniors. 
+              Rejoignez notre pool de Designer validé dès maintenant. 
               Dans un marché où la concurrence est rude, obtenez l'avantage décisif.
             </p>
             

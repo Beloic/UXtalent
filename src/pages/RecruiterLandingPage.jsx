@@ -178,7 +178,7 @@ export default function RecruiterLandingPage() {
                 transition={{ delay: 0.6 }}
                 className="text-center bg-white rounded-xl p-6 shadow-sm border border-gray-100"
               >
-                <div className="text-3xl font-bold text-green-600 mb-2">14</div>
+                <div className="text-3xl font-bold text-green-600 mb-2">7</div>
                 <div className="text-gray-900 font-semibold">Offres d'emploi actives</div>
                 <div className="text-gray-500 text-sm mt-1">Opportunités disponibles</div>
               </motion.div>
