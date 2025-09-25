@@ -448,7 +448,7 @@ export default function LandingPage() {
             className="relative"
           >
             <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-lg border border-white/50 overflow-hidden max-w-2xl mx-auto">
-              <div className="p-4">
+              <div>
                 <div className="relative">
                   {/* Browser mockup */}
                   <div className="bg-gray-100 rounded-t-lg p-2 border-b border-gray-200">
