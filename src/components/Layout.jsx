@@ -181,7 +181,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top nav */}
-      {!hideTopBar && (
+      {!hideTopBar && !isAuthenticated && (
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-xl glass">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 font-bold text-gray-900">
