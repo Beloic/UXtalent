@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, 
   CheckCircle, 
@@ -21,6 +21,20 @@ export default function RecruiterLandingPage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const phrases = [
+    "UX Talent : des designers UX/UI triés sur le volet.",
+    "Trouvez des talents UX/UI validés par des experts.",
+    "Le vivier de designers UX/UI de confiance.",
+    "Des profils UX/UI vérifiés, prêts pour vos projets."
+  ];
+  const [phraseIndex, setPhraseIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPhraseIndex((i) => (i + 1) % phrases.length);
+    }, 4000);
+    return () => clearInterval(id);
+  }, []);
 
   const handleEmailSubmit = (e) => {
     e.preventDefault();
@@ -61,9 +75,20 @@ export default function RecruiterLandingPage() {
               <span className="text-green-600"> UX UI</span>
             </h1>
             
-            <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
-              <strong className="text-gray-900">UX Talent</strong> vous connecte avec des designers UX/UI vérifiés et sélectionnés par notre équipe d'experts. Accédez à un vivier de talents de qualité pour vos projets.
-            </p>
+            <div className="mb-8 max-w-4xl mx-auto px-4 sm:px-0 min-h-[56px] sm:min-h-[64px] md:min-h-[72px] relative">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={phraseIndex}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.45 }}
+                  className="text-lg sm:text-xl text-gray-600 leading-relaxed text-center"
+                >
+                  {phrases[phraseIndex]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
 
             {/* CTA Principal */}
             <div className="flex justify-center mb-12">
@@ -122,9 +147,9 @@ export default function RecruiterLandingPage() {
                 transition={{ delay: 0.5 }}
                 className="text-center bg-white rounded-xl p-6 shadow-sm border border-gray-100"
               >
-                <div className="text-3xl font-bold text-green-600 mb-2">67%</div>
-                <div className="text-gray-900 font-semibold">Taux d'approbation</div>
-                <div className="text-gray-500 text-sm mt-1">Profils validés</div>
+                <div className="text-3xl font-bold text-green-600 mb-2">12</div>
+                <div className="text-gray-900 font-semibold">Start-ups partenaires</div>
+                <div className="text-gray-500 text-sm mt-1">Entreprises de confiance</div>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -132,9 +157,9 @@ export default function RecruiterLandingPage() {
                 transition={{ delay: 0.6 }}
                 className="text-center bg-white rounded-xl p-6 shadow-sm border border-gray-100"
               >
-                <div className="text-3xl font-bold text-green-600 mb-2">24h</div>
-                <div className="text-gray-900 font-semibold">Délai de réponse</div>
-                <div className="text-gray-500 text-sm mt-1">Maximum garanti</div>
+                <div className="text-3xl font-bold text-green-600 mb-2">14</div>
+                <div className="text-gray-900 font-semibold">Offres d'emploi actives</div>
+                <div className="text-gray-500 text-sm mt-1">Opportunités disponibles</div>
               </motion.div>
             </div>
           </motion.div>
