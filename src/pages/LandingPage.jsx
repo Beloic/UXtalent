@@ -423,31 +423,47 @@ export default function LandingPage() {
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Container principal simplifié */}
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Accélère tes recherches
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Découvrez notre plateforme en action
+            </p>
+          </motion.div>
+
+          {/* Container principal simplifié */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
             className="relative"
           >
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
-              <div className="p-8 lg:p-10">
+            <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/50 overflow-hidden max-w-4xl mx-auto">
+              <div className="p-6">
                 <div className="relative">
                   {/* Browser mockup */}
-                  <div className="bg-gray-100 rounded-t-2xl p-4 border-b border-gray-200">
+                  <div className="bg-gray-100 rounded-t-xl p-3 border-b border-gray-200">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-red-400 rounded-full"></div>
                       <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
                       <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                      <div className="flex-1 bg-white rounded-lg px-4 py-2 ml-4 text-sm text-gray-500">
+                      <div className="flex-1 bg-white rounded-lg px-3 py-1 ml-3 text-sm text-gray-500">
                         uxtalent.fr/{currentScreenshot === 0 ? 'talents' : currentScreenshot === 1 ? 'jobs' : 'analytics'}
                       </div>
                     </div>
                   </div>
                   
                   {/* Screenshot container avec animations et tooltip */}
-                  <div className="relative bg-white rounded-b-2xl shadow-2xl overflow-hidden min-h-[500px] lg:min-h-[600px] group">
+                  <div className="relative bg-white rounded-b-xl shadow-xl overflow-hidden min-h-[400px] lg:min-h-[450px] group">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentScreenshot}
@@ -468,16 +484,16 @@ export default function LandingPage() {
                       </motion.div>
                     </AnimatePresence>
 
-                    {/* Tooltip de description au survol */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/50 max-w-md mx-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                        <div className="flex items-start gap-3 mb-3">
+                    {/* Tooltip de description au survol - repositionné en bas */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-end justify-center opacity-0 group-hover:opacity-100 pb-8">
+                      <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/50 max-w-sm mx-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                        <div className="flex items-start gap-2 mb-2">
                           <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                          <h4 className="font-bold text-gray-900 text-lg">
+                          <h4 className="font-bold text-gray-900 text-base">
                             {screenshotDescriptions[currentScreenshot].title}
                           </h4>
                         </div>
-                        <p className="text-gray-600 leading-relaxed">
+                        <p className="text-gray-600 text-sm leading-relaxed">
                           {screenshotDescriptions[currentScreenshot].description}
                         </p>
                       </div>
