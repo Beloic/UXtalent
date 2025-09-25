@@ -480,7 +480,7 @@ export default function LandingPage() {
                     <img
                       src={`/screenshots/${screenshots[currentScreenshot]}`}
                       alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
-                      className="w-full h-auto object-contain max-h-96 sm:max-h-[28rem]"
+                      className="w-full aspect-square object-cover rounded-lg"
                     />
                     
                     {/* Overlay avec annotations */}
