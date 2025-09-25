@@ -581,17 +581,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
                     {/* Options du menu */}
                     <div className="py-1">
-                      {isRecruiter && (
-                        <Link
-                          to="/recruiter-dashboard"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                        >
-                          <Users className="w-4 h-4" />
-                          Dashboard recruteur
-                        </Link>
-                      )}
-                      
                       <button
                         onClick={() => {
                           setIsUserMenuOpen(false);
