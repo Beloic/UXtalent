@@ -39,9 +39,9 @@ export default function LandingPage() {
 
   // Données des screenshots
   const screenshots = [
-    "141shots_so.png",
-    "462shots_so.png", 
-    "852shots_so.png"
+    "vivier.png",
+    "Jobs.png", 
+    "stats.png"
   ];
 
   const screenshotDescriptions = [
@@ -474,7 +474,7 @@ export default function LandingPage() {
                         className="relative h-full"
                       >
                         <img
-                          src={`/screenshots/${screenshots[currentScreenshot]}`}
+                          src={`/${screenshots[currentScreenshot]}`}
                           alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
                           className="w-full h-full object-cover object-top"
                         />
