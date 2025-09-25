@@ -581,15 +581,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
                     {/* Options du menu */}
                     <div className="py-1">
-                      <Link
-                        to="/my-profile"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        <User className="w-4 h-4" />
-                        Mon profil
-                      </Link>
-                      
                       {isRecruiter && (
                         <Link
                           to="/recruiter-dashboard"
@@ -839,15 +830,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                         </div>
                       )}
                     </div>
-                    
-                    <Link
-                      to="/my-profile"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
-                    >
-                      <User className="w-5 h-5" />
-                      Mon profil
-                    </Link>
                     
                     <button
                       onClick={() => {
