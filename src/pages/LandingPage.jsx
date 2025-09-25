@@ -353,7 +353,7 @@ export default function LandingPage() {
               Booste ta visibilité auprès des recruteurs
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Conçu pour mettre en lumière le profil des meilleurs talents
+              Conçu pour mettre en lumière le profil des meilleurs talents.
             </p>
           </div>
 
