@@ -346,9 +346,6 @@ export default function RecruiterLandingPage() {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl mb-6 shadow-xl">
-              <Eye className="w-8 h-8 text-white" />
-            </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Découvrez la plateforme en 
               <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"> action</span>
