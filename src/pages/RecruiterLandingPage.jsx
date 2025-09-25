@@ -14,13 +14,17 @@ import {
   MessageSquare,
   Mail,
   Play,
-  X
+  X,
+  Eye,
+  Users,
+  BarChart2
 } from 'lucide-react';
 
 export default function RecruiterLandingPage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [currentScreenshot, setCurrentScreenshot] = useState(0);
   const phrases = [
     "UX Talent : des designers UX/UI triés sur le volet.",
     "Trouvez des talents UX/UI validés par des experts.",
@@ -28,6 +32,28 @@ export default function RecruiterLandingPage() {
     "Des profils UX/UI vérifiés, prêts pour vos projets."
   ];
   const [phraseIndex, setPhraseIndex] = useState(0);
+
+  // Données des screenshots pour les recruteurs
+  const screenshots = [
+    "141shots_so.png",
+    "462shots_so.png", 
+    "852shots_so.png"
+  ];
+
+  const screenshotDescriptions = [
+    {
+      title: "Annuaire des Talents",
+      description: "Explorez notre vivier de designers UX/UI pré-sélectionnés et vérifiés par nos experts"
+    },
+    {
+      title: "Recherche et Filtres Avancés",
+      description: "Trouvez rapidement les profils qui correspondent à vos critères avec nos outils de recherche intelligents"
+    },
+    {
+      title: "Dashboard et Analytics",
+      description: "Suivez vos recrutements et analysez les performances avec notre tableau de bord complet"
+    }
+  ];
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -276,7 +302,78 @@ export default function RecruiterLandingPage() {
         </div>
       </section>
 
+      {/* Section Découvrez la plateforme - Version compacte (premium) */}
+      <section className="relative py-20 bg-gradient-to-br from-slate-50 via-green-50 to-emerald-50 overflow-hidden">
+        <div className="relative max-w-7xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl mb-4 shadow-xl">
+              <Eye className="w-7 h-7 text-white" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+              Découvrez la plateforme en <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">action</span>
+            </h2>
+          </motion.div>
 
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gray-100 rounded-t-2xl p-4 border-b border-gray-200">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                  <div className="flex-1 bg-white rounded-lg px-4 py-2 ml-4 text-sm text-gray-500">
+                    uxtalent.fr/{currentScreenshot === 0 ? 'talents' : currentScreenshot === 1 ? 'search' : 'dashboard'}
+                  </div>
+                </div>
+              </div>
+              <div className="relative min-h-[420px] bg-white">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentScreenshot}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.5 }}
+                    className="relative"
+                  >
+                    <img
+                      src={`/screenshots/${screenshots[currentScreenshot]}`}
+                      alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
+                      className="w-full h-[420px] object-cover object-top"
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Flèches de navigation */}
+              <button
+                onClick={() => setCurrentScreenshot((prev) => (prev - 1 + screenshots.length) % screenshots.length)}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:shadow-2xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
+              >
+                <ArrowRight className="w-5 h-5 text-gray-700 rotate-180 group-hover:text-green-600 transition-colors" />
+              </button>
+              <button
+                onClick={() => setCurrentScreenshot((prev) => (prev + 1) % screenshots.length)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:shadow-2xl hover:bg-white transition-all duration-300 flex items-center justify-center group"
+              >
+                <ArrowRight className="w-5 h-5 text-gray-700 group-hover:text-green-600 transition-colors" />
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Tarification */}
       <section className="py-20 bg-gray-50">
