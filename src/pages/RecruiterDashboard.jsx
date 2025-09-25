@@ -909,17 +909,11 @@ export default function RecruiterDashboard() {
           {/* Contenu des onglets */}
           <AnimatePresence mode="wait">
             {activeTab === 'talent' && (
-              <motion.div 
-                key="talent"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: 0.3 }}
-              >
+              <div>
                 <Suspense fallback={<div className="p-8 text-center">Chargement des talents...</div>}>
                   <CandidatesListPage />
                 </Suspense>
-              </motion.div>
+              </div>
             )}
 
             {activeTab === 'offers' && (
