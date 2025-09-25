@@ -440,79 +440,87 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-md border border-gray-200">
-              {/* Navigation du carousel */}
-              <div className="flex justify-center mb-6">
-                <div className="flex flex-wrap justify-center gap-2 bg-white rounded-full p-2 shadow-md max-w-full">
-                  {[
-                    { id: 0, label: "Talents", icon: "👤", shortLabel: "Talents" },
-                    { id: 1, label: "Offres", icon: "🔍", shortLabel: "Offres" },
-                    { id: 2, label: "Statistiques", icon: "📊", shortLabel: "Stats" }
-                  ].map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setCurrentScreenshot(tab.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${
-                        currentScreenshot === tab.id
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'text-gray-600 hover:bg-gray-100'
-                      }`}
-                    >
-                      <span className="text-sm">{tab.icon}</span>
-                      <span className="text-sm font-medium hidden sm:inline">{tab.label}</span>
-                      <span className="text-sm font-medium sm:hidden">{tab.shortLabel}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Container des screenshots */}
-              <div className="relative overflow-hidden rounded-lg bg-white shadow-md max-w-sm mx-auto">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentScreenshot}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.5 }}
-                    className="relative"
-                  >
-                    <img
-                      src={`/screenshots/${screenshots[currentScreenshot]}`}
-                      alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
-                      className="w-full aspect-square object-cover rounded-lg"
-                    />
-                    
-                    {/* Overlay avec annotations */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4">
-                        <div className="bg-white/90 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-lg">
-                          <h4 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">
-                            {screenshotDescriptions[currentScreenshot].title}
-                          </h4>
-                          <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                            {screenshotDescriptions[currentScreenshot].description}
-                          </p>
-                        </div>
-                      </div>
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-md border border-gray-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+                {/* Navigation et description à gauche */}
+                <div className="space-y-6">
+                  {/* Navigation du carousel */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Explorez les fonctionnalités</h3>
+                    <div className="space-y-2">
+                      {[
+                        { id: 0, label: "Talents", icon: "👤", shortLabel: "Talents" },
+                        { id: 1, label: "Offres", icon: "🔍", shortLabel: "Offres" },
+                        { id: 2, label: "Statistiques", icon: "📊", shortLabel: "Stats" }
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          onClick={() => setCurrentScreenshot(tab.id)}
+                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-left ${
+                            currentScreenshot === tab.id
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'bg-white text-gray-600 hover:bg-gray-50 shadow-sm'
+                          }`}
+                        >
+                          <span className="text-lg">{tab.icon}</span>
+                          <div>
+                            <div className="font-medium">{tab.label}</div>
+                            <div className="text-xs opacity-75">
+                              {screenshotDescriptions[tab.id].description}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
                     </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+                  </div>
 
-              {/* Indicateurs de progression */}
-              <div className="flex justify-center mt-3 space-x-1">
-                {screenshots.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentScreenshot(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                      currentScreenshot === index
-                        ? 'bg-blue-600 scale-110'
-                        : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
-                  />
-                ))}
+                  {/* Description détaillée */}
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <h4 className="font-semibold text-gray-900 mb-2">
+                      {screenshotDescriptions[currentScreenshot].title}
+                    </h4>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {screenshotDescriptions[currentScreenshot].description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Screenshot à droite */}
+                <div className="relative">
+                  <div className="relative overflow-hidden rounded-lg bg-white shadow-lg">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentScreenshot}
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -50 }}
+                        transition={{ duration: 0.5 }}
+                        className="relative"
+                      >
+                        <img
+                          src={`/screenshots/${screenshots[currentScreenshot]}`}
+                          alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
+                          className="w-full h-auto object-contain rounded-lg"
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                  
+                  {/* Indicateurs de progression */}
+                  <div className="flex justify-center mt-4 space-x-2">
+                    {screenshots.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentScreenshot(index)}
+                        className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                          currentScreenshot === index
+                            ? 'bg-blue-600 scale-110'
+                            : 'bg-gray-300 hover:bg-gray-400'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
