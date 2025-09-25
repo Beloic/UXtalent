@@ -432,8 +432,8 @@ export default function LandingPage() {
             className="text-center mb-20"
           >
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Découvrez la plateforme en 
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> action</span>
+              Découvrez comment UX Talent 
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">propulse votre carrière</span>
             </h2>
           </motion.div>
 
