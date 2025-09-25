@@ -212,7 +212,7 @@ export default function LandingPage() {
             className="text-center mb-20"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              <span className="text-gray-900">Un marché</span><span className="text-blue-600">très concurrentiel</span>
+              <span className="text-gray-900">Un marché </span><span className="text-blue-600">très concurrentiel</span>
             </h2>
             {/* Badge et paragraphe introductif supprimés à la demande */}
           </motion.div>
@@ -345,23 +345,23 @@ export default function LandingPage() {
       </section>
 
       {/* Fonctionnalités de la plateforme - Design simplifié et cohérent */}
-      <section className="py-32 bg-gray-50">
+      <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           {/* Header simple */}
-          <div className="text-center mb-24">
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-8 leading-tight">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Booste ta visibilité auprès des recruteurs
             </h2>
-            <p className="text-xl sm:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Conçu pour mettre en lumière le profil des meilleurs talents.
             </p>
           </div>
 
           {/* Grille de fonctionnalités stylée */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
               { 
-                icon: <Eye className="w-12 h-12" />, 
+                icon: <Eye className="w-10 h-10" />, 
                 title: "Visibilité dans l'annuaire", 
                 desc: "Votre profil mis en avant auprès des meilleurs recruteurs du secteur.",
                 color: "blue",
@@ -370,7 +370,7 @@ export default function LandingPage() {
                 accent: "border-blue-200"
               },
               { 
-                icon: <Users className="w-12 h-12" />, 
+                icon: <Users className="w-10 h-10" />, 
                 title: "Forum communautaire exclusif", 
                 desc: "Réseau privé de designers pour partager expériences et conseils.",
                 color: "purple",
@@ -379,7 +379,7 @@ export default function LandingPage() {
                 accent: "border-purple-200"
               },
               { 
-                icon: <Briefcase className="w-12 h-12" />, 
+                icon: <Briefcase className="w-10 h-10" />, 
                 title: "Offres d'emploi exclusives", 
                 desc: "Accès direct à des offres uniques et vérifiées.",
                 color: "green",
@@ -390,21 +390,21 @@ export default function LandingPage() {
             ].map((feature, i) => (
               <div
                 key={i}
-                className={`bg-gradient-to-br ${feature.bgGradient} rounded-3xl p-12 shadow-xl border-2 ${feature.accent} hover:shadow-2xl hover:-translate-y-3 hover:scale-105 transition-all duration-300 group`}
+                className={`bg-gradient-to-br ${feature.bgGradient} rounded-2xl p-10 shadow-lg border-2 ${feature.accent} hover:shadow-xl hover:-translate-y-2 hover:scale-105 transition-all duration-300 group`}
               >
                 {/* Icône colorée */}
-                <div className={`w-20 h-20 ${feature.iconBg} rounded-3xl flex items-center justify-center mb-8 shadow-xl group-hover:shadow-2xl group-hover:scale-110 transition-all duration-300`}>
+                <div className={`w-18 h-18 ${feature.iconBg} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
                   <div className="text-white">
                     {feature.icon}
                   </div>
                 </div>
 
                 {/* Contenu */}
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 group-hover:text-gray-800 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors">
                   {feature.title}
                 </h3>
                 
-                <p className="text-lg text-gray-700 leading-relaxed group-hover:text-gray-600 transition-colors">
+                <p className="text-gray-700 leading-relaxed group-hover:text-gray-600 transition-colors">
                   {feature.desc}
                 </p>
               </div>
