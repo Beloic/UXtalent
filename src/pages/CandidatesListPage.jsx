@@ -203,15 +203,10 @@ export default function CandidatesListPage() {
             )}
 
             {loading ? (
-              <div className="grid grid-cols-1 gap-4">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/20 animate-pulse animate-shimmer">
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
-                    <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
-                    <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                  </div>
-                ))}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center shadow-xl border border-white/20">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Chargement des talents...</h3>
+                <p className="text-gray-600">Récupération des derniers profils</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4">
