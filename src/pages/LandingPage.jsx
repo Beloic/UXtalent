@@ -66,13 +66,6 @@ export default function LandingPage() {
     return () => clearInterval(id);
   }, []);
 
-  // Rotation automatique des screenshots
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCurrentScreenshot((i) => (i + 1) % screenshots.length);
-    }, 5000);
-    return () => clearInterval(id);
-  }, [screenshots.length]);
 
   const handleEmailSubmit = (e) => {
     e.preventDefault();
@@ -421,21 +414,21 @@ export default function LandingPage() {
       </section>
 
       {/* Section Découvrez la plateforme */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="py-12 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-10"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
               Découvrez la plateforme en action
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Explorez l'interface intuitive qui met en valeur votre profil et facilite vos connexions avec les recruteurs
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Explorez l'interface intuitive qui met en valeur votre profil
             </p>
           </motion.div>
 
@@ -447,10 +440,10 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl border border-gray-200">
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-200">
               {/* Navigation du carousel */}
-              <div className="flex justify-center mb-8">
-                <div className="flex flex-wrap justify-center gap-2 bg-white rounded-full p-2 shadow-lg max-w-full">
+              <div className="flex justify-center mb-6">
+                <div className="flex flex-wrap justify-center gap-1 sm:gap-2 bg-white rounded-full p-1.5 sm:p-2 shadow-md max-w-full">
                   {[
                     { id: 0, label: "Profil", icon: "👤", shortLabel: "Profil" },
                     { id: 1, label: "Recherche", icon: "🔍", shortLabel: "Jobs" },
@@ -459,13 +452,13 @@ export default function LandingPage() {
                     <button
                       key={tab.id}
                       onClick={() => setCurrentScreenshot(tab.id)}
-                      className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full transition-all duration-200 ${
+                      className={`flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full transition-all duration-200 ${
                         currentScreenshot === tab.id
-                          ? 'bg-blue-600 text-white shadow-md'
+                          ? 'bg-blue-600 text-white shadow-sm'
                           : 'text-gray-600 hover:bg-gray-100'
                       }`}
                     >
-                      <span className="text-sm">{tab.icon}</span>
+                      <span className="text-xs sm:text-sm">{tab.icon}</span>
                       <span className="text-xs sm:text-sm font-medium hidden sm:inline">{tab.label}</span>
                       <span className="text-xs sm:text-sm font-medium sm:hidden">{tab.shortLabel}</span>
                     </button>
@@ -474,7 +467,7 @@ export default function LandingPage() {
               </div>
 
               {/* Container des screenshots */}
-              <div className="relative overflow-hidden rounded-2xl bg-white shadow-2xl">
+              <div className="relative overflow-hidden rounded-xl bg-white shadow-lg">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentScreenshot}
@@ -508,14 +501,14 @@ export default function LandingPage() {
               </div>
 
               {/* Indicateurs de progression */}
-              <div className="flex justify-center mt-6 space-x-2">
+              <div className="flex justify-center mt-4 space-x-1.5">
                 {screenshots.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentScreenshot(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
                       currentScreenshot === index
-                        ? 'bg-blue-600 scale-125'
+                        ? 'bg-blue-600 scale-110'
                         : 'bg-gray-300 hover:bg-gray-400'
                     }`}
                   />
