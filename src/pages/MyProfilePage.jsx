@@ -1786,9 +1786,48 @@ export default function MyProfilePage() {
                               value={formData.bio || ''}
                               onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
                               placeholder="Décrivez votre parcours et vos spécialités en design..."
-                              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y text-gray-700 leading-relaxed text-lg"
+                              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y text-gray-700 leading-relaxed text-lg mb-4"
                               rows={6}
                             />
+                            <div className="flex justify-end">
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const session = await supabase.auth.getSession();
+                                    const token = session.data.session?.access_token;
+                                    
+                                    if (!token) {
+                                      setMessage('❌ Erreur d\'authentification');
+                                      return;
+                                    }
+
+                                    const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`), {
+                                      method: 'PUT',
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                      },
+                                      body: JSON.stringify({ bio: formData.bio })
+                                    });
+
+                                    if (response.ok) {
+                                      setMessage('✅ Bio mise à jour avec succès');
+                                      setTimeout(() => setMessage(''), 3000);
+                                    } else {
+                                      setMessage('❌ Erreur lors de la sauvegarde');
+                                      setTimeout(() => setMessage(''), 3000);
+                                    }
+                                  } catch (error) {
+                                    setMessage('❌ Erreur lors de la sauvegarde');
+                                    setTimeout(() => setMessage(''), 3000);
+                                  }
+                                }}
+                                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                              >
+                                <Save className="w-4 h-4" />
+                                Enregistrer
+                              </button>
+                            </div>
                           </div>
                         </div>
 
