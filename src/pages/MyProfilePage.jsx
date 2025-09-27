@@ -1023,9 +1023,9 @@ export default function MyProfilePage() {
     setIsLoading(true);
     setMessage('');
     
-    // Enregistrer le temps de début pour garantir un délai minimum
+    // Enregistrer le temps de début pour garantir un délai minimum de 5 secondes
     const startTime = Date.now();
-
+ 
     if (!user) {
       setMessage('Vous devez être connecté pour créer un profil');
       // Garantir un délai minimum même en cas d'erreur précoce
@@ -1201,13 +1201,13 @@ export default function MyProfilePage() {
         } else if (candidateStatus === 'rejected') {
           // Profil rejeté mis à jour - informer qu'il est remis en attente
           setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
-          // Remettre le statut à pending et sortir du mode édition
+          // Changer le statut immédiatement pour afficher la page jaune
           setCandidateStatus('pending');
           setIsEditingRejected(false);
         } else if (candidateStatus === 'new') {
           // Profil nouveau envoyé pour validation - message spécial
           setMessage(`✅ Profil en attente pour examen. Votre profil a été envoyé avec succès et est maintenant en cours d'examen par notre équipe.`);
-          // Changer le statut à pending et sortir du mode édition
+          // Changer le statut immédiatement pour afficher la page jaune
           setCandidateStatus('pending');
           setIsEditingNew(false);
         } else {
@@ -1237,10 +1237,9 @@ export default function MyProfilePage() {
     } catch (error) {
       setMessage(`Erreur lors de la création du profil: ${error.message}`);
       } finally {
-      // Garantir un délai minimum de 5 secondes pour l'affichage "Envoi en cours..."
+      // Garantir un délai minimum de 5 secondes pour le loading
       const elapsedTime = Date.now() - startTime;
       const remainingTime = Math.max(0, 5000 - elapsedTime);
-      
       setTimeout(() => {
         setIsLoading(false);
       }, remainingTime);
