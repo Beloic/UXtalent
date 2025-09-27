@@ -1212,7 +1212,10 @@ export default function MyProfilePage() {
           setMessage('');
         }, formData.id ? 3000 : 5000);
         
-        // Ne pas recharger automatiquement - les données sont déjà mises à jour localement
+        // Réactualiser la page après l'envoi réussi pour mettre à jour l'interface
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000); // Attendre 2 secondes pour que l'utilisateur voie le message de succès
       } else {
         const errorData = await response.json();
         const action = formData.id ? 'mettre à jour' : 'créer';
