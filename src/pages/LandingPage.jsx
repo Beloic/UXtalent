@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEOHead from '../components/SEOHead';
 import { 
   Users, 
   Briefcase, 
@@ -75,6 +76,13 @@ export default function LandingPage() {
 
   return (
     <div className="bg-white">
+      <SEOHead
+        title="Tu cherches un job en UX UI ?"
+        description="Trouvez les meilleurs talents UX/UI ou déposez votre candidature sur notre plateforme de recrutement spécialisée. Profils vérifiés par des experts."
+        type=""
+        keywords={['emploi UX', 'emploi UI', 'designer UX', 'designer UI', 'recrutement UX', 'recrutement UI', 'France']}
+        image="/screenshots/vivier.webp"
+      />
       {/* Hero Section - Version Professionnelle */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
         {/* Decorative background elements */}
@@ -154,7 +162,7 @@ export default function LandingPage() {
                     <img 
                       key={i} 
                       src={avatar} 
-                      alt={`Designer ${i + 1}`}
+                      alt={`Profil designer UX/UI ${i + 1} de la communauté UX Talent`}
                       className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white object-cover"
                     />
                   ))}
@@ -475,7 +483,7 @@ export default function LandingPage() {
                       >
                         <img
                           src={`/screenshots/${screenshots[currentScreenshot]}`}
-                          alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
+                          alt={`${screenshotDescriptions[currentScreenshot].title} - ${screenshotDescriptions[currentScreenshot].description}`}
                           className="w-full h-full object-cover object-top"
                         />
                         

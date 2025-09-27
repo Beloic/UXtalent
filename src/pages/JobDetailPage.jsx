@@ -431,7 +431,7 @@ export default function JobDetailPage() {
               <div className="mb-8">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-3 leading-tight">{job.title}</h1>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-3 leading-tight">{job.title} - Offre d'emploi UX/UI</h1>
                     <p className="text-2xl text-gray-600 font-semibold mb-6">{job.company}</p>
                     
                     <div className="flex flex-wrap items-center gap-6 text-gray-500 mb-6">

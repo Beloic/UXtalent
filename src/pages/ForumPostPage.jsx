@@ -378,7 +378,7 @@ export default function ForumPostPage() {
                 )}
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-4">
-                {post.title}
+                {post.title} - Forum UX Talent
               </h1>
             </div>
           </div>

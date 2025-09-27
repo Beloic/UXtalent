@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://uxtalent.fr/sitemap.xml
+
+# Pages importantes
+Allow: /
+Allow: /recruiters
+Allow: /pricing
+Allow: /faq
+Allow: /mentions-legales
+Allow: /politique-confidentialite
+
+# Pages dynamiques
+Allow: /my-profile/talent/*
+Allow: /recruiter-dashboard/offer/*
+Allow: /my-profile/forum/*
+
+# Fichiers statiques
+Allow: /favicon.ico
+Allow: /logo.webp
+Allow: /screenshots/
+
+# Bloquer les pages sensibles
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /test/
+
+# Bloquer les paramètres d'URL
+Disallow: /*?*
+Disallow: /*#*
+
+# Crawl delay pour éviter la surcharge
+Crawl-delay: 1

@@ -137,7 +137,7 @@ export default function RecruiterLandingPage() {
                     <img 
                       key={i} 
                       src={avatar} 
-                      alt={`Recruteur ${i + 1}`}
+                      alt={`Profil recruteur ${i + 1} utilisant la plateforme UX Talent`}
                       className="w-8 h-8 rounded-full border-2 border-white object-cover"
                     />
                   ))}
@@ -385,7 +385,7 @@ export default function RecruiterLandingPage() {
                       >
                         <img
                           src={`/screenshots/${screenshots[currentScreenshot]}`}
-                          alt={`Screenshot ${currentScreenshot + 1} de la plateforme UX Talent`}
+                          alt={`${screenshotDescriptions[currentScreenshot].title} - ${screenshotDescriptions[currentScreenshot].description}`}
                           className="w-full h-full object-cover object-top"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent pointer-events-none"></div>

@@ -212,7 +212,7 @@ export default function SearchAnalysisPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{search.title}</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{search.title} - Analyse de Recherche UX Talent</h1>
             <p className="text-gray-600 mt-1">Analyse IA des candidats correspondants</p>
           </div>
         </div>
@@ -519,7 +519,7 @@ export default function SearchAnalysisPage() {
                         <div className="relative">
                           <img
                             src={candidate.photo || `https://ui-avatars.com/api/?name=${candidate.name}&background=3b82f6&color=fff&size=80`}
-                            alt={candidate.name}
+                            alt={`Photo de profil de ${candidate.name}, designer UX/UI`}
                             className="w-20 h-20 rounded-2xl object-cover shadow-lg"
                           />
                           <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">

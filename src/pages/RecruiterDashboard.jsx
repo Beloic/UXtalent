@@ -1004,7 +1004,7 @@ export default function RecruiterDashboard() {
                               {candidate.photo ? (
                                 <img 
                                   src={candidate.photo} 
-                                  alt={candidate.name}
+                                  alt={`Photo de profil de ${candidate.name}, designer UX/UI`}
                                   className="w-16 h-16 rounded-2xl object-cover"
                                 />
                               ) : (
