@@ -12,6 +12,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { usePermissions } from '../hooks/usePermissions';
 import { useRecruiter } from '../hooks/useRecruiter';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
+import { salaryRanges, jobTitleSuggestions } from '../data/suggestions';
 const JobsPage = lazy(() => import('./JobsPage'));
 const ForumPage = lazy(() => import('./ForumPage'));
 
@@ -157,7 +158,7 @@ export default function MyProfilePage() {
     linkedin: '',
     github: '',
     dailyRate: '500',
-    annualSalary: '65000'
+    annualSalary: '50k-60k€'
   };
 
   const [formData, setFormData] = useState({
@@ -637,7 +638,7 @@ export default function MyProfilePage() {
               preview: existingCandidate.photo
             } : null,
             dailyRate: existingCandidate.dailyRate || existingCandidate.daily_rate || '',
-            annualSalary: existingCandidate.annualSalary || existingCandidate.annual_salary || '',
+            annualSalary: convertSalaryToRange(existingCandidate.annualSalary || existingCandidate.annual_salary || ''),
             updatedAt: existingCandidate.updated_at || existingCandidate.updatedAt || null
           };
           
@@ -730,13 +731,55 @@ export default function MyProfilePage() {
     }));
   };
 
+  // Fonction pour convertir un salaire numérique en fourchette
+  const convertSalaryToRange = (salary) => {
+    if (!salary || salary === '') return 'Non spécifié';
+    
+    // Si c'est déjà une fourchette, on la retourne telle quelle
+    if (typeof salary === 'string' && salary.includes('k') && salary.includes('€')) {
+      return salary;
+    }
+    
+    // Convertir en nombre
+    const numericSalary = parseInt(salary.toString().replace(/[^\d]/g, ''));
+    if (isNaN(numericSalary)) return 'Non spécifié';
+    
+    // Convertir en k€
+    const salaryInK = Math.round(numericSalary / 1000);
+    
+    // Trouver la fourchette appropriée
+    if (salaryInK <= 40) return '30k-40k€';
+    if (salaryInK <= 45) return '35k-45k€';
+    if (salaryInK <= 50) return '40k-50k€';
+    if (salaryInK <= 55) return '45k-55k€';
+    if (salaryInK <= 60) return '50k-60k€';
+    if (salaryInK <= 65) return '55k-65k€';
+    if (salaryInK <= 70) return '60k-70k€';
+    if (salaryInK <= 75) return '65k-75k€';
+    if (salaryInK <= 80) return '70k-80k€';
+    if (salaryInK <= 85) return '75k-85k€';
+    if (salaryInK <= 90) return '80k-90k€';
+    if (salaryInK <= 95) return '85k-95k€';
+    if (salaryInK <= 100) return '90k-100k€';
+    if (salaryInK <= 110) return '95k-110k€';
+    if (salaryInK <= 120) return '100k-120k€';
+    if (salaryInK <= 130) return '110k-130k€';
+    if (salaryInK <= 140) return '120k-140k€';
+    if (salaryInK <= 150) return '130k-150k€';
+    if (salaryInK <= 160) return '140k-160k€';
+    return '150k+€';
+  };
+
   // Fonctions pour l'édition inline
   const startEditing = (fieldName, currentValue) => {
     setEditingField(fieldName);
     // Pour les champs numériques avec €, on retire le symbole pour l'édition
-    if ((fieldName === 'dailyRate' || fieldName === 'annualSalary') && currentValue) {
+    if (fieldName === 'dailyRate' && currentValue) {
       const numericValue = currentValue.replace(' €', '');
       setTempValue(numericValue);
+    } else if (fieldName === 'annualSalary') {
+      // Pour le salaire annuel, on utilise la valeur telle quelle (c'est maintenant un dropdown)
+      setTempValue(currentValue || 'Non spécifié');
     } else {
       setTempValue(currentValue || '');
     }
@@ -928,11 +971,16 @@ export default function MyProfilePage() {
                 {isRequired && (
                   <option value="">Sélectionnez une option</option>
                 )}
-                {options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
+                {options.map((option) => {
+                  // Gérer les deux formats : tableau de strings ou tableau d'objets
+                  const value = typeof option === 'string' ? option : option.value;
+                  const label = typeof option === 'string' ? option : option.label;
+                  return (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  );
+                })}
               </select>
             ) : (
               fieldName === 'bio' ? (
@@ -1736,7 +1784,9 @@ export default function MyProfilePage() {
                               <EditableField
                                 fieldName="title"
                                 value={formData.title || 'Product Designer'}
-                                placeholder="Ex: Product Designer, UX Researcher"
+                                placeholder="Sélectionnez votre métier"
+                                type="select"
+                                options={jobTitleSuggestions}
                                 className="text-xl text-gray-600"
                               />
                             </div>
@@ -2119,9 +2169,10 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">Salaire annuel</p>
                                 <EditableField
                                   fieldName="annualSalary"
-                                  value={formData.annualSalary ? `${formData.annualSalary} €` : 'Non renseigné'}
-                                  placeholder="Ex: 45000"
-                                  type="number"
+                                  value={formData.annualSalary || 'Non spécifié'}
+                                  placeholder="Sélectionnez une fourchette"
+                                  type="select"
+                                  options={salaryRanges}
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
