@@ -258,6 +258,7 @@ export default function MyProfilePage() {
   const [isSavingInline, setIsSavingInline] = useState(false);
   const [bioValue, setBioValue] = useState('');
   const bioTextareaRef = useRef(null);
+  const [bioMessage, setBioMessage] = useState('');
 
   // Fonction pour charger les statistiques du profil
   const loadProfileStats = useCallback(async () => {
@@ -1797,7 +1798,8 @@ export default function MyProfilePage() {
                                     const token = session.data.session?.access_token;
                                     
                                     if (!token) {
-                                      setMessage('❌ Erreur d\'authentification');
+                                      setBioMessage('❌ Erreur d\'authentification');
+                                      setTimeout(() => setBioMessage(''), 3000);
                                       return;
                                     }
 
@@ -1811,15 +1813,15 @@ export default function MyProfilePage() {
                                     });
 
                                     if (response.ok) {
-                                      setMessage('✅ Bio mise à jour avec succès');
-                                      setTimeout(() => setMessage(''), 3000);
+                                      setBioMessage('✅ Bio mise à jour avec succès');
+                                      setTimeout(() => setBioMessage(''), 5000);
                                     } else {
-                                      setMessage('❌ Erreur lors de la sauvegarde');
-                                      setTimeout(() => setMessage(''), 3000);
+                                      setBioMessage('❌ Erreur lors de la sauvegarde');
+                                      setTimeout(() => setBioMessage(''), 5000);
                                     }
                                   } catch (error) {
-                                    setMessage('❌ Erreur lors de la sauvegarde');
-                                    setTimeout(() => setMessage(''), 3000);
+                                    setBioMessage('❌ Erreur lors de la sauvegarde');
+                                    setTimeout(() => setBioMessage(''), 5000);
                                   }
                                 }}
                                 className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
@@ -1828,6 +1830,15 @@ export default function MyProfilePage() {
                                 Enregistrer
                               </button>
                             </div>
+                            {bioMessage && (
+                              <div className={`mt-3 p-3 rounded-lg text-sm ${
+                                bioMessage.includes('✅') ? 'bg-green-50 border border-green-200 text-green-800' :
+                                bioMessage.includes('❌') ? 'bg-red-50 border border-red-200 text-red-800' :
+                                'bg-blue-50 border border-blue-200 text-blue-800'
+                              }`}>
+                                {bioMessage}
+                              </div>
+                            )}
                           </div>
                         </div>
 
