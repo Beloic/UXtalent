@@ -347,7 +347,7 @@ export default function RecruiterLandingPage() {
           >
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Des talents disponible 
-              <span className="text-green-600">immédiatement</span>
+              <span className="text-green-600"> immédiatement</span>
             </h2>
           </motion.div>
 
