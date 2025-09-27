@@ -966,21 +966,13 @@ export default function MyProfilePage() {
                   ref={bioTextareaRef}
                   value={bioValue}
                   onChange={(e) => {
-                    const newValue = e.target.value;
-                    setBioValue(newValue);
-                    // Maintenir le curseur à la fin après le re-rendu
-                    requestAnimationFrame(() => {
-                      if (bioTextareaRef.current) {
-                        const length = newValue.length;
-                        bioTextareaRef.current.setSelectionRange(length, length);
-                      }
-                    });
+                    setBioValue(e.target.value);
                   }}
-                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y ${
                     isRequired && !bioValue ? 'border-red-300' : 'border-blue-300'
                   }`}
                   placeholder={placeholder}
-                  rows={4}
+                  rows={8}
                   autoFocus
                   required={isRequired}
                 />
