@@ -1348,6 +1348,30 @@ export default function MyProfilePage() {
     );
   }
 
+  // Interface de transition pour les candidats en attente (statut pending mais showPendingPage pas encore true)
+  if (candidateStatus === 'pending' && !showPendingPage) {
+    return (
+      <div className="min-h-screen py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          {/* Message de transition */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8"
+          >
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <h2 className="text-xl font-semibold text-blue-800 mb-2">Traitement en cours...</h2>
+              <p className="text-blue-700">
+                Votre profil est en cours de traitement. Veuillez patienter quelques instants.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   // Interface pour les candidats avec statut "new" (nouveaux profils) - sauf s'ils sont en mode édition
   if (candidateStatus === 'new' && !isEditingNew) {
     return (
