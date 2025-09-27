@@ -182,6 +182,7 @@ export default function MyProfilePage() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancellationInfo, setCancellationInfo] = useState(null);
   const [showPendingPage, setShowPendingPage] = useState(false); // Contrôle l'affichage de la page jaune avec délai
+  const [isInitialLoad, setIsInitialLoad] = useState(true); // Distingue le chargement initial des changements de statut
   
   const handlePhotoChange = async (photoData) => {
     setFormData(prev => ({
@@ -448,13 +449,15 @@ export default function MyProfilePage() {
     };
   }, [isAuthenticated, user, candidatePlan]);
 
-  // Gérer l'affichage de la page jaune pour les profils déjà en attente
+  // Gérer l'affichage de la page jaune pour les profils déjà en attente au chargement initial
   useEffect(() => {
-    if (candidateStatus === 'pending' && !showPendingPage) {
-      // Si le profil est déjà en attente au chargement, afficher la page jaune immédiatement
+    // Seulement au chargement initial, pas lors des changements de statut
+    if (candidateStatus === 'pending' && !showPendingPage && isInitialLoad) {
+      // Si le profil est déjà en attente au chargement initial, afficher la page jaune immédiatement
       setShowPendingPage(true);
+      setIsInitialLoad(false);
     }
-  }, [candidateStatus, showPendingPage]);
+  }, [candidateStatus, showPendingPage, isInitialLoad]);
 
   const loadExistingProfile = useCallback(async () => {
     try {
@@ -1213,6 +1216,7 @@ export default function MyProfilePage() {
           // Changer le statut immédiatement mais afficher la page jaune après 5 secondes
           setCandidateStatus('pending');
           setIsEditingRejected(false);
+          setIsInitialLoad(false); // Marquer que ce n'est plus le chargement initial
           // Programmer l'affichage de la page jaune après 5 secondes
           setTimeout(() => {
             setShowPendingPage(true);
@@ -1223,6 +1227,7 @@ export default function MyProfilePage() {
           // Changer le statut immédiatement mais afficher la page jaune après 5 secondes
           setCandidateStatus('pending');
           setIsEditingNew(false);
+          setIsInitialLoad(false); // Marquer que ce n'est plus le chargement initial
           // Programmer l'affichage de la page jaune après 5 secondes
           setTimeout(() => {
             setShowPendingPage(true);
