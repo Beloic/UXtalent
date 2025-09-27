@@ -1782,11 +1782,12 @@ export default function MyProfilePage() {
                             À propos
                           </h2>
                           <div className="bg-gray-50 rounded-2xl p-6">
-                            <EditableField
-                              fieldName="bio"
-                              value={formData.bio}
+                            <textarea
+                              value={formData.bio || ''}
+                              onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
                               placeholder="Décrivez votre parcours et vos spécialités en design..."
-                              className="text-gray-700 leading-relaxed text-lg"
+                              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y text-gray-700 leading-relaxed text-lg"
+                              rows={6}
                             />
                           </div>
                         </div>
