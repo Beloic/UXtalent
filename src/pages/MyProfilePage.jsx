@@ -181,6 +181,7 @@ export default function MyProfilePage() {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancellationInfo, setCancellationInfo] = useState(null);
+  const [showPendingPage, setShowPendingPage] = useState(false); // Contrôle l'affichage de la page jaune avec délai
   
   const handlePhotoChange = async (photoData) => {
     setFormData(prev => ({
@@ -446,6 +447,14 @@ export default function MyProfilePage() {
       clearInterval(interval);
     };
   }, [isAuthenticated, user, candidatePlan]);
+
+  // Gérer l'affichage de la page jaune pour les profils déjà en attente
+  useEffect(() => {
+    if (candidateStatus === 'pending' && !showPendingPage) {
+      // Si le profil est déjà en attente au chargement, afficher la page jaune immédiatement
+      setShowPendingPage(true);
+    }
+  }, [candidateStatus, showPendingPage]);
 
   const loadExistingProfile = useCallback(async () => {
     try {
@@ -1201,15 +1210,23 @@ export default function MyProfilePage() {
         } else if (candidateStatus === 'rejected') {
           // Profil rejeté mis à jour - informer qu'il est remis en attente
           setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
-          // Changer le statut immédiatement pour afficher la page jaune
+          // Changer le statut immédiatement mais afficher la page jaune après 5 secondes
           setCandidateStatus('pending');
           setIsEditingRejected(false);
+          // Programmer l'affichage de la page jaune après 5 secondes
+          setTimeout(() => {
+            setShowPendingPage(true);
+          }, 5000);
         } else if (candidateStatus === 'new') {
           // Profil nouveau envoyé pour validation - message spécial
           setMessage(`✅ Profil en attente pour examen. Votre profil a été envoyé avec succès et est maintenant en cours d'examen par notre équipe.`);
-          // Changer le statut immédiatement pour afficher la page jaune
+          // Changer le statut immédiatement mais afficher la page jaune après 5 secondes
           setCandidateStatus('pending');
           setIsEditingNew(false);
+          // Programmer l'affichage de la page jaune après 5 secondes
+          setTimeout(() => {
+            setShowPendingPage(true);
+          }, 5000);
         } else {
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
@@ -1294,7 +1311,7 @@ export default function MyProfilePage() {
   }
 
   // Interface pour les candidats en attente
-  if (candidateStatus === 'pending') {
+  if (candidateStatus === 'pending' && showPendingPage) {
     return (
       <div className="min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
@@ -1323,16 +1340,33 @@ export default function MyProfilePage() {
               Votre profil a été soumis avec succès ! Notre équipe examine actuellement votre candidature 
               et vous contactera sous peu pour vous informer de la suite du processus.
             </p>
-            {/* Afficher un spinner si isLoading est true (pendant les 5 secondes) */}
-            {isLoading && (
-              <div className="text-center mt-4">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-600 mx-auto"></div>
-                <p className="text-yellow-600 text-sm mt-2">Traitement en cours...</p>
-              </div>
-            )}
           </motion.div>
 
           {/* Actions désactivées pour l'état en attente */}
+        </div>
+      </div>
+    );
+  }
+
+  // Interface de transition pour les candidats en attente (statut pending mais showPendingPage pas encore true)
+  if (candidateStatus === 'pending' && !showPendingPage) {
+    return (
+      <div className="min-h-screen py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          {/* Message de transition */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8"
+          >
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <h2 className="text-xl font-semibold text-blue-800 mb-2">Traitement en cours...</h2>
+              <p className="text-blue-700">
+                Votre profil est en cours de traitement. Veuillez patienter quelques instants.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
     );
