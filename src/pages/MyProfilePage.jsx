@@ -1280,22 +1280,12 @@ export default function MyProfilePage() {
     return (
       <div className="min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
-          {/* Header */}
+          {/* Header - Bouton retour supprimé pour les profils en attente */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
-            <div className="flex items-center gap-4 mb-6">
-              <Link 
-                to="/my-profile/talent" 
-                className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all duration-200"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Retour
-              </Link>
-            </div>
-            
           </motion.div>
 
           {/* Message d'attente */}
