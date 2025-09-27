@@ -181,6 +181,7 @@ export default function MyProfilePage() {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancellationInfo, setCancellationInfo] = useState(null);
+  const [showPendingPage, setShowPendingPage] = useState(false); // Contrôle l'affichage de la page jaune avec délai
   
   const handlePhotoChange = async (photoData) => {
     setFormData(prev => ({
@@ -446,6 +447,14 @@ export default function MyProfilePage() {
       clearInterval(interval);
     };
   }, [isAuthenticated, user, candidatePlan]);
+
+  // Gérer l'affichage de la page jaune pour les profils déjà en attente
+  useEffect(() => {
+    if (candidateStatus === 'pending' && !showPendingPage) {
+      // Si le profil est déjà en attente au chargement, afficher la page jaune immédiatement
+      setShowPendingPage(true);
+    }
+  }, [candidateStatus, showPendingPage]);
 
   const loadExistingProfile = useCallback(async () => {
     try {
@@ -1201,15 +1210,23 @@ export default function MyProfilePage() {
         } else if (candidateStatus === 'rejected') {
           // Profil rejeté mis à jour - informer qu'il est remis en attente
           setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
-          // Changer le statut immédiatement pour afficher la page jaune
+          // Changer le statut immédiatement mais afficher la page jaune après 5 secondes
           setCandidateStatus('pending');
           setIsEditingRejected(false);
+          // Programmer l'affichage de la page jaune après 5 secondes
+          setTimeout(() => {
+            setShowPendingPage(true);
+          }, 5000);
         } else if (candidateStatus === 'new') {
           // Profil nouveau envoyé pour validation - message spécial
           setMessage(`✅ Profil en attente pour examen. Votre profil a été envoyé avec succès et est maintenant en cours d'examen par notre équipe.`);
-          // Changer le statut immédiatement pour afficher la page jaune
+          // Changer le statut immédiatement mais afficher la page jaune après 5 secondes
           setCandidateStatus('pending');
           setIsEditingNew(false);
+          // Programmer l'affichage de la page jaune après 5 secondes
+          setTimeout(() => {
+            setShowPendingPage(true);
+          }, 5000);
         } else {
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
@@ -1294,7 +1311,7 @@ export default function MyProfilePage() {
   }
 
   // Interface pour les candidats en attente
-  if (candidateStatus === 'pending') {
+  if (candidateStatus === 'pending' && showPendingPage) {
     return (
       <div className="min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
