@@ -1219,6 +1219,7 @@ export default function MyProfilePage() {
           setIsInitialLoad(false); // Marquer que ce n'est plus le chargement initial
           // Programmer l'affichage de la page jaune après 5 secondes
           setTimeout(() => {
+            console.log('⏰ Timeout: Affichage page jaune après 5s', { candidateStatus, showPendingPage });
             setShowPendingPage(true);
           }, 5000);
         } else if (candidateStatus === 'new') {
@@ -1230,6 +1231,7 @@ export default function MyProfilePage() {
           setIsInitialLoad(false); // Marquer que ce n'est plus le chargement initial
           // Programmer l'affichage de la page jaune après 5 secondes
           setTimeout(() => {
+            console.log('⏰ Timeout: Affichage page jaune après 5s', { candidateStatus, showPendingPage });
             setShowPendingPage(true);
           }, 5000);
         } else {
@@ -1317,6 +1319,7 @@ export default function MyProfilePage() {
 
   // Interface pour les candidats en attente
   if (candidateStatus === 'pending' && showPendingPage) {
+    console.log('🟢 Affichage: Page jaune d\'attente', { candidateStatus, showPendingPage, isInitialLoad });
     return (
       <div className="min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
@@ -1355,6 +1358,7 @@ export default function MyProfilePage() {
 
   // Interface de transition pour les candidats en attente (statut pending mais showPendingPage pas encore true)
   if (candidateStatus === 'pending' && !showPendingPage) {
+    console.log('🔵 Affichage: Traitement en cours', { candidateStatus, showPendingPage, isInitialLoad });
     return (
       <div className="min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
@@ -1379,6 +1383,7 @@ export default function MyProfilePage() {
 
   // Interface pour les candidats avec statut "new" (nouveaux profils) - sauf s'ils sont en mode édition
   if (candidateStatus === 'new' && !isEditingNew) {
+    console.log('🟡 Affichage: Parlez-nous un peu de vous', { candidateStatus, showPendingPage, isInitialLoad, isEditingNew });
     return (
       <div className="min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
