@@ -12,7 +12,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { usePermissions } from '../hooks/usePermissions';
 import { useRecruiter } from '../hooks/useRecruiter';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
-import { supabaseAdmin } from '../lib/supabase';
 const JobsPage = lazy(() => import('./JobsPage'));
 const ForumPage = lazy(() => import('./ForumPage'));
 
@@ -503,7 +502,7 @@ export default function MyProfilePage() {
       
       // Fallback vers Supabase direct si nécessaire
       if (useDirectSupabase) {
-        const { data: candidate, error } = await supabaseAdmin
+        const { data: candidate, error } = await supabase
           .from('candidates')
           .select('*')
           .eq('email', user.email)
