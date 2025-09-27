@@ -1249,10 +1249,10 @@ export default function MyProfilePage() {
           setMessage('');
         }, formData.id ? 3000 : 5000);
         
-        // Recharger le profil après l'envoi réussi pour mettre à jour l'interface
-        setTimeout(() => {
-          loadExistingProfile();
-        }, 2000); // Attendre 2 secondes pour que l'utilisateur voie le message de succès
+        // Ne pas recharger le profil car cela écrase le statut 'pending' que nous venons de définir
+        // setTimeout(() => {
+        //   loadExistingProfile();
+        // }, 2000);
       } else {
         const errorData = await response.json();
         const action = formData.id ? 'mettre à jour' : 'créer';
