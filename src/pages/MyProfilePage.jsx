@@ -256,6 +256,7 @@ export default function MyProfilePage() {
   const [editingField, setEditingField] = useState(null);
   const [tempValue, setTempValue] = useState('');
   const [isSavingInline, setIsSavingInline] = useState(false);
+  const [bioValue, setBioValue] = useState('');
 
   // Fonction pour charger les statistiques du profil
   const loadProfileStats = useCallback(async () => {
@@ -769,7 +770,7 @@ export default function MyProfilePage() {
   };
 
   // Fonctions pour l'édition inline
-  const startEditing = (fieldName, currentValue) => {
+  const startEditing = useCallback((fieldName, currentValue) => {
     setEditingField(fieldName);
     // Pour les champs numériques avec €, on retire le symbole pour l'édition
     if (fieldName === 'dailyRate' && currentValue) {
@@ -778,15 +779,20 @@ export default function MyProfilePage() {
     } else if (fieldName === 'annualSalary') {
       // Pour le salaire annuel, on utilise la valeur telle quelle (c'est maintenant un dropdown)
       setTempValue(currentValue || 'Non spécifié');
+    } else if (fieldName === 'bio') {
+      // Pour la bio, utiliser l'état local pour éviter les conflits
+      setBioValue(currentValue || '');
+      setTempValue(currentValue || '');
     } else {
       setTempValue(currentValue || '');
     }
-  };
+  }, []);
 
-  const cancelEditing = () => {
+  const cancelEditing = useCallback(() => {
     setEditingField(null);
     setTempValue('');
-  };
+    setBioValue('');
+  }, []);
 
   const saveInlineEdit = async () => {
     if (!editingField || !user) return;
@@ -920,7 +926,7 @@ export default function MyProfilePage() {
   };
 
   // Composant pour les champs éditables
-  const EditableField = ({ fieldName, value, placeholder, type = 'text', className = '', options = null, required = true }) => {
+  const EditableField = React.memo(({ fieldName, value, placeholder, type = 'text', className = '', options = null, required = true }) => {
     const isEditing = editingField === fieldName;
     const isEmpty = !value || safeTrim(value) === '';
     const isRequired = required && fieldName !== 'github';
@@ -956,8 +962,15 @@ export default function MyProfilePage() {
             ) : (
               fieldName === 'bio' ? (
                 <textarea
-                  value={tempValue}
-                  onChange={(e) => setTempValue(e.target.value)}
+                  value={fieldName === 'bio' ? bioValue : tempValue}
+                  onChange={(e) => {
+                    if (fieldName === 'bio') {
+                      setBioValue(e.target.value);
+                      setTempValue(e.target.value);
+                    } else {
+                      setTempValue(e.target.value);
+                    }
+                  }}
                   className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
                     isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
                   }`}
@@ -1014,7 +1027,7 @@ export default function MyProfilePage() {
         )}
       </div>
     );
-  };
+  });
 
   // Fonction pour vérifier si tous les champs obligatoires sont remplis
   const areRequiredFieldsFilled = () => {
