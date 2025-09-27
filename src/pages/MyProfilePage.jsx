@@ -12,7 +12,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { usePermissions } from '../hooks/usePermissions';
 import { useRecruiter } from '../hooks/useRecruiter';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
-import { salaryRanges, jobTitleSuggestions } from '../data/suggestions';
+import { salaryRanges, jobTitleSuggestions, jobTypeSuggestions } from '../data/suggestions';
 const JobsPage = lazy(() => import('./JobsPage'));
 const ForumPage = lazy(() => import('./ForumPage'));
 
@@ -158,7 +158,8 @@ export default function MyProfilePage() {
     linkedin: '',
     github: '',
     dailyRate: '500',
-    annualSalary: '50k-60k€'
+    annualSalary: '50k-60k€',
+    jobType: 'CDI'
   };
 
   const [formData, setFormData] = useState({
@@ -618,11 +619,7 @@ export default function MyProfilePage() {
               const match = bio.match(/Années d'expérience: (\d+) ans/);
               return match ? match[1] : '';
             })(),
-            bio: (() => {
-              // Masquer la ligne "Années d'expérience" de la bio puisqu'elle est affichée séparément
-              const bio = existingCandidate.bio || '';
-              return bio.replace(/Années d'expérience: \d+ ans \([^)]+\)\n\n/, '');
-            })(),
+            bio: existingCandidate.bio || '',
             skills: (() => {
               const skills = Array.isArray(existingCandidate.skills)
                 ? existingCandidate.skills.join(', ')
@@ -639,6 +636,7 @@ export default function MyProfilePage() {
             } : null,
             dailyRate: existingCandidate.dailyRate || existingCandidate.daily_rate || '',
             annualSalary: convertSalaryToRange(existingCandidate.annualSalary || existingCandidate.annual_salary || ''),
+            jobType: existingCandidate.jobType || existingCandidate.job_type || 'CDI',
             updatedAt: existingCandidate.updated_at || existingCandidate.updatedAt || null
           };
           
@@ -810,33 +808,6 @@ export default function MyProfilePage() {
       }
 
       let updateData = { [editingField]: tempValue };
-      
-      // Si on sauvegarde la bio, préserver les années d'expérience existantes
-      if (editingField === 'bio' && formData.yearsOfExperience) {
-        const years = parseInt(safeTrim(formData.yearsOfExperience));
-        let experienceLevel = 'Mid';
-        if (years <= 2) {
-          experienceLevel = 'Junior';
-        } else if (years <= 5) {
-          experienceLevel = 'Mid';
-        } else if (years <= 8) {
-          experienceLevel = 'Senior';
-        } else {
-          experienceLevel = 'Lead';
-        }
-        
-        // Vérifier si la bio contient déjà des années d'expérience
-        if (tempValue.includes('Années d\'expérience:')) {
-          // Remplacer les années existantes
-          updateData.bio = tempValue.replace(
-            /Années d'expérience: \d+ ans \([^)]+\)/,
-            `Années d'expérience: ${years} ans (${experienceLevel})`
-          );
-        } else {
-          // Ajouter les années d'expérience au début de la bio
-          updateData.bio = `Années d'expérience: ${years} ans (${experienceLevel})\n\n${tempValue}`;
-        }
-      }
       
       const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`), {
         method: 'PUT',
@@ -1224,7 +1195,8 @@ export default function MyProfilePage() {
         github: formData.github || '',
         photo: photoUrl,
         dailyRate: formData.dailyRate || DEFAULT_VALUES.dailyRate,
-        annualSalary: formData.annualSalary || DEFAULT_VALUES.annualSalary
+        annualSalary: formData.annualSalary || DEFAULT_VALUES.annualSalary,
+        jobType: formData.jobType || DEFAULT_VALUES.jobType
       };
 
       // Déterminer l'URL et la méthode selon si le profil existe déjà
@@ -1790,25 +1762,6 @@ export default function MyProfilePage() {
                                 className="text-xl text-gray-600"
                               />
                             </div>
-                            <div className="flex items-center gap-4">
-                              {formData.yearsOfExperience && (
-                                <span className={`px-4 py-2 rounded-full text-sm font-bold ${
-                                  parseInt(formData.yearsOfExperience) <= 1 ? 'bg-green-100 text-green-800 border border-green-200' :
-                                  parseInt(formData.yearsOfExperience) <= 3 ? 'bg-blue-100 text-blue-800 border border-blue-200' :
-                                  parseInt(formData.yearsOfExperience) <= 6 ? 'bg-purple-100 text-purple-800 border border-purple-200' :
-                                  parseInt(formData.yearsOfExperience) <= 10 ? 'bg-orange-100 text-orange-800 border border-orange-200' :
-                                  'bg-red-100 text-red-800 border border-red-200'
-                                }`}>
-                                  {parseInt(formData.yearsOfExperience) === 1 ? '1 an XP' : `${formData.yearsOfExperience} ans XP`}
-                                </span>
-                              )}
-                              {formData.location && (
-                                <div className="flex items-center text-gray-500">
-                                  <MapPin className="w-5 h-5 mr-2" />
-                                  <span>{formData.location}</span>
-                                </div>
-                              )}
-                            </div>
                           </div>
                         </div>
 
@@ -2173,6 +2126,23 @@ export default function MyProfilePage() {
                                   placeholder="Sélectionnez une fourchette"
                                   type="select"
                                   options={salaryRanges}
+                                  className="font-semibold text-gray-900"
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                              <div className="p-2 bg-blue-100 rounded-lg">
+                                <Briefcase className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-500 mb-1">Type de poste souhaité</p>
+                                <EditableField
+                                  fieldName="jobType"
+                                  value={formData.jobType || 'CDI'}
+                                  placeholder="Sélectionnez un type"
+                                  type="select"
+                                  options={jobTypeSuggestions}
                                   className="font-semibold text-gray-900"
                                 />
                               </div>

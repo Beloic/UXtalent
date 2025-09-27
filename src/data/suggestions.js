@@ -81,3 +81,10 @@ export const salaryRanges = [
   '150k+€',
   'À négocier'
 ];
+
+export const jobTypeSuggestions = [
+  'CDI',
+  'CDD',
+  'Freelance',
+  'Stage'
+];
