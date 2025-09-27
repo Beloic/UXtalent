@@ -338,8 +338,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               <>
                 <div 
                   className="relative"
-                  onMouseEnter={() => setIsSolutionsOpen(true)}
-                  onMouseLeave={() => setIsSolutionsOpen(false)}
                 >
                   <button 
                     type="button"
