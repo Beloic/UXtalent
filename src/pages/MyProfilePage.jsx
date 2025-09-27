@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense, lazy } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useProfileCache } from '../contexts/ProfileCacheContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -257,6 +257,7 @@ export default function MyProfilePage() {
   const [tempValue, setTempValue] = useState('');
   const [isSavingInline, setIsSavingInline] = useState(false);
   const [bioValue, setBioValue] = useState('');
+  const bioTextareaRef = useRef(null);
 
   // Fonction pour charger les statistiques du profil
   const loadProfileStats = useCallback(async () => {
@@ -780,9 +781,8 @@ export default function MyProfilePage() {
       // Pour le salaire annuel, on utilise la valeur telle quelle (c'est maintenant un dropdown)
       setTempValue(currentValue || 'Non spécifié');
     } else if (fieldName === 'bio') {
-      // Pour la bio, utiliser l'état local pour éviter les conflits
+      // Pour la bio, utiliser seulement l'état local pour éviter les conflits
       setBioValue(currentValue || '');
-      setTempValue(currentValue || '');
     } else {
       setTempValue(currentValue || '');
     }
@@ -800,9 +800,10 @@ export default function MyProfilePage() {
     setIsSavingInline(true);
     try {
       // Mettre à jour les données locales
+      const valueToSave = editingField === 'bio' ? bioValue : tempValue;
       setFormData(prev => ({
         ...prev,
-        [editingField]: tempValue
+        [editingField]: valueToSave
       }));
 
       // Sauvegarder en base de données
@@ -813,7 +814,7 @@ export default function MyProfilePage() {
         throw new Error('Token d\'authentification manquant');
       }
 
-      let updateData = { [editingField]: tempValue };
+      let updateData = { [editingField]: valueToSave };
       
       const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`), {
         method: 'PUT',
@@ -962,17 +963,21 @@ export default function MyProfilePage() {
             ) : (
               fieldName === 'bio' ? (
                 <textarea
-                  value={fieldName === 'bio' ? bioValue : tempValue}
+                  ref={bioTextareaRef}
+                  value={bioValue}
                   onChange={(e) => {
-                    if (fieldName === 'bio') {
-                      setBioValue(e.target.value);
-                      setTempValue(e.target.value);
-                    } else {
-                      setTempValue(e.target.value);
-                    }
+                    const newValue = e.target.value;
+                    setBioValue(newValue);
+                    // Maintenir le curseur à la fin après le re-rendu
+                    requestAnimationFrame(() => {
+                      if (bioTextareaRef.current) {
+                        const length = newValue.length;
+                        bioTextareaRef.current.setSelectionRange(length, length);
+                      }
+                    });
                   }}
                   className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                    isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
+                    isRequired && !bioValue ? 'border-red-300' : 'border-blue-300'
                   }`}
                   placeholder={placeholder}
                   rows={4}
