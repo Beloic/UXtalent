@@ -1022,10 +1022,18 @@ export default function MyProfilePage() {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
+    
+    // Enregistrer le temps de début pour garantir un délai minimum
+    const startTime = Date.now();
 
     if (!user) {
       setMessage('Vous devez être connecté pour créer un profil');
-      setIsLoading(false);
+      // Garantir un délai minimum même en cas d'erreur précoce
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, 5000 - elapsedTime);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, remainingTime);
       return;
     }
 
@@ -1051,7 +1059,12 @@ export default function MyProfilePage() {
       if (missingFields.length > 0) {
         const errorMsg = `❌ Veuillez remplir tous les champs obligatoires : ${missingFields.join(', ')}`;
         setMessage(errorMsg);
-        setIsLoading(false);
+        // Garantir un délai minimum même en cas d'erreur de validation
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 5000 - elapsedTime);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, remainingTime);
         return;
       }
       }
@@ -1224,7 +1237,13 @@ export default function MyProfilePage() {
     } catch (error) {
       setMessage(`Erreur lors de la création du profil: ${error.message}`);
       } finally {
-      setIsLoading(false);
+      // Garantir un délai minimum de 5 secondes pour l'affichage "Envoi en cours..."
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, 5000 - elapsedTime);
+      
+      setTimeout(() => {
+        setIsLoading(false);
+      }, remainingTime);
     }
   };
 
