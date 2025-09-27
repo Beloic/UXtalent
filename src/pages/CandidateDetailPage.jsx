@@ -575,13 +575,13 @@ export default function CandidateDetailPage() {
                   À propos
                 </h2>
                 <div className="bg-gray-50 rounded-2xl p-6">
-                  <p className="text-gray-700 leading-relaxed text-lg">
+                  <div className="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">
                     {(() => {
                       // Masquer la ligne "Années d'expérience" de la bio puisqu'elle est affichée séparément
                       const bio = candidate.bio || '';
                       return bio.replace(/Années d'expérience: \d+ ans \([^)]+\)\n\n/, '');
                     })()}
-                  </p>
+                  </div>
                 </div>
               </div>
 
