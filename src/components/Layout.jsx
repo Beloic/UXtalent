@@ -247,7 +247,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               transition={{ type: 'spring', stiffness: 260, damping: 18 }} 
               className="p-2 rounded-2xl bg-white shadow-xl shadow-blue-200 hover:scale-110 transition-all duration-300"
             >
-              <img src="/logo.png" alt="UX Talent" className="w-8 h-8 rounded-xl" />
+              <img src="/logo.webp" alt="UX Talent" className="w-8 h-8 rounded-xl" />
             </motion.div>
             <div className="flex items-center gap-2">
               <span className="text-xl">UX Talent</span>
@@ -509,7 +509,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                 transition={{ type: 'spring', stiffness: 260, damping: 18 }} 
                 className="p-2 rounded-xl bg-white shadow-lg shadow-blue-100 hover:scale-105 transition-all duration-300"
               >
-                <img src="/logo.png" alt="UX Talent" className="w-6 h-6 rounded-lg" />
+                <img src="/logo.webp" alt="UX Talent" className="w-6 h-6 rounded-lg" />
               </motion.div>
               <div className="flex items-center gap-2">
                 <span className="text-lg">UX Talent</span>

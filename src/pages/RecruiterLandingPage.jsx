@@ -35,8 +35,8 @@ export default function RecruiterLandingPage() {
 
   // Données des screenshots (visuels recruteurs d'origine)
   const screenshots = [
-    "141shots_so.png",
-    "462shots_so.png"
+    "141shots_so.webp",
+    "462shots_so.webp"
   ];
 
   const screenshotDescriptions = [

@@ -39,9 +39,9 @@ export default function LandingPage() {
 
   // Données des screenshots
   const screenshots = [
-    "vivier.png",
-    "Jobs.png", 
-    "stats.png"
+    "vivier.webp",
+    "Jobs.webp", 
+    "stats.webp"
   ];
 
   const screenshotDescriptions = [
