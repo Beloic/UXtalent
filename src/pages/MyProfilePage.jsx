@@ -1212,9 +1212,9 @@ export default function MyProfilePage() {
           setMessage('');
         }, formData.id ? 3000 : 5000);
         
-        // Réactualiser la page après l'envoi réussi pour mettre à jour l'interface
+        // Recharger le profil après l'envoi réussi pour mettre à jour l'interface
         setTimeout(() => {
-          window.location.reload();
+          loadExistingProfile();
         }, 2000); // Attendre 2 secondes pour que l'utilisateur voie le message de succès
       } else {
         const errorData = await response.json();
