@@ -28,12 +28,12 @@ export default function Badge({ children, variant = "default", animate = false }
 export function PremiumBadge() {
   return (
     <motion.span 
-      className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-3 py-1.5 text-xs font-bold shadow-xl shadow-purple-200"
+      className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1.5 text-xs font-bold shadow-xl shadow-yellow-200"
       animate={{
         boxShadow: [
-          "0 0 20px rgba(147, 51, 234, 0.3)",
-          "0 0 30px rgba(147, 51, 234, 0.6)",
-          "0 0 20px rgba(147, 51, 234, 0.3)"
+          "0 0 20px rgba(251, 146, 60, 0.3)",
+          "0 0 30px rgba(251, 146, 60, 0.6)",
+          "0 0 20px rgba(251, 146, 60, 0.3)"
         ]
       }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -42,7 +42,7 @@ export function PremiumBadge() {
         animate={{ rotate: [0, 360] }}
         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
       >
-        <Crown className="w-3 h-3" />
+        <span className="text-yellow-100">👑</span>
       </motion.div>
       Premium
     </motion.span>
@@ -52,12 +52,12 @@ export function PremiumBadge() {
 export function ProBadge() {
   return (
     <motion.span 
-      className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 text-white px-3 py-1.5 text-xs font-bold shadow-xl shadow-orange-200"
+      className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1.5 text-xs font-bold shadow-xl shadow-purple-200"
       animate={{
         boxShadow: [
-          "0 0 20px rgba(251, 146, 60, 0.3)",
-          "0 0 30px rgba(251, 146, 60, 0.6)",
-          "0 0 20px rgba(251, 146, 60, 0.3)"
+          "0 0 20px rgba(147, 51, 234, 0.3)",
+          "0 0 30px rgba(147, 51, 234, 0.6)",
+          "0 0 20px rgba(147, 51, 234, 0.3)"
         ]
       }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -69,7 +69,7 @@ export function ProBadge() {
         }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       >
-        <Star className="w-3 h-3" />
+        <span className="text-purple-100">⭐</span>
       </motion.div>
       Elite
     </motion.span>

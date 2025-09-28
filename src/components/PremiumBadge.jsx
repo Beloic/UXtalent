@@ -9,22 +9,24 @@ const PremiumBadge = ({ plan, size = 'default' }) => {
     premium: {
       icon: Star,
       text: 'Premium',
-      gradient: 'from-yellow-400 to-orange-500',
+      gradient: 'from-yellow-500 to-orange-500',
       bgGradient: 'from-yellow-50 to-orange-50',
       borderColor: 'border-yellow-200',
-      textColor: 'text-yellow-800',
-      iconColor: 'text-yellow-600',
-      shadow: 'shadow-yellow-100'
+      textColor: 'text-white',
+      iconColor: 'text-yellow-100',
+      shadow: 'shadow-yellow-100',
+      iconEmoji: '👑'
     },
     elite: {
       icon: Crown,
       text: 'Elite',
-      gradient: 'from-purple-500 to-indigo-600',
+      gradient: 'from-purple-600 to-pink-600',
       bgGradient: 'from-purple-50 to-indigo-50',
       borderColor: 'border-purple-200',
-      textColor: 'text-purple-800',
-      iconColor: 'text-purple-600',
-      shadow: 'shadow-purple-100'
+      textColor: 'text-white',
+      iconColor: 'text-purple-100',
+      shadow: 'shadow-purple-100',
+      iconEmoji: '⭐'
     }
   };
 
@@ -56,20 +58,18 @@ const PremiumBadge = ({ plan, size = 'default' }) => {
         delay: 0.1 
       }}
       className={`
-        inline-flex items-center gap-1.5 rounded-full font-semibold
-        bg-gradient-to-r ${config.bgGradient}
-        border ${config.borderColor}
+        inline-flex items-center gap-1 rounded-full font-bold
+        bg-gradient-to-r ${config.gradient}
         ${config.textColor}
         ${sizeClasses[size]}
         ${config.shadow}
-        backdrop-blur-sm
         relative overflow-hidden
       `}
     >
       {/* Effet de brillance */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-pulse"></div>
       
-      <Icon className={`${iconSizeClasses[size]} ${config.iconColor} relative z-10`} />
+      <span className={`${config.iconColor} relative z-10`}>{config.iconEmoji}</span>
       <span className="relative z-10 font-bold">{config.text}</span>
       
       {/* Effet de lueur */}

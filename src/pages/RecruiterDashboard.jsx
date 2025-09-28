@@ -1053,12 +1053,14 @@ export default function RecruiterDashboard() {
                           
                           <div className="flex items-center gap-4">
                             {candidate.planType === 'premium' && (
-                              <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded-full">
+                              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full shadow-lg">
+                                <span className="text-yellow-100">👑</span>
                                 Premium
                               </span>
                             )}
                             {candidate.planType === 'elite' && (
-                              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full">
+                              <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full shadow-lg">
+                                <span className="text-purple-100">⭐</span>
                                 Elite
                               </span>
                             )}
