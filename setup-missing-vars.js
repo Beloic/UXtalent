@@ -45,18 +45,9 @@ const missingVars = {
   }
 };
 
-// Variables optionnelles pour Redis
+// Variables optionnelles pour Redis (supprimées)
 const optionalVars = {
-  'UPSTASH_REDIS_REST_URL': {
-    description: 'URL Upstash Redis',
-    example: 'https://your-redis.upstash.io',
-    instructions: 'Créez un compte Upstash et récupérez l\'URL REST'
-  },
-  'UPSTASH_REDIS_REST_TOKEN': {
-    description: 'Token Upstash Redis',
-    example: 'ABC123...',
-    instructions: 'Récupérez le token REST depuis Upstash Dashboard'
-  }
+  // Redis supprimé du projet
 };
 
 function generateSecureToken() {
@@ -105,14 +96,8 @@ function addMissingVariables() {
     }
   }
   
-  // Ajouter les variables optionnelles (commentées)
-  envContent += '\n# Variables optionnelles pour Redis (décommentez si nécessaire)\n';
-  for (const [varName, config] of Object.entries(optionalVars)) {
-    if (!envContent.includes(varName)) {
-      envContent += `# ${config.description}\n`;
-      envContent += `# ${varName}=${config.example}\n`;
-    }
-  }
+  // Variables optionnelles supprimées (Redis non utilisé)
+  envContent += '\n# Redis supprimé du projet\n';
   
   writeEnvFile(envContent);
 }
@@ -140,11 +125,8 @@ function showInstructions() {
   console.log('3. Créez un Payment Link pour ce produit');
   console.log('4. Copiez l\'URL dans VITE_STRIPE_ELITE_CANDIDAT_LINK\n');
   
-  console.log('🚀 REDIS (OPTIONNEL):');
-  console.log('1. Allez sur https://upstash.com');
-  console.log('2. Créez un compte et une base Redis');
-  console.log('3. Copiez l\'URL REST et le token');
-  console.log('4. Décommentez les variables Redis dans .env\n');
+  console.log('🚀 REDIS (SUPPRIMÉ):');
+  console.log('Redis a été supprimé du projet pour simplifier le déploiement.\n');
 }
 
 function main() {

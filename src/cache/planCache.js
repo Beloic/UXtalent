@@ -1,12 +1,12 @@
-// Cache Redis pour les plans des candidats
-// Migration du cache local vers Redis pour la scalabilité
+// Cache en mémoire pour les plans des candidats
+// Redis supprimé - utilisation d'un cache local simple
 
 import { logger } from '../logger/clientLogger.js';
 
 const PLAN_CACHE_PREFIX = 'plan:';
 const PLAN_CACHE_TTL = 60 * 60; // 1 heure
 
-// Cache temporaire en mémoire en attendant la correction Redis
+// Cache temporaire en mémoire (Redis supprimé)
 const planCache = new Map();
 
 export const setCandidatePlan = (candidateId, planType) => {
@@ -60,7 +60,7 @@ export const clearCandidatePlan = (candidateId) => {
   }
 };
 
-// Fonction de migration depuis l'ancien cache local (si nécessaire)
+// Fonction de migration depuis l'ancien cache local (Redis supprimé)
 export const migrateFromLocalCache = (localCache) => {
   if (!localCache || typeof localCache !== 'object') {
     return;
@@ -70,5 +70,5 @@ export const migrateFromLocalCache = (localCache) => {
     await setCandidatePlan(candidateId, planData.planType);
   });
   
-  logger.info('🔄 Migration cache local vers Redis terminée');
+  logger.info('🔄 Migration cache local terminée');
 };
