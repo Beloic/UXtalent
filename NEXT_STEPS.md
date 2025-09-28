@@ -59,7 +59,7 @@ const getVisibleJobs = async (userPlan) => {
   if (userPlan === 'free') {
     // Candidats gratuits : seulement les offres publiques
     query = query.eq('publication_status', 'published');
-  } else if (userPlan === 'premium' || userPlan === 'pro') {
+  } else if (userPlan === 'premium' || userPlan === 'elite') {
     // Candidats Premium/Pro : toutes les offres + early access
     query = query.in('publication_status', ['published', 'premium_early']);
   }
@@ -73,7 +73,7 @@ const getVisibleJobs = async (userPlan) => {
 // Composant JobCard avec gestion des offres exclusives
 const JobCard = ({ job, userPlan }) => {
   const isEarlyAccess = job.publication_status === 'premium_early';
-  const isPremiumUser = ['premium', 'pro'].includes(userPlan);
+  const isPremiumUser = ['premium', 'elite'].includes(userPlan);
   
   return (
     <div className="job-card">
@@ -106,7 +106,7 @@ const notifyPremiumUsers = async (newPremiumJob) => {
   const premiumUsers = await supabase
     .from('candidates')
     .select('email, name')
-    .in('plan_type', ['premium', 'pro']);
+    .in('plan_type', ['premium', 'elite']);
     
   for (const user of premiumUsers) {
     await sendEmail({

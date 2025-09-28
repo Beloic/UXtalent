@@ -79,9 +79,9 @@ export const loadCandidates = async () => {
       };
     });
     
-    // Trier par plan : Pro en premier, puis Premium, puis Free
+    // Trier par plan : Elite en premier, puis Premium, puis Free
     const sortedCandidates = mappedData.sort((a, b) => {
-      const planPriority = { 'pro': 3, 'premium': 2, 'free': 1 };
+      const planPriority = { 'elite': 3, 'premium': 2, 'free': 1 };
       const aPriority = planPriority[a.planType] || 1;
       const bPriority = planPriority[b.planType] || 1;
       
@@ -251,7 +251,7 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       plan_type: planType,
       plan_start_date: now.toISOString(),
       plan_end_date: planType === 'free' ? null : endDate.toISOString(), // Pas de date de fin pour le plan gratuit
-      is_featured: planType !== 'free', // Premium et Pro sont automatiquement mis en avant
+      is_featured: planType !== 'free', // Premium et Elite sont automatiquement mis en avant
       featured_until: planType !== 'free' ? endDate.toISOString() : null
     };
     

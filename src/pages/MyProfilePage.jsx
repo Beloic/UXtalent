@@ -2356,7 +2356,7 @@ export default function MyProfilePage() {
                         
                         <h3 className="text-2xl font-bold text-gray-900 mb-3">Statistiques Premium</h3>
                         <p className="text-gray-600 mb-8 max-w-lg mx-auto text-lg leading-relaxed">
-                          Accédez à vos statistiques détaillées et suivez la performance de votre profil avec un plan Premium ou Pro.
+                          Accédez à vos statistiques détaillées et suivez la performance de votre profil avec un plan Premium ou Elite.
                         </p>
                         
                         <button
@@ -3122,7 +3122,7 @@ export default function MyProfilePage() {
                               ? 'Accès aux fonctionnalités de base'
                               : candidatePlan === 'premium'
                               ? 'Accès aux fonctionnalités premium'
-                              : candidatePlan === 'pro'
+                              : candidatePlan === 'elite'
                               ? 'Accès aux fonctionnalités professionnelles'
                               : 'Plan personnalisé'
                             }
@@ -3134,7 +3134,7 @@ export default function MyProfilePage() {
                               ? '0€'
                               : candidatePlan === 'premium'
                               ? '7,99€'
-                              : candidatePlan === 'pro'
+                              : candidatePlan === 'elite'
                               ? '39€'
                               : 'Sur mesure'
                             }

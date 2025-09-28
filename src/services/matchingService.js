@@ -243,15 +243,15 @@ function calculateAvailabilityScore(candidateAvailability) {
 
 /**
  * Score du plan (5% du score total)
- * Bonus pour les candidats premium/pro - Pro plus important que Premium
+ * Bonus pour les candidats premium/elite - Elite plus important que Premium
  */
 function calculatePlanScore(planType, isFeatured) {
   // Candidat featured = score maximum
   if (isFeatured) return 1.0;
   
   switch (planType) {
-    case 'pro':
-      return 1.0; // Score maximum pour Pro
+    case 'elite':
+      return 1.0; // Score maximum pour Elite
     case 'premium':
       return 0.7; // Score élevé pour Premium
     case 'free':
@@ -439,10 +439,10 @@ export function findBestCandidatesForJob(candidates, job, limit = 10) {
     .map(candidate => {
       const compatibilityScore = calculateCompatibilityScore(candidate, job);
       
-      // Bonus pour les plans premium/pro
+      // Bonus pour les plans premium/elite
       let planBonus = 0;
       if (candidate.planType === 'elite') {
-        planBonus = 0.2; // +20% pour Pro
+        planBonus = 0.2; // +20% pour Elite
       } else if (candidate.planType === 'premium') {
         planBonus = 0.1; // +10% pour Premium
       }

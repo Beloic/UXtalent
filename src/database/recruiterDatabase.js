@@ -152,9 +152,9 @@ export const searchCandidatesByCriteria = async (searchCriteria) => {
     
     if (error) throw error;
     
-    // Trier par plan : Pro en premier, puis Premium, puis Free
+    // Trier par plan : Elite en premier, puis Premium, puis Free
     const sortedCandidates = (data || []).sort((a, b) => {
-      const planPriority = { 'pro': 3, 'premium': 2, 'free': 1 };
+      const planPriority = { 'elite': 3, 'premium': 2, 'free': 1 };
       const aPriority = planPriority[a.plan_type] || 1;
       const bPriority = planPriority[b.plan_type] || 1;
       

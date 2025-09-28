@@ -638,14 +638,14 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
       totalHiddenCandidates = filteredCandidates.length - visibleCandidates.length;
     }
     
-    // Tri avec mise en avant des plans Premium et Pro
+    // Tri avec mise en avant des plans Premium et Elite
     visibleCandidates.sort((a, b) => {
       // Si c'est une carte d'inscription, la mettre à la fin
       if (a.isSignupCard) return 1;
       if (b.isSignupCard) return -1;
       
-      // Priorité des plans : Pro > Premium > Free
-      const planPriority = { 'pro': 3, 'premium': 2, 'free': 1 };
+      // Priorité des plans : Elite > Premium > Free
+      const planPriority = { 'elite': 3, 'premium': 2, 'free': 1 };
       const aPlanPriority = planPriority[a.planType] || 1;
       const bPlanPriority = planPriority[b.planType] || 1;
       
@@ -1161,7 +1161,7 @@ app.put('/api/candidates/:id/plan', async (req, res) => {
     
     // Valider le type de plan
     if (!['free', 'premium', 'elite'].includes(planType)) {
-      return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, premium, ou pro' });
+      return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, premium, ou elite' });
     }
     
     // Valider la durée
@@ -1194,7 +1194,7 @@ app.put('/api/candidates/email/:email/plan', async (req, res) => {
     // Valider le type de plan
     if (!['free', 'premium', 'elite'].includes(planType)) {
       console.error(`❌ [API] Type de plan invalide: ${planType}`);
-      return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, premium, ou pro' });
+      return res.status(400).json({ error: 'Type de plan invalide. Doit être: free, premium, ou elite' });
     }
     
     // Valider la durée
@@ -3970,9 +3970,9 @@ app.get('/api/export/candidates/csv', requireRole(['recruiter', 'admin']), async
       .eq('status', 'approved')
       .order('created_at', { ascending: false });
     
-    // Trier par plan : Pro en premier, puis Premium, puis Free
+    // Trier par plan : Elite en premier, puis Premium, puis Free
     const sortedCandidates = (candidates || []).sort((a, b) => {
-      const planPriority = { 'pro': 3, 'premium': 2, 'free': 1 };
+      const planPriority = { 'elite': 3, 'premium': 2, 'free': 1 };
       const aPriority = planPriority[a.plan_type] || 1;
       const bPriority = planPriority[b.plan_type] || 1;
       

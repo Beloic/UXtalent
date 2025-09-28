@@ -19,7 +19,7 @@ export default function PlanManager({ candidate, onPlanUpdate }) {
     if (selectedPlan === planId) {
       return "Plan actuel";
     }
-    return `Choisir ${planId === 'free' ? 'Gratuit' : planId === 'premium' ? 'Premium' : 'Pro'}`;
+    return `Choisir ${planId === 'free' ? 'Gratuit' : planId === 'premium' ? 'Premium' : 'Elite'}`;
   };
 
   const plans = [
@@ -96,7 +96,7 @@ export default function PlanManager({ candidate, onPlanUpdate }) {
       }
       
       // Message de confirmation
-      const planNames = { free: 'Gratuit', premium: 'Premium', pro: 'Pro' };
+      const planNames = { free: 'Gratuit', premium: 'Premium', elite: 'Elite' };
       alert(`Plan changé avec succès vers ${planNames[planId]} !`);
       
       // Déclencher un événement pour mettre à jour le badge dans la barre du haut
