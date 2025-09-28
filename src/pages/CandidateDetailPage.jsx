@@ -24,6 +24,7 @@ import { useCandidate } from "../services/candidatesApi";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
+import { SimplePlanBadge } from "../components/SimpleBadges";
 import { buildApiUrl } from "../config/api";
 
 // Composant pour les tendances de vues (version simplifiée pour les recruteurs)
@@ -462,14 +463,7 @@ export default function CandidateDetailPage() {
               {/* Badges + Favori en haut à droite */}
               <div className="absolute top-4 right-4 flex items-center gap-3">
                 {!shouldHideName() && (candidate.planType === 'premium' || candidate.planType === 'elite') && (
-                  <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
-                    candidate.planType === 'elite' 
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
-                      : 'bg-blue-600'
-                  }`}>
-                    <span className={candidate.planType === 'elite' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
-                    {candidate.planType === 'elite' ? 'Elite' : 'Premium'}
-                  </span>
+                  <SimplePlanBadge planType={candidate.planType} />
                 )}
                 {user && isRecruiter && (
                   <button

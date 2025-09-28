@@ -11,6 +11,7 @@ import ProfilePhotoUpload from '../components/ProfilePhotoUpload';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { usePermissions } from '../hooks/usePermissions';
 import { useRecruiter } from '../hooks/useRecruiter';
+import { SimplePlanBadge } from '../components/SimpleBadges';
 import { buildApiUrl, API_ENDPOINTS } from '../config/api';
 import { salaryRanges, jobTitleSuggestions, jobTypeSuggestions } from '../data/suggestions';
 const JobsPage = lazy(() => import('./JobsPage'));
@@ -1730,14 +1731,7 @@ export default function MyProfilePage() {
                         {/* Badges en haut à droite */}
                         <div className="absolute top-4 right-4 flex items-center gap-3">
                           {(candidatePlan === 'premium' || candidatePlan === 'elite') && (
-                            <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold text-white rounded-full shadow-lg ${
-                              candidatePlan === 'elite' 
-                                ? 'bg-gradient-to-r from-amber-500 to-orange-500' 
-                                : 'bg-blue-600'
-                            }`}>
-                              <span className={candidatePlan === 'elite' ? 'text-amber-100' : 'text-blue-200'}>⭐</span>
-                              {candidatePlan === 'elite' ? 'Elite' : 'Premium'}
-                            </span>
+                            <SimplePlanBadge planType={candidatePlan} />
                           )}
                         </div>
                         

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MapPin, Globe, User, Briefcase, Euro, Award, Clock, Heart, Star, Zap, TrendingUp, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
-import { PremiumBadge, ProBadge } from "./Badge";
+import { SimplePlanBadge } from "./SimpleBadges";
 import { useAuth } from "../contexts/AuthContext";
 import { usePermissions } from "../hooks/usePermissions";
 import { supabase } from "../lib/supabase";
@@ -117,8 +117,7 @@ export default function OptimizedCandidateCard({ candidate, compact = false, isF
       {/* Badges en haut à droite - masqués pour les candidats anonymes */}
       {!shouldHideName() && (
         <div className="absolute top-3 right-3 flex items-center gap-2">
-          {candidate.planType === 'premium' && <PremiumBadge />}
-          {candidate.planType === 'elite' && <ProBadge />}
+          <SimplePlanBadge planType={candidate.planType} />
         </div>
       )}
       
