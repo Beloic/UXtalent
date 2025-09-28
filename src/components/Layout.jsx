@@ -338,6 +338,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               <>
                 <div 
                   className="relative"
+                  ref={solutionsRef}
                 >
                   <button 
                     type="button"
