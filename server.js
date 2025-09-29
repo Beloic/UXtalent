@@ -1628,8 +1628,9 @@ app.post('/api/auth/webhook', async (req, res) => {
       const userRole = record.raw_user_meta_data?.role;
       const userEmail = record.email;
       
-      if (userRole === 'candidate' && userEmail) {
-        console.log('🆕 Création automatique profil candidat pour:', userEmail);
+      // Créer automatiquement un profil candidat pour TOUS les nouveaux utilisateurs
+      if (userEmail) {
+        console.log('🆕 Création automatique profil candidat pour:', userEmail, 'role:', userRole || 'non défini');
         
         // Vérifier que supabaseAdmin est disponible
         if (!supabaseAdmin) {
@@ -1672,7 +1673,8 @@ app.post('/api/auth/webhook', async (req, res) => {
             github: '',
             daily_rate: null,
             annual_salary: null,
-            status: 'new'
+            status: 'new',
+            plan_type: 'free'
           };
           
           const { data: newCandidate, error: createError } = await supabaseAdmin
@@ -1693,8 +1695,8 @@ app.post('/api/auth/webhook', async (req, res) => {
           return res.status(500).json({ error: 'Failed to create candidate profile' });
         }
       } else {
-        console.log('ℹ️ Utilisateur non-candidat ou email manquant, pas de création de profil');
-        return res.json({ message: 'No action needed' });
+        console.log('ℹ️ Email manquant, pas de création de profil');
+        return res.json({ message: 'No email provided' });
       }
     } else {
       console.log('ℹ️ Événement Auth non géré:', type);
