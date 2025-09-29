@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password, userData = {}) => {
     try {
-      // Séparer le rôle des métadonnées pour éviter les problèmes de trigger
+      // Séparer le rôle des métadonnées pour éviter les problèmes de trigger SQL
       const { role, ...metadataWithoutRole } = userData;
       
       const { data, error } = await supabase.auth.signUp({
