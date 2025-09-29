@@ -126,9 +126,9 @@ export default function RegisterPage() {
             navigate('/confirm-email')
           }, 2000)
         } else if (formData.role === 'candidate') {
-          setSuccess('Compte créé ! Vous allez être redirigé vers votre profil pour compléter vos informations.')
+          setSuccess('Compte créé ! Vous pouvez maintenant vous connecter pour compléter votre profil.')
           setTimeout(() => {
-            navigate('/my-profile/profile')
+            navigate('/login')
           }, 2000)
         } else if (formData.role === 'recruiter') {
           setSuccess('Compte créé ! Un email de confirmation a été envoyé. Après vérification, vous serez redirigé vers notre page de tarification.')

@@ -16,56 +16,33 @@ export const useAuth = () => {
 // Fonction pour créer automatiquement un profil candidat lors de l'inscription
 const createCandidateProfileIfNotExists = async (user) => {
   try {
+    console.log('🔍 Vérification/création profil candidat pour:', user.email)
     
-    // Vérifier si le profil existe déjà en utilisant l'admin client
-    const { data: existingProfile, error: checkError } = await supabaseAdmin
-      .from('candidates')
-      .select('id')
-      .eq('email', user.email)
-      .single()
-    
-    if (existingProfile) {
+    // Utiliser l'API backend au lieu de supabaseAdmin directement
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      console.warn('⚠️ Session non disponible pour création profil')
       return
     }
     
-    if (checkError && checkError.code === 'PGRST116') {
-      // Profil n'existe pas, on peut le créer
-      
-      // Créer le profil candidat avec statut 'new'
-      const candidateData = {
-        name: user.user_metadata?.first_name && user.user_metadata?.last_name 
-          ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
-          : user.email?.split('@')[0] || 'Nouveau Candidat',
-        email: user.email,
-        bio: 'Profil créé automatiquement lors de l\'inscription.',
-        title: '',
-        location: '',
-        remote: 'hybrid',
-        skills: [],
-        portfolio: '',
-        linkedin: '',
-        github: '',
-        daily_rate: null,
-        annual_salary: null,
-        status: 'new' // Statut pour les nouveaux profils (pas encore envoyé pour validation)
+    // Appeler l'API backend pour créer/récupérer le profil
+    const resp = await fetch(buildApiUrl('/api/candidates/me'), {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json'
       }
-      
-      const { data: newProfile, error: createError } = await supabaseAdmin
-        .from('candidates')
-        .insert([candidateData])
-        .select()
-        .single()
-      
-      if (createError) {
-        console.error('❌ Erreur lors de la création du profil candidat:', createError)
-      } else {
-        console.log('✅ Profil candidat créé avec succès:', newProfile?.id)
-      }
-    } else if (checkError) {
-      console.error('❌ Erreur lors de la vérification du profil candidat:', checkError)
+    })
+    
+    if (resp.ok || resp.status === 201) {
+      const profile = await resp.json()
+      console.log('✅ Profil candidat vérifié/créé via API:', profile?.id)
+    } else {
+      console.warn('⚠️ Erreur API création profil:', resp.status)
     }
+    
   } catch (error) {
-    console.error('❌ Erreur inattendue lors de la création du profil candidat:', error)
+    console.error('❌ Erreur lors de la création du profil candidat:', error)
   }
 }
 
