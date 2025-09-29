@@ -21,18 +21,14 @@ export default function ConfirmEmailPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // 2FA/confirmation email désactivée temporairement: rediriger directement
+    // 2FA/confirmation email désactivée temporairement: rediriger directement vers login
     if (!user) {
       navigate('/login')
       return
     }
     
-    // Rediriger selon le rôle après vérification d'email
-    if (user?.user_metadata?.role === 'recruiter') {
-      navigate('/recruiter-dashboard/talent')
-    } else {
-      navigate('/my-profile/profile')
-    }
+    // Rediriger vers login pour éviter la connexion automatique
+    navigate('/login')
   }, [user, navigate])
 
   const handleResendEmail = async () => {

@@ -181,7 +181,8 @@ export const AuthProvider = ({ children }) => {
                 console.warn('⚠️ Appel /api/recruiters/me non OK pendant connexion:', resp.status)
               }
             }
-          } else if (userRole === 'candidate') {
+          } else {
+            // Par défaut, traiter comme un candidat si pas de rôle défini ou si candidat
             console.log('🔍 Vérification/création du profil candidat pour:', data.user.email)
             // Utiliser l'API backend pour vérifier/créer le candidat
             const { data: { session } } = await supabase.auth.getSession()
