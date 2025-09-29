@@ -2,6 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+// Charger les variables d'environnement en premier
+dotenv.config();
+
 import { supabase, supabaseAdmin } from './src/lib/supabase.js';
 // Redis supprimé - plus utilisé
 import Stripe from 'stripe';
@@ -1522,6 +1527,12 @@ app.post('/api/auth/webhook', async (req, res) => {
       
       if (userRole === 'candidate' && userEmail) {
         console.log('🆕 Création automatique profil candidat pour:', userEmail);
+        
+        // Vérifier que supabaseAdmin est disponible
+        if (!supabaseAdmin) {
+          console.error('❌ supabaseAdmin non disponible - variables d\'environnement manquantes');
+          return res.status(500).json({ error: 'Database configuration error' });
+        }
         
         try {
           // Vérifier si le profil existe déjà

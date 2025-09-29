@@ -20,8 +20,9 @@ if (!supabaseUrl || !supabaseKey) {
     supabaseUrl = 'https://ktfdrwpvofxuktnunukv.supabase.co';
     supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5NzQ4NzQsImV4cCI6MjA1MDU1MDg3NH0.placeholder';
   } else {
-    console.error('❌ Variables d\'environnement Supabase manquantes dans supabaseForum.js');
-    throw new Error('Configuration Supabase incomplète - vérifiez vos variables d\'environnement');
+    console.warn('❌ Variables d\'environnement Supabase manquantes dans supabaseForum.js - utilisation valeurs par défaut');
+    supabaseUrl = 'https://ktfdrwpvofxuktnunukv.supabase.co';
+    supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8';
   }
 }
 
