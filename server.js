@@ -1500,6 +1500,109 @@ app.post('/api/metrics/reset', (req, res) => {
   }
 });
 
+// ===== API AUTH =====
+
+// POST /api/auth/create-candidate-profile - Créer un profil candidat automatiquement
+app.post('/api/auth/create-candidate-profile', async (req, res) => {
+  try {
+    const { email, name, bio = 'Profil créé automatiquement lors de l\'inscription.' } = req.body;
+    
+    if (!email || !name) {
+      return res.status(400).json({ error: "email et name requis" });
+    }
+    
+    if (!supabaseAdmin) {
+      return res.status(500).json({ error: "supabaseAdmin non disponible" });
+    }
+    
+    console.log('👤 Création automatique profil candidat pour:', email);
+    
+    // Vérifier si le profil existe déjà
+    const { data: existing, error: checkError } = await supabaseAdmin
+      .from('candidates')
+      .select('*')
+      .eq('email', email)
+      .single();
+    
+    if (existing && !checkError) {
+      console.log('✅ Profil candidat existe déjà:', existing.id);
+      return res.json(existing);
+    }
+    
+    if (checkError && checkError.code !== 'PGRST116') {
+      return res.status(500).json({ error: 'Erreur lors de la vérification du profil candidat' });
+    }
+    
+    // Créer le profil
+    const candidateData = {
+      name,
+      email,
+      bio,
+      title: '',
+      location: '',
+      remote: 'hybrid',
+      skills: [],
+      portfolio: '',
+      linkedin: '',
+      github: '',
+      daily_rate: null,
+      annual_salary: null,
+      status: 'new'
+    };
+    
+    const { data: created, error: createError } = await supabaseAdmin
+      .from('candidates')
+      .insert([candidateData])
+      .select()
+      .single();
+    
+    if (createError) {
+      console.error('❌ Erreur création profil candidat:', createError);
+      return res.status(500).json({ error: 'Erreur lors de la création du profil candidat' });
+    }
+    
+    console.log('✅ Profil candidat créé automatiquement:', created.id);
+    res.status(201).json(created);
+    
+  } catch (error) {
+    console.error('❌ Erreur API création profil candidat:', error);
+    res.status(500).json({ error: 'Erreur serveur lors de la création du profil candidat' });
+  }
+});
+
+// POST /api/auth/update-role - Mettre à jour le rôle d'un utilisateur
+app.post('/api/auth/update-role', async (req, res) => {
+  try {
+    const { userId, role, metadata } = req.body;
+    
+    if (!userId || !role) {
+      return res.status(400).json({ error: "userId et role requis" });
+    }
+    
+    if (!supabaseAdmin) {
+      return res.status(500).json({ error: "supabaseAdmin non disponible" });
+    }
+    
+    console.log('🔄 Mise à jour rôle via API backend:', userId, '→', role);
+    
+    const { data, error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+      user_metadata: metadata
+    });
+    
+    if (error) {
+      console.error('❌ Erreur mise à jour rôle:', error);
+      return res.status(500).json({ error: "Erreur lors de la mise à jour du rôle" });
+    }
+    
+    console.log('✅ Rôle mis à jour avec succès:', data.user?.user_metadata?.role);
+    res.json({ success: true, user: data.user });
+    
+  } catch (error) {
+    console.error('❌ Erreur API mise à jour rôle:', error);
+    res.status(500).json({ error: "Erreur serveur lors de la mise à jour du rôle" });
+  }
+});
+
 // ===== WEBHOOK SUPABASE AUTH =====
 
 // POST /api/auth/webhook - Webhook Supabase Auth (création automatique profils)

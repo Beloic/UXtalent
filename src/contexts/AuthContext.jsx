@@ -79,34 +79,77 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password, userData = {}) => {
     try {
-      // Séparer le rôle des métadonnées pour éviter les problèmes de trigger SQL
+      // Contournement du trigger SQL : créer d'abord sans rôle, puis mettre à jour
       const { role, ...metadataWithoutRole } = userData;
       
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: metadataWithoutRole, // Pas de rôle dans les métadonnées
+          data: metadataWithoutRole, // Créer sans rôle pour éviter le trigger
           emailRedirectTo: `${window.location.origin}/confirm-email`
         }
       })
       
       if (error) throw error
       
-      // Si l'inscription est réussie, créer automatiquement le profil selon le rôle
+      // Si l'inscription est réussie, mettre à jour le rôle puis créer le profil
       if (data?.user) {
         try {
+          // Mettre à jour les métadonnées avec le rôle après création
+          if (role) {
+            console.log('🔄 Mise à jour du rôle pour:', data.user.email, '→', role)
+            
+            // Utiliser l'API backend pour mettre à jour le rôle
+            try {
+              const resp = await fetch(buildApiUrl('/api/auth/update-role'), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  userId: data.user.id,
+                  role: role,
+                  metadata: { ...metadataWithoutRole, role }
+                })
+              })
+              
+              if (resp.ok) {
+                console.log('✅ Rôle mis à jour via API backend:', role)
+              } else {
+                console.warn('⚠️ Erreur API mise à jour rôle:', resp.status)
+              }
+            } catch (apiError) {
+              console.error('❌ Erreur API mise à jour rôle:', apiError)
+            }
+          }
+          
+          // Créer le profil selon le rôle
           if (role === 'candidate') {
             console.log('👤 Création du profil candidat pour:', data.user.email)
             
-            // Utiliser directement la méthode locale (plus fiable)
+            // Créer le profil via l'API backend
             try {
-              await createCandidateProfileIfNotExists(data.user)
-              console.log('✅ Profil candidat créé via méthode locale')
-            } catch (localError) {
-              console.error('❌ Échec création locale:', localError)
-              // Le webhook backend créera le profil en arrière-plan
-              console.log('🔄 Le webhook backend créera le profil automatiquement')
+              const createResp = await fetch(buildApiUrl('/api/auth/create-candidate-profile'), {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  name: `${metadataWithoutRole.first_name} ${metadataWithoutRole.last_name}`,
+                  email: data.user.email,
+                  bio: 'Profil créé automatiquement lors de l\'inscription.'
+                })
+              })
+              
+              if (createResp.ok) {
+                const profile = await createResp.json()
+                console.log('✅ Profil candidat créé via API backend:', profile.id)
+              } else {
+                console.warn('⚠️ Erreur API création profil:', createResp.status)
+              }
+            } catch (apiError) {
+              console.error('❌ Erreur API création profil:', apiError)
             }
           } else if (role === 'recruiter') {
             console.log('🏢 Création du profil recruteur pour:', data.user.email)
