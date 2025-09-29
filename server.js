@@ -1495,6 +1495,104 @@ app.post('/api/metrics/reset', (req, res) => {
   }
 });
 
+// ===== WEBHOOK SUPABASE AUTH =====
+
+// POST /api/auth/webhook - Webhook Supabase Auth (création automatique profils)
+app.post('/api/auth/webhook', async (req, res) => {
+  try {
+    console.log('🔔 Webhook Supabase Auth reçu:', req.body?.type);
+    
+    const { type, record } = req.body;
+    
+    // Vérifier le secret webhook (sécurité)
+    const authHeader = req.headers.authorization;
+    const expectedSecret = process.env.SUPABASE_WEBHOOK_SECRET;
+    
+    if (expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
+      console.error('❌ Secret webhook Auth invalide');
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    // Traiter l'événement user.created
+    if (type === 'INSERT' && record) {
+      console.log('👤 Nouvel utilisateur créé:', record.email, 'role:', record.raw_user_meta_data?.role);
+      
+      const userRole = record.raw_user_meta_data?.role;
+      const userEmail = record.email;
+      
+      if (userRole === 'candidate' && userEmail) {
+        console.log('🆕 Création automatique profil candidat pour:', userEmail);
+        
+        try {
+          // Vérifier si le profil existe déjà
+          const { data: existing, error: checkError } = await supabaseAdmin
+            .from('candidates')
+            .select('id')
+            .eq('email', userEmail)
+            .single();
+          
+          if (existing) {
+            console.log('✅ Profil candidat existe déjà:', existing.id);
+            return res.json({ message: 'Profile already exists', candidateId: existing.id });
+          }
+          
+          if (checkError && checkError.code !== 'PGRST116') {
+            throw checkError;
+          }
+          
+          // Créer le profil candidat
+          const nameFromMeta = record.raw_user_meta_data?.first_name && record.raw_user_meta_data?.last_name
+            ? `${record.raw_user_meta_data.first_name} ${record.raw_user_meta_data.last_name}`
+            : (userEmail.split('@')[0] || 'Nouveau Candidat');
+          
+          const candidateData = {
+            name: nameFromMeta,
+            email: userEmail,
+            bio: "Profil créé automatiquement lors de l'inscription.",
+            title: '',
+            location: '',
+            remote: 'hybrid',
+            skills: [],
+            portfolio: '',
+            linkedin: '',
+            github: '',
+            daily_rate: null,
+            annual_salary: null,
+            status: 'new'
+          };
+          
+          const { data: newCandidate, error: createError } = await supabaseAdmin
+            .from('candidates')
+            .insert([candidateData])
+            .select()
+            .single();
+          
+          if (createError) {
+            throw createError;
+          }
+          
+          console.log('✅ Profil candidat créé automatiquement via webhook:', newCandidate.id);
+          return res.json({ message: 'Candidate profile created', candidateId: newCandidate.id });
+          
+        } catch (error) {
+          console.error('❌ Erreur création profil candidat via webhook:', error);
+          return res.status(500).json({ error: 'Failed to create candidate profile' });
+        }
+      } else {
+        console.log('ℹ️ Utilisateur non-candidat ou email manquant, pas de création de profil');
+        return res.json({ message: 'No action needed' });
+      }
+    } else {
+      console.log('ℹ️ Événement Auth non géré:', type);
+      return res.json({ message: 'Event not handled' });
+    }
+    
+  } catch (error) {
+    console.error('❌ Erreur webhook Auth:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // ===== WEBHOOK STRIPE =====
 
 // POST /api/stripe/webhook - Webhook Stripe
