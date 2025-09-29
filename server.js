@@ -838,6 +838,87 @@ app.get('/api/stats', (req, res) => {
   res.json(stats);
 });
 
+// GET /api/candidates/me - Créer/récupérer le profil du candidat connecté
+app.get('/api/candidates/me', requireRole(['candidate', 'admin']), async (req, res) => {
+  try {
+    const email = req.user?.email;
+    const meta = req.user?.user_metadata || {};
+
+    if (!email) {
+      return res.status(400).json({ error: "Email utilisateur introuvable" });
+    }
+
+    // Vérifier l'existence du profil candidat
+    const { data: existing, error: checkError } = await supabaseAdmin
+      .from('candidates')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (existing && !checkError) {
+      const mapped = {
+        ...existing,
+        plan: existing.plan_type || 'free',
+        planType: existing.plan_type || 'free',
+        createdAt: existing.created_at,
+        updatedAt: existing.updated_at,
+        dailyRate: existing.daily_rate,
+        annualSalary: existing.annual_salary,
+      };
+      return res.json(mapped);
+    }
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      return res.status(500).json({ error: 'Erreur lors de la vérification du profil candidat' });
+    }
+
+    // Créer le profil s'il n'existe pas
+    const nameFromMeta = meta?.first_name && meta?.last_name
+      ? `${meta.first_name} ${meta.last_name}`
+      : (email.split('@')[0] || 'Nouveau Candidat');
+
+    const candidateData = {
+      name: nameFromMeta,
+      email,
+      bio: "Profil créé automatiquement lors de l'inscription.",
+      title: '',
+      location: '',
+      remote: 'hybrid',
+      skills: [],
+      portfolio: '',
+      linkedin: '',
+      github: '',
+      daily_rate: null,
+      annual_salary: null,
+      status: 'new'
+    };
+
+    const { data: created, error: createError } = await supabaseAdmin
+      .from('candidates')
+      .insert([candidateData])
+      .select()
+      .single();
+
+    if (createError) {
+      return res.status(500).json({ error: 'Erreur lors de la création du profil candidat' });
+    }
+
+    const mapped = {
+      ...created,
+      plan: created.plan_type || 'free',
+      planType: created.plan_type || 'free',
+      createdAt: created.created_at,
+      updatedAt: created.updated_at,
+      dailyRate: created.daily_rate,
+      annualSalary: created.annual_salary,
+    };
+
+    return res.status(201).json(mapped);
+  } catch (error) {
+    return res.status(500).json({ error: 'Erreur serveur lors de la création du profil candidat' });
+  }
+});
+
 // POST /api/candidates - Ajouter un nouveau candidat
 app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
   try {
@@ -1023,7 +1104,7 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
     const candidateDataWithStatus = {
       ...candidateData,
       // approved supprimé - utilise uniquement status
-      status: candidateData.status || 'pending'
+      status: candidateData.status || 'new'
     };
     
     console.log('🆕 [SERVER] Création candidat avec statut:', { 

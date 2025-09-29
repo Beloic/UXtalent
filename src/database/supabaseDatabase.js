@@ -119,7 +119,7 @@ export const addCandidate = async (candidateData) => {
       daily_rate: candidateData.dailyRate,
       annual_salary: candidateData.annualSalary,
       // S'assurer que les nouveaux candidats sont en attente par défaut
-      status: candidateData.status || 'pending'
+      status: candidateData.status || 'new'
     };
     
     // Supprimer les propriétés camelCase pour éviter les conflits

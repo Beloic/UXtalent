@@ -188,6 +188,25 @@ export const AuthProvider = ({ children }) => {
                 console.warn('⚠️ Appel /api/recruiters/me non OK pendant connexion:', resp.status)
               }
             }
+          } else if (userRole === 'candidate') {
+            console.log('🔍 Vérification/création du profil candidat pour:', data.user.email)
+            // Utiliser l'API backend pour vérifier/créer le candidat
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session) {
+              const resp = await fetch(buildApiUrl('/api/candidates/me'), {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${session.access_token}`,
+                  'Content-Type': 'application/json'
+                }
+              })
+              if (resp.ok || resp.status === 201) {
+                const profile = await resp.json()
+                console.log('✅ Profil candidat vérifié/créé via API:', profile?.id)
+              } else {
+                console.warn('⚠️ Appel /api/candidates/me non OK pendant connexion:', resp.status)
+              }
+            }
           }
         } catch (profileError) {
           console.error('❌ Erreur lors de la vérification/création du profil:', profileError)
