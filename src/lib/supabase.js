@@ -19,11 +19,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('VITE_SUPABASE_URL:', !!supabaseUrl, supabaseUrl ? '(définie)' : '(manquante)')
   console.warn('VITE_SUPABASE_ANON_KEY:', !!supabaseAnonKey, supabaseAnonKey ? '(définie)' : '(manquante)')
   
-  // En mode développement, utiliser des valeurs par défaut
-  if (process.env.NODE_ENV === 'development') {
+  // En mode développement ou si pas en production, utiliser des valeurs par défaut
+  if (process.env.NODE_ENV !== 'production') {
     console.warn('🔧 Mode développement - Utilisation de valeurs par défaut')
     const defaultUrl = 'https://ktfdrwpvofxuktnunukv.supabase.co'
-    const defaultKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5NzQ4NzQsImV4cCI6MjA1MDU1MDg3NH0.placeholder'
+    const defaultKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0ZmRyd3B2b2Z4dWt0bnVudWt2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1OTU4NDAsImV4cCI6MjA3MzE3MTg0MH0.v6886_P_zJuTv-fsZZRydSaVfQ0qLqY56SQJgWePpY8'
     
     // Utiliser les valeurs par défaut si elles ne sont pas définies
     if (!supabaseUrl) {
