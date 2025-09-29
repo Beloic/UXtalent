@@ -57,11 +57,15 @@ const createCandidateProfileIfNotExists = async (user) => {
         .single()
       
       if (createError) {
+        console.error('❌ Erreur lors de la création du profil candidat:', createError)
       } else {
+        console.log('✅ Profil candidat créé avec succès:', newProfile?.id)
       }
     } else if (checkError) {
+      console.error('❌ Erreur lors de la vérification du profil candidat:', checkError)
     }
   } catch (error) {
+    console.error('❌ Erreur inattendue lors de la création du profil candidat:', error)
   }
 }
 
@@ -114,7 +118,39 @@ export const AuthProvider = ({ children }) => {
         try {
           if (userData?.role === 'candidate') {
             console.log('👤 Création du profil candidat pour:', data.user.email)
-            await createCandidateProfileIfNotExists(data.user)
+            
+            // Essayer d'abord avec l'API backend (plus robuste)
+            try {
+              await new Promise(resolve => setTimeout(resolve, 1000))
+              const { data: { session } } = await supabase.auth.getSession()
+              if (session) {
+                console.log('🔑 Session disponible, appel API candidat...')
+                const resp = await fetch(buildApiUrl('/api/candidates/me'), {
+                  method: 'GET',
+                  headers: {
+                    'Authorization': `Bearer ${session.access_token}`,
+                    'Content-Type': 'application/json'
+                  }
+                })
+                if (resp.ok || resp.status === 201) {
+                  const profile = await resp.json()
+                  console.log('✅ Profil candidat créé via API:', profile?.id)
+                } else {
+                  console.warn('⚠️ Appel /api/candidates/me non OK pendant inscription:', resp.status)
+                  const errorText = await resp.text()
+                  console.log('   Détails:', errorText)
+                  // Fallback vers la méthode locale
+                  console.log('🔄 Fallback vers création locale...')
+                  await createCandidateProfileIfNotExists(data.user)
+                }
+              } else {
+                console.warn('⚠️ Session non disponible après signUp candidat, fallback vers création locale')
+                await createCandidateProfileIfNotExists(data.user)
+              }
+            } catch (apiError) {
+              console.warn('⚠️ Erreur API, fallback vers création locale:', apiError)
+              await createCandidateProfileIfNotExists(data.user)
+            }
           } else if (userData?.role === 'recruiter') {
             console.log('🏢 Création du profil recruteur pour:', data.user.email)
             // Attendre un peu que la session soit disponible après signUp
