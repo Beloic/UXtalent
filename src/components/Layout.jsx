@@ -62,37 +62,46 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
   useEffect(() => {
     const checkProfile = async () => {
-      if (!isAuthenticated || !isCandidate) {
-        setHasProfile(true); // Les recruteurs et non-connectés peuvent toujours voir la liste
+      if (!isAuthenticated) {
+        setHasProfile(true); // Les non-connectés peuvent toujours voir la liste
         return;
       }
 
       try {
-        // Récupérer directement le profil du candidat par email
-        const response = await fetch(buildApiUrl(`/api/candidates/?email=${encodeURIComponent(user.email)}`), {
-          headers: {
-            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-          }
-        });
+        if (isCandidate) {
+          // Récupérer le profil depuis l'endpoint stateless qui lit directement la DB
+          const sessionData = await supabase.auth.getSession();
+          const token = sessionData.data.session?.access_token;
+          const response = await fetch(
+            buildApiUrl(`/api/candidates/profile/${encodeURIComponent(user.email)}?force_refresh=true`),
+            {
+              headers: token
+                ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                : { 'Content-Type': 'application/json' }
+            }
+          );
 
-        if (response.ok) {
-          const responseData = await response.json();
-          // Gérer les deux formats de réponse possibles
-          const userProfile = responseData.candidates?.[0] || responseData;
-          setHasProfile(!!userProfile);
-          // Charger le plan du candidat
-          if (userProfile) {
-            const plan = userProfile.plan || userProfile.planType || userProfile.plan_type || 'free';
-            setCandidatePlan(plan);
-            // Charger le nom d'affichage et la photo depuis le profil
-            setUserDisplayName(userProfile.name || userProfile.first_name || null);
-            setUserProfilePhoto(userProfile.photo || userProfile.profilePhoto || null);
+          if (response.ok) {
+            const userProfile = await response.json();
+            setHasProfile(!!userProfile);
+            if (userProfile) {
+              const plan = userProfile.plan || userProfile.planType || userProfile.plan_type || 'free';
+              setCandidatePlan(plan);
+              setUserDisplayName(userProfile.name || userProfile.first_name || null);
+              setUserProfilePhoto(userProfile.photo || userProfile.profilePhoto || null);
+            }
+          } else if (response.status === 404) {
+            setHasProfile(false);
+          } else {
+            setHasProfile(false);
           }
-        } else if (response.status === 404) {
-          // Si 404, cela signifie qu'il n'y a pas encore de profils dans la base
-          setHasProfile(false);
+        } else if (isRecruiter && recruiter) {
+          // Charger les données du recruteur
+          setHasProfile(true);
+          setUserDisplayName(recruiter.name || null);
+          setUserProfilePhoto(recruiter.photo || null);
         } else {
-          setHasProfile(false);
+          setHasProfile(true); // Par défaut, permettre l'accès
         }
       } catch (error) {
         setHasProfile(false);
