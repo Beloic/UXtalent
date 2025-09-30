@@ -61,6 +61,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Créer le trigger pour updated_at
+DROP TRIGGER IF EXISTS trigger_update_recruiters_updated_at ON recruiters;
 CREATE TRIGGER trigger_update_recruiters_updated_at
     BEFORE UPDATE ON recruiters
     FOR EACH ROW
@@ -85,38 +86,37 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Créer le trigger pour vérifier le statut d'abonnement
+DROP TRIGGER IF EXISTS trigger_check_recruiter_subscription_status ON recruiters;
 CREATE TRIGGER trigger_check_recruiter_subscription_status
     BEFORE INSERT OR UPDATE ON recruiters
     FOR EACH ROW
     EXECUTE FUNCTION check_recruiter_subscription_status();
 
--- Insérer des données de test (optionnel)
-INSERT INTO recruiters (
-    email, 
-    name, 
-    company, 
-    plan_type, 
-    subscription_status,
-    subscription_start_date,
-    subscription_end_date,
-    max_job_posts,
-    max_candidate_contacts
-) VALUES (
-    'be.loic23@gmail.com',
-    'Loic Bernard',
-    'UX Jobs Pro',
-    'max',
-    'active',
-    NOW(),
-    NOW() + INTERVAL '1 year',
-    50,
-    1000
-) ON CONFLICT (email) DO NOTHING;
+-- Insérer des données de test (optionnel) - seulement si la table n'existe pas déjà
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM recruiters WHERE email = 'be.loic23@gmail.com') THEN
+        INSERT INTO recruiters (
+            email, 
+            name, 
+            company, 
+            plan_type, 
+            subscription_status,
+            subscription_start_date,
+            subscription_end_date
+        ) VALUES (
+            'be.loic23@gmail.com',
+            'Loic Bernard',
+            'UX Jobs Pro',
+            'max',
+            'active',
+            NOW(),
+            NOW() + INTERVAL '1 year'
+        );
+    END IF;
+END $$;
 
 -- Commentaires sur la table
 COMMENT ON TABLE recruiters IS 'Table des recruteurs avec gestion des abonnements et quotas';
 COMMENT ON COLUMN recruiters.plan_type IS 'Type de plan: starter, max, premium, custom';
 COMMENT ON COLUMN recruiters.subscription_status IS 'Statut de l''abonnement: active, inactive, cancelled, expired, trial';
-COMMENT ON COLUMN recruiters.max_job_posts IS 'Nombre maximum d''offres d''emploi pouvant être publiées';
-COMMENT ON COLUMN recruiters.max_candidate_contacts IS 'Nombre maximum de candidats pouvant être contactés';
-COMMENT ON COLUMN recruiters.max_featured_jobs IS 'Nombre maximum d''offres pouvant être mises en avant';

@@ -58,4 +58,3 @@ CREATE TRIGGER on_auth_user_created
 
 -- Commentaires pour documentation
 COMMENT ON FUNCTION public.create_candidate_profile_on_signup() IS 'Crée automatiquement un profil candidat lors de l''inscription d''un utilisateur avec le rôle candidate';
-COMMENT ON TRIGGER on_auth_user_created ON auth.users IS 'Trigger pour créer automatiquement les profils candidats à l''inscription';

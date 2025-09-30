@@ -32,6 +32,7 @@ export const loadCandidates = async () => {
         featured_until,
         notes,
         status,
+        job_type,
         created_at,
         updated_at
       `)
@@ -58,6 +59,8 @@ export const loadCandidates = async () => {
         featuredUntil: candidate.featured_until,
         // Ajouter le champ notes
         notes: candidate.notes || '',
+        // Mapper jobType
+        jobType: candidate.job_type || 'CDI',
         // Mapper la photo de profil avec URL complète depuis Supabase Storage
         profilePhoto: (() => {
           if (!candidate.photo) return null;
@@ -118,6 +121,7 @@ export const addCandidate = async (candidateData) => {
       ...candidateData,
       daily_rate: candidateData.dailyRate,
       annual_salary: candidateData.annualSalary,
+      job_type: candidateData.jobType,
       // S'assurer que les nouveaux candidats sont en attente par défaut
       status: candidateData.status || 'new'
     };
@@ -125,6 +129,7 @@ export const addCandidate = async (candidateData) => {
     // Supprimer les propriétés camelCase pour éviter les conflits
     delete dbData.dailyRate;
     delete dbData.annualSalary;
+    delete dbData.jobType;
     delete dbData.yearsOfExperience; // Ignorer car la colonne n'existe pas encore
     
     const { data, error } = await supabase
@@ -141,7 +146,8 @@ export const addCandidate = async (candidateData) => {
       createdAt: data.created_at,
       updatedAt: data.updated_at,
       dailyRate: data.daily_rate,
-      annualSalary: data.annual_salary
+      annualSalary: data.annual_salary,
+      jobType: data.job_type || 'CDI'
       // yearsOfExperience sera extrait depuis la bio
     };
     
@@ -167,6 +173,12 @@ export const updateCandidate = async (id, candidateData) => {
     const dbData = { ...candidateData };
     // Supprimer les champs non supportés par le schéma Supabase (évite les erreurs 500)
     delete dbData.phone;
+    
+    // Convertir jobType vers job_type
+    if (candidateData.jobType !== undefined) {
+      dbData.job_type = candidateData.jobType;
+      delete dbData.jobType;
+    }
     
     // Convertir les champs de rémunération si ils existent
     if (candidateData.dailyRate !== undefined) {
@@ -210,7 +222,8 @@ export const updateCandidate = async (id, candidateData) => {
       planStartDate: data.plan_start_date,
       planEndDate: data.plan_end_date,
       isFeatured: data.is_featured || false,
-      featuredUntil: data.featured_until
+      featuredUntil: data.featured_until,
+      jobType: data.job_type || 'CDI'
     };
     
     return mappedData;
