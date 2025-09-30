@@ -137,7 +137,7 @@ export default function CandidateCard({ candidate, compact = false }) {
   return (
     <div className={getCardStyles()}>
       {/* Badges en haut à droite - masqués pour les candidats anonymes */}
-      {!shouldHideName() && (
+      {(
         <div className="absolute top-3 right-3 flex items-center gap-2">
           <SimplePlanBadge planType={candidate.planType} />
         </div>

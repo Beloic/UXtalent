@@ -462,7 +462,7 @@ export default function CandidateDetailPage() {
             <div className="bg-white rounded-2xl shadow-xl p-8 border border-white/20 backdrop-blur-sm relative">
               {/* Badges + Favori en haut à droite */}
               <div className="absolute top-4 right-4 flex items-center gap-3">
-                {!shouldHideName() && (candidate.planType === 'premium' || candidate.planType === 'elite') && (
+                {(candidate.planType === 'premium' || candidate.planType === 'elite') && (
                   <SimplePlanBadge planType={candidate.planType} />
                 )}
                 {user && isRecruiter && (
