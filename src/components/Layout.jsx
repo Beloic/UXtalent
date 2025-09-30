@@ -564,7 +564,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                         )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-900 truncate">
-                            {userDisplayName || user.user_metadata?.first_name || user.email?.split('@')[0] || 'Utilisateur'}
+                            {userDisplayName || (user.user_metadata?.first_name && user.user_metadata?.last_name ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}` : user.email?.split('@')[0]) || 'Utilisateur'}
                           </p>
                           <p className="text-xs text-gray-500 truncate">
                             {user.email}
@@ -805,7 +805,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                         )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-900 truncate">
-                            {userDisplayName || user.user_metadata?.first_name || user.email?.split('@')[0] || 'Utilisateur'}
+                            {userDisplayName || (user.user_metadata?.first_name && user.user_metadata?.last_name ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}` : user.email?.split('@')[0]) || 'Utilisateur'}
                           </p>
                           <p className="text-xs text-gray-500 truncate">
                             {user.email}
