@@ -259,6 +259,14 @@ export const AuthProvider = ({ children }) => {
 
   const signOut = async () => {
     try {
+      // Vider le cache de profil avant la déconnexion
+      if (typeof window !== 'undefined') {
+        // Vider le localStorage des données utilisateur
+        localStorage.removeItem('userId');
+        // Déclencher un événement pour vider le cache de profil
+        window.dispatchEvent(new CustomEvent('clearProfileCache'));
+      }
+      
       const { error } = await supabase.auth.signOut()
       if (error) throw error
       return { error: null }

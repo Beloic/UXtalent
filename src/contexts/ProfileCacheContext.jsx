@@ -14,15 +14,32 @@ export const ProfileCacheProvider = ({ children }) => {
   const [profileCache, setProfileCache] = useState({
     data: null,
     lastUpdated: null,
-    isLoading: false
+    isLoading: false,
+    userId: null // Ajouter l'ID utilisateur pour éviter les mélanges
   });
 
+  // Écouter l'événement de déconnexion pour vider le cache
+  React.useEffect(() => {
+    const handleClearCache = () => {
+      setProfileCache({
+        data: null,
+        lastUpdated: null,
+        isLoading: false,
+        userId: null
+      });
+    };
+
+    window.addEventListener('clearProfileCache', handleClearCache);
+    return () => window.removeEventListener('clearProfileCache', handleClearCache);
+  }, []);
+
   // Fonction pour mettre à jour le cache avec les données du profil
-  const updateProfileCache = useCallback((profileData) => {
+  const updateProfileCache = useCallback((profileData, userId = null) => {
     setProfileCache({
       data: profileData,
       lastUpdated: Date.now(),
-      isLoading: false
+      isLoading: false,
+      userId: userId
     });
   }, []);
 
@@ -42,19 +59,20 @@ export const ProfileCacheProvider = ({ children }) => {
   }, [profileCache.lastUpdated]);
 
   // Fonction pour obtenir les données du cache si elles sont valides
-  const getCachedData = useCallback(() => {
-    if (isCacheValid() && profileCache.data) {
+  const getCachedData = useCallback((currentUserId = null) => {
+    if (isCacheValid() && profileCache.data && profileCache.userId === currentUserId) {
       return profileCache.data;
     }
     return null;
-  }, [profileCache.data, isCacheValid]);
+  }, [profileCache.data, profileCache.userId, isCacheValid]);
 
   // Fonction pour vider le cache
   const clearCache = useCallback(() => {
     setProfileCache({
       data: null,
       lastUpdated: null,
-      isLoading: false
+      isLoading: false,
+      userId: null
     });
   }, []);
 

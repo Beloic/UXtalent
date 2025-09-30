@@ -469,8 +469,8 @@ export default function MyProfilePage() {
     try {
       // Réinitialiser l'erreur avant un nouveau chargement
       setProfileLoadError(null);
-      // Vérifier d'abord si on a des données en cache valides
-      const cachedData = getCachedData();
+      // Vérifier d'abord si on a des données en cache valides pour cet utilisateur
+      const cachedData = getCachedData(user?.id);
       if (cachedData && activeTab !== 'profile') {
         // Si on a des données en cache et qu'on n'est pas sur l'onglet profil,
         // utiliser les données du cache sans recharger
@@ -652,7 +652,7 @@ export default function MyProfilePage() {
             formData: newFormData,
             candidateStatus: status,
             candidatePlan: existingCandidate.plan || 'free'
-          });
+          }, user?.id);
           
           // Faire disparaître le message après 3 secondes
           setTimeout(() => {
