@@ -42,7 +42,7 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
     
     if (candidateId) {
       const candidate = favoritesList.find(c => c.id == candidateId); // Utiliser == au lieu de === pour la comparaison
-      return candidate ? (candidate.name || candidate.title || 'Candidat sans nom') : '';
+      return candidate ? (candidate.name || 'Candidat sans nom') : '';
     }
     
     return '';
@@ -61,7 +61,7 @@ const Calendar = ({ candidates = [], favorites = [] }) => {
       const candidate = favoritesList.find(c => c.id == appointment.candidate_id); // Utiliser == pour la comparaison
       
       if (candidate) {
-        return candidate.name || candidate.title || 'Candidat sans nom';
+        return candidate.name || 'Candidat sans nom';
       }
     }
     

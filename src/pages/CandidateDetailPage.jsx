@@ -509,7 +509,7 @@ export default function CandidateDetailPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-2">
                     <h1 className="text-4xl font-bold text-gray-900">
-                      {shouldHideName() ? "Profil Designer UX/UI" : `${candidate.name} - Designer UX/UI`}
+                      {shouldHideName() ? "Profil Designer UX/UI" : (candidate.name || 'Candidat')}
                     </h1>
                   </div>
                   <p className="text-xl text-gray-600 mb-4">{candidate.title || 'Titre non spécifié'}</p>
