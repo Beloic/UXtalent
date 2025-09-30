@@ -209,7 +209,7 @@ export default function OptimizedCandidateCard({ candidate, compact = false, isF
           {(candidate.annualSalary || candidate.annual_salary) && (
             <div className="flex items-center gap-1">
               <Euro className="w-4 h-4 text-emerald-600" />
-              <span className="font-medium">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€ annuel</span>
+              <span className="font-medium">{candidate.annualSalary || candidate.annual_salary} annuel</span>
             </div>
           )}
         </div>

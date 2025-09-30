@@ -802,7 +802,7 @@ export default function CandidateDetailPage() {
                         {(candidate.annualSalary || candidate.annual_salary) && (
                           <div className="flex items-center gap-2">
                             <span className="text-sm text-gray-600 font-medium">Salaire annuel:</span>
-                            <span className="font-bold text-gray-900">{(candidate.annualSalary || candidate.annual_salary).toLocaleString('fr-FR')}€</span>
+                            <span className="font-bold text-gray-900">{candidate.annualSalary || candidate.annual_salary}</span>
                           </div>
                         )}
                         {(candidate.jobType || candidate.job_type) && (
