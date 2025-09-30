@@ -3,6 +3,61 @@
 import { supabase, supabaseAdmin } from '../lib/supabase.js';
 import { getCandidatePlan, setCandidatePlan, clearCandidatePlan } from '../cache/planCache.js';
 
+// Fonction pour convertir une fourchette de salaire en nombre
+const convertSalaryRangeToNumber = (salaryRange) => {
+  if (!salaryRange || salaryRange === 'Non spécifié' || salaryRange === '') {
+    return null;
+  }
+  
+  // Si c'est déjà un nombre, le retourner
+  if (typeof salaryRange === 'number') {
+    return salaryRange;
+  }
+  
+  // Si c'est une chaîne qui contient des chiffres, extraire le nombre
+  if (typeof salaryRange === 'string') {
+    // Extraire les nombres de la fourchette (ex: "50k-60k€" -> 50000)
+    const numbers = salaryRange.match(/\d+/g);
+    if (numbers && numbers.length > 0) {
+      // Prendre le premier nombre et le multiplier par 1000 si c'est en k
+      const firstNumber = parseInt(numbers[0]);
+      return salaryRange.includes('k') ? firstNumber * 1000 : firstNumber;
+    }
+  }
+  
+  return null;
+};
+
+// Fonction pour convertir un nombre en fourchette de salaire
+const convertNumberToSalaryRange = (salaryNumber) => {
+  if (!salaryNumber || salaryNumber === 0) {
+    return 'Non spécifié';
+  }
+  
+  const salaryInK = Math.round(salaryNumber / 1000);
+  
+  if (salaryInK <= 40) return '30k-40k€';
+  if (salaryInK <= 45) return '35k-45k€';
+  if (salaryInK <= 50) return '40k-50k€';
+  if (salaryInK <= 55) return '45k-55k€';
+  if (salaryInK <= 60) return '50k-60k€';
+  if (salaryInK <= 65) return '55k-65k€';
+  if (salaryInK <= 70) return '60k-70k€';
+  if (salaryInK <= 75) return '65k-75k€';
+  if (salaryInK <= 80) return '70k-80k€';
+  if (salaryInK <= 85) return '75k-85k€';
+  if (salaryInK <= 90) return '80k-90k€';
+  if (salaryInK <= 95) return '85k-95k€';
+  if (salaryInK <= 100) return '90k-100k€';
+  if (salaryInK <= 110) return '95k-110k€';
+  if (salaryInK <= 120) return '100k-120k€';
+  if (salaryInK <= 130) return '110k-130k€';
+  if (salaryInK <= 140) return '120k-140k€';
+  if (salaryInK <= 150) return '130k-150k€';
+  if (salaryInK <= 160) return '140k-160k€';
+  return '150k+€';
+};
+
 // ===== CANDIDATES =====
 
 export const loadCandidates = async () => {
@@ -50,7 +105,7 @@ export const loadCandidates = async () => {
         createdAt: candidate.created_at,
         updatedAt: candidate.updated_at,
         dailyRate: candidate.daily_rate,
-        annualSalary: candidate.annual_salary,
+        annualSalary: convertNumberToSalaryRange(candidate.annual_salary),
         // Utiliser le cache si disponible, sinon les données de la base
         planType: cachedPlan ? cachedPlan.planType : (candidate.plan_type || 'free'),
         planStartDate: candidate.plan_start_date,
@@ -120,7 +175,7 @@ export const addCandidate = async (candidateData) => {
     const dbData = {
       ...candidateData,
       daily_rate: candidateData.dailyRate,
-      annual_salary: candidateData.annualSalary,
+      annual_salary: convertSalaryRangeToNumber(candidateData.annualSalary),
       job_type: candidateData.jobType,
       // S'assurer que les nouveaux candidats sont en attente par défaut
       status: candidateData.status || 'new'
@@ -146,7 +201,7 @@ export const addCandidate = async (candidateData) => {
       createdAt: data.created_at,
       updatedAt: data.updated_at,
       dailyRate: data.daily_rate,
-      annualSalary: data.annual_salary,
+      annualSalary: convertNumberToSalaryRange(data.annual_salary),
       jobType: data.job_type || 'CDI'
       // yearsOfExperience sera extrait depuis la bio
     };
@@ -186,7 +241,8 @@ export const updateCandidate = async (id, candidateData) => {
       delete dbData.dailyRate;
     }
     if (candidateData.annualSalary !== undefined) {
-      dbData.annual_salary = candidateData.annualSalary;
+      // Convertir la fourchette de salaire en valeur numérique pour la base de données
+      dbData.annual_salary = convertSalaryRangeToNumber(candidateData.annualSalary);
       delete dbData.annualSalary;
     }
     // Ignorer yearsOfExperience car la colonne n'existe pas encore en base
@@ -217,7 +273,7 @@ export const updateCandidate = async (id, candidateData) => {
       createdAt: data.created_at,
       updatedAt: data.updated_at,
       dailyRate: data.daily_rate,
-      annualSalary: data.annual_salary,
+      annualSalary: convertNumberToSalaryRange(data.annual_salary),
       planType: data.plan_type || 'free',
       planStartDate: data.plan_start_date,
       planEndDate: data.plan_end_date,
@@ -309,7 +365,7 @@ export const updateCandidatePlan = async (id, planType, durationMonths = 1) => {
       createdAt: data.created_at,
       updatedAt: data.updated_at,
       dailyRate: data.daily_rate,
-      annualSalary: data.annual_salary,
+      annualSalary: convertNumberToSalaryRange(data.annual_salary),
       planType: planType, // Utiliser le plan demandé
       planStartDate: data.plan_start_date,
       planEndDate: data.plan_end_date,
@@ -473,7 +529,7 @@ export const getRecruiterFavorites = async (recruiterId) => {
         createdAt: candidate.created_at,
         updatedAt: candidate.updated_at,
         dailyRate: candidate.daily_rate,
-        annualSalary: candidate.annual_salary,
+        annualSalary: convertNumberToSalaryRange(candidate.annual_salary),
         planType: candidate.plan_type || 'free',
         favoriteId: favorite.id,
         favoritedAt: favorite.created_at
