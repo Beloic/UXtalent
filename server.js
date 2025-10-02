@@ -518,30 +518,60 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
         const candidateSalary = candidate.annualSalary || (candidate.dailyRate ? candidate.dailyRate * 220 : null);
         if (!candidateSalary) return false;
         
-        // Convertir les fourchettes en plages numériques pour comparaison
-        const getSalaryRange = (salary) => {
-          if (typeof salary === 'string') {
-            // Format "50-65k€" ou "50-65k"
-            const match = salary.match(/(\d+)-(\d+)/);
-            if (match) {
-              return { min: parseInt(match[1]) * 1000, max: parseInt(match[2]) * 1000 };
-            }
-            // Format "45" (juste un nombre)
-            const singleMatch = salary.match(/(\d+)/);
-            if (singleMatch) {
-              const num = parseInt(singleMatch[1]) * 1000;
-              return { min: num, max: num };
-            }
+        // Convertir le salaire du candidat en fourchette pour comparaison
+        const convertSalaryToRange = (salary) => {
+          if (!salary || salary === '') return 'Non spécifié';
+          
+          // Si c'est déjà une fourchette, on la retourne telle quelle
+          if (typeof salary === 'string' && salary.includes('k') && salary.includes('€')) {
+            return salary;
           }
-          return null;
+          
+          // Convertir en nombre
+          const numericSalary = parseInt(salary.toString().replace(/[^\d]/g, ''));
+          if (isNaN(numericSalary)) return 'Non spécifié';
+          
+          // Convertir en k€
+          const salaryInK = Math.round(numericSalary / 1000);
+          
+          // Trouver la fourchette appropriée
+          if (salaryInK <= 40) return '30k-40k€';
+          if (salaryInK <= 45) return '35k-45k€';
+          if (salaryInK <= 50) return '40k-50k€';
+          if (salaryInK <= 55) return '45k-55k€';
+          if (salaryInK <= 60) return '50k-60k€';
+          if (salaryInK <= 65) return '55k-65k€';
+          if (salaryInK <= 70) return '60k-70k€';
+          if (salaryInK <= 75) return '65k-75k€';
+          if (salaryInK <= 80) return '70k-80k€';
+          if (salaryInK <= 85) return '75k-85k€';
+          if (salaryInK <= 90) return '80k-90k€';
+          if (salaryInK <= 95) return '85k-95k€';
+          if (salaryInK <= 100) return '90k-100k€';
+          if (salaryInK <= 110) return '95k-110k€';
+          if (salaryInK <= 120) return '100k-120k€';
+          if (salaryInK <= 130) return '110k-130k€';
+          if (salaryInK <= 140) return '120k-140k€';
+          if (salaryInK <= 150) return '130k-150k€';
+          if (salaryInK <= 160) return '140k-160k€';
+          return '150k+€';
         };
         
+        // Convertir le salaire du candidat en fourchette
+        const candidateSalaryRange = convertSalaryToRange(candidateSalary);
+        
         return salaryFilters.some(range => {
-          const filterRange = getSalaryRange(range);
-          if (!filterRange) return false;
+          // Normaliser les formats de fourchette pour comparaison
+          const normalizeRange = (rangeStr) => {
+            // Enlever le € et normaliser le format
+            return rangeStr.replace('€', '').toLowerCase();
+          };
           
-          // Vérifier si le salaire du candidat est dans la fourchette
-          return candidateSalary >= filterRange.min && candidateSalary <= filterRange.max;
+          const normalizedFilter = normalizeRange(range);
+          const normalizedCandidate = normalizeRange(candidateSalaryRange);
+          
+          // Comparer les fourchettes normalisées
+          return normalizedCandidate === normalizedFilter;
         });
       });
     }

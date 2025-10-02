@@ -154,13 +154,33 @@ export default function CandidatesListPage() {
                   <DollarSign className="w-4 h-4 text-blue-600" /> 
                   Fourchette salariale
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  {(["30-40k","40-55k","50-65k","45-60k","65-80k"]).map((v) => (
-                    <ToggleChip key={v} active={salaryRange.includes(v)} onClick={() => toggleIn(salaryRange, setSalaryRange, v)}>
-                      {v}€
-                    </ToggleChip>
-                  ))}
-                </div>
+                <select 
+                  value={salaryRange.length > 0 ? salaryRange[0] : ''} 
+                  onChange={(e) => setSalaryRange(e.target.value ? [e.target.value] : [])} 
+                  className="w-full bg-white/70 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                >
+                  <option value="">Toutes les fourchettes</option>
+                  <option value="30-40k">30k-40k€</option>
+                  <option value="35-45k">35k-45k€</option>
+                  <option value="40-50k">40k-50k€</option>
+                  <option value="45-55k">45k-55k€</option>
+                  <option value="50-60k">50k-60k€</option>
+                  <option value="55-65k">55k-65k€</option>
+                  <option value="60-70k">60k-70k€</option>
+                  <option value="65-75k">65k-75k€</option>
+                  <option value="70-80k">70k-80k€</option>
+                  <option value="75-85k">75k-85k€</option>
+                  <option value="80-90k">80k-90k€</option>
+                  <option value="85-95k">85k-95k€</option>
+                  <option value="90-100k">90k-100k€</option>
+                  <option value="95-110k">95k-110k€</option>
+                  <option value="100-120k">100k-120k€</option>
+                  <option value="110-130k">110k-130k€</option>
+                  <option value="120-140k">120k-140k€</option>
+                  <option value="130-150k">130k-150k€</option>
+                  <option value="140-160k">140k-160k€</option>
+                  <option value="150k+">150k+€</option>
+                </select>
               </div>
 
 

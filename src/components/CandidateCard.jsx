@@ -223,7 +223,44 @@ export default function CandidateCard({ candidate, compact = false }) {
           {(candidate.annualSalary || candidate.annual_salary) && (
             <div className="flex items-center gap-1">
               <Euro className="w-4 h-4 text-emerald-600" />
-              <span className="font-medium">{candidate.annualSalary || candidate.annual_salary} annuel</span>
+              <span className="font-medium">{(() => {
+                const salary = candidate.annualSalary || candidate.annual_salary;
+                if (!salary || salary === '') return 'Non spécifié';
+                
+                // Si c'est déjà une fourchette, on la retourne telle quelle
+                if (typeof salary === 'string' && salary.includes('k') && salary.includes('€')) {
+                  return salary;
+                }
+                
+                // Convertir en nombre
+                const numericSalary = parseInt(salary.toString().replace(/[^\d]/g, ''));
+                if (isNaN(numericSalary)) return 'Non spécifié';
+                
+                // Convertir en k€
+                const salaryInK = Math.round(numericSalary / 1000);
+                
+                // Trouver la fourchette appropriée
+                if (salaryInK <= 40) return '30k-40k€';
+                if (salaryInK <= 45) return '35k-45k€';
+                if (salaryInK <= 50) return '40k-50k€';
+                if (salaryInK <= 55) return '45k-55k€';
+                if (salaryInK <= 60) return '50k-60k€';
+                if (salaryInK <= 65) return '55k-65k€';
+                if (salaryInK <= 70) return '60k-70k€';
+                if (salaryInK <= 75) return '65k-75k€';
+                if (salaryInK <= 80) return '70k-80k€';
+                if (salaryInK <= 85) return '75k-85k€';
+                if (salaryInK <= 90) return '80k-90k€';
+                if (salaryInK <= 95) return '85k-95k€';
+                if (salaryInK <= 100) return '90k-100k€';
+                if (salaryInK <= 110) return '95k-110k€';
+                if (salaryInK <= 120) return '100k-120k€';
+                if (salaryInK <= 130) return '110k-130k€';
+                if (salaryInK <= 140) return '120k-140k€';
+                if (salaryInK <= 150) return '130k-150k€';
+                if (salaryInK <= 160) return '140k-160k€';
+                return '150k+€';
+              })()} annuel</span>
             </div>
           )}
         </div>
