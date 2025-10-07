@@ -1192,9 +1192,7 @@ app.put('/api/candidates/:id', async (req, res) => {
         // Ajouter les années d'expérience au début de la bio
         candidateData.bio = `Années d'expérience: ${years} ans (${experienceLevel})\n\n${candidateData.bio || ''}`;
       }
-      
-      // Supprimer le champ yearsOfExperience car il n'existe pas en base
-      delete candidateData.yearsOfExperience;
+      // Conserver yearsOfExperience pour mapping DB (years_of_experience)
     }
     
     console.log('🛠️ [PUT_CANDIDATE] Données prêtes à être mises à jour (aperçu):', {
