@@ -552,7 +552,8 @@ app.get('/api/candidates', requireRole(['candidate', 'recruiter', 'admin']), asy
           if (salaryInK <= 120) return '100k-120k€';
           if (salaryInK <= 130) return '110k-130k€';
           if (salaryInK <= 140) return '120k-140k€';
-          if (salaryInK <= 150) return '130k-150k€';
+          if (salaryInK < 150) return '130k-150k€';
+          if (salaryInK === 150) return '150k+€';
           if (salaryInK <= 160) return '140k-160k€';
           return '150k+€';
         };
@@ -1118,8 +1119,7 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
       // Ajouter les années d'expérience au début de la bio
       candidateData.bio = `Années d'expérience: ${years} ans (${experienceLevel})\n\n${candidateData.bio || ''}`;
       
-      // Supprimer le champ yearsOfExperience car il n'existe pas en base
-      delete candidateData.yearsOfExperience;
+      // Garder yearsOfExperience pour mapping DB (years_of_experience)
     }
     
     const candidates = await loadCandidates();

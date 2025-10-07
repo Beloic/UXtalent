@@ -53,7 +53,8 @@ const convertNumberToSalaryRange = (salaryNumber) => {
   if (salaryInK <= 120) return '100k-120k€';
   if (salaryInK <= 130) return '110k-130k€';
   if (salaryInK <= 140) return '120k-140k€';
-  if (salaryInK <= 150) return '130k-150k€';
+  if (salaryInK < 150) return '130k-150k€';
+  if (salaryInK === 150) return '150k+€';
   if (salaryInK <= 160) return '140k-160k€';
   return '150k+€';
 };
@@ -79,6 +80,7 @@ export const loadCandidates = async () => {
         github,
         daily_rate,
         annual_salary,
+        years_of_experience,
         photo,
         plan_type,
         plan_start_date,
@@ -106,6 +108,7 @@ export const loadCandidates = async () => {
         updatedAt: candidate.updated_at,
         dailyRate: candidate.daily_rate,
         annualSalary: convertNumberToSalaryRange(candidate.annual_salary),
+        yearsOfExperience: typeof candidate.years_of_experience === 'number' ? candidate.years_of_experience : null,
         // Utiliser le cache si disponible, sinon les données de la base
         planType: cachedPlan ? cachedPlan.planType : (candidate.plan_type || 'free'),
         planStartDate: candidate.plan_start_date,
@@ -177,6 +180,7 @@ export const addCandidate = async (candidateData) => {
       daily_rate: candidateData.dailyRate,
       annual_salary: convertSalaryRangeToNumber(candidateData.annualSalary),
       job_type: candidateData.jobType,
+      years_of_experience: candidateData.yearsOfExperience,
       // S'assurer que les nouveaux candidats sont en attente par défaut
       status: candidateData.status || 'new'
     };
@@ -185,7 +189,7 @@ export const addCandidate = async (candidateData) => {
     delete dbData.dailyRate;
     delete dbData.annualSalary;
     delete dbData.jobType;
-    delete dbData.yearsOfExperience; // Ignorer car la colonne n'existe pas encore
+    delete dbData.yearsOfExperience;
     
     const { data, error } = await supabase
       .from('candidates')
@@ -202,6 +206,7 @@ export const addCandidate = async (candidateData) => {
       updatedAt: data.updated_at,
       dailyRate: data.daily_rate,
       annualSalary: convertNumberToSalaryRange(data.annual_salary),
+      yearsOfExperience: typeof data.years_of_experience === 'number' ? data.years_of_experience : null,
       jobType: data.job_type || 'CDI'
       // yearsOfExperience sera extrait depuis la bio
     };
@@ -245,8 +250,9 @@ export const updateCandidate = async (id, candidateData) => {
       dbData.annual_salary = convertSalaryRangeToNumber(candidateData.annualSalary);
       delete dbData.annualSalary;
     }
-    // Ignorer yearsOfExperience car la colonne n'existe pas encore en base
+    // Mapper yearsOfExperience vers years_of_experience
     if (candidateData.yearsOfExperience !== undefined) {
+      dbData.years_of_experience = candidateData.yearsOfExperience;
       delete dbData.yearsOfExperience;
     }
     
@@ -274,6 +280,7 @@ export const updateCandidate = async (id, candidateData) => {
       updatedAt: data.updated_at,
       dailyRate: data.daily_rate,
       annualSalary: convertNumberToSalaryRange(data.annual_salary),
+      yearsOfExperience: typeof data.years_of_experience === 'number' ? data.years_of_experience : null,
       planType: data.plan_type || 'free',
       planStartDate: data.plan_start_date,
       planEndDate: data.plan_end_date,

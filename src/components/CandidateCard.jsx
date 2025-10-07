@@ -257,7 +257,8 @@ export default function CandidateCard({ candidate, compact = false }) {
                 if (salaryInK <= 120) return '100k-120k€';
                 if (salaryInK <= 130) return '110k-130k€';
                 if (salaryInK <= 140) return '120k-140k€';
-                if (salaryInK <= 150) return '130k-150k€';
+                if (salaryInK < 150) return '130k-150k€';
+                if (salaryInK === 150) return '150k+€';
                 if (salaryInK <= 160) return '140k-160k€';
                 return '150k+€';
               })()} annuel</span>
