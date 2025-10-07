@@ -11,6 +11,7 @@ import { supabase, supabaseAdmin } from './src/lib/supabase.js';
 // Redis supprimé - plus utilisé
 import Stripe from 'stripe';
 import rateLimit from 'express-rate-limit';
+import nodemailer from 'nodemailer';
 import { 
   loadCandidates,
   getCandidateStats, 
@@ -100,6 +101,48 @@ const __dirname = path.dirname(__filename);
 
 // Configuration Stripe
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
+
+// Configuration Email (SMTP)
+let mailTransporter = null;
+if (process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  mailTransporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+}
+
+async function sendCandidateApprovedEmail(toEmail, candidateName) {
+  if (!mailTransporter) {
+    logger && logger.warn ? logger.warn('SMTP non configuré, email non envoyé') : console.warn('SMTP non configuré');
+    return;
+  }
+  const fromEmail = process.env.MAIL_FROM || 'noreply@uxtalent.app';
+  const subject = 'Votre profil a été approuvé ✅';
+  const text = `Bonjour ${candidateName || ''},\n\nBonne nouvelle ! Votre profil a été approuvé et est désormais visible par les recruteurs.\n\nConnectez-vous pour le mettre à jour ou répondre aux prises de contact.\n\n— L’équipe UX Talent`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111">
+      <h2>Votre profil a été approuvé ✅</h2>
+      <p>Bonjour ${candidateName || ''},</p>
+      <p>Bonne nouvelle ! Votre profil a été approuvé et est désormais visible auprès des recruteurs.</p>
+      <p>
+        <a href="${process.env.APP_BASE_URL || 'https://uxtalent.app'}/my-profile" 
+           style="display:inline-block;padding:10px 16px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;">
+          Accéder à mon profil
+        </a>
+      </p>
+      <p>— L’équipe UX Talent</p>
+    </div>`;
+  try {
+    await mailTransporter.sendMail({ from: fromEmail, to: toEmail, subject, text, html });
+  } catch (e) {
+    logger && logger.error ? logger.error('Erreur envoi email approved', { error: e.message }) : console.error('Erreur email approved', e);
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -2863,6 +2906,20 @@ app.put('/api/recruiter/candidates/:candidateId/status', requireRole(['recruiter
     }
     
     console.log('✅ Statut candidat mis à jour:', data);
+
+    // Envoi d'email si passage à approved
+    try {
+      if (status === 'approved') {
+        const approvedEmail = data?.email;
+        const approvedName = data?.name;
+        if (approvedEmail) {
+          await sendCandidateApprovedEmail(approvedEmail, approvedName);
+        }
+      }
+    } catch (mailErr) {
+      logger && logger.warn ? logger.warn('Email approved non envoyé', { error: mailErr.message }) : console.warn('Email approved non envoyé', mailErr);
+    }
+
     res.json({ success: true, candidate: data });
   } catch (error) {
     logger.error('Erreur lors de la mise à jour du statut', { error: error.message });
