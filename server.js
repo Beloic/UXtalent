@@ -166,6 +166,59 @@ app.post('/api/debug/send-approval-email', express.json(), async (req, res) => {
   }
 });
 
+// ==================== SUPABASE DB WEBHOOK: CANDIDATE APPROVED ====================
+// Reçoit un webhook de Supabase quand public.candidates passe à status=approved
+app.post('/api/webhooks/candidate-approved', express.json(), async (req, res) => {
+  try {
+    const token = req.header('X-Webhook-Token');
+    if (!process.env.SUPABASE_DB_WEBHOOK_SECRET || token !== process.env.SUPABASE_DB_WEBHOOK_SECRET) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+
+    // Supporter différents formats de payload (new/old, record/old_record, after/before)
+    const body = req.body || {};
+    const newRec = body.new || body.record || body.after || body;
+    const oldRec = body.old || body.old_record || body.before || {};
+    const id = newRec?.id || body.id;
+    const email = newRec?.email || body.email;
+    const name = newRec?.name || body.name;
+    const newStatus = newRec?.status || body.status;
+    const oldStatus = oldRec?.status || body.old_status;
+
+    // Filtrer: n'envoyer que si transition -> approved
+    if (newStatus !== 'approved' || oldStatus === 'approved') {
+      return res.json({ success: true, skipped: true });
+    }
+
+    // Option 1: si email présent dans le payload
+    let toEmail = email;
+    let candidateName = name;
+
+    // Option 2: si id uniquement, récupérer depuis la DB
+    if (!toEmail && id && supabaseAdmin) {
+      const { data: candidate, error } = await supabaseAdmin
+        .from('candidates')
+        .select('email, name')
+        .eq('id', id)
+        .single();
+      if (!error && candidate) {
+        toEmail = candidate.email;
+        candidateName = candidate.name;
+      }
+    }
+
+    if (!toEmail) {
+      return res.status(400).json({ error: 'Email introuvable pour l’envoi' });
+    }
+
+    await sendCandidateApprovedEmail(toEmail, candidateName || '');
+    return res.json({ success: true });
+  } catch (e) {
+    logger && logger.error ? logger.error('Erreur webhook candidate-approved', { error: e.message }) : console.error(e);
+    return res.status(500).json({ error: 'Erreur webhook' });
+  }
+});
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
