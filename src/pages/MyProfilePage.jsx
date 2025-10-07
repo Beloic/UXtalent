@@ -643,17 +643,18 @@ export default function MyProfilePage() {
             updatedAt: existingCandidate.updated_at || existingCandidate.updatedAt || null
           };
           // Ne jamais écraser une bio non vide par une valeur vide provenant d'un rechargement/caching
+          let finalizedNewFormData = null;
           setFormData(prev => {
             const safeBio = (existingCandidate.bio ?? '').trim() === '' ? (prev?.bio || '') : (existingCandidate.bio || '');
-            const newFormData = { ...newFormDataBase, bio: safeBio };
+            finalizedNewFormData = { ...newFormDataBase, bio: safeBio };
             try { if ((existingCandidate.bio ?? '').trim() === '' && (prev?.bio || '').trim() !== '') console.log('[UI] Prévention écrasement bio: conservation de la bio existante'); } catch(_) {}
-            return newFormData;
+            return finalizedNewFormData;
           });
           setMessage('✅ Profil chargé avec succès');
           
           // Mettre à jour le cache avec les nouvelles données
           updateProfileCache({
-            formData: newFormData,
+            formData: finalizedNewFormData || newFormDataBase,
             candidateStatus: status,
             candidatePlan: existingCandidate.plan || 'free'
           }, user?.id);
