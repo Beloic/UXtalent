@@ -804,6 +804,14 @@ export default function MyProfilePage() {
     try {
       // Mettre à jour les données locales
       const valueToSave = editingField === 'bio' ? bioValue : tempValue;
+      try {
+        if (editingField === 'yearsOfExperience') {
+          console.log('[UI] Inline save yearsOfExperience ->', {
+            raw: valueToSave,
+            parsed: parseInt((valueToSave || '').toString().trim())
+          });
+        }
+      } catch (_) {}
       setFormData(prev => ({
         ...prev,
         [editingField]: valueToSave
@@ -818,6 +826,11 @@ export default function MyProfilePage() {
       }
 
       let updateData = { [editingField]: valueToSave };
+      try {
+        if (editingField === 'yearsOfExperience') {
+          console.log('[UI] PUT payload (inline) ->', updateData);
+        }
+      } catch (_) {}
       
       const response = await fetch(buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`), {
         method: 'PUT',
@@ -1149,6 +1162,9 @@ export default function MyProfilePage() {
       }
 
       // Créer la bio structurée avec les années d'expérience
+      try {
+        console.log('[UI] Submit yearsOfExperience (formData) ->', formData?.yearsOfExperience);
+      } catch (_) {}
       let structuredBio = formData.bio || '';
       
       // Si des années d'expérience sont spécifiées, les intégrer dans la bio

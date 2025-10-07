@@ -1112,6 +1112,11 @@ app.post('/api/candidates', requireRole(['candidate']), async (req, res) => {
     
     // Traiter le champ yearsOfExperience avant l'envoi à Supabase
     const candidateData = { ...req.body };
+    try {
+      if (candidateData.hasOwnProperty('yearsOfExperience')) {
+        console.log('🛠️ [PUT_CANDIDATE] yearsOfExperience reçu:', candidateData.yearsOfExperience);
+      }
+    } catch (_) {}
     
     // Si des années d'expérience sont spécifiées, les intégrer dans la bio
     if (candidateData.yearsOfExperience && candidateData.yearsOfExperience.trim()) {
@@ -1200,7 +1205,8 @@ app.put('/api/candidates/:id', async (req, res) => {
       name: candidateData.name,
       email: candidateData.email,
       title: candidateData.title,
-      location: candidateData.location
+      location: candidateData.location,
+      yearsOfExperience: candidateData.yearsOfExperience
     });
 
     const updatedCandidate = await updateCandidate(req.params.id, candidateData);

@@ -231,6 +231,11 @@ export const updateCandidate = async (id, candidateData) => {
     
     // Convertir les noms de colonnes de camelCase vers snake_case pour Supabase
     const dbData = { ...candidateData };
+    try {
+      if (candidateData.hasOwnProperty('yearsOfExperience')) {
+        console.log('[DB] updateCandidate payload yearsOfExperience ->', candidateData.yearsOfExperience);
+      }
+    } catch (_) {}
     // Supprimer les champs non supportés par le schéma Supabase (évite les erreurs 500)
     delete dbData.phone;
     
