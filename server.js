@@ -144,6 +144,28 @@ async function sendCandidateApprovedEmail(toEmail, candidateName) {
   }
 }
 
+// ==================== DEBUG/TEST EMAIL ENDPOINT ====================
+// Envoi de test d'un email "profil approuvé" (protégé par ADMIN_TOKEN_SECRET)
+app.post('/api/debug/send-approval-email', express.json(), async (req, res) => {
+  try {
+    const adminToken = req.header('X-Admin-Token') || req.query.admin_token;
+    if (!adminToken || adminToken !== process.env.ADMIN_TOKEN_SECRET) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+
+    const { email, name } = req.body?.email ? req.body : { email: req.query.email, name: req.query.name };
+    if (!email) {
+      return res.status(400).json({ error: 'Paramètre email manquant' });
+    }
+
+    await sendCandidateApprovedEmail(email, name || '');
+    return res.json({ success: true, message: 'Email de test envoyé (profil approuvé)', to: email });
+  } catch (e) {
+    logger && logger.error ? logger.error('Erreur endpoint test email', { error: e.message }) : console.error(e);
+    return res.status(500).json({ error: 'Erreur lors de l\'envoi du mail de test' });
+  }
+});
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
