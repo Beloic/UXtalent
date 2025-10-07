@@ -102,6 +102,10 @@ const __dirname = path.dirname(__filename);
 // Configuration Stripe
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
+// Initialisation Express (doit être avant toute déclaration de route)
+const app = express();
+const PORT = process.env.PORT || 3001;
+
 // Configuration Email (SMTP)
 let mailTransporter = null;
 if (process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS) {
@@ -219,8 +223,7 @@ app.post('/api/webhooks/candidate-approved', express.json(), async (req, res) =>
   }
 });
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+// (déplacé plus haut)
 
 // Confiance proxy (Render/Heroku) pour limiter par IP réelle
 app.set('trust proxy', 1);
