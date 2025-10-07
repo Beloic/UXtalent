@@ -254,15 +254,9 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             <div className="flex items-center gap-3 text-amber-800">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold">!</span>
               <p className="text-sm">
-                Complétez votre profil pour être visible des recruteurs.
+                Complétez votre profil pour être visible auprès des recruteurs. N'oubliez pas de cliquer sur "envoyer mon profil pour examen." 
               </p>
             </div>
-            <Link
-              to="/my-profile/profile"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-amber-600 text-white rounded-lg shadow hover:bg-amber-700 transition-colors"
-            >
-              Compléter mon profil
-            </Link>
           </div>
         </div>
       )}
