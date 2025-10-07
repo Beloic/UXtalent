@@ -1176,21 +1176,27 @@ app.put('/api/candidates/:id', async (req, res) => {
     // Traiter le champ yearsOfExperience avant l'envoi à Supabase
     const candidateData = { ...req.body };
     
-    // Si des années d'expérience sont spécifiées, les intégrer dans la bio
+    // Si des années d'expérience sont spécifiées, intégrer dans la bio uniquement si la bio est fournie
     if (candidateData.yearsOfExperience && candidateData.yearsOfExperience.trim()) {
       const years = candidateData.yearsOfExperience.trim();
       const experienceLevel = candidateData.experience || 'Mid';
-      
-      // Vérifier si la bio contient déjà des années d'expérience
-      if (candidateData.bio && candidateData.bio.includes('Années d\'expérience:')) {
-        // Remplacer les années existantes
-        candidateData.bio = candidateData.bio.replace(
-          /Années d'expérience: \d+ ans \([^)]+\)/,
-          `Années d'expérience: ${years} ans (${experienceLevel})`
-        );
+      try {
+        console.log('🛠️ [PUT_CANDIDATE] Bio entrante (len):', typeof candidateData.bio === 'string' ? candidateData.bio.length : 'absente');
+      } catch (_) {}
+      if (typeof candidateData.bio === 'string') {
+        // Vérifier si la bio contient déjà des années d'expérience
+        if (candidateData.bio.includes("Années d'expérience:")) {
+          // Remplacer les années existantes
+          candidateData.bio = candidateData.bio.replace(
+            /Années d'expérience: \d+ ans \([^)]+\)/,
+            `Années d'expérience: ${years} ans (${experienceLevel})`
+          );
+        } else {
+          // Ajouter les années d'expérience au début de la bio
+          candidateData.bio = `Années d'expérience: ${years} ans (${experienceLevel})\n\n${candidateData.bio || ''}`;
+        }
       } else {
-        // Ajouter les années d'expérience au début de la bio
-        candidateData.bio = `Années d'expérience: ${years} ans (${experienceLevel})\n\n${candidateData.bio || ''}`;
+        try { console.log("🛠️ [PUT_CANDIDATE] Bio non fournie -> aucune modification de bio."); } catch(_) {}
       }
       // Conserver yearsOfExperience pour mapping DB (years_of_experience)
     }
