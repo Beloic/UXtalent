@@ -11,7 +11,6 @@ import { supabase, supabaseAdmin } from './src/lib/supabase.js';
 // Redis supprimé - plus utilisé
 import Stripe from 'stripe';
 import rateLimit from 'express-rate-limit';
-import nodemailer from 'nodemailer';
 import { 
   loadCandidates,
   getCandidateStats, 
@@ -102,128 +101,8 @@ const __dirname = path.dirname(__filename);
 // Configuration Stripe
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
-// Initialisation Express (doit être avant toute déclaration de route)
 const app = express();
 const PORT = process.env.PORT || 3001;
-
-// Configuration Email (SMTP)
-let mailTransporter = null;
-if (process.env.SMTP_HOST && process.env.SMTP_PORT && process.env.SMTP_USER && process.env.SMTP_PASS) {
-  mailTransporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === 'true',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-}
-
-async function sendCandidateApprovedEmail(toEmail, candidateName) {
-  if (!mailTransporter) {
-    logger && logger.warn ? logger.warn('SMTP non configuré, email non envoyé') : console.warn('SMTP non configuré');
-    return;
-  }
-  const fromEmail = process.env.MAIL_FROM || 'noreply@uxtalent.app';
-  const subject = 'Votre profil a été approuvé ✅';
-  const text = `Bonjour ${candidateName || ''},\n\nBonne nouvelle ! Votre profil a été approuvé et est désormais visible par les recruteurs.\n\nConnectez-vous pour le mettre à jour ou répondre aux prises de contact.\n\n— L’équipe UX Talent`;
-  const html = `
-    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111">
-      <h2>Votre profil a été approuvé ✅</h2>
-      <p>Bonjour ${candidateName || ''},</p>
-      <p>Bonne nouvelle ! Votre profil a été approuvé et est désormais visible auprès des recruteurs.</p>
-      <p>
-        <a href="${process.env.APP_BASE_URL || 'https://uxtalent.app'}/my-profile" 
-           style="display:inline-block;padding:10px 16px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;">
-          Accéder à mon profil
-        </a>
-      </p>
-      <p>— L’équipe UX Talent</p>
-    </div>`;
-  try {
-    await mailTransporter.sendMail({ from: fromEmail, to: toEmail, subject, text, html });
-  } catch (e) {
-    logger && logger.error ? logger.error('Erreur envoi email approved', { error: e.message }) : console.error('Erreur email approved', e);
-  }
-}
-
-// ==================== DEBUG/TEST EMAIL ENDPOINT ====================
-// Envoi de test d'un email "profil approuvé" (protégé par ADMIN_TOKEN_SECRET)
-app.post('/api/debug/send-approval-email', express.json(), async (req, res) => {
-  try {
-    const adminToken = req.header('X-Admin-Token') || req.query.admin_token;
-    if (!adminToken || adminToken !== process.env.ADMIN_TOKEN_SECRET) {
-      return res.status(403).json({ error: 'Accès refusé' });
-    }
-
-    const { email, name } = req.body?.email ? req.body : { email: req.query.email, name: req.query.name };
-    if (!email) {
-      return res.status(400).json({ error: 'Paramètre email manquant' });
-    }
-
-    await sendCandidateApprovedEmail(email, name || '');
-    return res.json({ success: true, message: 'Email de test envoyé (profil approuvé)', to: email });
-  } catch (e) {
-    logger && logger.error ? logger.error('Erreur endpoint test email', { error: e.message }) : console.error(e);
-    return res.status(500).json({ error: 'Erreur lors de l\'envoi du mail de test' });
-  }
-});
-
-// ==================== SUPABASE DB WEBHOOK: CANDIDATE APPROVED ====================
-// Reçoit un webhook de Supabase quand public.candidates passe à status=approved
-app.post('/api/webhooks/candidate-approved', express.json(), async (req, res) => {
-  try {
-    const token = req.header('X-Webhook-Token');
-    if (!process.env.SUPABASE_DB_WEBHOOK_SECRET || token !== process.env.SUPABASE_DB_WEBHOOK_SECRET) {
-      return res.status(403).json({ error: 'Accès refusé' });
-    }
-
-    // Supporter différents formats de payload (new/old, record/old_record, after/before)
-    const body = req.body || {};
-    const newRec = body.new || body.record || body.after || body;
-    const oldRec = body.old || body.old_record || body.before || {};
-    const id = newRec?.id || body.id;
-    const email = newRec?.email || body.email;
-    const name = newRec?.name || body.name;
-    const newStatus = newRec?.status || body.status;
-    const oldStatus = oldRec?.status || body.old_status;
-
-    // Filtrer: n'envoyer que si transition -> approved
-    if (newStatus !== 'approved' || oldStatus === 'approved') {
-      return res.json({ success: true, skipped: true });
-    }
-
-    // Option 1: si email présent dans le payload
-    let toEmail = email;
-    let candidateName = name;
-
-    // Option 2: si id uniquement, récupérer depuis la DB
-    if (!toEmail && id && supabaseAdmin) {
-      const { data: candidate, error } = await supabaseAdmin
-        .from('candidates')
-        .select('email, name')
-        .eq('id', id)
-        .single();
-      if (!error && candidate) {
-        toEmail = candidate.email;
-        candidateName = candidate.name;
-      }
-    }
-
-    if (!toEmail) {
-      return res.status(400).json({ error: 'Email introuvable pour l’envoi' });
-    }
-
-    await sendCandidateApprovedEmail(toEmail, candidateName || '');
-    return res.json({ success: true });
-  } catch (e) {
-    logger && logger.error ? logger.error('Erreur webhook candidate-approved', { error: e.message }) : console.error(e);
-    return res.status(500).json({ error: 'Erreur webhook' });
-  }
-});
-
-// (déplacé plus haut)
 
 // Confiance proxy (Render/Heroku) pour limiter par IP réelle
 app.set('trust proxy', 1);
@@ -2984,20 +2863,6 @@ app.put('/api/recruiter/candidates/:candidateId/status', requireRole(['recruiter
     }
     
     console.log('✅ Statut candidat mis à jour:', data);
-
-    // Envoi d'email si passage à approved
-    try {
-      if (status === 'approved') {
-        const approvedEmail = data?.email;
-        const approvedName = data?.name;
-        if (approvedEmail) {
-          await sendCandidateApprovedEmail(approvedEmail, approvedName);
-        }
-      }
-    } catch (mailErr) {
-      logger && logger.warn ? logger.warn('Email approved non envoyé', { error: mailErr.message }) : console.warn('Email approved non envoyé', mailErr);
-    }
-
     res.json({ success: true, candidate: data });
   } catch (error) {
     logger.error('Erreur lors de la mise à jour du statut', { error: error.message });
