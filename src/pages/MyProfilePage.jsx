@@ -1466,9 +1466,9 @@ export default function MyProfilePage() {
             transition={{ delay: 0.1 }}
             className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8"
           >
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">Parlez-nous un peu de vous !</h2>
+            <h2 className="text-xl font-semibold text-blue-800 mb-4">Parlez-nous de vous et de votre expérience.</h2>
             <p className="text-blue-700">
-              C'est le moment de créer votre profil, soyez le plus précis et honnête possible.
+              Complétez l’ensemble des champs (100% requis) avec des informations précises et sincères. Ajoutez également une photo de profil pour finaliser votre candidature.
             </p>
           </motion.div>
 
