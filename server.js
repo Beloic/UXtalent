@@ -767,6 +767,7 @@ app.get('/api/candidates/:id', async (req, res) => {
       updatedAt: candidate.updated_at,
       dailyRate: candidate.daily_rate,
       annualSalary: candidate.annual_salary,
+      yearsOfExperience: candidate.years_of_experience,
       isFeatured: candidate.is_featured || false,
       featuredUntil: candidate.featured_until
     };
@@ -855,6 +856,7 @@ app.get('/api/candidates/profile/:email', async (req, res) => {
       updatedAt: candidate.updated_at,
       dailyRate: candidate.daily_rate,
       annualSalary: candidate.annual_salary,
+      yearsOfExperience: candidate.years_of_experience,
       isFeatured: candidate.is_featured || false,
       featuredUntil: candidate.featured_until
     };
