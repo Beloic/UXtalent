@@ -610,7 +610,7 @@ export default function MyProfilePage() {
           setCandidatePlan(existingCandidate.plan || 'free');
           
           // Charger toutes les données depuis la base de données
-          const newFormData = {
+          const newFormDataBase = {
             id: existingCandidate.id || null,
             name: existingCandidate.name || '',
             email: existingCandidate.email || '',
@@ -618,7 +618,6 @@ export default function MyProfilePage() {
             location: existingCandidate.location || '',
             remote: existingCandidate.remote || 'hybrid',
             yearsOfExperience: (() => {
-              // Extraire les années d'expérience depuis la bio structurée
               const bio = existingCandidate.bio || '';
               const match = bio.match(/Années d'expérience: (\d+) ans/);
               return match ? match[1] : '';
@@ -643,8 +642,13 @@ export default function MyProfilePage() {
             jobType: existingCandidate.jobType || existingCandidate.job_type || 'CDI',
             updatedAt: existingCandidate.updated_at || existingCandidate.updatedAt || null
           };
-          
-          setFormData(newFormData);
+          // Ne jamais écraser une bio non vide par une valeur vide provenant d'un rechargement/caching
+          setFormData(prev => {
+            const safeBio = (existingCandidate.bio ?? '').trim() === '' ? (prev?.bio || '') : (existingCandidate.bio || '');
+            const newFormData = { ...newFormDataBase, bio: safeBio };
+            try { if ((existingCandidate.bio ?? '').trim() === '' && (prev?.bio || '').trim() !== '') console.log('[UI] Prévention écrasement bio: conservation de la bio existante'); } catch(_) {}
+            return newFormData;
+          });
           setMessage('✅ Profil chargé avec succès');
           
           // Mettre à jour le cache avec les nouvelles données
