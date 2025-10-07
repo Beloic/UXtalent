@@ -15,6 +15,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
   const { recruiter, getPlanInfo } = useRecruiter();
   const [hasProfile, setHasProfile] = useState(null);
   const [candidatePlan, setCandidatePlan] = useState('free');
+  const [candidateStatus, setCandidateStatus] = useState(null);
   const [userDisplayName, setUserDisplayName] = useState(null);
   const [userProfilePhoto, setUserProfilePhoto] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -89,6 +90,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               setCandidatePlan(plan);
               setUserDisplayName(userProfile.name || userProfile.first_name || null);
               setUserProfilePhoto(userProfile.photo || userProfile.profilePhoto || null);
+              setCandidateStatus(userProfile.status || null);
             }
           } else if (response.status === 404) {
             setHasProfile(false);
@@ -245,6 +247,25 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Bannière persistante pour les candidats avec statut new */}
+      {isAuthenticated && isCandidate && candidateStatus === 'new' && (
+        <div className="bg-amber-50 border-b border-amber-200">
+          <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-amber-800">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold">!</span>
+              <p className="text-sm">
+                Complétez votre profil pour être visible des recruteurs.
+              </p>
+            </div>
+            <Link
+              to="/my-profile/profile"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-amber-600 text-white rounded-lg shadow hover:bg-amber-700 transition-colors"
+            >
+              Compléter mon profil
+            </Link>
+          </div>
+        </div>
+      )}
       {/* Top nav */}
       {!hideTopBar && !isAuthenticated && (
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-xl glass">
