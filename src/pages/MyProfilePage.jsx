@@ -147,19 +147,20 @@ export default function MyProfilePage() {
   const [isLoadingChart, setIsLoadingChart] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
 
-  // Valeurs par défaut réalistes pour les nouveaux candidats
-  const DEFAULT_VALUES = {
-    title: 'Product Designer',
-    location: 'Paris, France',
+  // Exemples en gris pour guider les nouveaux utilisateurs
+  const FIELD_EXAMPLES = {
+    name: 'Ex: Marie Dubois',
+    title: 'Ex: Product Designer, UX Designer, UI Designer...',
+    location: 'Ex: Paris, France',
     remote: 'hybrid',
-    yearsOfExperience: '3',
-    bio: 'Designer UX/UI passionné par la création d\'expériences utilisateur exceptionnelles. Spécialisé dans la recherche utilisateur, le design d\'interface et la création de design systems cohérents.',
-    skills: 'Design System, Recherche utilisateur, Prototypage, Figma, Adobe Creative Suite',
-    portfolio: '',
-    linkedin: '',
-    github: '',
-    dailyRate: '500',
-    annualSalary: '50k-60k€',
+    yearsOfExperience: 'Ex: 3',
+    bio: 'Ex: Designer UX/UI passionné par la création d\'expériences utilisateur exceptionnelles. Spécialisé dans la recherche utilisateur, le design d\'interface et la création de design systems cohérents.',
+    skills: 'Ex: Design System, Recherche utilisateur, Prototypage, Figma...',
+    portfolio: 'Ex: https://monportfolio.com',
+    linkedin: 'Ex: https://linkedin.com/in/monprofil',
+    github: 'Ex: https://github.com/monprofil',
+    dailyRate: 'Ex: 500',
+    annualSalary: 'Ex: 50k-60k€',
     jobType: 'CDI'
   };
 
@@ -167,7 +168,18 @@ export default function MyProfilePage() {
     id: null,
     name: '',
     email: '',
-    ...DEFAULT_VALUES,
+    title: '',
+    location: '',
+    remote: 'hybrid',
+    yearsOfExperience: '',
+    bio: '',
+    skills: '',
+    portfolio: '',
+    linkedin: '',
+    github: '',
+    dailyRate: '',
+    annualSalary: '',
+    jobType: 'CDI',
     photo: null,
     updatedAt: null
   });
@@ -798,12 +810,24 @@ export default function MyProfilePage() {
     }
   }, [user, isLoadingProfile, candidateStatus]);
 
-  // Fonction pour assigner les valeurs par défaut réalistes lors de la première connexion
+  // Fonction pour initialiser les champs vides pour les nouveaux utilisateurs
   const assignDefaultValues = () => {
     setFormData(prev => {
       const newData = {
         ...prev,
-        ...DEFAULT_VALUES
+        title: '',
+        location: '',
+        remote: 'hybrid',
+        yearsOfExperience: '',
+        bio: '',
+        skills: '',
+        portfolio: '',
+        linkedin: '',
+        github: '',
+        dailyRate: '',
+        annualSalary: '',
+        jobType: 'CDI',
+        photo: null
       };
       return newData;
     });
@@ -1116,8 +1140,8 @@ export default function MyProfilePage() {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <span className={`flex-1 ${isRequired && isEmpty ? 'text-red-500 italic' : ''}`}>
-              {value || (isRequired ? `${placeholder} *` : placeholder)}
+            <span className={`flex-1 ${isRequired && isEmpty ? 'text-red-500 italic' : isEmpty ? 'text-gray-400 italic' : ''}`}>
+              {value || (isEmpty ? placeholder : placeholder)}
             </span>
             <button
               onClick={() => startEditing(fieldName, value)}
@@ -1138,25 +1162,20 @@ export default function MyProfilePage() {
       title: 'Métier',
       location: 'Localisation',
       bio: 'Présentation',
-      skills: 'Compétences'
-    };
-
-    // Valeurs par défaut acceptées comme valides
-    const defaultValues = {
-      title: DEFAULT_VALUES.title,
-      location: DEFAULT_VALUES.location,
-      bio: DEFAULT_VALUES.bio,
-      skills: DEFAULT_VALUES.skills
+      skills: 'Compétences',
+      photo: 'Photo de profil'
     };
 
     for (const [field, label] of Object.entries(requiredFields)) {
       const value = formData[field];
-      const defaultValue = defaultValues[field];
       const isEmpty = !value || safeTrim(value) === '';
-      const isDefaultValue = defaultValue && safeTrim(value) === defaultValue;
       
-      // Un champ est valide s'il n'est pas vide OU s'il a une valeur par défaut
-      if (isEmpty && !isDefaultValue) {
+      // Vérification spéciale pour la photo
+      if (field === 'photo') {
+        if (!value || !value.existing) {
+          return false;
+        }
+      } else if (isEmpty) {
         return false;
       }
     }
@@ -1190,15 +1209,24 @@ export default function MyProfilePage() {
         title: 'Métier',
         location: 'Localisation',
         bio: 'Présentation',
-        skills: 'Compétences'
+        skills: 'Compétences',
+        photo: 'Photo de profil'
       };
 
       const missingFields = [];
       for (const [field, label] of Object.entries(requiredFields)) {
         const value = formData[field];
-        const isEmpty = !value || safeTrim(value) === '';
-        if (isEmpty) {
-          missingFields.push(label);
+        
+        // Vérification spéciale pour la photo
+        if (field === 'photo') {
+          if (!value || !value.existing) {
+            missingFields.push(label);
+          }
+        } else {
+          const isEmpty = !value || safeTrim(value) === '';
+          if (isEmpty) {
+            missingFields.push(label);
+          }
         }
       }
 
@@ -1854,6 +1882,7 @@ export default function MyProfilePage() {
                               onPhotoChange={handlePhotoChange}
                               onError={handlePhotoError}
                               compact={true}
+                              required={!formData.photo?.existing}
                             />
                           </div>
                           
@@ -1862,15 +1891,15 @@ export default function MyProfilePage() {
                               <EditableField
                                 fieldName="name"
                                 value={formData.name}
-                                placeholder="Ex: Marie Dubois"
+                                placeholder={FIELD_EXAMPLES.name}
                                 className="text-4xl font-bold text-gray-900"
                               />
                             </div>
                             <div className="mb-4">
                               <EditableField
                                 fieldName="title"
-                                value={formData.title || 'Product Designer'}
-                                placeholder="Sélectionnez votre métier"
+                                value={formData.title}
+                                placeholder={FIELD_EXAMPLES.title}
                                 type="select"
                                 options={jobTitleSuggestions}
                                 className="text-xl text-gray-600"
@@ -1889,7 +1918,7 @@ export default function MyProfilePage() {
                             <textarea
                               value={formData.bio || ''}
                               onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                              placeholder="Décrivez votre parcours et vos spécialités en design..."
+                              placeholder={FIELD_EXAMPLES.bio}
                               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y text-gray-700 leading-relaxed text-lg mb-4"
                               rows={6}
                             />
@@ -2087,7 +2116,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="skills"
                                   value={formData.skills}
-                                  placeholder="Ex: Design System, Recherche utilisateur, Prototypage, Figma, Adobe Creative Suite"
+                                  placeholder={FIELD_EXAMPLES.skills}
                                   className="text-sm text-gray-600"
                                 />
                               </div>
@@ -2108,8 +2137,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">LinkedIn</p>
                                 <EditableField
                                   fieldName="linkedin"
-                                  value={formData.linkedin || 'https://linkedin.com/in/mon-profil-design'}
-                                  placeholder="https://linkedin.com/in/mon-profil-design"
+                                  value={formData.linkedin}
+                                  placeholder={FIELD_EXAMPLES.linkedin}
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
@@ -2124,8 +2153,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">Portfolio</p>
                                 <EditableField
                                   fieldName="portfolio"
-                                  value={formData.portfolio || 'https://mon-portfolio-design.com'}
-                                  placeholder="https://mon-portfolio-design.com"
+                                  value={formData.portfolio}
+                                  placeholder={FIELD_EXAMPLES.portfolio}
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
@@ -2140,9 +2169,10 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">GitHub</p>
                                 <EditableField
                                   fieldName="github"
-                                  value={formData.github || 'https://github.com/mon-profil-design'}
-                                  placeholder="https://github.com/mon-profil-design"
+                                  value={formData.github}
+                                  placeholder={FIELD_EXAMPLES.github}
                                   className="font-semibold text-gray-900"
+                                  required={false}
                                 />
                               </div>
                             </div>
@@ -2213,7 +2243,7 @@ export default function MyProfilePage() {
                                 <EditableField
                                   fieldName="location"
                                   value={formData.location}
-                                  placeholder=""
+                                  placeholder={FIELD_EXAMPLES.location}
                                   className="font-semibold text-gray-900"
                                 />
                               </div>
@@ -2252,8 +2282,8 @@ export default function MyProfilePage() {
                               <p className="text-sm font-medium text-gray-500 mb-1">Années d'expérience</p>
                                 <EditableField
                                   fieldName="yearsOfExperience"
-                                  value={formData.yearsOfExperience || '0'}
-                                  placeholder="Ex: 3"
+                                  value={formData.yearsOfExperience}
+                                  placeholder={FIELD_EXAMPLES.yearsOfExperience}
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -2270,8 +2300,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">TJM</p>
                                 <EditableField
                                   fieldName="dailyRate"
-                                  value={formData.dailyRate ? `${formData.dailyRate} €` : 'Non renseigné'}
-                                  placeholder="Ex: 500"
+                                  value={formData.dailyRate}
+                                  placeholder={FIELD_EXAMPLES.dailyRate}
                                   type="number"
                                   className="font-semibold text-gray-900"
                                 />
@@ -2286,8 +2316,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">Salaire annuel</p>
                                 <EditableField
                                   fieldName="annualSalary"
-                                  value={formData.annualSalary || 'Non spécifié'}
-                                  placeholder="Sélectionnez une fourchette"
+                                  value={formData.annualSalary}
+                                  placeholder={FIELD_EXAMPLES.annualSalary}
                                   type="select"
                                   options={salaryRanges}
                                   className="font-semibold text-gray-900"
@@ -2303,8 +2333,8 @@ export default function MyProfilePage() {
                                 <p className="text-sm font-medium text-gray-500 mb-1">Type de poste souhaité</p>
                                 <EditableField
                                   fieldName="jobType"
-                                  value={formData.jobType || 'CDI'}
-                                  placeholder="Sélectionnez un type"
+                                  value={formData.jobType}
+                                  placeholder={FIELD_EXAMPLES.jobType}
                                   type="select"
                                   options={jobTypeSuggestions}
                                   className="font-semibold text-gray-900"
