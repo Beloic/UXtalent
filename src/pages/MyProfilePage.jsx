@@ -1316,22 +1316,22 @@ export default function MyProfilePage() {
         jobType: formData.jobType || 'CDI'
       };
       
-      // Pour PUT, ajouter l'ID dans le body (requis par l'API index.js)
-      if (formData.id) {
-        candidateData.id = formData.id;
-      }
-
       // Déterminer l'URL et la méthode selon si le profil existe déjà
-      // L'API index.js gère POST et PUT sur /api/candidates/ 
-      // PUT nécessite l'ID dans le body (req.body.id)
-      const url = buildApiUrl(API_ENDPOINTS.CANDIDATES);
+      // Backend Render (server.js) :
+      // - POST /api/candidates/ → Créer nouveau candidat
+      // - PUT /api/candidates/:id → Mettre à jour candidat existant (ID dans l'URL)
+      const url = formData.id 
+        ? buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}`)
+        : buildApiUrl(API_ENDPOINTS.CANDIDATES);
       const method = formData.id ? 'PUT' : 'POST';
+      
+      // NE PAS inclure l'ID dans le body pour PUT (il est dans l'URL)
+      // Le backend le récupère via req.params.id
       
       console.log('📤 [SUBMIT] Préparation de la requête API:', {
         url,
         method,
-        hasId: !!candidateData.id,
-        idValue: candidateData.id,
+        formDataId: formData.id,
         candidateDataKeys: Object.keys(candidateData),
         status: candidateData.status,
         endpoint: API_ENDPOINTS.CANDIDATES
