@@ -731,6 +731,12 @@ export default function MyProfilePage() {
   const profileLoadedRef = useRef(false);
   
   useEffect(() => {
+    console.log('🔄 [useEffect] Déclenchement - chargement du profil', {
+      hasUser: !!user,
+      profileJustSubmitted,
+      profileLoadedRefCurrent: profileLoadedRef.current
+    });
+    
     if (user) {
       setFormData(prev => ({
         ...prev,
@@ -743,10 +749,17 @@ export default function MyProfilePage() {
       // Charger le profil depuis la base de données seulement une fois au montage
       // et seulement si le profil n'a pas été soumis récemment
       if (!profileJustSubmitted && !profileLoadedRef.current) {
+        console.log('📥 [useEffect] Chargement du profil existant...');
         loadExistingProfile();
         profileLoadedRef.current = true;
+      } else {
+        console.log('⏭️ [useEffect] Chargement ignoré:', {
+          profileJustSubmitted,
+          alreadyLoaded: profileLoadedRef.current
+        });
       }
     } else {
+      console.log('👤 [useEffect] Pas d\'utilisateur - valeurs par défaut');
       // Si pas d'utilisateur, assigner les valeurs par défaut pour l'affichage
       assignDefaultValues();
     }
@@ -1140,11 +1153,20 @@ export default function MyProfilePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('🚀 [SUBMIT] Début de la soumission du profil');
+    console.log('📋 [SUBMIT] État initial:', {
+      formDataId: formData.id,
+      candidateStatus,
+      showPendingPage,
+      profileJustSubmitted
+    });
+    
     setIsLoading(true);
     setMessage('');
     setProfileJustSubmitted(true); // Empêcher les rechargements automatiques
  
     if (!user) {
+      console.error('❌ [SUBMIT] Utilisateur non connecté');
       setMessage('Vous devez être connecté pour créer un profil');
       setIsLoading(false);
       setProfileJustSubmitted(false);
@@ -1303,14 +1325,25 @@ export default function MyProfilePage() {
       const url = buildApiUrl(API_ENDPOINTS.CANDIDATES);
       const method = formData.id ? 'PUT' : 'POST';
       
+      console.log('📤 [SUBMIT] Préparation de la requête API:', {
+        url,
+        method,
+        hasId: !!candidateData.id,
+        candidateDataKeys: Object.keys(candidateData),
+        status: candidateData.status
+      });
+      
       // Obtenir le token une seule fois
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
       
       if (!token) {
+        console.error('❌ [SUBMIT] Pas de token d\'authentification');
         setMessage('❌ Erreur d\'authentification. Veuillez vous reconnecter.');
         return;
       }
+      
+      console.log('🔑 [SUBMIT] Token obtenu, envoi de la requête...');
       
       const response = await fetch(url, {
         method: method,
@@ -1320,20 +1353,39 @@ export default function MyProfilePage() {
         },
         body: JSON.stringify(candidateData)
       });
+      
+      console.log('📥 [SUBMIT] Réponse reçue:', {
+        status: response.status,
+        ok: response.ok,
+        statusText: response.statusText
+      });
 
       if (response.ok) {
+        console.log('✅ [SUBMIT] Requête réussie, traitement de la réponse...');
+        
         // Récupérer les données de la réponse pour mettre à jour le formData
         let responseData;
         try {
           const contentType = response.headers.get('content-type');
+          console.log('📄 [SUBMIT] Content-Type:', contentType);
+          
           if (contentType && contentType.includes('application/json')) {
             responseData = await response.json();
+            console.log('📦 [SUBMIT] Données reçues de l\'API:', responseData);
+          } else {
+            console.warn('⚠️ [SUBMIT] Réponse non-JSON reçue');
           }
         } catch (e) {
-          // Si pas de JSON, ce n'est pas grave
+          console.error('❌ [SUBMIT] Erreur lors du parsing JSON:', e);
         }
         
         const isUpdate = formData.id ? 'mis à jour' : 'créé';
+        
+        console.log('🔄 [SUBMIT] Mise à jour du formData avec:', {
+          responseId: responseData?.id,
+          prevId: formData.id,
+          newStatus: 'pending'
+        });
         
         // Mettre à jour formData avec les données envoyées et le statut 'pending'
         setFormData(prev => ({
@@ -1344,6 +1396,7 @@ export default function MyProfilePage() {
         }));
         
         if (!formData.id) {
+          console.log('🆕 [SUBMIT] Nouveau profil créé - affichage page jaune');
           // Nouveau profil créé - informer qu'il est en attente
           setMessage(`✅ Profil créé avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
           // Changer le statut immédiatement et afficher la page jaune immédiatement
@@ -1353,6 +1406,7 @@ export default function MyProfilePage() {
           // Arrêter le loading immédiatement pour les nouveaux profils
           setIsLoading(false);
         } else if (candidateStatus === 'rejected') {
+          console.log('🔄 [SUBMIT] Profil rejected → pending - affichage page jaune');
           // Profil rejeté mis à jour - informer qu'il est remis en attente
           setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
           // Changer le statut immédiatement et afficher la page jaune immédiatement
@@ -1363,6 +1417,7 @@ export default function MyProfilePage() {
           // Arrêter le loading immédiatement pour les profils en attente
           setIsLoading(false);
         } else if (candidateStatus === 'new') {
+          console.log('🔄 [SUBMIT] Profil new → pending - affichage page jaune');
           // Profil nouveau envoyé pour validation - message spécial
           setMessage(`✅ Profil en attente pour examen. Votre profil a été envoyé avec succès et est maintenant en cours d'examen par notre équipe.`);
           // Changer le statut immédiatement et afficher la page jaune immédiatement
@@ -1373,9 +1428,16 @@ export default function MyProfilePage() {
           // Arrêter le loading immédiatement pour les profils en attente
           setIsLoading(false);
         } else {
+          console.log('✏️ [SUBMIT] Profil mis à jour normalement');
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
         }
+        
+        console.log('✨ [SUBMIT] États mis à jour:', {
+          candidateStatus: candidateStatus === 'new' ? 'pending (changé)' : candidateStatus,
+          showPendingPage: true,
+          isLoading: false
+        });
         
         // Émettre un événement pour notifier les autres composants du changement de nom
         window.dispatchEvent(new CustomEvent('nameUpdated', {
@@ -1395,15 +1457,20 @@ export default function MyProfilePage() {
         //   loadExistingProfile();
         // }, 2000);
       } else {
+        console.error('❌ [SUBMIT] Erreur HTTP:', response.status);
         const errorData = await response.json();
+        console.error('❌ [SUBMIT] Détails erreur:', errorData);
         const action = formData.id ? 'mettre à jour' : 'créer';
         setMessage(`Erreur: ${errorData.message || `Impossible de ${action} le profil`}`);
         setProfileJustSubmitted(false); // Réinitialiser en cas d'erreur
       }
     } catch (error) {
+      console.error('❌ [SUBMIT] Exception capturée:', error);
+      console.error('❌ [SUBMIT] Stack trace:', error.stack);
       setMessage(`Erreur lors de la création du profil: ${error.message}`);
       setProfileJustSubmitted(false); // Réinitialiser en cas d'erreur
       } finally {
+      console.log('🏁 [SUBMIT] Fin du traitement - arrêt du loading');
       // Arrêter le loading immédiatement
       setIsLoading(false);
     }
