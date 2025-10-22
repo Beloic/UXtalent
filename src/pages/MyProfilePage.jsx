@@ -196,6 +196,7 @@ export default function MyProfilePage() {
   const [cancellationInfo, setCancellationInfo] = useState(null);
   const [showPendingPage, setShowPendingPage] = useState(false); // Contrôle l'affichage de la page jaune avec délai
   const [isInitialLoad, setIsInitialLoad] = useState(true); // Distingue le chargement initial des changements de statut
+  const [profileJustSubmitted, setProfileJustSubmitted] = useState(false); // Empêche le rechargement après soumission
   
   // États pour la gestion des modifications non sauvegardées
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -737,12 +738,15 @@ export default function MyProfilePage() {
       }));
 
       // Charger le profil depuis la base de données seulement si nécessaire
-      loadExistingProfile();
+      // et seulement si le profil n'a pas été soumis récemment
+      if (!profileJustSubmitted) {
+        loadExistingProfile();
+      }
     } else {
       // Si pas d'utilisateur, assigner les valeurs par défaut pour l'affichage
       assignDefaultValues();
     }
-  }, [user, loadExistingProfile]);
+  }, [user, loadExistingProfile, profileJustSubmitted]);
   
   // Sauvegarder l'état original quand les données du formulaire sont chargées
   useEffect(() => {
@@ -753,10 +757,10 @@ export default function MyProfilePage() {
 
   // Assigner les valeurs par défaut dès que l'utilisateur est connecté et qu'aucun profil n'existe
   useEffect(() => {
-    if (user && !isLoadingProfile && candidateStatus === 'new') {
+    if (user && !isLoadingProfile && candidateStatus === 'new' && !profileJustSubmitted) {
       assignDefaultValues();
     }
-  }, [user, isLoadingProfile, candidateStatus]);
+  }, [user, isLoadingProfile, candidateStatus, profileJustSubmitted]);
 
   // Fonction pour initialiser les champs vides pour les nouveaux utilisateurs
   const assignDefaultValues = () => {
@@ -1134,10 +1138,12 @@ export default function MyProfilePage() {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
+    setProfileJustSubmitted(true); // Empêcher les rechargements automatiques
  
     if (!user) {
       setMessage('Vous devez être connecté pour créer un profil');
       setIsLoading(false);
+      setProfileJustSubmitted(false);
       return;
     }
 
@@ -1315,6 +1321,10 @@ export default function MyProfilePage() {
         if (!formData.id) {
           // Nouveau profil créé - informer qu'il est en attente
           setMessage(`✅ Profil créé avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
+          // Changer le statut immédiatement et afficher la page jaune immédiatement
+          setCandidateStatus('pending');
+          setIsInitialLoad(false);
+          setShowPendingPage(true);
           // Arrêter le loading immédiatement pour les nouveaux profils
           setIsLoading(false);
         } else if (candidateStatus === 'rejected') {
@@ -1363,9 +1373,11 @@ export default function MyProfilePage() {
         const errorData = await response.json();
         const action = formData.id ? 'mettre à jour' : 'créer';
         setMessage(`Erreur: ${errorData.message || `Impossible de ${action} le profil`}`);
+        setProfileJustSubmitted(false); // Réinitialiser en cas d'erreur
       }
     } catch (error) {
       setMessage(`Erreur lors de la création du profil: ${error.message}`);
+      setProfileJustSubmitted(false); // Réinitialiser en cas d'erreur
       } finally {
       // Arrêter le loading immédiatement
       setIsLoading(false);
