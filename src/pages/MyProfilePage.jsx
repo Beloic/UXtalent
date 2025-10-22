@@ -1326,27 +1326,19 @@ export default function MyProfilePage() {
         } else if (candidateStatus === 'rejected') {
           // Profil rejeté mis à jour - informer qu'il est remis en attente
           setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
-          // Changer le statut immédiatement mais afficher la page jaune après 5 secondes
+          // Changer le statut immédiatement et afficher la page jaune immédiatement
           setCandidateStatus('pending');
           setIsEditingRejected(false);
-          setIsInitialLoad(false); // Marquer que ce n'est plus le chargement initial
-          // Programmer l'affichage de la page jaune après 5 secondes
-          setTimeout(() => {
-            console.log('⏰ Timeout: Affichage page jaune après 5s', { candidateStatus, showPendingPage });
-            setShowPendingPage(true);
-          }, 5000);
+          setIsInitialLoad(false);
+          setShowPendingPage(true);
         } else if (candidateStatus === 'new') {
           // Profil nouveau envoyé pour validation - message spécial
           setMessage(`✅ Profil en attente pour examen. Votre profil a été envoyé avec succès et est maintenant en cours d'examen par notre équipe.`);
-          // Changer le statut immédiatement mais afficher la page jaune après 5 secondes
+          // Changer le statut immédiatement et afficher la page jaune immédiatement
           setCandidateStatus('pending');
           setIsEditingNew(false);
-          setIsInitialLoad(false); // Marquer que ce n'est plus le chargement initial
-          // Programmer l'affichage de la page jaune après 5 secondes
-          setTimeout(() => {
-            console.log('⏰ Timeout: Affichage page jaune après 5s', { candidateStatus, showPendingPage });
-            setShowPendingPage(true);
-          }, 5000);
+          setIsInitialLoad(false);
+          setShowPendingPage(true);
         } else {
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
@@ -1452,46 +1444,29 @@ export default function MyProfilePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-8"
+            className="bg-yellow-50 border border-yellow-200 rounded-2xl p-8 mb-8"
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-yellow-100 rounded-full">
-                <Check className="w-5 h-5 text-yellow-600" />
+                <Check className="w-6 h-6 text-yellow-600" />
               </div>
-              <h2 className="text-xl font-semibold text-yellow-800">Profil en attente de validation</h2>
+              <h2 className="text-2xl font-semibold text-yellow-800">Profil en attente de validation</h2>
             </div>
-            <p className="text-yellow-700 mb-4">
-              Votre profil a été soumis avec succès ! Notre équipe examine actuellement votre candidature 
+            <p className="text-yellow-700 mb-6 text-lg">
+              ✅ Votre profil a été soumis avec succès ! Notre équipe examine actuellement votre candidature 
               et vous contactera sous peu pour vous informer de la suite du processus.
             </p>
+            <div className="bg-yellow-100 rounded-xl p-4">
+              <h3 className="font-semibold text-yellow-800 mb-2">Prochaines étapes :</h3>
+              <ul className="text-yellow-700 space-y-1">
+                <li>• Notre équipe examine votre profil (24-48h)</li>
+                <li>• Vous recevrez un email de confirmation</li>
+                <li>• Votre profil sera visible aux recruteurs</li>
+              </ul>
+            </div>
           </motion.div>
 
           {/* Actions désactivées pour l'état en attente */}
-        </div>
-      </div>
-    );
-  }
-
-  // Interface de transition pour les candidats en attente (statut pending mais showPendingPage pas encore true)
-  if (candidateStatus === 'pending' && !showPendingPage) {
-    console.log('🔵 Affichage: Traitement en cours', { candidateStatus, showPendingPage, isInitialLoad });
-    return (
-      <div className="min-h-screen py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          {/* Message de transition */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8"
-          >
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <h2 className="text-xl font-semibold text-blue-800 mb-2">Traitement en cours...</h2>
-              <p className="text-blue-700">
-                Votre profil est en cours de traitement. Veuillez patienter quelques instants.
-              </p>
-            </div>
-          </motion.div>
         </div>
       </div>
     );
