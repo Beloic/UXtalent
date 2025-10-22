@@ -1293,11 +1293,14 @@ export default function MyProfilePage() {
         annualSalary: formData.annualSalary || '',
         jobType: formData.jobType || 'CDI'
       };
+      
+      // Pour PUT, ajouter l'ID dans le body (requis par l'API)
+      if (formData.id) {
+        candidateData.id = formData.id;
+      }
 
       // Déterminer l'URL et la méthode selon si le profil existe déjà
-      const url = formData.id 
-        ? buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`)
-        : buildApiUrl(`${API_ENDPOINTS.CANDIDATES}`);
+      const url = buildApiUrl(API_ENDPOINTS.CANDIDATES);
       const method = formData.id ? 'PUT' : 'POST';
       
       // Obtenir le token une seule fois
