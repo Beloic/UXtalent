@@ -1565,14 +1565,14 @@ export default function MyProfilePage() {
             </div>
             <p className="text-yellow-700 mb-6 text-lg">
               ✅ Votre profil a été soumis avec succès ! Notre équipe examine actuellement votre candidature 
-              et vous contactera sous peu pour vous informer de la suite du processus.
+              pour s'assurer qu'elle respecte nos critères de qualité.
             </p>
             <div className="bg-yellow-100 rounded-xl p-4">
               <h3 className="font-semibold text-yellow-800 mb-2">Prochaines étapes :</h3>
               <ul className="text-yellow-700 space-y-1">
                 <li>• Notre équipe examine votre profil (24-48h)</li>
-                <li>• Vous recevrez un email de confirmation</li>
-                <li>• Votre profil sera visible aux recruteurs</li>
+                <li>• Une fois validé, votre profil sera visible aux recruteurs</li>
+                <li>• Vous pourrez alors postuler aux offres qui vous intéressent</li>
               </ul>
             </div>
           </motion.div>
