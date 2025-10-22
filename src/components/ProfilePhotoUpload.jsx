@@ -104,12 +104,12 @@ const ProfilePhotoUpload = ({ userId, currentPhoto, onPhotoChange, onError, comp
             className={compact ? "w-24 h-24 rounded-3xl object-cover border-4 border-white shadow-xl" : "w-32 h-32 rounded-full object-cover border-2 border-gray-300"}
           />
         ) : (
-          <div className={`${compact ? "w-24 h-24 rounded-3xl bg-gray-200 flex items-center justify-center border-4 border-white shadow-xl" : "w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300"} ${required ? 'border-red-300 bg-red-50' : ''}`}>
-            <svg className={`w-12 h-12 ${required ? 'text-red-400' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className={`${compact ? "w-24 h-24 rounded-3xl bg-gray-200 flex items-center justify-center border-4 border-white shadow-xl" : "w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300"} ${required ? 'border-gray-400 bg-gray-100' : ''}`}>
+            <svg className={`w-12 h-12 ${required ? 'text-gray-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             {required && (
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+              <div className="absolute -top-1 -right-1 w-6 h-6 bg-gray-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
                 !
               </div>
             )}

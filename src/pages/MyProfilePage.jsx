@@ -158,7 +158,6 @@ export default function MyProfilePage() {
     skills: 'Ex: Design System, Recherche utilisateur, Prototypage, Figma...',
     portfolio: 'Ex: https://monportfolio.com',
     linkedin: 'Ex: https://linkedin.com/in/monprofil',
-    github: 'Ex: https://github.com/monprofil',
     dailyRate: 'Ex: 500',
     annualSalary: 'Ex: 50k-60k€',
     jobType: 'CDI'
@@ -176,7 +175,6 @@ export default function MyProfilePage() {
     skills: '',
     portfolio: '',
     linkedin: '',
-    github: '',
     dailyRate: '',
     annualSalary: '',
     jobType: 'CDI',
@@ -209,7 +207,7 @@ export default function MyProfilePage() {
   const hasFormDataChanged = (currentData, originalData) => {
     if (!originalData) return false;
     
-    const fieldsToCompare = ['name', 'title', 'location', 'remote', 'yearsOfExperience', 'bio', 'skills', 'portfolio', 'linkedin', 'github', 'dailyRate', 'annualSalary', 'jobType'];
+    const fieldsToCompare = ['name', 'title', 'location', 'remote', 'yearsOfExperience', 'bio', 'skills', 'portfolio', 'linkedin', 'dailyRate', 'annualSalary', 'jobType'];
     
     for (const field of fieldsToCompare) {
       const currentValue = safeTrim(currentData[field] || '');
@@ -277,58 +275,8 @@ export default function MyProfilePage() {
       checkForUnsavedChanges();
     }, 100);
 
-    // Si une nouvelle photo a été uploadée, sauvegarder automatiquement
-    if (photoData?.existing && user) {
-      try {
-        const session = await supabase.auth.getSession();
-        const token = session.data.session?.access_token;
-        
-        if (!token) {
-          setMessage('❌ Erreur d\'authentification. Veuillez vous reconnecter.');
-          return;
-        }
-
-        // Préparer les données pour la mise à jour
-        const updateData = {
-          photo: photoData.existing
-        };
-
-        // Déterminer l'URL selon si le profil existe déjà
-        const url = formData.id 
-          ? buildApiUrl(`${API_ENDPOINTS.CANDIDATES}${formData.id}/`)
-          : buildApiUrl(`${API_ENDPOINTS.CANDIDATES}`);
-        const method = formData.id ? 'PUT' : 'POST';
-
-        const response = await fetch(url, {
-          method: method,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(updateData)
-        });
-
-        if (response.ok) {
-          setMessage('✅ Photo de profil mise à jour avec succès');
-          setTimeout(() => setMessage(''), 3000);
-          
-          // Mettre à jour le cache
-          updateProfileCache({
-            formData: { ...formData, photo: photoData },
-            candidateStatus: candidateStatus
-          });
-        } else {
-          const errorData = await response.json();
-          console.error('Erreur lors de la sauvegarde de la photo:', errorData);
-          setMessage('❌ Erreur lors de la sauvegarde de la photo');
-          setTimeout(() => setMessage(''), 5000);
-        }
-      } catch (error) {
-        console.error('Erreur lors de la sauvegarde de la photo:', error);
-        setMessage('❌ Erreur lors de la sauvegarde de la photo');
-        setTimeout(() => setMessage(''), 5000);
-      }
-    }
+    // Ne plus sauvegarder automatiquement la photo
+    // L'utilisateur devra sauvegarder manuellement avec le bouton "Sauvegarder le profil"
   };
 
   const handlePhotoError = (error) => {
@@ -642,15 +590,15 @@ export default function MyProfilePage() {
           id: candidate.id || null,
           name: candidate.name || '',
           email: candidate.email || '',
-          title: candidate.title && candidate.title.trim() !== '' ? candidate.title : DEFAULT_VALUES.title,
+          title: candidate.title && candidate.title.trim() !== '' ? candidate.title : '',
           location: candidate.location || '',
           remote: candidate.remote || 'hybrid',
           experience: candidate.experience || '',
-          skills: candidate.skills && candidate.skills.trim() !== '' ? candidate.skills : DEFAULT_VALUES.skills,
+          skills: candidate.skills && candidate.skills.trim() !== '' ? candidate.skills : '',
           bio: candidate.bio || '',
           portfolio: candidate.portfolio || '',
           linkedin: candidate.linkedin || '',
-          github: candidate.github || '',
+          github: '',
           salary: candidate.salary || '',
           languages: candidate.languages || [],
           photo: candidate.photo || '',
@@ -698,7 +646,7 @@ export default function MyProfilePage() {
             id: existingCandidate.id || null,
             name: existingCandidate.name || '',
             email: existingCandidate.email || '',
-            title: existingCandidate.title && existingCandidate.title.trim() !== '' ? existingCandidate.title : DEFAULT_VALUES.title,
+            title: existingCandidate.title && existingCandidate.title.trim() !== '' ? existingCandidate.title : '',
             location: existingCandidate.location || '',
             remote: existingCandidate.remote || 'hybrid',
             yearsOfExperience: (() => {
@@ -711,12 +659,12 @@ export default function MyProfilePage() {
               const skills = Array.isArray(existingCandidate.skills)
                 ? existingCandidate.skills.join(', ')
                 : existingCandidate.skills || '';
-              // Si aucune compétence n'est définie, utiliser les compétences par défaut
-              return skills.trim() === '' ? DEFAULT_VALUES.skills : skills;
+              // Si aucune compétence n'est définie, utiliser une chaîne vide
+              return skills.trim() === '' ? '' : skills;
             })(),
             portfolio: existingCandidate.portfolio || '',
             linkedin: existingCandidate.linkedin || '',
-            github: existingCandidate.github || '',
+            github: '',
             photo: existingCandidate.photo && safeTrim(existingCandidate.photo) !== '' ? {
               existing: existingCandidate.photo,
               preview: existingCandidate.photo
@@ -823,7 +771,6 @@ export default function MyProfilePage() {
         skills: '',
         portfolio: '',
         linkedin: '',
-        github: '',
         dailyRate: '',
         annualSalary: '',
         jobType: 'CDI',
@@ -1059,7 +1006,7 @@ export default function MyProfilePage() {
   const EditableField = React.memo(({ fieldName, value, placeholder, type = 'text', className = '', options = null, required = true }) => {
     const isEditing = editingField === fieldName;
     const isEmpty = !value || safeTrim(value) === '';
-    const isRequired = required && fieldName !== 'github';
+    const isRequired = required;
     
     return (
       <div className={`relative group ${className}`}>
@@ -1070,7 +1017,7 @@ export default function MyProfilePage() {
                 value={tempValue}
                 onChange={(e) => setTempValue(e.target.value)}
                 className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white ${
-                  isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
+                  isRequired && !tempValue ? 'border-gray-300' : 'border-blue-300'
                 }`}
                 autoFocus
                 required={isRequired}
@@ -1098,7 +1045,7 @@ export default function MyProfilePage() {
                     setBioValue(e.target.value);
                   }}
                   className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y ${
-                    isRequired && !bioValue ? 'border-red-300' : 'border-blue-300'
+                    isRequired && !bioValue ? 'border-gray-300' : 'border-blue-300'
                   }`}
                   placeholder={placeholder}
                   rows={8}
@@ -1111,7 +1058,7 @@ export default function MyProfilePage() {
                   value={tempValue}
                   onChange={(e) => setTempValue(e.target.value)}
                   className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    isRequired && !tempValue ? 'border-red-300' : 'border-blue-300'
+                    isRequired && !tempValue ? 'border-gray-300' : 'border-blue-300'
                   }`}
                   placeholder={placeholder}
                   autoFocus
@@ -1140,7 +1087,7 @@ export default function MyProfilePage() {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <span className={`flex-1 ${isRequired && isEmpty ? 'text-red-500 italic' : isEmpty ? 'text-gray-400 italic' : ''}`}>
+            <span className={`flex-1 ${isRequired && isEmpty ? 'text-gray-400 italic' : isEmpty ? 'text-gray-400 italic' : ''}`}>
               {value || (isEmpty ? placeholder : placeholder)}
             </span>
             <button
@@ -1331,18 +1278,18 @@ export default function MyProfilePage() {
         // approved supprimé - utilise uniquement status
         // visible supprimé - utilise uniquement status
         // Tous les champs du formulaire
-        title: formData.title || DEFAULT_VALUES.title,
-        location: formData.location || DEFAULT_VALUES.location,
-        remote: formData.remote || DEFAULT_VALUES.remote,
-        yearsOfExperience: formData.yearsOfExperience || DEFAULT_VALUES.yearsOfExperience,
+        title: formData.title || '',
+        location: formData.location || '',
+        remote: formData.remote || 'hybrid',
+        yearsOfExperience: formData.yearsOfExperience || '',
         skills: getSkillsArray(formData.skills),
         portfolio: formData.portfolio || '',
         linkedin: formData.linkedin || '',
-        github: formData.github || '',
+        github: '',
         photo: photoUrl,
-        dailyRate: formData.dailyRate || DEFAULT_VALUES.dailyRate,
-        annualSalary: formData.annualSalary || DEFAULT_VALUES.annualSalary,
-        jobType: formData.jobType || DEFAULT_VALUES.jobType
+        dailyRate: formData.dailyRate || '',
+        annualSalary: formData.annualSalary || '',
+        jobType: formData.jobType || 'CDI'
       };
 
       // Déterminer l'URL et la méthode selon si le profil existe déjà
@@ -2160,26 +2107,10 @@ export default function MyProfilePage() {
                               </div>
                             </div>
 
-                            {/* GitHub */}
-                            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-                              <div className="p-2 bg-blue-100 rounded-lg">
-                                <ExternalLink className="w-5 h-5 text-blue-600" />
-                              </div>
-                              <div className="flex-1">
-                                <p className="text-sm font-medium text-gray-500 mb-1">GitHub</p>
-                                <EditableField
-                                  fieldName="github"
-                                  value={formData.github}
-                                  placeholder={FIELD_EXAMPLES.github}
-                                  className="font-semibold text-gray-900"
-                                  required={false}
-                                />
-                              </div>
-                            </div>
                           </div>
 
                           {/* Boutons de liens si les URLs sont présentes */}
-                          {(formData.linkedin || formData.portfolio || formData.github) && (
+                          {(formData.linkedin || formData.portfolio) && (
                             <div className="mt-6">
                               <h3 className="text-lg font-semibold text-gray-900 mb-4">Accès rapide</h3>
                               <div className="flex flex-wrap gap-4">
@@ -2203,17 +2134,6 @@ export default function MyProfilePage() {
                                   >
                                     <Globe className="w-5 h-5" />
                                     Portfolio
-                                  </a>
-                                )}
-                                {formData.github && (
-                                  <a
-                                    href={formData.github}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-3 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold border border-gray-200"
-                                  >
-                                    <ExternalLink className="w-5 h-5" />
-                                    GitHub
                                   </a>
                                 )}
                               </div>
