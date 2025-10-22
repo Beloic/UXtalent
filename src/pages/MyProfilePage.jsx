@@ -187,11 +187,83 @@ export default function MyProfilePage() {
   const [showPendingPage, setShowPendingPage] = useState(false); // Contrôle l'affichage de la page jaune avec délai
   const [isInitialLoad, setIsInitialLoad] = useState(true); // Distingue le chargement initial des changements de statut
   
+  // États pour la gestion des modifications non sauvegardées
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [originalFormData, setOriginalFormData] = useState(null);
+  const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
+  
+  // Fonction pour comparer les données actuelles avec les données originales
+  const hasFormDataChanged = (currentData, originalData) => {
+    if (!originalData) return false;
+    
+    const fieldsToCompare = ['name', 'title', 'location', 'remote', 'yearsOfExperience', 'bio', 'skills', 'portfolio', 'linkedin', 'github', 'dailyRate', 'annualSalary', 'jobType'];
+    
+    for (const field of fieldsToCompare) {
+      const currentValue = safeTrim(currentData[field] || '');
+      const originalValue = safeTrim(originalData[field] || '');
+      
+      if (currentValue !== originalValue) {
+        return true;
+      }
+    }
+    
+    // Vérifier aussi les changements de photo
+    if (currentData.photo?.preview !== originalData.photo?.preview) {
+      return true;
+    }
+    
+    return false;
+  };
+  
+  // Fonction pour sauvegarder l'état original des données
+  const saveOriginalFormData = (data) => {
+    setOriginalFormData({ ...data });
+    setHasUnsavedChanges(false);
+  };
+  
+  // Fonction pour vérifier les modifications non sauvegardées
+  const checkForUnsavedChanges = () => {
+    const hasChanges = hasFormDataChanged(formData, originalFormData);
+    setHasUnsavedChanges(hasChanges);
+    return hasChanges;
+  };
+  
+  // Fonction pour naviguer avec vérification des modifications
+  const navigateToTabWithWarning = (tabName) => {
+    if (checkForUnsavedChanges()) {
+      setPendingNavigation(tabName);
+      setShowUnsavedChangesModal(true);
+    } else {
+      navigateToTab(tabName);
+    }
+  };
+  
+  // Fonction pour confirmer la navigation (perdre les modifications)
+  const confirmNavigation = () => {
+    setShowUnsavedChangesModal(false);
+    if (pendingNavigation) {
+      navigateToTab(pendingNavigation);
+      setPendingNavigation(null);
+    }
+  };
+  
+  // Fonction pour annuler la navigation
+  const cancelNavigation = () => {
+    setShowUnsavedChangesModal(false);
+    setPendingNavigation(null);
+  };
+  
   const handlePhotoChange = async (photoData) => {
     setFormData(prev => ({
       ...prev,
       photo: photoData
     }));
+    
+    // Vérifier les modifications après changement de photo
+    setTimeout(() => {
+      checkForUnsavedChanges();
+    }, 100);
 
     // Si une nouvelle photo a été uploadée, sauvegarder automatiquement
     if (photoData?.existing && user) {
@@ -711,6 +783,13 @@ export default function MyProfilePage() {
       assignDefaultValues();
     }
   }, [user, loadExistingProfile]);
+  
+  // Sauvegarder l'état original quand les données du formulaire sont chargées
+  useEffect(() => {
+    if (formData && !isLoadingProfile && !originalFormData) {
+      saveOriginalFormData(formData);
+    }
+  }, [formData, isLoadingProfile, originalFormData]);
 
   // Assigner les valeurs par défaut dès que l'utilisateur est connecté et qu'aucun profil n'existe
   useEffect(() => {
@@ -736,6 +815,11 @@ export default function MyProfilePage() {
       ...prev,
       [name]: value
     }));
+    
+    // Vérifier les modifications après chaque changement
+    setTimeout(() => {
+      checkForUnsavedChanges();
+    }, 100);
   };
 
   // Fonction pour convertir un salaire numérique en fourchette
@@ -1298,6 +1382,9 @@ export default function MyProfilePage() {
           detail: { name: candidateData.name }
         }));
         
+        // Sauvegarder l'état original après une sauvegarde réussie
+        saveOriginalFormData(formData);
+        
         // Faire disparaître le message après 5 secondes pour les nouveaux profils
         setTimeout(() => {
           setMessage('');
@@ -1637,7 +1724,7 @@ export default function MyProfilePage() {
               {isCandidate && (
                 <>
                   <button
-                    onClick={() => navigateToTab('view')}
+                    onClick={() => navigateToTabWithWarning('view')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'view'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -1648,7 +1735,7 @@ export default function MyProfilePage() {
                     Profil
                   </button>
                   <button
-                    onClick={() => navigateToTab('talents')}
+                    onClick={() => navigateToTabWithWarning('talents')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'talents'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -1659,7 +1746,7 @@ export default function MyProfilePage() {
                     Talents
                   </button>
                   <button
-                    onClick={() => navigateToTab('offers')}
+                    onClick={() => navigateToTabWithWarning('offers')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'offers'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -1670,7 +1757,7 @@ export default function MyProfilePage() {
                     Offres
                   </button>
                   <button
-                    onClick={() => navigateToTab('forum')}
+                    onClick={() => navigateToTabWithWarning('forum')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'forum'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -1681,7 +1768,7 @@ export default function MyProfilePage() {
                     Forum
                   </button>
                   <button
-                    onClick={() => navigateToTab('stats')}
+                    onClick={() => navigateToTabWithWarning('stats')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'stats'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -1692,7 +1779,7 @@ export default function MyProfilePage() {
                     Statistiques
                   </button>
                   <button
-                    onClick={() => navigateToTab('plan')}
+                    onClick={() => navigateToTabWithWarning('plan')}
                     className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-3 ${
                       activeTab === 'plan'
                         ? 'bg-blue-600 text-white shadow-lg'
@@ -3467,6 +3554,39 @@ export default function MyProfilePage() {
                     disabled={isCancelling}
                   >
                     {isCancelling ? 'Annulation en cours...' : 'Confirmer l\'annulation'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Modal d'avertissement pour les modifications non sauvegardées */}
+        {showUnsavedChangesModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+              <div className="text-center">
+                <div className="p-4 bg-orange-100 rounded-full w-fit mx-auto mb-6">
+                  <AlertCircle className="w-8 h-8 text-orange-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Modifications non sauvegardées
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Vous avez des modifications non sauvegardées. Si vous changez d'onglet maintenant, vous perdrez ces modifications.
+                </p>
+                <div className="flex gap-4">
+                  <button
+                    onClick={cancelNavigation}
+                    className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={confirmNavigation}
+                    className="flex-1 px-4 py-3 bg-orange-600 text-white rounded-xl font-semibold hover:bg-orange-700 transition-colors"
+                  >
+                    Continuer quand même
                   </button>
                 </div>
               </div>

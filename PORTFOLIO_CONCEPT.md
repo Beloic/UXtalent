@@ -77,3 +77,5 @@ Aider les designers (UX/UI, Product, Research) à trouver des opportunités qual
 Projet en évolution continue. Code base structurée avec scripts de maintenance (migrations, cleanup, génération sitemap), logs, et guides d’intégration (Stripe, Render). Convient pour démontrer des compétences full‑stack orientées produit et expérience utilisateur.
 
 
+
+
