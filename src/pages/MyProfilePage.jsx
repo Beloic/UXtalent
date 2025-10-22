@@ -1134,18 +1134,10 @@ export default function MyProfilePage() {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
-    
-    // Enregistrer le temps de début pour garantir un délai minimum de 5 secondes
-    const startTime = Date.now();
  
     if (!user) {
       setMessage('Vous devez être connecté pour créer un profil');
-      // Garantir un délai minimum même en cas d'erreur précoce
-      const elapsedTime = Date.now() - startTime;
-      const remainingTime = Math.max(0, 5000 - elapsedTime);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, remainingTime);
+      setIsLoading(false);
       return;
     }
 
@@ -1323,6 +1315,8 @@ export default function MyProfilePage() {
         if (!formData.id) {
           // Nouveau profil créé - informer qu'il est en attente
           setMessage(`✅ Profil créé avec succès ! Votre profil est maintenant en attente de validation par notre équipe.`);
+          // Arrêter le loading immédiatement pour les nouveaux profils
+          setIsLoading(false);
         } else if (candidateStatus === 'rejected') {
           // Profil rejeté mis à jour - informer qu'il est remis en attente
           setMessage(`✅ Profil modifié avec succès ! Votre profil a été remis en attente de validation par notre équipe.`);
@@ -1331,6 +1325,8 @@ export default function MyProfilePage() {
           setIsEditingRejected(false);
           setIsInitialLoad(false);
           setShowPendingPage(true);
+          // Arrêter le loading immédiatement pour les profils en attente
+          setIsLoading(false);
         } else if (candidateStatus === 'new') {
           // Profil nouveau envoyé pour validation - message spécial
           setMessage(`✅ Profil en attente pour examen. Votre profil a été envoyé avec succès et est maintenant en cours d'examen par notre équipe.`);
@@ -1339,6 +1335,8 @@ export default function MyProfilePage() {
           setIsEditingNew(false);
           setIsInitialLoad(false);
           setShowPendingPage(true);
+          // Arrêter le loading immédiatement pour les profils en attente
+          setIsLoading(false);
         } else {
           // Profil mis à jour normalement
           setMessage(`✅ Profil mis à jour avec succès !`);
@@ -1369,12 +1367,8 @@ export default function MyProfilePage() {
     } catch (error) {
       setMessage(`Erreur lors de la création du profil: ${error.message}`);
       } finally {
-      // Garantir un délai minimum de 5 secondes pour le loading
-      const elapsedTime = Date.now() - startTime;
-      const remainingTime = Math.max(0, 5000 - elapsedTime);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, remainingTime);
+      // Arrêter le loading immédiatement
+      setIsLoading(false);
     }
   };
 
