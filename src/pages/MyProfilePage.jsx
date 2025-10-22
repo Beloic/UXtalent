@@ -727,6 +727,9 @@ export default function MyProfilePage() {
     }
   }, [user, activeTab, getCachedData, updateProfileCache, setCacheLoading]);
 
+  // Utiliser un ref pour suivre si le profil a déjà été chargé
+  const profileLoadedRef = useRef(false);
+  
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
@@ -737,16 +740,17 @@ export default function MyProfilePage() {
         email: user.email || ''
       }));
 
-      // Charger le profil depuis la base de données seulement si nécessaire
+      // Charger le profil depuis la base de données seulement une fois au montage
       // et seulement si le profil n'a pas été soumis récemment
-      if (!profileJustSubmitted) {
+      if (!profileJustSubmitted && !profileLoadedRef.current) {
         loadExistingProfile();
+        profileLoadedRef.current = true;
       }
     } else {
       // Si pas d'utilisateur, assigner les valeurs par défaut pour l'affichage
       assignDefaultValues();
     }
-  }, [user, loadExistingProfile, profileJustSubmitted]);
+  }, [user, profileJustSubmitted]);
   
   // Sauvegarder l'état original quand les données du formulaire sont chargées
   useEffect(() => {
@@ -1315,8 +1319,26 @@ export default function MyProfilePage() {
       });
 
       if (response.ok) {
-        // L'API PUT retourne souvent une réponse vide, donc on recharge directement le profil
+        // Récupérer les données de la réponse pour mettre à jour le formData
+        let responseData;
+        try {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            responseData = await response.json();
+          }
+        } catch (e) {
+          // Si pas de JSON, ce n'est pas grave
+        }
+        
         const isUpdate = formData.id ? 'mis à jour' : 'créé';
+        
+        // Mettre à jour formData avec les données envoyées et le statut 'pending'
+        setFormData(prev => ({
+          ...prev,
+          id: responseData?.id || prev.id || responseData?.candidate?.id,
+          status: 'pending',
+          updatedAt: new Date().toISOString()
+        }));
         
         if (!formData.id) {
           // Nouveau profil créé - informer qu'il est en attente
