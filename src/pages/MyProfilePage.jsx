@@ -1316,12 +1316,14 @@ export default function MyProfilePage() {
         jobType: formData.jobType || 'CDI'
       };
       
-      // Pour PUT, ajouter l'ID dans le body (requis par l'API)
+      // Pour PUT, ajouter l'ID dans le body (requis par l'API index.js)
       if (formData.id) {
         candidateData.id = formData.id;
       }
 
       // Déterminer l'URL et la méthode selon si le profil existe déjà
+      // L'API index.js gère POST et PUT sur /api/candidates/ 
+      // PUT nécessite l'ID dans le body (req.body.id)
       const url = buildApiUrl(API_ENDPOINTS.CANDIDATES);
       const method = formData.id ? 'PUT' : 'POST';
       
@@ -1329,8 +1331,10 @@ export default function MyProfilePage() {
         url,
         method,
         hasId: !!candidateData.id,
+        idValue: candidateData.id,
         candidateDataKeys: Object.keys(candidateData),
-        status: candidateData.status
+        status: candidateData.status,
+        endpoint: API_ENDPOINTS.CANDIDATES
       });
       
       // Obtenir le token une seule fois
