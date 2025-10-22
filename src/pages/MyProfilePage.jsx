@@ -1259,6 +1259,15 @@ export default function MyProfilePage() {
       if (formData.yearsOfExperience && safeTrim(formData.yearsOfExperience)) {
         const years = parseInt(safeTrim(formData.yearsOfExperience));
         
+        // Validation : les années d'expérience doivent être entre 0 et 50
+        if (isNaN(years) || years < 0 || years > 50) {
+          console.error('❌ [SUBMIT] Années d\'expérience invalides:', years);
+          setMessage('❌ Erreur: Les années d\'expérience doivent être entre 0 et 50 ans.');
+          setIsLoading(false);
+          setProfileJustSubmitted(false);
+          return;
+        }
+        
         // Déterminer automatiquement le niveau d'expérience basé sur les années
         let experienceLevel = 'Mid'; // Valeur par défaut
         if (years <= 2) {
