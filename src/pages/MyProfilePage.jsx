@@ -510,8 +510,6 @@ export default function MyProfilePage() {
         setFormData(cachedData.formData);
         setCandidateStatus(cachedData.candidateStatus);
         setCandidatePlan(cachedData.candidatePlan);
-        setIsLoadingProfile(false);
-        setCacheLoading(false);
         return;
       }
 
@@ -568,14 +566,10 @@ export default function MyProfilePage() {
             setFormData(prev => ({ ...prev, id: null }));
             // Assigner les valeurs par défaut réalistes pour le nouveau candidat
             assignDefaultValues();
-            setIsLoadingProfile(false);
-            setCacheLoading(false);
             return;
           }
           setMessage(`❌ Erreur: ${error.message}`);
           setProfileLoadError(error.message || 'Erreur inconnue');
-          setIsLoadingProfile(false);
-          setCacheLoading(false);
           return;
         }
         
@@ -621,8 +615,6 @@ export default function MyProfilePage() {
           candidateStatus: status,
           candidatePlan: plan
         });
-        setIsLoadingProfile(false);
-        setCacheLoading(false);
         return;
       }
       
@@ -765,14 +757,11 @@ export default function MyProfilePage() {
           profileJustSubmitted,
           alreadyLoaded: profileLoadedRef.current
         });
-        // S'assurer que le loading est arrêté même si le chargement est ignoré
-        setIsLoadingProfile(false);
       }
     } else {
       console.log('👤 [useEffect] Pas d\'utilisateur - valeurs par défaut');
       // Si pas d'utilisateur, assigner les valeurs par défaut pour l'affichage
       assignDefaultValues();
-      setIsLoadingProfile(false);
     }
   }, [user, profileJustSubmitted]);
   
@@ -1227,6 +1216,7 @@ export default function MyProfilePage() {
         }, remainingTime);
         return;
       }
+      }
 
     try {
       let photoUrl = null;
@@ -1496,7 +1486,7 @@ export default function MyProfilePage() {
       console.error('❌ [SUBMIT] Stack trace:', error.stack);
       setMessage(`Erreur lors de la création du profil: ${error.message}`);
       setProfileJustSubmitted(false); // Réinitialiser en cas d'erreur
-    } finally {
+      } finally {
       console.log('🏁 [SUBMIT] Fin du traitement - arrêt du loading');
       // Arrêter le loading immédiatement
       setIsLoading(false);
@@ -3647,5 +3637,3 @@ export default function MyProfilePage() {
     </div>
   );
 }
-}
-

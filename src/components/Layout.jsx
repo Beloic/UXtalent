@@ -543,18 +543,8 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
             </Link>
             
             {/* Menu utilisateur avec avatar */}
-            <div className="flex items-center gap-3">
-              {/* Bouton Mon Dashboard */}
-              <Link 
-                to={isCandidate ? "/my-profile/profile" : "/recruiter-dashboard"} 
-                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200"
-              >
-                <User className="w-4 h-4" />
-                Mon Dashboard
-              </Link>
-              
-              <div className="relative" ref={userMenuRef}>
-                <button
+            <div className="relative" ref={userMenuRef}>
+              <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-all duration-200"
               >
@@ -628,7 +618,6 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   </motion.div>
                 )}
               </AnimatePresence>
-              </div>
             </div>
           </div>
         </header>
