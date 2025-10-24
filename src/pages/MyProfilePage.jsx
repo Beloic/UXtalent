@@ -510,6 +510,8 @@ export default function MyProfilePage() {
         setFormData(cachedData.formData);
         setCandidateStatus(cachedData.candidateStatus);
         setCandidatePlan(cachedData.candidatePlan);
+        setIsLoadingProfile(false);
+        setCacheLoading(false);
         return;
       }
 
@@ -566,10 +568,14 @@ export default function MyProfilePage() {
             setFormData(prev => ({ ...prev, id: null }));
             // Assigner les valeurs par défaut réalistes pour le nouveau candidat
             assignDefaultValues();
+            setIsLoadingProfile(false);
+            setCacheLoading(false);
             return;
           }
           setMessage(`❌ Erreur: ${error.message}`);
           setProfileLoadError(error.message || 'Erreur inconnue');
+          setIsLoadingProfile(false);
+          setCacheLoading(false);
           return;
         }
         
@@ -615,6 +621,8 @@ export default function MyProfilePage() {
           candidateStatus: status,
           candidatePlan: plan
         });
+        setIsLoadingProfile(false);
+        setCacheLoading(false);
         return;
       }
       
