@@ -547,7 +547,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               {/* Bouton Mon Dashboard */}
               <Link 
                 to={isCandidate ? "/my-profile/profile" : "/recruiter-dashboard"} 
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 border border-blue-600 hover:border-blue-700 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
               >
                 Dashboard
               </Link>
