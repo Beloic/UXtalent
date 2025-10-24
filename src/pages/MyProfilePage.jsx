@@ -1587,7 +1587,8 @@ export default function MyProfilePage() {
   }
 
   // Interface pour les candidats avec statut "new" (nouveaux profils) - sauf s'ils sont en mode édition
-  if (candidateStatus === 'new' && !isEditingNew) {
+  // Désactivé temporairement pour permettre l'accès au Dashboard
+  if (false && candidateStatus === 'new' && !isEditingNew) {
     console.log('🟡 Affichage: Parlez-nous un peu de vous', { candidateStatus, showPendingPage, isInitialLoad, isEditingNew });
     return (
       <div className="min-h-screen py-8">
