@@ -1131,7 +1131,9 @@ export default function MyProfilePage() {
       location: 'Localisation',
       bio: 'Présentation',
       skills: 'Compétences',
-      photo: 'Photo de profil'
+      photo: 'Photo de profil',
+      portfolio: 'Portfolio',
+      linkedin: 'LinkedIn'
     };
 
     for (const [field, label] of Object.entries(requiredFields)) {
@@ -1181,7 +1183,9 @@ export default function MyProfilePage() {
         location: 'Localisation',
         bio: 'Présentation',
         skills: 'Compétences',
-        photo: 'Photo de profil'
+        photo: 'Photo de profil',
+        portfolio: 'Portfolio',
+        linkedin: 'LinkedIn'
       };
 
       const missingFields = [];
