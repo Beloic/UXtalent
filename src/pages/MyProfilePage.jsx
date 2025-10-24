@@ -757,11 +757,14 @@ export default function MyProfilePage() {
           profileJustSubmitted,
           alreadyLoaded: profileLoadedRef.current
         });
+        // S'assurer que le loading est arrêté même si le chargement est ignoré
+        setIsLoadingProfile(false);
       }
     } else {
       console.log('👤 [useEffect] Pas d\'utilisateur - valeurs par défaut');
       // Si pas d'utilisateur, assigner les valeurs par défaut pour l'affichage
       assignDefaultValues();
+      setIsLoadingProfile(false);
     }
   }, [user, profileJustSubmitted]);
   
@@ -1587,8 +1590,7 @@ export default function MyProfilePage() {
   }
 
   // Interface pour les candidats avec statut "new" (nouveaux profils) - sauf s'ils sont en mode édition
-  // Désactivé temporairement pour permettre l'accès au Dashboard
-  if (false && candidateStatus === 'new' && !isEditingNew) {
+  if (candidateStatus === 'new' && !isEditingNew) {
     console.log('🟡 Affichage: Parlez-nous un peu de vous', { candidateStatus, showPendingPage, isInitialLoad, isEditingNew });
     return (
       <div className="min-h-screen py-8">
