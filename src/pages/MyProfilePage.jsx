@@ -1216,7 +1216,6 @@ export default function MyProfilePage() {
         }, remainingTime);
         return;
       }
-      }
 
     try {
       let photoUrl = null;
@@ -1486,7 +1485,7 @@ export default function MyProfilePage() {
       console.error('❌ [SUBMIT] Stack trace:', error.stack);
       setMessage(`Erreur lors de la création du profil: ${error.message}`);
       setProfileJustSubmitted(false); // Réinitialiser en cas d'erreur
-      } finally {
+    } finally {
       console.log('🏁 [SUBMIT] Fin du traitement - arrêt du loading');
       // Arrêter le loading immédiatement
       setIsLoading(false);
@@ -3637,3 +3636,5 @@ export default function MyProfilePage() {
     </div>
   );
 }
+}
+

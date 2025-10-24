@@ -554,7 +554,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               </Link>
               
               <div className="relative" ref={userMenuRef}>
-              <button
+                <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-all duration-200"
               >
@@ -628,6 +628,7 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
                   </motion.div>
                 )}
               </AnimatePresence>
+              </div>
             </div>
           </div>
         </header>
