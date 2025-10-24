@@ -547,10 +547,9 @@ export default function Layout({ children, hideFooter = false, hideTopBar = fals
               {/* Bouton Mon Dashboard */}
               <Link 
                 to={isCandidate ? "/my-profile/profile" : "/recruiter-dashboard"} 
-                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200"
               >
-                <User className="w-4 h-4" />
-                Mon Dashboard
+                Dashboard
               </Link>
               
               <div className="relative" ref={userMenuRef}>
